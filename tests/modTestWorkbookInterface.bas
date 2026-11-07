@@ -9046,7 +9046,7 @@ Private Function TestFreshnessInvoke(ByVal form As Boolean, ByVal workbook As Ob
     On Error GoTo Failed
     If Not workbook Is Nothing Then
         Dim observed As Object: Set observed = workbook.Application
-        If TypeOf observed Is CTestExcelApplicationState Then observed.TestExpectedScreenUpdating = observed.ScreenUpdating
+        If TypeOf observed Is CTestExcelApplicationState Then observed.TestExpectedScreenUpdating = Not form And observed.ScreenUpdating
     End If
     If form Then
         message = FormSectionForWorkbook(workbook, -1#, informationEnabled)
@@ -9062,10 +9062,10 @@ End Function
 ' Проверяет одну явную актуализацию до любых имён и при выключенных событиях.
 ' Режим и остальные свойства должны совпасть с исходными после возврата из действия.
 Private Sub TestFreshnessAssertAction(ByRef stats As TUiTestStats, ByVal proxy As CTestWorkflowWorkbook, _
-        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String)
+        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String, ByVal form As Boolean)
     TestAssertTrue stats, label & ".oneApplicationCalculate", observed.TestCalculateCalls = 1
     TestAssertTrue stats, label & ".calculateInsideGuard", observed.TestCalculateGuarded
-    TestAssertTrue stats, label & ".noScreenWrite", observed.TestScreenWrites = 0
+    TestAssertTrue stats, label & ".screenWrites", observed.TestScreenWrites = IIf(form, 2, 0)
     TestAssertTrue stats, label & ".noInputBeforeCalculate", proxy.TestNamesBeforeCalculate = 0
     TestFreshnessAssertState stats, observed.TestNativeApplication, expected, label & ".restored"
 End Sub
@@ -9120,7 +9120,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         code = TestFreshnessInvoke(True, proxy, message, informationEnabled)
         label = "freshness.form." & CStr(mode)
         TestAssertTrue stats, label & ".success." & message, code = 0
-        TestFreshnessAssertAction stats, proxy, observed, expected, label
+        TestFreshnessAssertAction stats, proxy, observed, expected, label, True
         TestAssertClose stats, label & ".geometryFormula", CDbl(geometryCell.Value2), 360#, 0#
         TestAssertTrue stats, label & ".sameFreshUiFlag", informationEnabled
         TestAssertTrue stats, label & ".noSolver", SectionEquilibriumSolveCount() = solves
@@ -9139,7 +9139,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         code = TestFreshnessInvoke(False, proxy, message, informationEnabled)
         label = "freshness.calculate." & CStr(mode)
         TestAssertTrue stats, label & ".success." & message, code = 0 And InStr(message, "Расчет завершен") > 0
-        TestFreshnessAssertAction stats, proxy, observed, expected, label
+        TestFreshnessAssertAction stats, proxy, observed, expected, label, False
         TestAssertClose stats, label & ".freshLoad", CDbl(TestResultsPropertyValue("LC1", "N")), -19000#, 0.000001
         TestAssertTrue stats, label & ".freshProfileSolved", SectionEquilibriumSolveCount() > 0 ' Execute сбрасывает счётчики перед текущим пакетом; сравнение с предыдущим пакетом неверно.
         TestAssertTrue stats, label & ".directStateFinished", TestResultsPropertyValue("LC1", "DirectStateStatus") = "OK"
@@ -9175,7 +9175,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
             code = TestFreshnessInvoke(CBool(action), proxy, message, informationEnabled)
             label = "freshness.expectedError." & mode & "." & CStr(action)
             TestAssertTrue stats, label & ".addressedReason", code = vbObjectError + 4316 And InStr(message, "rngUnitSettings") > 0
-            TestFreshnessAssertAction stats, proxy, observed, expected, label
+            TestFreshnessAssertAction stats, proxy, observed, expected, label, CBool(action)
             For Each fault In Array(9, 18)
                 Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
                 observed.TestCalculateFault = CLng(fault): proxy.TestInitialize ThisWorkbook, observed
@@ -9183,7 +9183,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
                 label = "freshness.unexpectedError." & mode & "." & CStr(action) & "." & fault
                 TestAssertTrue stats, label & ".originalNumber", code = CLng(fault)
                 TestAssertTrue stats, label & ".noInputRead", proxy.TestNameReads = 0
-                TestFreshnessAssertAction stats, proxy, observed, expected, label
+                TestFreshnessAssertAction stats, proxy, observed, expected, label, CBool(action)
             Next fault
         Next action
         For Each action In Array(True, False)
@@ -9720,7 +9720,7 @@ Different:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Формирование не записывает ScreenUpdating; остальные свойства, отказ входа и вложенный Enter восстанавливаются.
+' Проверяет сохранение экрана по явному флагу и восстановление состояния после штатного и ошибочного входа.
 Private Sub TestFormationDisplayState(ByRef stats As TUiTestStats)
     Dim app As CTestExcelApplicationState, guard As CExcelAppStateGuard
     Dim screen As Variant, mode As Variant, code As Long, label As String

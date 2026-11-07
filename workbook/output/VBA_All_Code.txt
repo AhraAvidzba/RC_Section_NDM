@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-07 18:30:44
+Date: 2026-11-07 21:25:13
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -63,7 +63,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hy
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     Set targetCell = helpSheet.range(addressText)
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.GoTo targetCell, True
+    Application.Goto targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -60917,7 +60917,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 2382
+LINES: 2384
 ====================================================================================================
 Option Explicit
 
@@ -61123,14 +61123,16 @@ End Sub
 ' Region всегда сохраняются. На защищенных общих слоях сохраняются все
 ' объекты независимо от метки NDM; удаляются только объекты оформления.
 Private Function DeleteAutoCADEntitiesOnLayers(ByVal ms As Object, ByVal layers As Object) As Long
-    Dim i As Long
+    Dim i As Long, entity As Object, layerName As String
     For i = ms.count - 1 To 0 Step -1
-        Dim entity As Object
         Set entity = ms.item(i)
-        If layers.Exists(CStr(entity.layer)) And StrComp(CStr(entity.objectName), "AcDbRegion", vbTextCompare) <> 0 Then
-            If CBool(layers.item(CStr(entity.layer))) Then
-                entity.Delete
-                DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
+        layerName = CStr(entity.layer)
+        If layers.Exists(layerName) Then
+            If CBool(layers.item(layerName)) Then
+                If StrComp(CStr(entity.objectName), "AcDbRegion", vbTextCompare) <> 0 Then ' Тип объекта читается из AutoCAD только на слое, разрешённом для очистки.
+                    entity.Delete
+                    DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
+                End If
             End If
         End If
     Next i
@@ -66177,7 +66179,7 @@ Private Function FormSectionCore(ByVal Workbook As Object, Optional ByVal starte
     If startedAt < 0# Then startedAt = Timer
     If Workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
-    guard.Enter Workbook.Application, True
+    guard.Enter Workbook.Application ' Экран обновляется после сохранения геометрии и построения схемы.
     Workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook Workbook
@@ -67851,7 +67853,7 @@ Public TestNativeApplication As Object ' Необязательный реаль
 Public TestCalculateCalls As Long ' Число явных Application.Calculate; пересчёт листа Results сюда не входит.
 Public TestCalculateFault As Long ' Искусственная ошибка самого пересчёта до первого чтения входных таблиц.
 Public TestCalculateGuarded As Boolean ' Все вызовы Calculate произошли при Manual, отключённых событиях/окнах и ожидаемом режиме экрана.
-Public TestExpectedScreenUpdating As Boolean ' Ожидаемый исходный показ для формирования и расчёта НДС.
+Public TestExpectedScreenUpdating As Boolean ' Ожидаемое состояние экрана во время пересчёта входных формул.
 Public TestScreenWrites As Long ' Счётчик попыток записи ScreenUpdating, включая восстановление.
 Public GetterFault As String ' Имя свойства, при чтении которого нужно имитировать отказ.
 Private mCancel As Long ' Текущее подставное значение режима обработки прерывания.
@@ -140619,7 +140621,7 @@ Private Function TestFreshnessInvoke(ByVal form As Boolean, ByVal Workbook As Ob
     On Error GoTo Failed
     If Not Workbook Is Nothing Then
         Dim observed As Object: Set observed = Workbook.Application
-        If TypeOf observed Is CTestExcelApplicationState Then observed.TestExpectedScreenUpdating = observed.ScreenUpdating
+        If TypeOf observed Is CTestExcelApplicationState Then observed.TestExpectedScreenUpdating = Not form And observed.ScreenUpdating
     End If
     If form Then
         message = FormSectionForWorkbook(Workbook, -1#, informationEnabled)
@@ -140635,10 +140637,10 @@ End Function
 ' Проверяет одну явную актуализацию до любых имён и при выключенных событиях.
 ' Режим и остальные свойства должны совпасть с исходными после возврата из действия.
 Private Sub TestFreshnessAssertAction(ByRef stats As TUiTestStats, ByVal proxy As CTestWorkflowWorkbook, _
-        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String)
+        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String, ByVal form As Boolean)
     TestAssertTrue stats, label & ".oneApplicationCalculate", observed.TestCalculateCalls = 1
     TestAssertTrue stats, label & ".calculateInsideGuard", observed.TestCalculateGuarded
-    TestAssertTrue stats, label & ".noScreenWrite", observed.TestScreenWrites = 0
+    TestAssertTrue stats, label & ".screenWrites", observed.TestScreenWrites = IIf(form, 2, 0)
     TestAssertTrue stats, label & ".noInputBeforeCalculate", proxy.TestNamesBeforeCalculate = 0
     TestFreshnessAssertState stats, observed.TestNativeApplication, expected, label & ".restored"
 End Sub
@@ -140693,7 +140695,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         code = TestFreshnessInvoke(True, proxy, message, informationEnabled)
         label = "freshness.form." & CStr(mode)
         TestAssertTrue stats, label & ".success." & message, code = 0
-        TestFreshnessAssertAction stats, proxy, observed, expected, label
+        TestFreshnessAssertAction stats, proxy, observed, expected, label, True
         TestAssertClose stats, label & ".geometryFormula", CDbl(geometryCell.value2), 360#, 0#
         TestAssertTrue stats, label & ".sameFreshUiFlag", informationEnabled
         TestAssertTrue stats, label & ".noSolver", SectionEquilibriumSolveCount() = solves
@@ -140712,7 +140714,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         code = TestFreshnessInvoke(False, proxy, message, informationEnabled)
         label = "freshness.calculate." & CStr(mode)
         TestAssertTrue stats, label & ".success." & message, code = 0 And InStr(message, "Расчет завершен") > 0
-        TestFreshnessAssertAction stats, proxy, observed, expected, label
+        TestFreshnessAssertAction stats, proxy, observed, expected, label, False
         TestAssertClose stats, label & ".freshLoad", CDbl(TestResultsPropertyValue("LC1", "N")), -19000#, 0.000001
         TestAssertTrue stats, label & ".freshProfileSolved", SectionEquilibriumSolveCount() > 0 ' Execute сбрасывает счётчики перед текущим пакетом; сравнение с предыдущим пакетом неверно.
         TestAssertTrue stats, label & ".directStateFinished", TestResultsPropertyValue("LC1", "DirectStateStatus") = "OK"
@@ -140748,7 +140750,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
             code = TestFreshnessInvoke(CBool(action), proxy, message, informationEnabled)
             label = "freshness.expectedError." & mode & "." & CStr(action)
             TestAssertTrue stats, label & ".addressedReason", code = vbObjectError + 4316 And InStr(message, "rngUnitSettings") > 0
-            TestFreshnessAssertAction stats, proxy, observed, expected, label
+            TestFreshnessAssertAction stats, proxy, observed, expected, label, CBool(action)
             For Each fault In Array(9, 18)
                 Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
                 observed.TestCalculateFault = CLng(fault): proxy.TestInitialize ThisWorkbook, observed
@@ -140756,7 +140758,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
                 label = "freshness.unexpectedError." & mode & "." & CStr(action) & "." & fault
                 TestAssertTrue stats, label & ".originalNumber", code = CLng(fault)
                 TestAssertTrue stats, label & ".noInputRead", proxy.TestNameReads = 0
-                TestFreshnessAssertAction stats, proxy, observed, expected, label
+                TestFreshnessAssertAction stats, proxy, observed, expected, label, CBool(action)
             Next fault
         Next action
         For Each action In Array(True, False)
@@ -141293,7 +141295,7 @@ Different:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Формирование не записывает ScreenUpdating; остальные свойства, отказ входа и вложенный Enter восстанавливаются.
+' Проверяет сохранение экрана по явному флагу и восстановление состояния после штатного и ошибочного входа.
 Private Sub TestFormationDisplayState(ByRef stats As TUiTestStats)
     Dim app As CTestExcelApplicationState, guard As CExcelAppStateGuard
     Dim screen As Variant, mode As Variant, code As Long, label As String

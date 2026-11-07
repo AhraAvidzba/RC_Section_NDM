@@ -230,7 +230,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
     If startedAt < 0# Then startedAt = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
-    guard.Enter workbook.Application, True
+    guard.Enter workbook.Application ' Экран обновляется после сохранения геометрии и построения схемы.
     workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook

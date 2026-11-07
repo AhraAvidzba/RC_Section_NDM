@@ -203,14 +203,16 @@ End Sub
 ' Region всегда сохраняются. На защищенных общих слоях сохраняются все
 ' объекты независимо от метки NDM; удаляются только объекты оформления.
 Private Function DeleteAutoCADEntitiesOnLayers(ByVal ms As Object, ByVal layers As Object) As Long
-    Dim i As Long
+    Dim i As Long, entity As Object, layerName As String
     For i = ms.Count - 1 To 0 Step -1
-        Dim entity As Object
         Set entity = ms.Item(i)
-        If layers.Exists(CStr(entity.Layer)) And StrComp(CStr(entity.ObjectName), "AcDbRegion", vbTextCompare) <> 0 Then
-            If CBool(layers.Item(CStr(entity.Layer))) Then
-                entity.Delete
-                DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
+        layerName = CStr(entity.Layer)
+        If layers.Exists(layerName) Then
+            If CBool(layers.Item(layerName)) Then
+                If StrComp(CStr(entity.ObjectName), "AcDbRegion", vbTextCompare) <> 0 Then ' Тип объекта читается из AutoCAD только на слое, разрешённом для очистки.
+                    entity.Delete
+                    DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
+                End If
             End If
         End If
     Next i

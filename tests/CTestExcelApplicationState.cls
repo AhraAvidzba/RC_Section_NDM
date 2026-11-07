@@ -15,7 +15,7 @@ Public TestNativeApplication As Object ' Необязательный реаль
 Public TestCalculateCalls As Long ' Число явных Application.Calculate; пересчёт листа Results сюда не входит.
 Public TestCalculateFault As Long ' Искусственная ошибка самого пересчёта до первого чтения входных таблиц.
 Public TestCalculateGuarded As Boolean ' Все вызовы Calculate произошли при Manual, отключённых событиях/окнах и ожидаемом режиме экрана.
-Public TestExpectedScreenUpdating As Boolean ' Ожидаемый исходный показ для формирования и расчёта НДС.
+Public TestExpectedScreenUpdating As Boolean ' Ожидаемое состояние экрана во время пересчёта входных формул.
 Public TestScreenWrites As Long ' Счётчик попыток записи ScreenUpdating, включая восстановление.
 Public GetterFault As String ' Имя свойства, при чтении которого нужно имитировать отказ.
 Private mCancel As Long ' Текущее подставное значение режима обработки прерывания.
