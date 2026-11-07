@@ -32,6 +32,7 @@ Public Type TRegionEdge
     CenterY As Double
     Sweep As Double
     LoopID As Long ' Номер замкнутого контура в готовом геометрическом снимке.
+    IsChamfer As Boolean ' При смещении исчезнувшая фаска заменяется стыком соседних граней.
 End Type
 
 Public Type TFiber

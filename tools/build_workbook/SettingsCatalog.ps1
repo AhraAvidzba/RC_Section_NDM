@@ -170,7 +170,7 @@ function Get-SystemSettingsCatalog {
 # Задаёт начальные INPUT/INTERNAL/OUTPUT единицы длины, площади, силы, момента, напряжения и кривизны для таблицы Config.
 function Get-UnitSettingsCatalog {
     @(
-        @("Length", "mm", "mm", "m"),
+        @("Length", "mm", "mm", "mm"),
         @("Area", "mm2", "mm2", "m2"),
         @("Force", "tf", "N", "tf"),
         @("Moment", "tf*m", "N*mm", "tf*m"),

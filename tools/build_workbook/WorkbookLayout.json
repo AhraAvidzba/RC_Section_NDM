@@ -43,10 +43,10 @@
     },
     {
       "Name": "rngHollowRectangleGeometry",
-      "RefersTo": "=Сечения!$A$92:$K$128",
+      "RefersTo": "=Сечения!$A$94:$K$131",
       "Sheet": "Сечения",
-      "Address": "$A$92:$K$128",
-      "Rows": 37,
+      "Address": "$A$94:$K$131",
+      "Rows": 38,
       "Columns": 11
     },
     {
@@ -123,18 +123,18 @@
     },
     {
       "Name": "rngPointedSectionGeometry",
-      "RefersTo": "=Сечения!$A$60:$K$88",
+      "RefersTo": "=Сечения!$A$61:$K$90",
       "Sheet": "Сечения",
-      "Address": "$A$60:$K$88",
-      "Rows": 29,
+      "Address": "$A$61:$K$90",
+      "Rows": 30,
       "Columns": 11
     },
     {
       "Name": "rngRectanglesGeometry",
-      "RefersTo": "=Сечения!$A$22:$K$56",
+      "RefersTo": "=Сечения!$A$22:$K$57",
       "Sheet": "Сечения",
-      "Address": "$A$22:$K$56",
-      "Rows": 35,
+      "Address": "$A$22:$K$57",
+      "Rows": 36,
       "Columns": 11
     },
     {
@@ -374,12 +374,12 @@
           "Hidden": false
         },
         {
-          "Row": 59,
+          "Row": 60,
           "Height": 21,
           "Hidden": false
         },
         {
-          "Row": 91,
+          "Row": 93,
           "Height": 21,
           "Hidden": false
         }
@@ -447,7 +447,7 @@
         }
       ],
       "Tables": [],
-      "PrintArea": "$A$1:$K$132"
+      "PrintArea": "$A$1:$K$135"
     },
     {
       "Name": "Справка",

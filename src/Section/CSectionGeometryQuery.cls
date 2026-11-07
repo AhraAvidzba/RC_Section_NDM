@@ -994,20 +994,20 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
     Next i
 End Function
 
-' Строит скруглённый многоугольник по завершённому CPolygonSpec.
-' Сохраняет исходные вершины и их порядок; у вогнутого угла меняет направление дуги.
-' Заданные радиусы самостоятельно не уменьшает.
-Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
+' Строит многоугольник с дугами или фасками по завершённому CPolygonSpec.
+' В режиме фаски размер задаёт одинаковые отступы от вершины вдоль обеих граней.
+' Сохраняет порядок и имена участков, размеры углов самостоятельно не уменьшает.
+Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, Optional ByVal chamfer As Boolean = False) As CGeometryPath
     Dim vertices As Variant, radii As Variant, vertexIDs As Variant, edgeIDs As Variant, cornerIDs As Variant
     PolygonKernelData pathID, polygon, vertices, radii, vertexIDs, edgeIDs, cornerIDs
-    Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs, edgeIDs, cornerIDs)
+    Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs, edgeIDs, cornerIDs, chamfer)
 End Function
 
-' Строит точные касательные отрезки и дуги по согласованным массивам вершин, радиусов и имён.
-' Проверяет исходный многоугольник, размещение соседних скруглений и весь готовый контур;
-' исчезнувшие прямые и нулевые скругления сохраняет как именованные точки привязки.
+' Строит точные угловые участки по согласованным массивам вершин, размеров и имён.
+' Проверяет исходный многоугольник и готовый контур; нулевые участки остаются точками привязки.
 Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
-        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal edgeIDs As Variant, ByVal cornerIDs As Variant) As CGeometryPath
+        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal edgeIDs As Variant, ByVal cornerIDs As Variant, _
+        Optional ByVal chamfer As Boolean = False) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
     ReadPolygonInput pathID, vertices, radii, vertexIDs, points, radius, names, count
     Dim raw() As TRegionEdge, i As Long, previous As Long, following As Long
@@ -1027,18 +1027,27 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
     Next i
     Dim original As CConcreteRegion
     Set original = BoundaryRegion(raw, count) ' Проверяем исходные прямые на замкнутость и самопересечения до построения скруглений.
-    Dim cross As Double, dot As Double, side As Double
+    Dim cross As Double, dot As Double, side As Double, chord As Double
     For i = 1 To count
         previous = (i + count - 2) Mod count + 1
         cross = directions(previous).X * directions(i).Y - directions(previous).Y * directions(i).X
         dot = directions(previous).X * directions(i).X + directions(previous).Y * directions(i).Y
         turns(i) = modGeometryPrimitives.AngleOf(dot, cross)
         If radius(i) > 0# Then
-            If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
-                GeometryError "Скругление у вершины '" & names(i) & "' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу. Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.", "FILLET_ANGLE", pathID, CStr(cornerIDs(i - 1))
-            distances(i) = radius(i) * Tan(Abs(turns(i)) / 2#) ' Расстояние от исходной вершины до касания скругления вдоль каждой соседней прямой, мм.
-            If 2# * radius(i) * Abs(Sin(turns(i) / 2#)) <= QUERY_TOLERANCE Then _
-                GeometryError "Скругление у вершины '" & names(i) & "' слишком мало для надёжного построения: концы дуги практически совпадают. Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.", "FILLET_TOO_SHORT", pathID, CStr(cornerIDs(i - 1)) ' Концы очень короткой дуги нельзя надёжно различить с точностью геометрического ядра.
+            If chamfer Then
+                If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
+                    GeometryError "Нельзя построить фаску у вершины '" & names(i) & "': соседние грани почти коллинеарны. Задайте размер фаски 0 или измените геометрию.", "CHAMFER_ANGLE", pathID, CStr(cornerIDs(i - 1))
+                distances(i) = radius(i) ' В режиме фаски введённый размер откладывается непосредственно вдоль грани.
+                chord = 2# * radius(i) * Cos(turns(i) / 2#)
+                If chord <= QUERY_TOLERANCE Then _
+                    GeometryError "Размер фаски у вершины '" & names(i) & "' слишком мал. Увеличьте его или задайте 0.", "CHAMFER_TOO_SHORT", pathID, CStr(cornerIDs(i - 1))
+            Else
+                If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
+                    GeometryError "Скругление у вершины '" & names(i) & "' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу. Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.", "FILLET_ANGLE", pathID, CStr(cornerIDs(i - 1))
+                distances(i) = radius(i) * Tan(Abs(turns(i)) / 2#) ' Расстояние от исходной вершины до касания скругления вдоль каждой соседней прямой, мм.
+                If 2# * radius(i) * Abs(Sin(turns(i) / 2#)) <= QUERY_TOLERANCE Then _
+                    GeometryError "Скругление у вершины '" & names(i) & "' слишком мало для надёжного построения: концы дуги практически совпадают. Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.", "FILLET_TOO_SHORT", pathID, CStr(cornerIDs(i - 1)) ' Концы очень короткой дуги нельзя надёжно различить с точностью геометрического ядра.
+            End If
         End If
         first(i).X = points(i).X - directions(previous).X * distances(i)
         first(i).Y = points(i).Y - directions(previous).Y * distances(i)
@@ -1050,8 +1059,10 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
     Next i
     For i = 1 To count
         following = i Mod count + 1
-        If distances(i) + distances(following) > lengths(i) + GEOM_TOLERANCE Then _
+        If distances(i) + distances(following) > lengths(i) + GEOM_TOLERANCE Then
+            If chamfer Then GeometryError "Фаски соседних вершин пересекаются на участке '" & edgeIDs(i - 1) & "'. Уменьшите размеры фасок или увеличьте размеры сечения.", "CHAMFER_OVERLAP", pathID, CStr(edgeIDs(i - 1)), radius(i), radius(following)
             GeometryError "Скругления соседних вершин пересекаются на участке '" & edgeIDs(i - 1) & "': для заданных размеров не хватает длины прямого участка. Уменьшите радиусы или увеличьте размеры сечения.", "FILLET_OVERLAP", pathID, CStr(edgeIDs(i - 1)), radius(i), radius(following)
+        End If
     Next i
     Dim result As CGeometryPath, edge As TRegionEdge
     Set result = New CGeometryPath: result.Initialize pathID
@@ -1059,14 +1070,17 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         following = i Mod count + 1
         If radius(i) > 0# Then
             edge.X1 = first(i).X: edge.Y1 = first(i).Y: edge.X2 = last(i).X: edge.Y2 = last(i).Y
-            edge.CenterX = centers(i).X: edge.CenterY = centers(i).Y: edge.Sweep = turns(i)
-            ValidateArc edge
+            edge.IsChamfer = chamfer
+            If Not chamfer Then
+                edge.CenterX = centers(i).X: edge.CenterY = centers(i).Y: edge.Sweep = turns(i)
+                ValidateArc edge
+            End If
             result.Append CStr(cornerIDs(i - 1)), edge
         Else
             result.AddCollapsedSegment CStr(cornerIDs(i - 1))
         End If
         edge.X1 = last(i).X: edge.Y1 = last(i).Y: edge.X2 = first(following).X: edge.Y2 = first(following).Y
-        edge.CenterX = 0#: edge.CenterY = 0#: edge.Sweep = 0#
+        edge.CenterX = 0#: edge.CenterY = 0#: edge.Sweep = 0#: edge.IsChamfer = False
         If modGeometryPrimitives.EdgeLength(edge) > QUERY_TOLERANCE Then
             result.Append CStr(edgeIDs(i - 1)), edge
         Else
@@ -1236,7 +1250,7 @@ Public Function JoinedPaths(ByVal pathID As String, ByVal paths As Collection) A
     Next i
     NormalizeBoundary raw, count, boundary, boundaryCount ' Пересечения и совпадения обрабатываются тем же ядром, что у остальных контуров.
     Set region = BoundaryRegion(boundary, boundaryCount)
-    If region.LoopCount <> 1 Then GeometryError "Контуры должны образовывать одну связную область без отверстий. Уменьшите радиус или измените размеры и смещение."
+    If region.LoopCount <> 1 Then GeometryError "Контуры должны образовывать одну связную область без отверстий. Уменьшите размер углов или измените размеры и смещение."
     region.CopyEdges boundary, boundaryCount
     Set result = New CGeometryPath: result.Initialize pathID
     For i = 1 To boundaryCount: result.Append pathID & "." & CStr(i), boundary(i): Next i

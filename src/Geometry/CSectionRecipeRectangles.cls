@@ -31,8 +31,9 @@ Private Type TRectanglesDimensions
     B2 As Double ' Ширина второго прямоугольника, мм.
     H2 As Double ' Высота второго прямоугольника, мм.
     Offset As Double ' Смещение верхнего прямоугольника по X относительно нижнего, мм.
-    R As Double ' Общий радиус всех четырёх углов каждого заданного прямоугольника, мм.
-    GeometrySource As String ' Фактические адреса размеров, радиуса и смещения для ошибок геометрического ядра.
+    R As Double ' Общий размер скругления или фаски каждого угла, мм.
+    Chamfer As Boolean ' Размер угла откладывается вдоль обеих граней.
+    GeometrySource As String ' Фактические адреса размеров углов и смещения для ошибок геометрического ядра.
 End Type
 
 Private Type TRectangleFace
@@ -88,6 +89,7 @@ Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes 
     If Not sizes.HasUpper Then sizes.H1 = 0#: sizes.B1 = 0#
     If Not sizes.HasLower Then sizes.H2 = 0#: sizes.B2 = 0#
     sizes.R = reader.NonNegativeLength("General", "R")
+    sizes.Chamfer = reader.UsesCornerChamfer()
     If sizes.HasUpper And sizes.HasLower Then
         sizes.Offset = reader.Length("General", "XOffset")
         sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("General", "XOffset")
@@ -161,10 +163,10 @@ End Sub
 ' Декларативно добавляет только заданные прямоугольники и их общую наружную границу.
 ' Одиночная часть начинается в (0, 0); для двух частей верхняя стоит над нижней с XOffset.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectanglesDimensions, ByRef upper As CGeometryPath, ByRef lower As CGeometryPath, ByRef outer As CGeometryPath)
-    If sizes.HasUpper Then Set upper = facade.RoundedPolygon("Upper", DescribeRectangle(sizes.Offset, sizes.H2, sizes.B1, sizes.H1, sizes.R, sizes.GeometrySource))
-    If sizes.HasLower Then Set lower = facade.RoundedPolygon("Lower", DescribeRectangle(0#, 0#, sizes.B2, sizes.H2, sizes.R, sizes.GeometrySource))
+    If sizes.HasUpper Then Set upper = facade.RoundedPolygon("Upper", DescribeRectangle(sizes.Offset, sizes.H2, sizes.B1, sizes.H1, sizes.R, sizes.GeometrySource), sizes.Chamfer)
+    If sizes.HasLower Then Set lower = facade.RoundedPolygon("Lower", DescribeRectangle(0#, 0#, sizes.B2, sizes.H2, sizes.R, sizes.GeometrySource), sizes.Chamfer)
     If sizes.HasUpper And sizes.HasLower Then
-        Set outer = facade.JoinedPaths("Boundary", Array("Lower", "Upper")) ' Общая граница получается из уже скруглённых частей, без повторной расстановки дуг в рецепте.
+        Set outer = facade.JoinedPaths("Boundary", Array("Lower", "Upper")) ' Общая граница объединяет части с уже подготовленными углами.
     ElseIf sizes.HasUpper Then
         Set outer = upper
     Else

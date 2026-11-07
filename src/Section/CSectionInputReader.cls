@@ -105,6 +105,13 @@ Public Function Choice(ByVal blockKey As String, ByVal rowKey As String, ByVal a
     Choice = mTable.Choice(RowIndex(blockKey, rowKey), ColumnIndex(blockKey, columnKey), allowed, defaultValue)
 End Function
 
+' Читает общий режим углов многоугольника; таблица без CornerMode и пустой режим задают скругление.
+Friend Function UsesCornerChamfer() As Boolean
+    Dim block As Object: Set block = RequiredBlock("General")
+    If Not block("Rows").Exists(mRowPrefix & "CornerMode") Then Exit Function
+    UsesCornerChamfer = (Choice("General", "CornerMode", Array("Скругление", "Фаска"), defaultValue:="Скругление") = "Фаска")
+End Function
+
 ' Читает явный способ расстановки основного ряда без автоматической подмены режима.
 ' Совместимость с открытым или замкнутым путём проверяет рецепт либо общий исполнитель.
 Public Function RebarEndMode(ByVal blockKey As String, ByVal rowKey As String) As ERebarEndMode

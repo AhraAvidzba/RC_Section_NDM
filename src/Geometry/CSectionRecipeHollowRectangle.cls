@@ -30,9 +30,10 @@ Private Type THollowInput
     R As Double ' Радиус скругления наружного контура, мм.
     Bo As Double ' Ширина отверстия, мм.
     Ho As Double ' Высота отверстия, мм.
-    Ro As Double ' Радиус скругления отверстия, мм.
+    Ro As Double ' Радиус или размер фаски отверстия, мм.
     Xo As Double ' Смещение центра отверстия по X, мм.
     Yo As Double ' Смещение центра отверстия по Y, мм.
+    Chamfer As Boolean ' Размеры углов обоих контуров откладываются вдоль граней.
     GeometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
     OuterSource As String ' Адреса ширины, высоты и радиуса наружного контура.
     OpeningSource As String ' Адреса ширины, высоты и радиуса отверстия.
@@ -74,7 +75,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle" ' Создаём сборщик описания сечения.
-    AddGeometry facade, outerPolygon, openingPolygon ' Добавляем подготовленные границы бетона.
+    AddGeometry facade, outerPolygon, openingPolygon, sizes.Chamfer ' Добавляем подготовленные границы бетона.
     AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon ' Создаём линии арматуры и задаём правила размещения стержней.
     AddAnnotations facade, sizes, faces ' Добавляем подписи арматуры, размеры сечения и отверстия.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
@@ -91,6 +92,7 @@ Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes 
     sizes.Ho = reader.PositiveLength("General", "Ho"): sizes.Bo = reader.PositiveLength("General", "Bo")
     sizes.Ro = reader.NonNegativeLength("General", "Ro")
     sizes.Xo = reader.Length("General", "Xo"): sizes.Yo = reader.Length("General", "Yo")
+    sizes.Chamfer = reader.UsesCornerChamfer()
     sizes.OuterSource = reader.SourceReference("General", "H") & "; " & reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "R")
     sizes.OpeningSource = reader.SourceReference("General", "Ho") & "; " & reader.SourceReference("General", "Bo") & "; " & reader.SourceReference("General", "Ro")
     sizes.GeometrySource = sizes.OuterSource & "; " & sizes.OpeningSource & "; " & reader.SourceReference("General", "Xo") & "; " & reader.SourceReference("General", "Yo")
@@ -173,16 +175,16 @@ Private Function DescribePolygon(ByVal B As Double, ByVal H As Double, ByVal x A
 End Function
 
 ' Добавляет в описание сечения наружную границу и отверстие по двум подготовленным многоугольникам.
-Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
-    AddBoundary facade, "OUTER", "OUTER.Boundary", outerPolygon, False
-    AddBoundary facade, "OPENING", "OPENING.Boundary", openingPolygon, True
+Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec, ByVal chamfer As Boolean)
+    AddBoundary facade, "OUTER", "OUTER.Boundary", outerPolygon, False, chamfer
+    AddBoundary facade, "OPENING", "OPENING.Boundary", openingPolygon, True, chamfer
 End Sub
 
 ' Создаёт готовый замкнутый контур по вершинам и радиусам без повторного обхода.
 ' Назначает контур наружной границей или отверстием внутри OUTER, в зависимости от opening.
-Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
+Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal opening As Boolean, ByVal chamfer As Boolean)
     Dim boundary As CGeometryPath, part As String
-    Set boundary = facade.RoundedPolygon(pathID, polygon) ' Создаём контур, который сразу используется как наружная граница или отверстие.
+    Set boundary = facade.RoundedPolygon(pathID, polygon, chamfer) ' Создаём контур, который сразу используется как наружная граница или отверстие.
     If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
     If opening Then
         facade.Opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", _

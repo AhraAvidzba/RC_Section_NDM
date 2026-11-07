@@ -24,6 +24,7 @@ Option Explicit
 Implements ISectionRecipe
 
 Private Type TRoundedInput
+    Chamfer As Boolean ' Размер каждого угла откладывается вдоль обеих смежных граней.
     B As Double ' Ширина прямоугольной основы без боковых выступов, мм.
     H As Double ' Высота наружного контура, мм.
     Widths(1 To 2) As Double ' Выносы вершин левого и правого выступов до скругления, мм.
@@ -74,6 +75,7 @@ End Function
 Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRoundedInput)
     Dim side As Long, key As String
     sizes.B = reader.PositiveLength("General", "B"): sizes.H = reader.PositiveLength("General", "H")
+    sizes.Chamfer = reader.UsesCornerChamfer()
     sizes.GeometrySource = reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "H")
     For side = 1 To 2
         If side = 1 Then key = "Left." Else key = "Right."
@@ -153,7 +155,7 @@ End Function
 Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec) As CGeometryPath
     On Error GoTo InvalidGeometry
     Dim outer As CGeometryPath
-    Set outer = facade.RoundedPolygon("Boundary", polygon) ' Создаём готовый замкнутый контур по исходным вершинам и радиусам.
+    Set outer = facade.RoundedPolygon("Boundary", polygon, sizes.Chamfer) ' Создаём готовый замкнутый контур по вершинам и размерам углов.
     facade.Outer "OUTER", outer.ID, "Прямой участок контура клиновидного сечения.", arcComment:="Дуга контура клиновидного сечения.", namingPolicy:=SequentialByKind ' Назначаем эту замкнутую линию наружной границей бетона.
     Set AddGeometry = outer
     Exit Function

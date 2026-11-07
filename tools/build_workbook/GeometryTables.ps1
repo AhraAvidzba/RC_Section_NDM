@@ -155,6 +155,7 @@ function Add-GeometryTableValidation {
                 if($key -like 'bind*'){$options=@('EachBar','EverySecondBar')}
                 elseif($key -like 'pos*'){$options=@('Stacked','SideBySide')}
                 elseif($key -eq 'endMode' -and $rowKey -notlike 'Opening*'){$options=@('IncludeBoth','ExcludeBoth','IncludeStart','IncludeEnd')}
+                elseif($block.Key -eq 'General' -and $rowKey -eq 'CornerMode' -and $key -eq 'val'){$options=@('Скругление','Фаска')}
                 $cell.Validation.Delete()
                 if($options.Count){
                     $list=Get-ConfigValidationListAddress $Range.Worksheet $options

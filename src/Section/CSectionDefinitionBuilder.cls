@@ -62,12 +62,11 @@ Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal c
     Set ArcPath = result
 End Function
 
-' Создаёт и сохраняет скруглённый контур по вершинам и радиусам CPolygonSpec.
-' Имена прямых участков и скруглений задаются в AddVertex; пустые имена дают Edge.ID и Corner.ID.
-' Дуга существует только при положительном радиусе; исчезнувший участок сохраняет имя привязки.
-Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
+' Создаёт контур по вершинам CPolygonSpec; chamfer трактует размеры углов как отступы вдоль граней.
+' Имена прямых и угловых участков задаются в AddVertex; исчезнувший участок сохраняет имя привязки.
+Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, Optional ByVal chamfer As Boolean = False) As CGeometryPath
     RequireOpen
-    Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon)
+    Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon, chamfer)
     mDefinition.AddPath RoundedPolygon
 End Function
 

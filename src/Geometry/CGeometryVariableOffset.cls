@@ -14,7 +14,7 @@ Option Explicit
 ' ==========================================================================
 ' Сохраняет точные прямые и концентрические дуги. Продолжения соседних прямых
 ' пересекает; разрыв при разных смещениях дуги и соседа соединяет отрезком.
-' Исчезнувшее скругление удаляет; соседние прямые продолжает до пересечения.
+' Исчезнувшую дугу или фаску удаляет; соседние прямые продолжает до пересечения.
 ' Такой стык может быть негладким: координаты стержней он не исправляет.
 ' Используется для основных путей осей и проверки дополнительных рядов. Исходные контуры не изменяет.
 
@@ -100,18 +100,13 @@ NextSource:
             "Исходный радиус первой дуги: " & CStr(radius) & " мм; полный нормальный отступ внутрь этой дуги: " & _
             CStr(Sgn(original(1).Sweep) * distances(1)) & " мм. Уменьшите отступы рядов.", sourceReference
     End If
-    For i = 1 To kept
-        following = i Mod kept + 1 ' Следующий сохранившийся участок; последний соединяется с первым.
-        If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, sourceIndex(i), sourceIndex(following), sourceIndex(i))
-        If shifted(i).Sweep = 0# And shifted(following).Sweep = 0# Then JoinLines shifted(i), shifted(following)
-    Next i
+    JoinShiftedLines original, distances, shifted, sourceIndex, kept, allReferences
     For i = 1 To kept
         following = i Mod kept + 1 ' Следующий сохранившийся участок; последний соединяется с первым.
         If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, _
             sourceIndex((i + kept - 2) Mod kept + 1), sourceIndex(i), sourceIndex(following))
         If shifted(i).Sweep = 0# Then
-            If (shifted(i).X2 - shifted(i).X1) * (original(sourceIndex(i)).X2 - original(sourceIndex(i)).X1) + _
-                    (shifted(i).Y2 - shifted(i).Y1) * (original(sourceIndex(i)).Y2 - original(sourceIndex(i)).Y1) <= TOL * TOL Then _
+            If ForwardSpan(shifted(i), original(sourceIndex(i))) <= TOL * TOL Then _
                 Fail "При заданных отступах прямой участок проверочного контура исчез или изменил направление. Уменьшите отступы рядов.", sourceReference
         End If
         resultCount = resultCount + 1: result(resultCount) = shifted(i): resultSource(resultCount) = sourceIndex(i)
@@ -141,6 +136,39 @@ InvalidContour:
     reason = Err.Description
     Fail "Не удалось построить единый смещённый контур осей арматуры: " & reason & _
         " Уменьшите отступы или измените армирование соседних участков.", sourceReference
+End Function
+
+' Стыкует смещённые прямые. Фаска, у которой стыки сомкнулись или поменялись местами,
+' перестаёт ограничивать путь; после её удаления заново стыкуются исходные опоры.
+Private Sub JoinShiftedLines(ByRef original() As TRegionEdge, ByRef distances() As Double, _
+        ByRef shifted() As TRegionEdge, ByRef sourceIndex() As Long, ByRef kept As Long, ByVal sourceReference As String)
+    Dim i As Long, following As Long, dropped As Long, index As Long
+    Do
+        For i = 1 To kept
+            following = i Mod kept + 1
+            If shifted(i).Sweep = 0# And shifted(following).Sweep = 0# Then JoinLines shifted(i), shifted(following)
+        Next i
+        dropped = 0
+        For i = 1 To kept
+            If shifted(i).IsChamfer Then
+                If ForwardSpan(shifted(i), original(sourceIndex(i))) <= TOL * TOL Then dropped = i: Exit For
+            End If
+        Next i
+        If dropped = 0 Then Exit Sub
+        If kept <= 3 Then Fail "Смещённый контур вырождается после исчезновения фаски. Уменьшите отступы арматуры.", sourceReference
+        For i = dropped To kept - 1: sourceIndex(i) = sourceIndex(i + 1): Next i
+        kept = kept - 1
+        For i = 1 To kept
+            index = sourceIndex(i)
+            ShiftEdge original(index), distances(index), shifted(i), sourceReference
+        Next i
+    Loop
+End Sub
+
+' Скалярное произведение направлений показывает, сохранился ли прямой участок после стыковки.
+Private Function ForwardSpan(ByRef shifted As TRegionEdge, ByRef original As TRegionEdge) As Double
+    ForwardSpan = (shifted.X2 - shifted.X1) * (original.X2 - original.X1) + _
+        (shifted.Y2 - shifted.Y1) * (original.Y2 - original.Y1)
 End Function
 
 ' Оставляет адреса проблемного участка и соседей, определяющих точки стыка.
