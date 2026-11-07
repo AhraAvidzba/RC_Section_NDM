@@ -134,8 +134,10 @@ def package_help(source, native, target, receipt):
             parts[name] = dump(old)
     old, new = xml(before['xl/workbook.xml']), xml(candidate['xl/workbook.xml'])
     source_name = new.find("m:definedNames/m:definedName[@name='rngSectionRecipeGuide']", NS)
-    old.find("m:definedNames/m:definedName[@name='rngSectionRecipeGuide']", NS).text = source_name.text
-    parts['xl/workbook.xml'] = dump(old)
+    target_name = old.find("m:definedNames/m:definedName[@name='rngSectionRecipeGuide']", NS)
+    if source_name is not None and target_name is not None:
+        target_name.text = source_name.text
+        parts['xl/workbook.xml'] = dump(old)
     old_drawing_name, new_drawing_name = drawing_part(before), drawing_part(candidate)
     old_drawing, new_drawing = xml(before[old_drawing_name]), xml(candidate[new_drawing_name])
     anchors = {n.find('x:pic/x:nvPicPr/x:cNvPr', NS).get('name'): n for n in new_drawing}

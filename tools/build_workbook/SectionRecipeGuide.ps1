@@ -109,8 +109,9 @@ function Set-RecipeGuideRowHeights($Sheet,[int]$First,$Layout) {
     return $changes
 }
 
+# Пересобирает блок по заголовку и сверяет его содержимое до очистки строк.
 function Update-SectionRecipeGuide {
-    param([Parameter(Mandatory=$true)]$Workbook,[Parameter(Mandatory=$true)][string]$Root,[string]$PreviousLayoutPath='')
+    param([Parameter(Mandatory=$true)]$Workbook,[Parameter(Mandatory=$true)][string]$Root,[string]$PreviousLayoutPath='',[switch]$Install)
     $application=$Workbook.Application
     $saved=[ordered]@{Calculation=[int]$application.Calculation;ScreenUpdating=[bool]$application.ScreenUpdating;
         EnableEvents=[bool]$application.EnableEvents;DisplayAlerts=[bool]$application.DisplayAlerts}
@@ -127,14 +128,13 @@ function Update-SectionRecipeGuide {
         }
         if ((Get-RecipeGuideTextHash @($layout.rows | ForEach-Object {$_.text})) -cne $layout.bodySHA256) {throw 'Guide layout hash mismatch.'}
         $sheet=$Workbook.Worksheets.Item('Справка')
-        $owner=$null
-        foreach ($name in $Workbook.Names) {if ($name.Name -eq 'rngSectionRecipeGuide') {$owner=$name;break}}
-        $oldStart=0;$oldEnd=0
-        if ($null -ne $owner) {
-            $old=$owner.RefersToRange
-            $oldStart=[int]$old.Row;$oldEnd=$oldStart+[int]$old.Rows.Count-1
-            if ($old.Worksheet.Name -cne $sheet.Name -or $old.Column -ne 1 -or $old.Columns.Count -ne 6 -or $old.Rows.Count -lt 3) {throw 'Guide owner range is invalid.'}
-            if ([string]$sheet.Cells.Item($oldStart,1).Value2 -cne $layout.title) {throw 'Guide owner title was changed; refusing to clear user content.'}
+        $rows=Get-HelpMainRows $sheet
+        $oldStart=[int]$rows[$layout.title];$oldEnd=0
+        if ($oldStart -eq 0 -and -not $Install) {throw 'Guide heading is missing; refusing to add a duplicate section.'}
+        if ($oldStart -gt 0 -and $Install) {throw 'Guide already exists.'}
+        if ($oldStart -gt 0) {
+            $oldEnd=Get-HelpSectionLastRow $rows $oldStart (Get-HelpContentLastRow $sheet)
+            $old=$sheet.Range($sheet.Cells.Item($oldStart,1),$sheet.Cells.Item($oldEnd,6))
             $oldLines=@(Get-RecipeGuideNativeLines $sheet $oldStart $oldEnd)
             Assert-RecipeGuidePreviousContent $oldLines $layout $PreviousLayoutPath
             foreach ($shape in $sheet.Shapes) {
@@ -226,8 +226,6 @@ function Update-SectionRecipeGuide {
                 $cell.Font.Size=11
             }
         }
-        $ref="='Справка'!"+$range.Address()
-        if ($null -eq $owner) {$Workbook.Names.Add('rngSectionRecipeGuide',$ref) | Out-Null} else {$owner.RefersTo=$ref}
         $actualLines=@(Get-RecipeGuideNativeLines $sheet $start $end)
         if ((Get-RecipeGuideTextHash $actualLines) -cne $layout.bodySHA256) {
             $different=@()
@@ -240,8 +238,10 @@ function Update-SectionRecipeGuide {
             throw ('Native guide text differs from source: '+($different | ConvertTo-Json -Compress))
         }
         $outline=Set-HelpSectionOrderAndOutline $Workbook -Expanded
-        $range=$Workbook.Names.Item('rngSectionRecipeGuide').RefersToRange
-        $start=[int]$range.Row;$end=$start+[int]$range.Rows.Count-1
+        $rows=Get-HelpMainRows $sheet
+        $start=[int]$rows[$layout.title]
+        $end=Get-HelpSectionLastRow $rows $start $outline.LastRow
+        if ($end-$start+1 -ne $layout.rows.Count) {throw 'Guide row count changed after ordering Help sections.'}
         $apiRows=[ordered]@{}
         foreach ($property in $layout.api.PSObject.Properties) {$apiRows[$property.Name]=$start+[int]$property.Value}
         return [ordered]@{Status='NATIVE_GUIDE_TEXT_MATCH';StartRow=$start;EndRow=$end;OldStartRow=$oldStart;OldEndRow=$oldEnd;

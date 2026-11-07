@@ -499,7 +499,7 @@ try {
     $systemRanges = Add-SystemSettings $system
     Add-SettingsInstructions $workbook $system $instructions
     # Руководство по рецептам добавляется после остальных разделов и формульных изображений справки.
-    Update-SectionRecipeGuide $workbook ([string]$root) | Out-Null
+    Update-SectionRecipeGuide $workbook ([string]$root) -Install | Out-Null
     # Hyperlink-стиль Excel может сбросить рамку ячейки Подробнее.
     # Финальную обводку делаем после добавления всех ссылок Config.
     Apply-ConfigNamedRangeBorders $workbook

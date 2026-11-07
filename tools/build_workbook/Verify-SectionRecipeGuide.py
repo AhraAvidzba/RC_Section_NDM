@@ -79,22 +79,29 @@ def row_of(address):
     return int(re.search(r"[0-9]+$", address).group())
 
 
+def heading_rows(cells, title):
+    return [row_of(address) for address, cell in cells.items()
+            if re.fullmatch(r"A[0-9]+", address) and cell["value"] == title]
+
+
 def verify(before: Path, after: Path, layout: Path, existing_guide: bool = False):
     old, new = read(before), read(after)
     content = json.loads(layout.read_text(encoding="utf-8-sig"))
-    name = new["names"].get("rngSectionRecipeGuide", "")
-    match = re.fullmatch(r"'?Справка'?!\$A\$(\d+):\$F\$(\d+)", name)
-    if not match:
-        raise ValueError("Missing guide owner range: " + name)
-    start, end = map(int, match.groups())
+    help_cells = new["sheets"]["Справка"]["cells"]
+    starts = heading_rows(help_cells, content["title"])
+    if len(starts) != 1:
+        raise ValueError("Missing or duplicate guide heading")
+    start = starts[0]
+    end = start + len(content["rows"]) - 1
     errors, checks, cached = [], 0, []
     added = sorted(set(new["names"]) - set(old["names"]))
-    expected_added = [] if existing_guide else ["rngSectionRecipeGuide"]
-    if existing_guide and "rngSectionRecipeGuide" not in old["names"]:
-        errors.append("Existing-guide reference does not contain rngSectionRecipeGuide")
-    if added != expected_added:
+    if existing_guide and len(heading_rows(old["sheets"]["Справка"]["cells"], content["title"])) != 1:
+        errors.append("Existing-guide reference does not contain one guide heading")
+    if added:
         errors.append("Unexpected names added: " + repr(added))
     for key, value in old["names"].items():
+        if key == "rngSectionRecipeGuide" and key not in new["names"]:
+            continue
         if new["names"].get(key) != value:
             errors.append("Old named range changed: " + key)
     for sheet, data in old["sheets"].items():
@@ -127,16 +134,17 @@ def verify(before: Path, after: Path, layout: Path, existing_guide: bool = False
     for drawing, value in old["drawings"].items():
         if new["drawings"].get(drawing) != value:
             errors.append("Old drawing changed: " + drawing)
-    help_cells = new["sheets"]["Справка"]["cells"]
-    if end - start + 1 != len(content["rows"]): errors.append("Guide row count mismatch")
     for index, row in enumerate(content["rows"]):
         fields = row.get("cells", [row["text"]])
         for column, field in enumerate(fields):
             cell = help_cells.get(chr(65+column) + str(start + index), {})
             if (cell.get("value") or "") != field or cell.get("formula") is not None:
                 errors.append("Guide source text mismatch: " + str(index) + ":" + str(column))
-    values = [cell for address, cell in help_cells.items() if row_of(address) > end and (cell["value"] or cell["formula"])]
-    if values: errors.append("Content follows guide")
+    config = [row for row in heading_rows(help_cells, "Справка по настройкам Config и листа «Сечения»") if row > start]
+    following = min(config, default=float("inf"))
+    if following < end + 1 or any(end < row_of(address) < following and (cell["value"] or cell["formula"])
+                                  for address, cell in help_cells.items()):
+        errors.append("Unexpected content at the end of the guide")
     return {"schema": 1, "status": "XML_PRESERVATION_PASS" if not errors else "FAIL",
             "beforeSHA256": hashlib.sha256(before.read_bytes()).hexdigest(), "afterSHA256": hashlib.sha256(after.read_bytes()).hexdigest(),
             "oldCellsChecked": checks, "oldNamedRanges": len(old["names"]), "oldDrawings": len(old["drawings"]),

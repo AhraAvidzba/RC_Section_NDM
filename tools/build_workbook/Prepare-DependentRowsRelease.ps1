@@ -54,7 +54,7 @@ try{
     $book.Worksheets.Item('Расчет').Activate()
     $book.Save();$book.Close($false);$book=$null
     $guideDirectory=Join-Path $directory ($Stage+'_Guide')
-    & C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Update-SectionRecipeGuide.ps1') -WorkbookPath $path.Substring($root.Length+1) -ReportDirectory $guideDirectory.Substring($root.Length+1)
+    & C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Update-SectionRecipeGuide.ps1') -WorkbookPath $path.Substring($root.Length+1) -ReportDirectory $guideDirectory.Substring($root.Length+1) -Install
     if($LASTEXITCODE -ne 0){throw 'Guide verification failed.'}
     $guide=Get-Content -LiteralPath (Join-Path $guideDirectory 'NativeMap.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     }else{$book.Close($false);$book=$null}

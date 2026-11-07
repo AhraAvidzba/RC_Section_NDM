@@ -138,14 +138,6 @@
       "Columns": 11
     },
     {
-      "Name": "rngSectionRecipeGuide",
-      "RefersTo": "=Справка!$A$561:$F$587",
-      "Sheet": "Справка",
-      "Address": "$A$561:$F$587",
-      "Rows": 27,
-      "Columns": 6
-    },
-    {
       "Name": "rngSignConventionSettings",
       "RefersTo": "=Config!$H$12:$J$15",
       "Sheet": "Config",

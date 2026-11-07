@@ -22,8 +22,13 @@ try {
     Write-Output ('OWNED_EXCEL: id='+$ownedPid+'; utcStartTicks='+$ownedTicks)
     $book=$excel.Workbooks.Open($path,0,$false)
     if($book.ReadOnly){throw 'Candidate is read-only.'}
-    $range=$book.Names.Item('rngSectionRecipeGuide').RefersToRange
-    if($range.Columns.Count -ne 6 -or $range.Rows.Count -ne $layout.rows.Count){throw 'Unexpected guide layout.'}
+    $sheet=$book.Worksheets.Item('Справка')
+    $rows=Get-HelpMainRows $sheet
+    $start=[int]$rows[$layout.title]
+    if($start -eq 0){throw 'Guide heading is missing.'}
+    $end=Get-HelpSectionLastRow $rows $start (Get-HelpContentLastRow $sheet)
+    if($end-$start+1 -ne $layout.rows.Count){throw 'Unexpected guide layout.'}
+    $range=$sheet.Range($sheet.Cells.Item($start,1),$sheet.Cells.Item($end,6))
     $old=@(Get-RecipeGuideNativeLines $range.Worksheet $range.Row ($range.Row+$range.Rows.Count-1))
     Assert-RecipeGuidePreviousContent $old $layout $PreviousLayoutPath
     $changed=@()

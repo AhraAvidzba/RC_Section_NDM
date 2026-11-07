@@ -32,6 +32,13 @@ function Get-HelpMainRows($Sheet) {
     return $rows
 }
 
+# Определяет конец раздела по следующему заголовку или по последней строке с содержимым.
+function Get-HelpSectionLastRow($Rows,[int]$First,[int]$ContentLastRow) {
+    $next=@($Rows.Values | Where-Object {$_ -gt $First} | Sort-Object)[0]
+    if ($null -ne $next) {return ([int]$next-1)}
+    return $ContentLastRow
+}
+
 # Переводит номер строки после переноса непрерывного блока выше него.
 function Convert-HelpMovedRow([int]$Row,[int]$First,[int]$Last,[int]$Destination) {
     if ($Destination -gt $Last) {
@@ -157,15 +164,7 @@ function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
         $rows=Get-HelpMainRows $sheet
         $first=[int]$rows[$title];$destination=[int]$rows[$configTitle]
         if ($first -gt $destination) {
-            $next=@($rows.Values | Where-Object {$_ -gt $first} | Sort-Object)[0]
-            $last=Get-HelpContentLastRow $sheet
-            if ($null -ne $next) {$last=[int]$next-1}
-            # Именованный короткий раздел включает завершающую пустую строку.
-            # Перенос только непустых строк оставлял её на старом месте и растягивал имя.
-            if($title -eq 'Добавление нового типа сечения'){
-                try{$guide=$Workbook.Names.Item('rngSectionRecipeGuide').RefersToRange}catch{$guide=$null}
-                if($null -ne $guide -and $guide.Row -eq $first){$last=[Math]::Max($last,$guide.Row+$guide.Rows.Count-1)}
-            }
+            $last=Get-HelpSectionLastRow $rows $first (Get-HelpContentLastRow $sheet)
             Move-HelpRowsBefore $Workbook $sheet $first $last $destination
         }
     }
@@ -179,8 +178,7 @@ function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
     $sheet.Cells.ClearOutline() | Out-Null
     $sheet.Rows.Hidden=$false;$sheet.Outline.SummaryRow=0
     for ($i=0;$i -lt $ordered.Count;$i++) {
-        $end=$last
-        if ($i+1 -lt $ordered.Count) {$end=$ordered[$i+1]-1}
+        $end=Get-HelpSectionLastRow $rows $ordered[$i] $last
         if ($end -gt $ordered[$i]) {$sheet.Rows.Item(($ordered[$i]+1).ToString()+':'+$end).Group() | Out-Null}
     }
     if(-not $Expanded){

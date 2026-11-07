@@ -1,6 +1,6 @@
 ﻿# Направленная native-приёмка общего updater на отдельной книге.
 param([Parameter(Mandatory=$true)][string]$WorkbookPath,
-    [Parameter(Mandatory=$true)][string]$ReportDirectory,[switch]$Verify,[string]$PreviousLayoutPath='')
+    [Parameter(Mandatory=$true)][string]$ReportDirectory,[switch]$Verify,[string]$PreviousLayoutPath='',[switch]$Install)
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SectionRecipeGuide.ps1')
@@ -45,7 +45,7 @@ try {
     $namesBefore=@($book.Names | ForEach-Object {$_.Name})
     $excel.Calculation=-4135;$excel.ScreenUpdating=$true;$excel.EnableEvents=$false;$excel.DisplayAlerts=$true
     $state=States $excel
-    $first=Update-SectionRecipeGuide $book $root $PreviousLayoutPath
+    $first=Update-SectionRecipeGuide $book $root $PreviousLayoutPath -Install:$Install
     Assert-States $state $excel
     $first | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $directory 'NativeMap.json') -Encoding UTF8
     $errorStateTests=@()
@@ -84,12 +84,12 @@ try {
     }
     $namesAfter=@($book.Names | ForEach-Object {$_.Name})
     $added=@($namesAfter | Where-Object {$_ -notin $namesBefore})
-    $expectedAdded=1
-    if ('rngSectionRecipeGuide' -in $namesBefore) {$expectedAdded=0}
-    if ($added.Count -ne $expectedAdded -or ($added.Count -eq 1 -and $added[0] -cne 'rngSectionRecipeGuide')) {throw 'Unexpected new workbook names.'}
+    if ($added.Count -ne 0) {throw 'Unexpected new workbook names.'}
     $book.Save();$book.Close($false);$book=$null
     $book=$excel.Workbooks.Open($path,0,$true);$sheet=$book.Worksheets.Item('Справка')
-    $range=$book.Names.Item('rngSectionRecipeGuide').RefersToRange
+    $rows=Get-HelpMainRows $sheet
+    $start=[int]$rows['Добавление нового типа сечения']
+    if ($start -ne $second.StartRow -or (Get-HelpSectionLastRow $rows $start (Get-HelpContentLastRow $sheet)) -ne $second.EndRow) {throw 'Guide bounds changed after reopen.'}
     $lines=@(Get-RecipeGuideNativeLines $sheet $second.StartRow $second.EndRow)
     if ((Get-RecipeGuideTextHash $lines) -cne $second.BodySHA256) {throw 'Guide text changed after reopen.'}
     $navigation=@()

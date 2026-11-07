@@ -85,9 +85,7 @@ try {
     foreach ($title in $script:HelpMainTitles) {
         $r=[int]$rows[$title];$expanded=$title -eq $script:HelpMainTitles[-1]
         Write-Output ('CHECK_OUTLINE: '+$title+'; row='+$r+'; protected='+$sheet.ProtectContents+'; summaryRow='+$sheet.Outline.SummaryRow)
-        $next=@($rows.Values | Where-Object {$_ -gt $r} | Sort-Object)[0]
-        $end=Get-HelpContentLastRow $sheet
-        if ($null -ne $next) {$end=[int]$next-1}
+        $end=Get-HelpSectionLastRow $rows $r (Get-HelpContentLastRow $sheet)
         $body=$sheet.Range($sheet.Cells.Item($r+1,1),$sheet.Cells.Item($end,6)).EntireRow
         Write-Output ('BODY: '+($r+1)+'..'+$end+'; hidden='+$body.Hidden+'; outline='+$body.OutlineLevel+'; firstHidden='+$sheet.Rows.Item($r+1).Hidden+'; events='+$excel.EnableEvents)
         if ($null -eq $body.Hidden -or [bool]$body.Hidden -eq $expanded -or [int]$body.OutlineLevel -ne 2) {throw ('Partial or invalid outline body: '+$title)}
@@ -100,8 +98,10 @@ try {
         $states+=,[ordered]@{Title=$title;Row=$r;OpenExpanded=$expanded;Toggle=$true}
     }
     Set-HelpSectionOrderAndOutline $book | Out-Null
-    $guide=$book.Names.Item('rngSectionRecipeGuide').RefersToRange
-    $lines=@(Get-RecipeGuideNativeLines $sheet $guide.Row ($guide.Row+$guide.Rows.Count-2))
+    $rows=Get-HelpMainRows $sheet
+    $guideStart=[int]$rows['Добавление нового типа сечения']
+    $guideEnd=Get-HelpSectionLastRow $rows $guideStart (Get-HelpContentLastRow $sheet)
+    $lines=@(Get-RecipeGuideNativeLines $sheet $guideStart $guideEnd)
     if ((Get-RecipeGuideTextHash $lines) -cne $first.BodySHA256) {throw 'Reopen guide text differs.'}
     $config=[int]$rows[$script:HelpMainTitles[-1]]
     $settings=@()
