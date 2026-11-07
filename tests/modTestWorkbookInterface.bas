@@ -23,10 +23,11 @@ Private Type TUiTestStats
     Report As String
 End Type
 
-Private Const TEST_PLOT_FRAME_LEFT As Double = 28#
-Private Const TEST_PLOT_FRAME_TOP As Double = 36#
-Private Const TEST_PLOT_FRAME_WIDTH_MARGIN As Double = 180#
-Private Const TEST_PLOT_FRAME_HEIGHT_MARGIN As Double = 72#
+Private Const TEST_PLOT_FRAME_LEFT As Double = 14# ' Левая граница области расчётных фигур.
+Private Const TEST_PLOT_FRAME_TOP As Double = 36# ' Место над схемой для заголовка.
+Private Const TEST_PLOT_FRAME_RIGHT As Double = 16# ' Внешнее поле справа.
+Private Const TEST_PLOT_FRAME_BOTTOM As Double = 18# ' Нижнее поле без предупреждения.
+Private Const TEST_PLOT_FRAME_WARNING_BOTTOM As Double = 36# ' Нижнее поле с предупреждением о состоянии.
 Private mAudit03StopBeforeLoadTable As Boolean ' Только диагностический прогон сохраняет книгу на границе крупных тестовых блоков.
 Private mAudit03StopBeforeUnitSign As Boolean ' Диагностический снимок входных тестов отделяет состояние книги от накопления ресурсов Excel.
 
@@ -1062,17 +1063,21 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.plot.axisLabels.text", TestPlotShapeTextContains("Ось X") And TestPlotShapeTextContains("Ось Y")
     TestAssertTrue stats, "ui.plot.axisLabels.italic", TestPlotShapeTextItalic("AxisLabelX") And TestPlotShapeTextItalic("AxisLabelY")
     TestAssertClose stats, "ui.plot.axisLabels.fontSize", TestPlotShapeTextFontSize("AxisLabelX"), 9#, 0.01
-    TestAssertTrue stats, "ui.plot.axisLabels.insideFrame", TestPlotShapesInsideStableFrame("AxisLabelX", 0.5) And _
-        TestPlotShapesInsideStableFrame("AxisLabelY", 0.5)
+
+    Dim plot As Object, frameWidth As Double, frameHeight As Double
+    Set plot = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    TestGetOverlayFrame plot, frameWidth, frameHeight
+    TestAssertTrue stats, "ui.plot.axisLabels.insideFrame", _
+        TestPlotShapesInsideStableFrame("AxisLabelX", frameWidth, frameHeight, 0.5) And _
+        TestPlotShapesInsideStableFrame("AxisLabelY", frameWidth, frameHeight, 0.5)
 
     Dim loadCenterX As Double
     Dim loadCenterY As Double
     TestAssertTrue stats, "ui.plot.overlay.loadCenter", TestGeneratedPlotShapeCenterAverage("LoadPoint", loadCenterX, loadCenterY)
 
-    Dim plot As Object
-    Set plot = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
-    TestAssertTrue stats, "ui.plot.overlay.clippedAxes", TestPlotShapesInsideStableFrame("Principal1", 1#) And _
-        TestPlotShapesInsideStableFrame("Principal2", 1#)
+    TestAssertTrue stats, "ui.plot.overlay.clippedAxes", _
+        TestPlotShapesInsideStableFrame("Principal1", frameWidth, frameHeight, 1#) And _
+        TestPlotShapesInsideStableFrame("Principal2", frameWidth, frameHeight, 1#)
 
     Dim minX As Double
     Dim maxX As Double
@@ -1084,22 +1089,22 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     maxY = CDbl(plot.Chart.Axes(2).MaximumScale)
 
     Dim scaleValue As Double
-    scaleValue = (CDbl(plot.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN) / (maxX - minX)
-    If (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) / (maxY - minY) < scaleValue Then _
-        scaleValue = (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) / (maxY - minY)
+    scaleValue = frameWidth / (maxX - minX)
+    If frameHeight / (maxY - minY) < scaleValue Then _
+        scaleValue = frameHeight / (maxY - minY)
 
     Dim expectedCentroidX As Double
     Dim expectedCentroidY As Double
     Dim expectedLoadX As Double
     Dim expectedLoadY As Double
     expectedCentroidX = CDbl(plot.Left) + TEST_PLOT_FRAME_LEFT + (centroidX - minX) / (maxX - minX) * _
-        (CDbl(plot.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN)
-    expectedCentroidY = CDbl(plot.Top) + TEST_PLOT_FRAME_TOP + (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) - _
-        (centroidY - minY) / (maxY - minY) * (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN)
+        frameWidth
+    expectedCentroidY = CDbl(plot.Top) + TEST_PLOT_FRAME_TOP + frameHeight - _
+        (centroidY - minY) / (maxY - minY) * frameHeight
     expectedLoadX = CDbl(plot.Left) + TEST_PLOT_FRAME_LEFT + (loadX - minX) / (maxX - minX) * _
-        (CDbl(plot.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN)
-    expectedLoadY = CDbl(plot.Top) + TEST_PLOT_FRAME_TOP + (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) - _
-        (loadY - minY) / (maxY - minY) * (CDbl(plot.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN)
+        frameWidth
+    expectedLoadY = CDbl(plot.Top) + TEST_PLOT_FRAME_TOP + frameHeight - _
+        (loadY - minY) / (maxY - minY) * frameHeight
 
     TestAssertTrue stats, "ui.plot.overlay.principal1ThroughCentroid", _
         TestPlotShapeBoundsContainAbsolutePoint("Principal1", expectedCentroidX, expectedCentroidY, 1.5)
@@ -1129,6 +1134,36 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     TestSetSystemSetting "Plot.AxisLabelsEnabled", oldAxisLabelsEnabled
     TestSetSystemSetting "Plot.AxisLabelsFontSize", oldAxisLabelsFontSize
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Вычисляет рабочую рамку малой Shape-схемы по настройкам и сохранённому статусу НДС.
+' Геометрия уже отрисованных фигур не участвует в вычислении ожидаемых координат.
+Private Sub TestGetOverlayFrame(ByVal chart As Object, ByRef frameWidth As Double, ByRef frameHeight As Double)
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, policy As CResultStatusPolicy
+    Dim rightReserve As Double, bottomReserve As Double
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+    Set policy = New CResultStatusPolicy
+    rightReserve = TEST_PLOT_FRAME_RIGHT
+    If settings.GetRequiredBoolean("Plot.LegendEnabled") Then
+        rightReserve = rightReserve + 4# + 132# * settings.GetRequiredDouble("Plot.LegendScale")
+    End If
+    bottomReserve = TEST_PLOT_FRAME_BOTTOM
+    If reader.PhysicalDiagramWarningRequired Or policy.ToUserStatus(reader.DirectStateStatus) = policy.NumFail Then
+        bottomReserve = TEST_PLOT_FRAME_WARNING_BOTTOM
+    End If
+    frameWidth = CDbl(chart.Width) - TEST_PLOT_FRAME_LEFT - rightReserve
+    frameHeight = CDbl(chart.Height) - TEST_PLOT_FRAME_TOP - bottomReserve
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает адресную проверку осей и точки нагрузки в отдельной тестовой копии.
+Public Function RunTestPlotOverlayCoordinates() As String
+    Dim stats As TUiTestStats
+    TestPlotOverlayCoordinatesMatchResults stats
+    TestAppendLine stats, "TOTAL_PLOT_OVERLAY_COORDINATES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunTestPlotOverlayCoordinates = stats.Report
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что выбор будущего источника не меняет уже сформированное сечение.
@@ -2715,7 +2750,8 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет границы каждой подходящей chart-фигуры относительно устойчивой рамки.
 ' Для PASS нужна хотя бы одна фигура; допуск задан тестом в Excel points.
-Private Function TestPlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal tolerance As Double) As Boolean
+Private Function TestPlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal frameWidth As Double, _
+        ByVal frameHeight As Double, ByVal tolerance As Double) As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
     Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
@@ -2726,8 +2762,8 @@ Private Function TestPlotShapesInsideStableFrame(ByVal nameFragment As String, B
     Dim bottomBound As Double
     leftBound = TEST_PLOT_FRAME_LEFT - tolerance
     topBound = TEST_PLOT_FRAME_TOP - tolerance
-    rightBound = TEST_PLOT_FRAME_LEFT + CDbl(chartObject.Width) - TEST_PLOT_FRAME_WIDTH_MARGIN + tolerance
-    bottomBound = TEST_PLOT_FRAME_TOP + CDbl(chartObject.Height) - TEST_PLOT_FRAME_HEIGHT_MARGIN + tolerance
+    rightBound = TEST_PLOT_FRAME_LEFT + frameWidth + tolerance
+    bottomBound = TEST_PLOT_FRAME_TOP + frameHeight + tolerance
 
     Dim shapeIndex As Long
     Dim matched As Boolean

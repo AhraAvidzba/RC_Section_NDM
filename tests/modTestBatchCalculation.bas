@@ -10068,33 +10068,31 @@ Private Function TestAudit03TableNodePhiM(ByVal data As Variant, ByVal row As Lo
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет 23 служебные ячейки Config и сечений: они не меняют настройки, единицы и геометрию.
-' Адреса ищутся внутри именованных таблиц по применимым колонкам и маркеру,
-' а не по координатам шаблона. Изменение подписи не должно создавать новый
-' параметр или менять нормализованный payload для downstream consumers.
+' Проверяет 24 служебные ячейки Config и сечений, включая колонку арматуры для ShowSymbol.
+' Адреса определяются по ключам и назначению колонок в именованных таблицах.
+' Произвольное значение служебной ячейки не меняет настройки, единицы и геометрию.
 Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TBatchTestStats, fields As New Collection, range As Object, cell As Object
-    Dim name As Variant, row As Long, column As Long, baseline As String, actual As String
+    Dim name As Variant, row As Long, baseline As String, actual As String
     Dim errorText As String, saved As Variant, invalidIndex As Long, prefix As String
     Dim hasSavedCell As Boolean, config As Object, savedConfig As Variant
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(config)
     modTestShapeArchitecture.TestConfigureShapeFixture "HollowCentered"
-    For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings")
-        Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
-        For row = 2 To range.Rows.Count
-            For column = 2 To 4
-                If (CStr(name) = "rngConcreteMaterialParameters" And column = 3) Or _
-                        (CStr(name) = "rngPlotAnnotationSettings" And column <= 3) Then
-                    Set cell = range.Cells(row, column)
-                    If VarType(cell.Value2) = vbString Then
-                        If CStr(cell.Value2) = "-" Then fields.Add cell
-                    End If
-                End If
-            Next column
-        Next row
-    Next name
+    Set range = ThisWorkbook.Names("rngConcreteMaterialParameters").RefersToRange
+    For row = 2 To range.Rows.Count
+        If CStr(range.Cells(row, 1).Value2) = "Concrete.Rb.mc2" Then fields.Add range.Cells(row, 3)
+    Next row
+    Set range = ThisWorkbook.Names("rngPlotAnnotationSettings").RefersToRange
+    For row = 2 To range.Rows.Count
+        Select Case CStr(range.Cells(row, 1).Value2)
+            Case "ExtensionLineWeight", "ExtensionLineColor", "ArrowType", "ArrowSize", "ShowSymbol"
+                fields.Add range.Cells(row, 2)
+            Case "LineEnabled"
+                fields.Add range.Cells(row, 3)
+        End Select
+    Next row
     Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     For Each name In Array("OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
         fields.Add TestFixtureInputCell(range, "Main", CStr(name), "n")
@@ -10104,7 +10102,7 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
         Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To range.Rows.Count: fields.Add range.Cells(row, 3): Next row
     Next name
-    TestAssertTrue stats, "audit03.inactive.count", fields.Count = 23
+    TestAssertTrue stats, "audit03.inactive.count", fields.Count = 24
     TestAssertTrue stats, "audit03.inactive.baseline", TestAudit03TryConfigPayload(baseline, errorText)
     For Each cell In fields
         saved = cell.Formula: hasSavedCell = True

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-07 21:25:13
+Date: 2026-11-08 01:30:51
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -63,7 +63,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hy
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     Set targetCell = helpSheet.range(addressText)
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.Goto targetCell, True
+    Application.GoTo targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -76094,7 +76094,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 11027
+LINES: 11025
 ====================================================================================================
 Option Explicit
 
@@ -86165,33 +86165,31 @@ Private Function TestAudit03TableNodePhiM(ByVal data As Variant, ByVal row As Lo
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет 23 служебные ячейки Config и сечений: они не меняют настройки, единицы и геометрию.
-' Адреса ищутся внутри именованных таблиц по применимым колонкам и маркеру,
-' а не по координатам шаблона. Изменение подписи не должно создавать новый
-' параметр или менять нормализованный payload для downstream consumers.
+' Проверяет 24 служебные ячейки Config и сечений, включая колонку арматуры для ShowSymbol.
+' Адреса определяются по ключам и назначению колонок в именованных таблицах.
+' Произвольное значение служебной ячейки не меняет настройки, единицы и геометрию.
 Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long = 0, _
         Optional ByRef Failed As Long = 0) As String
     Dim stats As TBatchTestStats, fields As New Collection, range As Object, cell As Object
-    Dim name As Variant, row As Long, column As Long, baseline As String, actual As String
+    Dim name As Variant, row As Long, baseline As String, actual As String
     Dim errorText As String, saved As Variant, invalidIndex As Long, prefix As String
     Dim hasSavedCell As Boolean, config As Object, savedConfig As Variant
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = TestFixtureSaveInputs(config)
     modTestShapeArchitecture.TestConfigureShapeFixture "HollowCentered"
-    For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings")
-        Set range = ThisWorkbook.names.item(CStr(name)).RefersToRange
-        For row = 2 To range.rows.count
-            For column = 2 To 4
-                If (CStr(name) = "rngConcreteMaterialParameters" And column = 3) Or _
-                        (CStr(name) = "rngPlotAnnotationSettings" And column <= 3) Then
-                    Set cell = range.cells(row, column)
-                    If VarType(cell.value2) = vbString Then
-                        If CStr(cell.value2) = "-" Then fields.Add cell
-                    End If
-                End If
-            Next column
-        Next row
-    Next name
+    Set range = ThisWorkbook.names("rngConcreteMaterialParameters").RefersToRange
+    For row = 2 To range.rows.count
+        If CStr(range.cells(row, 1).value2) = "Concrete.Rb.mc2" Then fields.Add range.cells(row, 3)
+    Next row
+    Set range = ThisWorkbook.names("rngPlotAnnotationSettings").RefersToRange
+    For row = 2 To range.rows.count
+        Select Case CStr(range.cells(row, 1).value2)
+            Case "ExtensionLineWeight", "ExtensionLineColor", "ArrowType", "ArrowSize", "ShowSymbol"
+                fields.Add range.cells(row, 2)
+            Case "LineEnabled"
+                fields.Add range.cells(row, 3)
+        End Select
+    Next row
     Set range = ThisWorkbook.names("rngHollowRectangleGeometry").RefersToRange
     For Each name In Array("OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
         fields.Add TestFixtureInputCell(range, "Main", CStr(name), "n")
@@ -86201,7 +86199,7 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
         Set range = ThisWorkbook.names.item(CStr(name)).RefersToRange
         For row = 2 To range.rows.count: fields.Add range.cells(row, 3): Next row
     Next name
-    TestAssertTrue stats, "audit03.inactive.count", fields.count = 23
+    TestAssertTrue stats, "audit03.inactive.count", fields.count = 24
     TestAssertTrue stats, "audit03.inactive.baseline", TestAudit03TryConfigPayload(baseline, errorText)
     For Each cell In fields
         saved = cell.formula: hasSavedCell = True
@@ -119549,7 +119547,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestProfileConfig
 TYPE: 1
-LINES: 1954
+LINES: 1958
 ====================================================================================================
 Option Explicit
 
@@ -120075,6 +120073,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
     Dim batch As CBatchSectionCalculator, writer As CNDMResultsWriter, reader As CSectionPlotDataReader
     Dim state As CSectionStateResult, solves As Long, before As Variant, firstValue As Double
     TestSetTableValue system, "Plot.LegendMode", "Common", 2
+    TestSetTableValue system, "Plot.LegendScale", 1#, 2
     TestSetTableValue system, "Plot.LegendEnabled", "Yes", 2
     TestSetTableValue system, "Plot.ResultLabelsEnabled", "Yes", 2
     TestSetTableValue system, "Plot.ResultLabelSpacing", "50", 2
@@ -121313,13 +121312,13 @@ Private Sub TestCheckVisualizationValues(ByRef stats As TProfileStats, ByVal pre
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' проверяет именно текст растянутого края общей легенды, а не
-' случайное совпадение подписи нуля в Chart. Положение определяется
-' контрактом оформления; точность формируется независимым test-oracle.
+' Проверяет единственную подпись крайнего растяжения общей легенды.
+' Координаты проверяются от верхнего и правого краёв Chart, текст вычисляется независимо.
 Private Sub TestCheckVisualizationLegend(ByRef stats As TProfileStats, ByVal prefix As String, _
         ByVal reader As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     Dim plotter As CSectionPlotter, chartObject As Object, shape As Object, i As Long
-    Dim maximum As Double, foundValue As Boolean, foundText As Boolean, text As String, pattern As String
+    Dim maximum As Double, foundValue As Boolean, legendLabels As Long, text As String, pattern As String
+    Dim legendScale As Double, expectedLeft As Double, expectedTop As Double
     For i = 1 To reader.count
         If reader.physicalState(i) = "Tension" Then
             If Not foundValue Or Abs(reader.resultValue(i)) > Abs(maximum) Then maximum = reader.resultValue(i)
@@ -121332,15 +121331,18 @@ Private Sub TestCheckVisualizationLegend(ByRef stats As TProfileStats, ByVal pre
     text = Replace$(format$(maximum, pattern), ",", ".")
     Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects.item("chtNDMSectionPlot")
+    legendScale = settings.GetRequiredDouble("Plot.LegendScale")
+    expectedLeft = chartObject.width - 16# - 102# * legendScale ' Число стоит на 30 пт правее начала легенды шириной 132 пт.
+    expectedTop = 36# + 114# * legendScale ' Край растяжения отсчитывается от верхней границы схемы.
     For Each shape In chartObject.chart.shapes
-        If left$(shape.name, Len("NDMPlot_Text")) = "NDMPlot_Text" Then
-            If Abs(shape.left - (chartObject.width - 118#)) < 0.01 And Abs(shape.top - 174#) < 0.01 Then
-                foundText = True
+        If left$(shape.name, Len("NDMPlot_LegendText")) = "NDMPlot_LegendText" Then
+            If Abs(shape.left - expectedLeft) < 0.01 And Abs(shape.top - expectedTop) < 0.01 Then
+                legendLabels = legendLabels + 1
                 TestCheck stats, prefix & ".actualLegendText", CStr(shape.TextFrame.Characters().text) = text
             End If
         End If
     Next shape
-    TestCheck stats, prefix & ".actualLegendPresent", foundText
+    TestCheck stats, prefix & ".actualLegendPresent", legendLabels = 1
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -131572,7 +131574,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9772
+LINES: 9808
 ====================================================================================================
 Option Explicit
 
@@ -131598,10 +131600,11 @@ Private Type TUiTestStats
     report As String
 End Type
 
-Private Const TEST_PLOT_FRAME_LEFT As Double = 28#
-Private Const TEST_PLOT_FRAME_TOP As Double = 36#
-Private Const TEST_PLOT_FRAME_WIDTH_MARGIN As Double = 180#
-Private Const TEST_PLOT_FRAME_HEIGHT_MARGIN As Double = 72#
+Private Const TEST_PLOT_FRAME_LEFT As Double = 14# ' Левая граница области расчётных фигур.
+Private Const TEST_PLOT_FRAME_TOP As Double = 36# ' Место над схемой для заголовка.
+Private Const TEST_PLOT_FRAME_RIGHT As Double = 16# ' Внешнее поле справа.
+Private Const TEST_PLOT_FRAME_BOTTOM As Double = 18# ' Нижнее поле без предупреждения.
+Private Const TEST_PLOT_FRAME_WARNING_BOTTOM As Double = 36# ' Нижнее поле с предупреждением о состоянии.
 Private mAudit03StopBeforeLoadTable As Boolean ' Только диагностический прогон сохраняет книгу на границе крупных тестовых блоков.
 Private mAudit03StopBeforeUnitSign As Boolean ' Диагностический снимок входных тестов отделяет состояние книги от накопления ресурсов Excel.
 
@@ -132637,17 +132640,21 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.plot.axisLabels.text", TestPlotShapeTextContains("Ось X") And TestPlotShapeTextContains("Ось Y")
     TestAssertTrue stats, "ui.plot.axisLabels.italic", TestPlotShapeTextItalic("AxisLabelX") And TestPlotShapeTextItalic("AxisLabelY")
     TestAssertClose stats, "ui.plot.axisLabels.fontSize", TestPlotShapeTextFontSize("AxisLabelX"), 9#, 0.01
-    TestAssertTrue stats, "ui.plot.axisLabels.insideFrame", TestPlotShapesInsideStableFrame("AxisLabelX", 0.5) And _
-        TestPlotShapesInsideStableFrame("AxisLabelY", 0.5)
+
+    Dim plot As Object, frameWidth As Double, frameHeight As Double
+    Set plot = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
+    TestGetOverlayFrame plot, frameWidth, frameHeight
+    TestAssertTrue stats, "ui.plot.axisLabels.insideFrame", _
+        TestPlotShapesInsideStableFrame("AxisLabelX", frameWidth, frameHeight, 0.5) And _
+        TestPlotShapesInsideStableFrame("AxisLabelY", frameWidth, frameHeight, 0.5)
 
     Dim loadCenterX As Double
     Dim loadCenterY As Double
     TestAssertTrue stats, "ui.plot.overlay.loadCenter", TestGeneratedPlotShapeCenterAverage("LoadPoint", loadCenterX, loadCenterY)
 
-    Dim plot As Object
-    Set plot = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
-    TestAssertTrue stats, "ui.plot.overlay.clippedAxes", TestPlotShapesInsideStableFrame("Principal1", 1#) And _
-        TestPlotShapesInsideStableFrame("Principal2", 1#)
+    TestAssertTrue stats, "ui.plot.overlay.clippedAxes", _
+        TestPlotShapesInsideStableFrame("Principal1", frameWidth, frameHeight, 1#) And _
+        TestPlotShapesInsideStableFrame("Principal2", frameWidth, frameHeight, 1#)
 
     Dim minX As Double
     Dim maxX As Double
@@ -132659,22 +132666,22 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     maxY = CDbl(plot.chart.Axes(2).MaximumScale)
 
     Dim scaleValue As Double
-    scaleValue = (CDbl(plot.width) - TEST_PLOT_FRAME_WIDTH_MARGIN) / (maxX - minX)
-    If (CDbl(plot.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) / (maxY - minY) < scaleValue Then _
-        scaleValue = (CDbl(plot.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) / (maxY - minY)
+    scaleValue = frameWidth / (maxX - minX)
+    If frameHeight / (maxY - minY) < scaleValue Then _
+        scaleValue = frameHeight / (maxY - minY)
 
     Dim expectedCentroidX As Double
     Dim expectedCentroidY As Double
     Dim expectedLoadX As Double
     Dim expectedLoadY As Double
     expectedCentroidX = CDbl(plot.left) + TEST_PLOT_FRAME_LEFT + (centroidX - minX) / (maxX - minX) * _
-        (CDbl(plot.width) - TEST_PLOT_FRAME_WIDTH_MARGIN)
-    expectedCentroidY = CDbl(plot.top) + TEST_PLOT_FRAME_TOP + (CDbl(plot.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) - _
-        (centroidY - minY) / (maxY - minY) * (CDbl(plot.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN)
+        frameWidth
+    expectedCentroidY = CDbl(plot.top) + TEST_PLOT_FRAME_TOP + frameHeight - _
+        (centroidY - minY) / (maxY - minY) * frameHeight
     expectedLoadX = CDbl(plot.left) + TEST_PLOT_FRAME_LEFT + (loadX - minX) / (maxX - minX) * _
-        (CDbl(plot.width) - TEST_PLOT_FRAME_WIDTH_MARGIN)
-    expectedLoadY = CDbl(plot.top) + TEST_PLOT_FRAME_TOP + (CDbl(plot.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN) - _
-        (loadY - minY) / (maxY - minY) * (CDbl(plot.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN)
+        frameWidth
+    expectedLoadY = CDbl(plot.top) + TEST_PLOT_FRAME_TOP + frameHeight - _
+        (loadY - minY) / (maxY - minY) * frameHeight
 
     TestAssertTrue stats, "ui.plot.overlay.principal1ThroughCentroid", _
         TestPlotShapeBoundsContainAbsolutePoint("Principal1", expectedCentroidX, expectedCentroidY, 1.5)
@@ -132704,6 +132711,36 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     TestSetSystemSetting "Plot.AxisLabelsEnabled", oldAxisLabelsEnabled
     TestSetSystemSetting "Plot.AxisLabelsFontSize", oldAxisLabelsFontSize
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Вычисляет рабочую рамку малой Shape-схемы по настройкам и сохранённому статусу НДС.
+' Геометрия уже отрисованных фигур не участвует в вычислении ожидаемых координат.
+Private Sub TestGetOverlayFrame(ByVal chart As Object, ByRef frameWidth As Double, ByRef frameHeight As Double)
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, policy As CResultStatusPolicy
+    Dim rightReserve As Double, bottomReserve As Double
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+    Set policy = New CResultStatusPolicy
+    rightReserve = TEST_PLOT_FRAME_RIGHT
+    If settings.GetRequiredBoolean("Plot.LegendEnabled") Then
+        rightReserve = rightReserve + 4# + 132# * settings.GetRequiredDouble("Plot.LegendScale")
+    End If
+    bottomReserve = TEST_PLOT_FRAME_BOTTOM
+    If reader.PhysicalDiagramWarningRequired Or policy.ToUserStatus(reader.DirectStateStatus) = policy.NumFail Then
+        bottomReserve = TEST_PLOT_FRAME_WARNING_BOTTOM
+    End If
+    frameWidth = CDbl(chart.width) - TEST_PLOT_FRAME_LEFT - rightReserve
+    frameHeight = CDbl(chart.height) - TEST_PLOT_FRAME_TOP - bottomReserve
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает адресную проверку осей и точки нагрузки в отдельной тестовой копии.
+Public Function RunTestPlotOverlayCoordinates() As String
+    Dim stats As TUiTestStats
+    TestPlotOverlayCoordinatesMatchResults stats
+    TestAppendLine stats, "TOTAL_PLOT_OVERLAY_COORDINATES: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+    RunTestPlotOverlayCoordinates = stats.report
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что выбор будущего источника не меняет уже сформированное сечение.
@@ -134290,7 +134327,8 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет границы каждой подходящей chart-фигуры относительно устойчивой рамки.
 ' Для PASS нужна хотя бы одна фигура; допуск задан тестом в Excel points.
-Private Function TestPlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal tolerance As Double) As Boolean
+Private Function TestPlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal frameWidth As Double, _
+        ByVal frameHeight As Double, ByVal tolerance As Double) As Boolean
     On Error GoTo Failed
     Dim chartObject As Object
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
@@ -134301,8 +134339,8 @@ Private Function TestPlotShapesInsideStableFrame(ByVal nameFragment As String, B
     Dim bottomBound As Double
     leftBound = TEST_PLOT_FRAME_LEFT - tolerance
     topBound = TEST_PLOT_FRAME_TOP - tolerance
-    rightBound = TEST_PLOT_FRAME_LEFT + CDbl(chartObject.width) - TEST_PLOT_FRAME_WIDTH_MARGIN + tolerance
-    bottomBound = TEST_PLOT_FRAME_TOP + CDbl(chartObject.height) - TEST_PLOT_FRAME_HEIGHT_MARGIN + tolerance
+    rightBound = TEST_PLOT_FRAME_LEFT + frameWidth + tolerance
+    bottomBound = TEST_PLOT_FRAME_TOP + frameHeight + tolerance
 
     Dim shapeIndex As Long
     Dim matched As Boolean

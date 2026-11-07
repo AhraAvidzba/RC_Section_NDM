@@ -523,6 +523,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
     Dim batch As CBatchSectionCalculator, writer As CNDMResultsWriter, reader As CSectionPlotDataReader
     Dim state As CSectionStateResult, solves As Long, before As Variant, firstValue As Double
     TestSetTableValue system, "Plot.LegendMode", "Common", 2
+    TestSetTableValue system, "Plot.LegendScale", 1#, 2
     TestSetTableValue system, "Plot.LegendEnabled", "Yes", 2
     TestSetTableValue system, "Plot.ResultLabelsEnabled", "Yes", 2
     TestSetTableValue system, "Plot.ResultLabelSpacing", "50", 2
@@ -1761,13 +1762,13 @@ Private Sub TestCheckVisualizationValues(ByRef stats As TProfileStats, ByVal pre
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' проверяет именно текст растянутого края общей легенды, а не
-' случайное совпадение подписи нуля в Chart. Положение определяется
-' контрактом оформления; точность формируется независимым test-oracle.
+' Проверяет единственную подпись крайнего растяжения общей легенды.
+' Координаты проверяются от верхнего и правого краёв Chart, текст вычисляется независимо.
 Private Sub TestCheckVisualizationLegend(ByRef stats As TProfileStats, ByVal prefix As String, _
         ByVal reader As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     Dim plotter As CSectionPlotter, chartObject As Object, shape As Object, i As Long
-    Dim maximum As Double, foundValue As Boolean, foundText As Boolean, text As String, pattern As String
+    Dim maximum As Double, foundValue As Boolean, legendLabels As Long, text As String, pattern As String
+    Dim legendScale As Double, expectedLeft As Double, expectedTop As Double
     For i = 1 To reader.Count
         If reader.PhysicalState(i) = "Tension" Then
             If Not foundValue Or Abs(reader.ResultValue(i)) > Abs(maximum) Then maximum = reader.ResultValue(i)
@@ -1780,15 +1781,18 @@ Private Sub TestCheckVisualizationLegend(ByRef stats As TProfileStats, ByVal pre
     text = Replace$(Format$(maximum, pattern), ",", ".")
     Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
     Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects.Item("chtNDMSectionPlot")
+    legendScale = settings.GetRequiredDouble("Plot.LegendScale")
+    expectedLeft = chartObject.Width - 16# - 102# * legendScale ' Число стоит на 30 пт правее начала легенды шириной 132 пт.
+    expectedTop = 36# + 114# * legendScale ' Край растяжения отсчитывается от верхней границы схемы.
     For Each shape In chartObject.Chart.Shapes
-        If Left$(shape.Name, Len("NDMPlot_Text")) = "NDMPlot_Text" Then
-            If Abs(shape.Left - (chartObject.Width - 118#)) < 0.01 And Abs(shape.Top - 174#) < 0.01 Then
-                foundText = True
+        If Left$(shape.Name, Len("NDMPlot_LegendText")) = "NDMPlot_LegendText" Then
+            If Abs(shape.Left - expectedLeft) < 0.01 And Abs(shape.Top - expectedTop) < 0.01 Then
+                legendLabels = legendLabels + 1
                 TestCheck stats, prefix & ".actualLegendText", CStr(shape.TextFrame.Characters().Text) = text
             End If
         End If
     Next shape
-    TestCheck stats, prefix & ".actualLegendPresent", foundText
+    TestCheck stats, prefix & ".actualLegendPresent", legendLabels = 1
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
