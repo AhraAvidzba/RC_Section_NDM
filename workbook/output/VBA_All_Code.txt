@@ -47776,9 +47776,9 @@ Private Const COL_MAIN_LAST As Long = TOTAL_COLUMNS ' Столбец табли�
 Private Const COL_ID As Long = 1 ' Столбец таблицы: номер сочетания.
 Private Const COL_RESULT_COMMENT As Long = 2 ' Столбец таблицы: пояснение результата сочетания.
 Private Const COL_STATUS As Long = 3 ' Столбец таблицы: общий статус сочетания.
-Private Const COL_REF_N As Long = 4 ' Столбец таблицы: исходная продольная сила.
-Private Const COL_REF_MX As Long = 5 ' Столбец таблицы: исходный момент Mx.
-Private Const COL_REF_MY As Long = 6 ' Столбец таблицы: исходный момент My.
+Private Const COL_REF_N As Long = 4 ' Рабочая продольная сила в центре приведённого сечения.
+Private Const COL_REF_MX As Long = 5 ' Рабочий момент Mx относительно центральной оси X.
+Private Const COL_REF_MY As Long = 6 ' Рабочий момент My относительно центральной оси Y.
 Private Const COL_LOAD_N As Long = 7 ' Столбец таблицы: расчётная продольная сила.
 Private Const COL_LOAD_MX As Long = 8 ' Столбец таблицы: расчётный момент Mx.
 Private Const COL_LOAD_MY As Long = 9 ' Столбец таблицы: расчётный момент My.
@@ -47872,9 +47872,9 @@ Public Function RequiredDataRowsForWorkbook(ByVal Workbook As Object, ByVal comb
     If Workbook Is Nothing Then GoTo SafeExit
     Dim loads As Object
     Set loads = Workbook.names.item("rngLoadCombinations").RefersToRange
-    If loads.rows.Count > 1 Then
-        If loads.rows.Count - 1 > RequiredDataRowsForWorkbook Then _
-            RequiredDataRowsForWorkbook = loads.rows.Count - 1
+    If loads.rows.count > 1 Then
+        If loads.rows.count - 1 > RequiredDataRowsForWorkbook Then _
+            RequiredDataRowsForWorkbook = loads.rows.count - 1
     End If
 SafeExit:
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
@@ -47899,9 +47899,9 @@ Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCa
     If batch Is Nothing Then Err.Raise vbObjectError + 3989, "CCrackSummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
-    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.Count))
+    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.count))
     If mMinimalFormatting Then
-        mMinimalFormatting = (CStr(target.cells(target.rows.Count, 1).NumberFormat) = "@")
+        mMinimalFormatting = (CStr(target.cells(target.rows.count, 1).NumberFormat) = "@")
     End If
     If mCapturedSnapshot Is Nothing Then PrepareTarget target
     WriteHeaders target, units
@@ -47911,7 +47911,7 @@ Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCa
     Exit Sub
 
 Failed:
-    Err.Raise Err.Number, "CCrackSummaryWriter.WriteSummary", Err.description
+    Err.Raise Err.number, "CCrackSummaryWriter.WriteSummary", Err.description
 End Sub
 
 ' Очищает данные подробной таблицы трещин. При fullFormatting=True
@@ -47924,24 +47924,24 @@ End Sub
 
 ' Возвращает диапазон текущей таблицы, включающий шапку и строки сочетаний.
 Private Function TargetRange(ByVal Workbook As Object, Optional ByVal dataRows As Long = 1) As Object
-    Dim Anchor As Object
-    Set Anchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
-    If Anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
-        "Диапазон rngCrackSummaryAnchor привязан к " & Anchor.Worksheet.name & "!" & Anchor.address(False, False) & _
+    Dim anchor As Object
+    Set anchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
+    If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
+        "Диапазон rngCrackSummaryAnchor привязан к " & anchor.Worksheet.name & "!" & anchor.address(False, False) & _
         ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
-    Set TargetRange = Anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
+    Set TargetRange = anchor.offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
 ' Возвращает диапазон безопасной очистки до следующего нижнего блока Results.
 Private Function ClearTargetRange(ByVal Workbook As Object) As Object
-    Dim Anchor As Object
-    Set Anchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
-    If Anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
-        "Диапазон rngCrackSummaryAnchor привязан к " & Anchor.Worksheet.name & "!" & Anchor.address(False, False) & _
+    Dim anchor As Object
+    Set anchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
+    If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
+        "Диапазон rngCrackSummaryAnchor привязан к " & anchor.Worksheet.name & "!" & anchor.address(False, False) & _
         ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
 
     Dim topRow As Long
-    topRow = Anchor.row - HEADER_ROWS
+    topRow = anchor.row - HEADER_ROWS
 
     Dim rowsToClear As Long
     rowsToClear = RequiredRows(1)
@@ -47958,16 +47958,16 @@ Private Function ClearTargetRange(ByVal Workbook As Object) As Object
     End If
 
 UseDefaultHeight:
-    If topRow + rowsToClear - 1 > Anchor.Worksheet.rows.Count Then rowsToClear = Anchor.Worksheet.rows.Count - topRow + 1
-    Set ClearTargetRange = Anchor.Worksheet.cells(topRow, Anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
+    If topRow + rowsToClear - 1 > anchor.Worksheet.rows.count Then rowsToClear = anchor.Worksheet.rows.count - topRow + 1
+    Set ClearTargetRange = anchor.Worksheet.cells(topRow, anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
 ' Готовит область к записи: при полном оформлении очищает её целиком.
 ' В минимальном режиме оставляет шапку и форматы, удаляя данные и заливку рассчитанных статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
-        If target.rows.Count > HEADER_ROWS Then
-            With target.Offset(HEADER_ROWS, 0).Resize(target.rows.Count - HEADER_ROWS, TOTAL_COLUMNS)
+        If target.rows.count > HEADER_ROWS Then
+            With target.offset(HEADER_ROWS, 0).Resize(target.rows.count - HEADER_ROWS, TOTAL_COLUMNS)
                 .ClearContents
                 .Interior.colorIndex = -4142
             End With
@@ -47976,7 +47976,7 @@ Private Sub PrepareTarget(ByVal target As Object)
     End If
     ClearBlockTitleRow target
     target.UnMerge
-    target.Clear
+    target.clear
 End Sub
 
 ' Записывает отдельную строку-название над подробным блоком трещин.
@@ -48006,7 +48006,7 @@ End Sub
 ' не относятся к этой таблице и сохраняются при повторной записи результатов.
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.row <= 1 Then Exit Sub
-    target.Worksheet.cells(target.row - 1, target.column).Resize(1, TOTAL_COLUMNS).Clear
+    target.Worksheet.cells(target.row - 1, target.column).Resize(1, TOTAL_COLUMNS).clear
 End Sub
 
 ' Собирает многоуровневую шапку с актуальными единицами. В минимальном
@@ -48078,11 +48078,11 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_SP35_STATUS) = "статус проверки ширины раскрытия трещин по общим правилам определения статусов"
     headers(HEADER_NOTES_ROW, COL_RESULT_COMMENT) = "пояснение расчетного статуса блока трещин"
     headers(HEADER_NOTES_ROW, COL_REF_N) = "нагрузки, переданные в расчет трещин, в центре приведенного сечения"
-    headers(HEADER_NOTES_ROW, COL_REF_MX) = "момент Mx там же, вокруг глобальной оси X/Y принятой системы"
-    headers(HEADER_NOTES_ROW, COL_REF_MY) = "момент My там же, вокруг глобальной оси X/Y принятой системы"
-    headers(HEADER_NOTES_ROW, COL_LOAD_N) = "исходная продольная сила в пользовательской точке приложения"
-    headers(HEADER_NOTES_ROW, COL_LOAD_MX) = "исходный Mx в пользовательской точке приложения"
-    headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "исходный My в пользовательской точке приложения"
+    headers(HEADER_NOTES_ROW, COL_REF_MX) = "момент Mx там же, вокруг оси X принятой системы"
+    headers(HEADER_NOTES_ROW, COL_REF_MY) = "момент My там же, вокруг оси Y принятой системы"
+    headers(HEADER_NOTES_ROW, COL_LOAD_N) = "рабочая продольная сила в пользовательской точке приложения"
+    headers(HEADER_NOTES_ROW, COL_LOAD_MX) = "рабочий Mx в точке приложения с учётом продольного изгиба при его включении"
+    headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "рабочий My в точке приложения с учётом продольного изгиба при его включении"
     headers(HEADER_NOTES_ROW, COL_ARED) = "площадь приведенного сечения для Ncrc"
     headers(HEADER_NOTES_ROW, COL_RBT_SER) = "растяжение бетона II ГПС"
     headers(HEADER_NOTES_ROW, COL_FORMATION_METHOD) = "фактически использованный путь поиска точки образования трещины"
@@ -48232,32 +48232,32 @@ End Function
 ' Записывает строки сочетаний одним массивом.
 Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim dataRows As Long
-    dataRows = target.rows.Count - HEADER_ROWS
+    dataRows = target.rows.count - HEADER_ROWS
     If dataRows <= 0 Then Exit Sub
 
     Dim data() As Variant
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
     Dim i As Long
-    For i = 1 To batch.Count
+    For i = 1 To batch.count
         PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
     Next i
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "Cracks.Data", data
         Exit Sub
     End If
-    target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).value2 = data
+    target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).value2 = data
 End Sub
 
 ' Заполняет одну строку сочетания фактически рассчитанными величинами трещин.
-Private Sub PutCombination(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
-    data(RowIndex, COL_ID) = batch.combinationID(index)
-    data(RowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta)
-    data(RowIndex, COL_STATUS) = batch.ResultAt(index).CrackSummaryStatus
+    data(rowIndex, COL_ID) = batch.combinationID(index)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta)
+    data(rowIndex, COL_STATUS) = batch.ResultAt(index).CrackSummaryStatus
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
             LongitudinalStatusText(batch, index, policy) = policy.NotApplicable And _
@@ -48267,17 +48267,17 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal RowIndex As Long, _
         Exit Sub
     End If
 
-    data(RowIndex, COL_REF_N) = OutputForce(batch.CrackReferenceN(index), units)
-    data(RowIndex, COL_REF_MX) = OutputMx(batch.CrackReferenceMx(index), units)
-    data(RowIndex, COL_REF_MY) = OutputMy(batch.CrackReferenceMy(index), units)
-    data(RowIndex, COL_LOAD_N) = OutputForce(batch.CrackLoadPointN(index), units)
-    data(RowIndex, COL_LOAD_MX) = OutputMx(batch.CrackLoadPointMx(index), units)
-    data(RowIndex, COL_LOAD_MY) = OutputMy(batch.CrackLoadPointMy(index), units)
+    data(rowIndex, COL_REF_N) = OutputForce(batch.CrackReferenceN(index), units)
+    data(rowIndex, COL_REF_MX) = OutputMx(batch.CrackReferenceMx(index), units)
+    data(rowIndex, COL_REF_MY) = OutputMy(batch.CrackReferenceMy(index), units)
+    data(rowIndex, COL_LOAD_N) = OutputForce(batch.CrackLoadPointN(index), units)
+    data(rowIndex, COL_LOAD_MX) = OutputMx(batch.CrackLoadPointMx(index), units)
+    data(rowIndex, COL_LOAD_MY) = OutputMy(batch.CrackLoadPointMy(index), units)
 
-    PutFormationData data, RowIndex, batch, index, units, policy
-    PutCrackedStateData data, RowIndex, batch, index, policy
-    PutCrackWidthData data, RowIndex, batch, index, units, policy
-    PutLongitudinalData data, RowIndex, batch, index, units, policy
+    PutFormationData data, rowIndex, batch, index, units, policy
+    PutCrackedStateData data, rowIndex, batch, index, policy
+    PutCrackWidthData data, rowIndex, batch, index, units, policy
+    PutLongitudinalData data, rowIndex, batch, index, units, policy
 End Sub
 
 ' Возвращает позицию LC внутри data-части подробной таблицы.
@@ -48292,7 +48292,7 @@ End Function
 ' Записывает найденную нагрузку образования трещины и статусы НДС до и после неё.
 ' Если пороговая точка отсутствует, не подставляет нулевые Ncrc/Mcrc;
 ' использует фактический итог проверки образования трещины.
-Private Sub PutFormationData(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     Dim hasFormationData As Boolean
@@ -48301,41 +48301,41 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal RowIndex As Long, _
     Set formation = batch.ResultAt(index).crackResult.formation
 
     If CrackFormationStatusText(batch, index, policy) = policy.NotApplicable And Not hasFormationData Then
-        data(RowIndex, COL_FORMATION_STATE) = policy.NotApplicable
+        data(rowIndex, COL_FORMATION_STATE) = policy.NotApplicable
         Exit Sub
     End If
 
     If Len(batch.ResultAt(index).crackResult.formation.FormationMethod) > 0 Then _
-        data(RowIndex, COL_FORMATION_METHOD) = batch.ResultAt(index).crackResult.formation.FormationMethod
+        data(rowIndex, COL_FORMATION_METHOD) = batch.ResultAt(index).crackResult.formation.FormationMethod
 
     If formation.CentralTensionBranch And hasFormationData Then
-        data(RowIndex, COL_ARED) = OutputArea(batch.ResultAt(index).crackResult.formation.Ared, units)
-        data(RowIndex, COL_RBT_SER) = OutputStress(batch.ResultAt(index).crackResult.formation.RbtSer, units)
-        data(RowIndex, COL_NCRC) = OutputForce(batch.ResultAt(index).crackResult.formation.Ncrc, units)
-        data(RowIndex, COL_LAMBDA_NCRC) = batch.ResultAt(index).crackResult.formation.LambdaCrc
+        data(rowIndex, COL_ARED) = OutputArea(batch.ResultAt(index).crackResult.formation.Ared, units)
+        data(rowIndex, COL_RBT_SER) = OutputStress(batch.ResultAt(index).crackResult.formation.RbtSer, units)
+        data(rowIndex, COL_NCRC) = OutputForce(batch.ResultAt(index).crackResult.formation.Ncrc, units)
+        data(rowIndex, COL_LAMBDA_NCRC) = batch.ResultAt(index).crackResult.formation.LambdaCrc
     Else
-        data(RowIndex, COL_NCRC) = policy.NotApplicable
+        data(rowIndex, COL_NCRC) = policy.NotApplicable
     End If
 
     If Not formation.CentralTensionBranch And hasFormationData Then
-        data(RowIndex, COL_FORMATION_NCRC) = OutputForce(formation.FormationNcrc, units)
-        data(RowIndex, COL_MCRC) = OutputMomentMagnitude(batch.ResultAt(index).crackResult.formation.mcrc, units)
-        data(RowIndex, COL_LAMBDA_MCRC) = batch.ResultAt(index).crackResult.formation.LambdaCrc
+        data(rowIndex, COL_FORMATION_NCRC) = OutputForce(formation.FormationNcrc, units)
+        data(rowIndex, COL_MCRC) = OutputMomentMagnitude(batch.ResultAt(index).crackResult.formation.mcrc, units)
+        data(rowIndex, COL_LAMBDA_MCRC) = batch.ResultAt(index).crackResult.formation.LambdaCrc
     Else
-        data(RowIndex, COL_MCRC) = policy.NotApplicable
+        data(rowIndex, COL_MCRC) = policy.NotApplicable
     End If
 
-    data(RowIndex, COL_PRE_CRACK_STATUS) = NamedStateStatus(batch, index, sstPreCrackState, policy)
-    data(RowIndex, COL_POST_CRACK_STATUS) = NamedStateStatus(batch, index, sstPostCrackState, policy)
-    PutNamedStateStrains data, RowIndex, batch.ResultAt(index).crackResult.formation.PreCrackState, COL_PRE_EBC, COL_PRE_EBT, True
-    PutNamedStateStrains data, RowIndex, batch.ResultAt(index).crackResult.formation.PostCrackState, COL_POST_EBC, COL_POST_EBT, False
+    data(rowIndex, COL_PRE_CRACK_STATUS) = NamedStateStatus(batch, index, sstPreCrackState, policy)
+    data(rowIndex, COL_POST_CRACK_STATUS) = NamedStateStatus(batch, index, sstPostCrackState, policy)
+    PutNamedStateStrains data, rowIndex, batch.ResultAt(index).crackResult.formation.PreCrackState, COL_PRE_EBC, COL_PRE_EBT, True
+    PutNamedStateStrains data, rowIndex, batch.ResultAt(index).crackResult.formation.PostCrackState, COL_POST_EBC, COL_POST_EBT, False
 
     If formation.ConfirmedNotCracked Then
-        data(RowIndex, COL_FORMATION_STATE) = "NotCracked"
+        data(rowIndex, COL_FORMATION_STATE) = "NotCracked"
     ElseIf formation.ConfirmedCracked Then
-        data(RowIndex, COL_FORMATION_STATE) = "Cracked"
+        data(rowIndex, COL_FORMATION_STATE) = "Cracked"
     Else
-        data(RowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)
+        data(rowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)
     End If
 End Sub
 
@@ -48361,12 +48361,12 @@ End Function
 ' Выводит экстремумы только полученного состояния. Pre всегда показывает
 ' фактическое eps_bt; остальные - при активном растяжении бетона своей spec.
 ' Предельные деформации и нули вместо отсутствующего НДС не подставляются.
-Private Sub PutNamedStateStrains(ByRef data() As Variant, ByVal RowIndex As Long, ByVal state As CSectionStateResult, _
+Private Sub PutNamedStateStrains(ByRef data() As Variant, ByVal rowIndex As Long, ByVal state As CSectionStateResult, _
         ByVal compressionColumn As Long, ByVal tensionColumn As Long, ByVal beforeCrack As Boolean)
     If state Is Nothing Then Exit Sub
     If Not state.converged Then Exit Sub
-    If state.HasConcreteCompression Then data(RowIndex, compressionColumn) = state.minConcreteStrain
-    If beforeCrack Or state.MaterialSpec.concreteTension = ctkUseDiagram Then data(RowIndex, tensionColumn) = state.maxConcreteStrain
+    If state.HasConcreteCompression Then data(rowIndex, compressionColumn) = state.minConcreteStrain
+    If beforeCrack Or state.MaterialSpec.concreteTension = ctkUseDiagram Then data(rowIndex, tensionColumn) = state.maxConcreteStrain
 End Sub
 
 ' Проверяет наличие подтверждённой пороговой точки в результате образования трещины.
@@ -48380,20 +48380,20 @@ End Function
 ' найдено ли равновесие полной нагрузки внутри физических пределов диаграмм.
 ' Если оно получено только за этими пределами или не найдено, ширина,
 ' её исходные величины и продольные трещины по такому НДС не рассчитываются.
-Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal policy As CResultStatusPolicy)
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCrackedState)
 
     If stateResult Is Nothing Then
         If CrackCurrentStateStatusText(batch, index, policy) <> policy.NotApplicable Then _
-            data(RowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
+            data(rowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
         Exit Sub
     End If
 
-    data(RowIndex, COL_CRACK_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
-    data(RowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
-    PutNamedStateStrains data, RowIndex, stateResult, COL_CURRENT_EBC, COL_CURRENT_EBT, False
+    data(rowIndex, COL_CRACK_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
+    data(rowIndex, COL_CRACK_STATE_STATUS) = CrackCurrentStateStatusText(batch, index, policy)
+    PutNamedStateStrains data, rowIndex, stateResult, COL_CURRENT_EBC, COL_CURRENT_EBT, False
 End Sub
 
 ' Показывает, использовало ли текущее CrackedState продолжение диаграммы.
@@ -48412,70 +48412,70 @@ End Function
 
 ' Записывает готовую ширину и параметры её формулы, в том числе допустимый
 ' расчёт с psi_s = 1 при ненайденном пороге. Повторно образование трещины не проверяет.
-Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     Dim width As CCrackWidthResult
     Set width = batch.ResultAt(index).crackResult.width
-    data(RowIndex, COL_SP35_STATUS) = policy.NotApplicable
-    data(RowIndex, COL_ACRC_STATUS) = policy.NotApplicable
+    data(rowIndex, COL_SP35_STATUS) = policy.NotApplicable
+    data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
     If width.StandardCode = "SP35" Then
-        data(RowIndex, COL_SP35_STATUS) = policy.ExternalStatus(width.ResultMeta)
-        If width.ResultMeta.calculated Then PutSP35WidthData data, RowIndex, width, units
+        data(rowIndex, COL_SP35_STATUS) = policy.ExternalStatus(width.ResultMeta)
+        If width.ResultMeta.calculated Then PutSP35WidthData data, rowIndex, width, units
         Exit Sub
     End If
 
     If Not batch.ResultAt(index).CrackWidthMeta.calculated Then
-        data(RowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
+        data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         Exit Sub
     End If
 
     If Not policy.IsMetaFinished(batch.ResultAt(index).CrackWidthMeta) Then
-        data(RowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
+        data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         Exit Sub
     End If
 
     If Not batch.ResultAt(index).crackResult.width.CentralTensionBranch Then
-        data(RowIndex, COL_XT) = OutputLength(batch.ResultAt(index).crackResult.width.TensionDepth, units)
-        data(RowIndex, COL_H) = OutputLength(batch.ResultAt(index).crackResult.width.SectionDepthH, units)
-        data(RowIndex, COL_AS_COVER) = OutputLength(batch.ResultAt(index).crackResult.width.CoverA, units)
-        data(RowIndex, COL_HBT) = OutputLength(batch.ResultAt(index).crackResult.width.EffectiveZoneDepth, units)
+        data(rowIndex, COL_XT) = OutputLength(batch.ResultAt(index).crackResult.width.TensionDepth, units)
+        data(rowIndex, COL_H) = OutputLength(batch.ResultAt(index).crackResult.width.SectionDepthH, units)
+        data(rowIndex, COL_AS_COVER) = OutputLength(batch.ResultAt(index).crackResult.width.CoverA, units)
+        data(rowIndex, COL_HBT) = OutputLength(batch.ResultAt(index).crackResult.width.EffectiveZoneDepth, units)
     End If
-    data(RowIndex, COL_ABT) = OutputArea(batch.ResultAt(index).crackResult.width.Abt, units)
-    data(RowIndex, COL_AS) = OutputArea(batch.ResultAt(index).crackResult.width.AsTension, units)
-    data(RowIndex, COL_DS_EQ) = OutputLength(batch.ResultAt(index).crackResult.width.DsEquivalent, units)
-    data(RowIndex, COL_LS0) = OutputLength(batch.ResultAt(index).crackResult.width.CrackSpacingRaw, units)
-    data(RowIndex, COL_LS) = OutputLength(batch.ResultAt(index).crackResult.width.CrackSpacing, units)
-    data(RowIndex, COL_PHI1) = batch.ResultAt(index).crackResult.width.Phi1
-    data(RowIndex, COL_PHI2) = batch.ResultAt(index).crackResult.width.Phi2
-    data(RowIndex, COL_PHI3) = batch.ResultAt(index).crackResult.width.Phi3
-    data(RowIndex, COL_PSI_S) = batch.ResultAt(index).crackResult.width.PsiS
-    data(RowIndex, COL_REBARS) = batch.ResultAt(index).crackResult.width.TensionRebarIds
-    data(RowIndex, COL_NREBARS) = batch.ResultAt(index).crackResult.width.TensionRebarCount
-    data(RowIndex, COL_SIGMA_S_CRC) = OptionalStress(batch.ResultAt(index).crackResult.width.SigmaSCrc, units, policy)
-    data(RowIndex, COL_SIGMA_S) = OutputStress(batch.ResultAt(index).crackResult.width.SigmaS, units)
-    data(RowIndex, COL_ES) = OutputStress(batch.ResultAt(index).crackResult.width.SteelEs, units)
-    data(RowIndex, COL_ACRC) = OutputLength(batch.ResultAt(index).crackResult.width.crackWidth, units)
-    data(RowIndex, COL_ACRC_ULT) = OutputLength(batch.ResultAt(index).crackResult.width.AllowableCrackWidth, units)
+    data(rowIndex, COL_ABT) = OutputArea(batch.ResultAt(index).crackResult.width.Abt, units)
+    data(rowIndex, COL_AS) = OutputArea(batch.ResultAt(index).crackResult.width.AsTension, units)
+    data(rowIndex, COL_DS_EQ) = OutputLength(batch.ResultAt(index).crackResult.width.DsEquivalent, units)
+    data(rowIndex, COL_LS0) = OutputLength(batch.ResultAt(index).crackResult.width.CrackSpacingRaw, units)
+    data(rowIndex, COL_LS) = OutputLength(batch.ResultAt(index).crackResult.width.CrackSpacing, units)
+    data(rowIndex, COL_PHI1) = batch.ResultAt(index).crackResult.width.Phi1
+    data(rowIndex, COL_PHI2) = batch.ResultAt(index).crackResult.width.Phi2
+    data(rowIndex, COL_PHI3) = batch.ResultAt(index).crackResult.width.Phi3
+    data(rowIndex, COL_PSI_S) = batch.ResultAt(index).crackResult.width.PsiS
+    data(rowIndex, COL_REBARS) = batch.ResultAt(index).crackResult.width.TensionRebarIds
+    data(rowIndex, COL_NREBARS) = batch.ResultAt(index).crackResult.width.TensionRebarCount
+    data(rowIndex, COL_SIGMA_S_CRC) = OptionalStress(batch.ResultAt(index).crackResult.width.SigmaSCrc, units, policy)
+    data(rowIndex, COL_SIGMA_S) = OutputStress(batch.ResultAt(index).crackResult.width.SigmaS, units)
+    data(rowIndex, COL_ES) = OutputStress(batch.ResultAt(index).crackResult.width.SteelEs, units)
+    data(rowIndex, COL_ACRC) = OutputLength(batch.ResultAt(index).crackResult.width.crackWidth, units)
+    data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.ResultAt(index).crackResult.width.AllowableCrackWidth, units)
     If batch.ResultAt(index).crackResult.width.ReserveFactor > SMALL_VALUE Then _
-        data(RowIndex, COL_ACRC_RATIO) = batch.ResultAt(index).crackResult.width.ReserveFactor
-    data(RowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
+        data(rowIndex, COL_ACRC_RATIO) = batch.ResultAt(index).crackResult.width.ReserveFactor
+    data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
 End Sub
 
 ' Записывает проверку продольных трещин по сжатому бетону.
-Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutLongitudinalData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     If Not policy.IsMetaFinished(batch.ResultAt(index).LongitudinalCrackMeta) Then
-        data(RowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
+        data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
         Exit Sub
     End If
 
-    data(RowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).crackResult.longitudinal.MaxCompressionStress, units)
-    data(RowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).crackResult.longitudinal.RbMc2, units)
+    data(rowIndex, COL_SIGMA_B_MAX) = OutputStress(batch.ResultAt(index).crackResult.longitudinal.MaxCompressionStress, units)
+    data(rowIndex, COL_RB_MC2) = OutputStress(batch.ResultAt(index).crackResult.longitudinal.RbMc2, units)
     If batch.ResultAt(index).crackResult.longitudinal.ReserveFactor > SMALL_VALUE Then _
-        data(RowIndex, COL_LONG_RATIO) = batch.ResultAt(index).crackResult.longitudinal.ReserveFactor
-    data(RowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
+        data(rowIndex, COL_LONG_RATIO) = batch.ResultAt(index).crackResult.longitudinal.ReserveFactor
+    data(rowIndex, COL_LONG_STATUS) = LongitudinalStatusText(batch, index, policy)
 End Sub
 
 ' Оформляет подробную таблицу трещин: шапку, рамки, числа и статусы.
@@ -48484,7 +48484,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        ApplyStatusCells target, batch, target.rows.Count - HEADER_ROWS, preparedValues
+        ApplyStatusCells target, batch, target.rows.count - HEADER_ROWS, preparedValues
         Exit Sub
     End If
     target.font.name = "Arial"
@@ -48498,10 +48498,10 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     FormatBlock target, COL_SP35_AR, COL_SP35_STATUS
     FormatBlock target, COL_XT, COL_ACRC_STATUS
     FormatBlock target, COL_SIGMA_B_MAX, COL_LONG_STATUS
-    target.columns(COL_SEPARATOR).Clear
-    target.columns(COL_FORMATION_SEPARATOR).Clear
-    target.columns(COL_SP35_SEPARATOR).Clear
-    target.columns(COL_SP63_SEPARATOR).Clear
+    target.columns(COL_SEPARATOR).clear
+    target.columns(COL_FORMATION_SEPARATOR).clear
+    target.columns(COL_SP35_SEPARATOR).clear
+    target.columns(COL_SP63_SEPARATOR).clear
 
     target.Resize(HEADER_ROWS, TOTAL_COLUMNS).HorizontalAlignment = -4108
     target.Resize(HEADER_ROWS, TOTAL_COLUMNS).VerticalAlignment = -4108
@@ -48517,32 +48517,32 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     Next headerColumn
 
     Dim dataRows As Long
-    dataRows = target.rows.Count - HEADER_ROWS
+    dataRows = target.rows.count - HEADER_ROWS
     If dataRows > 0 Then
-        target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).HorizontalAlignment = -4108
-        target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).VerticalAlignment = -4108
-        target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
-        target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 3).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
-        target.Offset(HEADER_ROWS, COL_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_PRE_CRACK_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_POST_CRACK_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_FORMATION_STATE - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_SP35_BETA - 1).Resize(dataRows, 3).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_SP35_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_SP35_BETA - 1).Resize(dataRows, 3).WrapText = False
-        target.Offset(HEADER_ROWS, COL_SP35_REBARS - 1).Resize(dataRows, 1).WrapText = False
-        target.Offset(HEADER_ROWS, COL_SP35_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_PRE_EBC - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
-        target.Offset(HEADER_ROWS, COL_POST_EBC - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
-        target.Offset(HEADER_ROWS, COL_CURRENT_EBC - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
-        target.Offset(HEADER_ROWS, COL_CRACK_STATE_DIAGEXT - 1).Resize(dataRows, 2).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_ACRC_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_LONG_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).HorizontalAlignment = -4108
+        target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).VerticalAlignment = -4108
+        target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
+        target.offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
+        target.offset(HEADER_ROWS, COL_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_PRE_CRACK_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_POST_CRACK_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_FORMATION_STATE - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_SP35_BETA - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_SP35_REBARS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_SP35_BETA - 1).Resize(dataRows, 3).WrapText = False
+        target.offset(HEADER_ROWS, COL_SP35_REBARS - 1).Resize(dataRows, 1).WrapText = False
+        target.offset(HEADER_ROWS, COL_SP35_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_PRE_EBC - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
+        target.offset(HEADER_ROWS, COL_POST_EBC - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
+        target.offset(HEADER_ROWS, COL_CURRENT_EBC - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
+        target.offset(HEADER_ROWS, COL_CRACK_STATE_DIAGEXT - 1).Resize(dataRows, 2).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_ACRC_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_LONG_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         Dim widthFormat As String
         widthFormat = CrackWidthNumberFormat(units) ' Сохраняем одинаковую физическую точность 0.001 мм: ширина в метрах не должна выглядеть нулевой из-за общего трехзначного формата таблицы.
-        target.Offset(HEADER_ROWS, COL_SP35_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
-        target.Offset(HEADER_ROWS, COL_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
+        target.offset(HEADER_ROWS, COL_SP35_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
+        target.offset(HEADER_ROWS, COL_ACRC - 1).Resize(dataRows, 2).NumberFormat = widthFormat
         ApplyStatusCells target, batch, dataRows, preparedValues
     End If
     ApplyHeaderSubscripts target
@@ -48563,11 +48563,11 @@ End Function
 ' Оформляет один непрерывный блок таблицы, не затрагивая пустые разделители.
 Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal lastCol As Long)
     Dim block As Object
-    Set block = target.Offset(0, firstCol - 1).Resize(target.rows.Count, lastCol - firstCol + 1)
+    Set block = target.offset(0, firstCol - 1).Resize(target.rows.count, lastCol - firstCol + 1)
     block.Borders.LineStyle = 1
     block.Borders.weight = 2
     block.rows(1).Resize(HEADER_ROWS).font.Bold = True
-    target.Offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.color = HEADER_COLOR
+    target.offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.color = HEADER_COLOR
 End Sub
 
 ' Красит блоки строки по статусу общей проверки, нормальных и продольных трещин.
@@ -48579,9 +48579,9 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
-    If batch.Count <= 0 Then Exit Sub
-    ReDim rows(1 To batch.Count)
-    For i = 1 To batch.Count
+    If batch.count <= 0 Then Exit Sub
+    ReDim rows(1 To batch.count)
+    For i = 1 To batch.count
         rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
     End If
@@ -48594,32 +48594,32 @@ End Sub
 ' Записывает данные выполненной формулы СП 35: выбранную опорную группу,
 ' коэффициенты beta/psi и область взаимодействия. Всё уже сохранено расчётом;
 ' здесь только переводятся единицы и оформляются значения.
-Private Sub PutSP35WidthData(ByRef data() As Variant, ByVal RowIndex As Long, ByVal width As CCrackWidthResult, ByVal units As CUnitSystem)
-    data(RowIndex, COL_SP35_AR) = OutputArea(width.Abt, units)
-    data(RowIndex, COL_SP35_BETA) = SP35RowsText(width, "Beta", units)
-    data(RowIndex, COL_SP35_N) = SP35RowsText(width, "Count", units)
-    data(RowIndex, COL_SP35_D) = SP35RowsText(width, "Diameter", units)
-    data(RowIndex, COL_SP35_RR) = OutputLength(width.SP35ReinforcementRadius, units)
-    data(RowIndex, COL_SP35_PSI) = OutputLength(width.SP35PsiCm * 10#, units)
-    data(RowIndex, COL_SP35_REBARS) = SP35RowsText(width, "Rebars", units)
-    data(RowIndex, COL_SP35_NREBARS) = width.TensionRebarCount
-    data(RowIndex, COL_SP35_SIGMA) = OutputStress(width.SigmaS, units)
-    data(RowIndex, COL_SP35_ES) = OutputStress(width.SteelEs, units)
-    data(RowIndex, COL_SP35_ACRC) = OutputLength(width.crackWidth, units)
-    data(RowIndex, COL_SP35_ALLOWABLE) = OutputLength(width.AllowableCrackWidth, units)
-    If width.ReserveFactor > SMALL_VALUE Then data(RowIndex, COL_SP35_RATIO) = width.ReserveFactor
+Private Sub PutSP35WidthData(ByRef data() As Variant, ByVal rowIndex As Long, ByVal width As CCrackWidthResult, ByVal units As CUnitSystem)
+    data(rowIndex, COL_SP35_AR) = OutputArea(width.Abt, units)
+    data(rowIndex, COL_SP35_BETA) = SP35RowsText(width, "Beta", units)
+    data(rowIndex, COL_SP35_N) = SP35RowsText(width, "Count", units)
+    data(rowIndex, COL_SP35_D) = SP35RowsText(width, "Diameter", units)
+    data(rowIndex, COL_SP35_RR) = OutputLength(width.SP35ReinforcementRadius, units)
+    data(rowIndex, COL_SP35_PSI) = OutputLength(width.SP35PsiCm * 10#, units)
+    data(rowIndex, COL_SP35_REBARS) = SP35RowsText(width, "Rebars", units)
+    data(rowIndex, COL_SP35_NREBARS) = width.TensionRebarCount
+    data(rowIndex, COL_SP35_SIGMA) = OutputStress(width.SigmaS, units)
+    data(rowIndex, COL_SP35_ES) = OutputStress(width.SteelEs, units)
+    data(rowIndex, COL_SP35_ACRC) = OutputLength(width.crackWidth, units)
+    data(rowIndex, COL_SP35_ALLOWABLE) = OutputLength(width.AllowableCrackWidth, units)
+    If width.ReserveFactor > SMALL_VALUE Then data(rowIndex, COL_SP35_RATIO) = width.ReserveFactor
 End Sub
 
 ' Форматирует все ряды критической области. Несколько групп одного ряда
 ' сохраняют соответствие beta/n/d/стержней по G-id. Диаметры реальные, не d_ref.
 Private Function SP35RowsText(ByVal width As CCrackWidthResult, ByVal field As String, ByVal units As CUnitSystem) As String
     Dim prepared As CSP35CrackData, rows As Variant, members As Variant, row As Long, i As Long, j As Long
-    Dim group As Long, Count As Long, segment As String, value As String
+    Dim group As Long, count As Long, segment As String, value As String
     Set prepared = width.SP35Data: rows = prepared.CandidateRows(width.SP35CriticalCandidate)
     For row = 1 To prepared.CandidateRowCount(width.SP35CriticalCandidate)
-        Count = 0: segment = vbNullString
+        count = 0: segment = vbNullString
         For i = LBound(rows, 1) To UBound(rows, 1)
-            If CLng(rows(i, 2)) = row Then Count = Count + 1
+            If CLng(rows(i, 2)) = row Then count = count + 1
         Next i
         For i = LBound(rows, 1) To UBound(rows, 1)
             If CLng(rows(i, 2)) = row Then
@@ -48638,7 +48638,7 @@ Private Function SP35RowsText(ByVal width As CCrackWidthResult, ByVal field As S
                             End If
                         Next j
                 End Select
-                If Count > 1 Then value = "G" & CStr(group) & "=" & value
+                If count > 1 Then value = "G" & CStr(group) & "=" & value
                 If Len(segment) > 0 Then segment = segment & "; "
                 segment = segment & value
             End If
@@ -48718,13 +48718,13 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
 End Sub
 
 ' Ставит нижний индекс найденному текстовому токену внутри одной ячейки.
-Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal ColumnIndex As Long, ByVal token As String)
+Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal columnIndex As Long, ByVal token As String)
     Dim textValue As String
-    textValue = CStr(headers(1, ColumnIndex))
+    textValue = CStr(headers(1, columnIndex))
     Dim startPos As Long
     startPos = InStr(1, textValue, token, vbBinaryCompare)
     If startPos = 0 Then Exit Sub
-    Dim cell As Object: Set cell = labels.cells(1, ColumnIndex)
+    Dim cell As Object: Set cell = labels.cells(1, columnIndex)
     Do While startPos > 0
         cell.Characters(startPos, Len(token)).font.Subscript = True
         startPos = InStr(startPos + Len(token), textValue, token, vbBinaryCompare)
@@ -48873,14 +48873,14 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     Dim data As Variant: data = snapshot.table("Cracks.Data")
     Dim target As Object: Set target = TargetRange(Workbook, UBound(data, 1))
     Dim headers As Variant: headers = snapshot.table("Cracks.Headers")
-    If mMinimalFormatting Then mMinimalFormatting = CStr(target.cells(target.rows.Count, 1).NumberFormat) = "@" And ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks())
+    If mMinimalFormatting Then mMinimalFormatting = CStr(target.cells(target.rows.count, 1).NumberFormat) = "@" And ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks())
     PrepareTarget target
     If Not mMinimalFormatting Then
         target.Resize(HEADER_ROWS, TOTAL_COLUMNS).value2 = headers
         MergeHeaders target
     End If
     WriteBlockTitle target, "Расчет нормальных и продольных трещин"
-    target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
+    target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
     mSnapshotLengthUnit = snapshot.OutputLengthUnit
     FormatTable target, Nothing, Nothing, data
     mSnapshotLengthUnit = vbNullString
@@ -58728,9 +58728,9 @@ Private Const COL_CAPACITY_LAST As Long = 49 ' Столбец таблицы: п
 Private Const COL_ID As Long = 1 ' Столбец таблицы: номер сочетания.
 Private Const COL_RESULT_COMMENT As Long = 2 ' Столбец таблицы: пояснение результата сочетания.
 Private Const COL_STATUS As Long = 3 ' Столбец таблицы: общий статус сочетания.
-Private Const COL_REF_N As Long = 4 ' Столбец таблицы: исходная продольная сила.
-Private Const COL_REF_MX As Long = 5 ' Столбец таблицы: исходный момент Mx.
-Private Const COL_REF_MY As Long = 6 ' Столбец таблицы: исходный момент My.
+Private Const COL_REF_N As Long = 4 ' Рабочая продольная сила в центре приведённого сечения.
+Private Const COL_REF_MX As Long = 5 ' Рабочий момент Mx относительно центральной оси X.
+Private Const COL_REF_MY As Long = 6 ' Рабочий момент My относительно центральной оси Y.
 Private Const COL_LOAD_N As Long = 7 ' Столбец таблицы: расчётная продольная сила.
 Private Const COL_LOAD_MX As Long = 8 ' Столбец таблицы: расчётный момент Mx.
 Private Const COL_LOAD_MY As Long = 9 ' Столбец таблицы: расчётный момент My.
@@ -58801,9 +58801,9 @@ Public Function RequiredDataRowsForWorkbook(ByVal Workbook As Object, ByVal comb
     If Workbook Is Nothing Then GoTo SafeExit
     Dim loads As Object
     Set loads = Workbook.names.item("rngLoadCombinations").RefersToRange
-    If loads.rows.Count > 1 Then
-        If loads.rows.Count - 1 > RequiredDataRowsForWorkbook Then _
-            RequiredDataRowsForWorkbook = loads.rows.Count - 1
+    If loads.rows.count > 1 Then
+        If loads.rows.count - 1 > RequiredDataRowsForWorkbook Then _
+            RequiredDataRowsForWorkbook = loads.rows.count - 1
     End If
 SafeExit:
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
@@ -58828,9 +58828,9 @@ Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCa
     If batch Is Nothing Then Err.Raise vbObjectError + 3997, "CStrengthSummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
-    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.Count))
+    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.count))
     If mMinimalFormatting Then
-        mMinimalFormatting = (CStr(target.cells(target.rows.Count, 1).NumberFormat) = "@")
+        mMinimalFormatting = (CStr(target.cells(target.rows.count, 1).NumberFormat) = "@")
     End If
     If mCapturedSnapshot Is Nothing Then PrepareTarget target
     WriteHeaders target, units
@@ -58840,7 +58840,7 @@ Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCa
     Exit Sub
 
 Failed:
-    Err.Raise Err.Number, "CStrengthSummaryWriter.WriteSummary", Err.description
+    Err.Raise Err.number, "CStrengthSummaryWriter.WriteSummary", Err.description
 End Sub
 
 ' Очищает данные подробной таблицы прочности. При fullFormatting=True
@@ -58853,24 +58853,24 @@ End Sub
 
 ' Возвращает диапазон текущей таблицы вместе с шапкой и строками сочетаний.
 Private Function TargetRange(ByVal Workbook As Object, Optional ByVal dataRows As Long = 1) As Object
-    Dim Anchor As Object
-    Set Anchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
-    If Anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
-        "Диапазон rngStrengthSummaryAnchor привязан к " & Anchor.Worksheet.name & "!" & Anchor.address(False, False) & _
+    Dim anchor As Object
+    Set anchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+    If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
+        "Диапазон rngStrengthSummaryAnchor привязан к " & anchor.Worksheet.name & "!" & anchor.address(False, False) & _
         ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
-    Set TargetRange = Anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
+    Set TargetRange = anchor.offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
 ' Возвращает диапазон очистки этой таблицы до начала следующего подробного раздела Results.
 Private Function ClearTargetRange(ByVal Workbook As Object) As Object
-    Dim Anchor As Object
-    Set Anchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
-    If Anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
-        "Диапазон rngStrengthSummaryAnchor привязан к " & Anchor.Worksheet.name & "!" & Anchor.address(False, False) & _
+    Dim anchor As Object
+    Set anchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+    If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
+        "Диапазон rngStrengthSummaryAnchor привязан к " & anchor.Worksheet.name & "!" & anchor.address(False, False) & _
         ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
 
     Dim topRow As Long
-    topRow = Anchor.row - HEADER_ROWS
+    topRow = anchor.row - HEADER_ROWS
 
     Dim rowsToClear As Long
     rowsToClear = RequiredRows(1)
@@ -58887,16 +58887,16 @@ Private Function ClearTargetRange(ByVal Workbook As Object) As Object
     End If
 
 UseDefaultHeight:
-    If topRow + rowsToClear - 1 > Anchor.Worksheet.rows.Count Then rowsToClear = Anchor.Worksheet.rows.Count - topRow + 1
-    Set ClearTargetRange = Anchor.Worksheet.cells(topRow, Anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
+    If topRow + rowsToClear - 1 > anchor.Worksheet.rows.count Then rowsToClear = anchor.Worksheet.rows.count - topRow + 1
+    Set ClearTargetRange = anchor.Worksheet.cells(topRow, anchor.column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
 ' Готовит область к записи: при полном оформлении очищает её целиком.
 ' В минимальном режиме оставляет шапку и форматы, удаляя данные и заливку рассчитанных статусов.
 Private Sub PrepareTarget(ByVal target As Object)
     If mMinimalFormatting Then
-        If target.rows.Count > HEADER_ROWS Then
-            With target.Offset(HEADER_ROWS, 0).Resize(target.rows.Count - HEADER_ROWS, TOTAL_COLUMNS)
+        If target.rows.count > HEADER_ROWS Then
+            With target.offset(HEADER_ROWS, 0).Resize(target.rows.count - HEADER_ROWS, TOTAL_COLUMNS)
                 .ClearContents
                 .Interior.colorIndex = -4142
             End With
@@ -58905,7 +58905,7 @@ Private Sub PrepareTarget(ByVal target As Object)
     End If
     ClearBlockTitleRow target
     target.UnMerge
-    target.Clear
+    target.clear
 End Sub
 
 ' Записывает отдельную строку-название над подробным блоком, не вмешиваясь в многоуровневую шапку таблицы.
@@ -58935,7 +58935,7 @@ End Sub
 ' принадлежат другим данным листа и не должны изменяться при повторной записи.
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.row <= 1 Then Exit Sub
-    target.Worksheet.cells(target.row - 1, target.column).Resize(1, TOTAL_COLUMNS).Clear
+    target.Worksheet.cells(target.row - 1, target.column).Resize(1, TOTAL_COLUMNS).clear
 End Sub
 
 ' Собирает многоуровневую шапку с актуальными единицами. В минимальном
@@ -58984,9 +58984,9 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant)
     headers(HEADER_NOTES_ROW, COL_REF_N) = "нагрузки, переданные в расчет прочности, в центре приведенного сечения"
     headers(HEADER_NOTES_ROW, COL_REF_MX) = "Mx там же, вокруг оси X принятой системы"
     headers(HEADER_NOTES_ROW, COL_REF_MY) = "My там же, вокруг оси Y принятой системы"
-    headers(HEADER_NOTES_ROW, COL_LOAD_N) = "исходная N в пользовательской точке приложения"
-    headers(HEADER_NOTES_ROW, COL_LOAD_MX) = "исходный Mx в пользовательской точке приложения"
-    headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "исходный My в пользовательской точке приложения"
+    headers(HEADER_NOTES_ROW, COL_LOAD_N) = "рабочая продольная сила в пользовательской точке приложения"
+    headers(HEADER_NOTES_ROW, COL_LOAD_MX) = "рабочий Mx в точке приложения с учётом продольного изгиба при его включении"
+    headers(HEADER_NOTES_ROW, COL_LOAD_MY) = "рабочий My в точке приложения с учётом продольного изгиба при его включении"
     headers(HEADER_NOTES_ROW, COL_LIM_EBC) = "предельная деформация бетона при сжатии"
     headers(HEADER_NOTES_ROW, COL_LIM_EBT) = "предельная деформация бетона при растяжении; пусто, если растянутый бетон не работает"
     headers(HEADER_NOTES_ROW, COL_LIM_ESC) = "предельная деформация арматуры при сжатии"
@@ -59112,48 +59112,48 @@ End Function
 Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim dataRows As Long
-    dataRows = target.rows.Count - HEADER_ROWS
+    dataRows = target.rows.count - HEADER_ROWS
     If dataRows <= 0 Then Exit Sub
 
     Dim data() As Variant
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
     Dim i As Long
-    For i = 1 To batch.Count
+    For i = 1 To batch.count
         PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section
     Next i
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "Strength.Data", data
         Exit Sub
     End If
-    target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).value2 = data
+    target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).value2 = data
 End Sub
 
 ' Заполняет одну строку подробного блока прочности.
-Private Sub PutCombination(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
-    data(RowIndex, COL_ID) = batch.combinationID(index)
-    data(RowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta)
-    data(RowIndex, COL_STATUS) = policy.ExternalStatus(batch.ResultAt(index).StrengthMeta)
-    data(RowIndex, COL_STATE_STATUS) = policy.NotApplicable
-    data(RowIndex, COL_CAP_STATUS) = policy.NotApplicable
+    data(rowIndex, COL_ID) = batch.combinationID(index)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_STATUS) = policy.ExternalStatus(batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
+    data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
 
     If Not batch.StrengthDirectStateRequested(index) And Not batch.StrengthCapacityRequested(index) Then Exit Sub
 
-    data(RowIndex, COL_REF_N) = OutputForce(batch.StrengthReferenceN(index), units)
-    data(RowIndex, COL_REF_MX) = OutputMx(batch.StrengthReferenceMx(index), units)
-    data(RowIndex, COL_REF_MY) = OutputMy(batch.StrengthReferenceMy(index), units)
-    data(RowIndex, COL_LOAD_N) = OutputForce(batch.StrengthLoadPointN(index), units)
-    data(RowIndex, COL_LOAD_MX) = OutputMx(batch.StrengthLoadPointMx(index), units)
-    data(RowIndex, COL_LOAD_MY) = OutputMy(batch.StrengthLoadPointMy(index), units)
+    data(rowIndex, COL_REF_N) = OutputForce(batch.StrengthReferenceN(index), units)
+    data(rowIndex, COL_REF_MX) = OutputMx(batch.StrengthReferenceMx(index), units)
+    data(rowIndex, COL_REF_MY) = OutputMy(batch.StrengthReferenceMy(index), units)
+    data(rowIndex, COL_LOAD_N) = OutputForce(batch.StrengthLoadPointN(index), units)
+    data(rowIndex, COL_LOAD_MX) = OutputMx(batch.StrengthLoadPointMx(index), units)
+    data(rowIndex, COL_LOAD_MY) = OutputMy(batch.StrengthLoadPointMy(index), units)
 
-    PutStrengthLimits data, RowIndex, batch, index, units
-    PutStrengthState data, RowIndex, batch, index, units, section, policy
-    PutCapacityState data, RowIndex, batch, index, units, section, policy
+    PutStrengthLimits data, rowIndex, batch, index, units
+    PutStrengthState data, rowIndex, batch, index, units, section, policy
+    PutCapacityState data, rowIndex, batch, index, units, section, policy
 End Sub
 
 ' Возвращает позицию LC внутри data-части подробной таблицы.
@@ -59167,40 +59167,40 @@ End Function
 
 ' Записывает физические пределы деформаций фактически использованной модели прочности.
 ' Растянутый предел бетона показывает только при включённой растянутой ветви.
-Private Sub PutStrengthLimits(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutStrengthLimits(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
-    data(RowIndex, COL_LIM_EBC) = batch.StrengthConcreteCompressionLimitForCombination(index)
+    data(rowIndex, COL_LIM_EBC) = batch.StrengthConcreteCompressionLimitForCombination(index)
     If batch.StrengthConcreteTensionLimitEnabledForCombination(index) Then _
-        data(RowIndex, COL_LIM_EBT) = batch.StrengthConcreteTensionLimitForCombination(index)
-    data(RowIndex, COL_LIM_ESC) = batch.StrengthSteelCompressionLimitForCombination(index)
-    data(RowIndex, COL_LIM_EST) = batch.StrengthSteelTensionLimitForCombination(index)
+        data(rowIndex, COL_LIM_EBT) = batch.StrengthConcreteTensionLimitForCombination(index)
+    data(rowIndex, COL_LIM_ESC) = batch.StrengthSteelCompressionLimitForCombination(index)
+    data(rowIndex, COL_LIM_EST) = batch.StrengthSteelTensionLimitForCombination(index)
 End Sub
 
 ' Пишет фактический StrengthState, если он действительно был рассчитан.
-Private Sub PutStrengthState(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutStrengthState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CResultStatusPolicy)
     If Not batch.StrengthDirectStateRequested(index) Then
-        data(RowIndex, COL_STATE_STATUS) = policy.NotApplicable
+        data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
         Exit Sub
     End If
 
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstStrengthState)
     If stateResult Is Nothing Then
-        data(RowIndex, COL_STATE_STATUS) = DirectStatusText(batch, index, policy)
+        data(rowIndex, COL_STATE_STATUS) = DirectStatusText(batch, index, policy)
         Exit Sub
     End If
 
-    PutStatePlane data, RowIndex, stateResult, units, COL_STATE_EPS0, COL_STATE_KX, COL_STATE_KY
-    PutStateExtremes data, RowIndex, stateResult, units, _
+    PutStatePlane data, rowIndex, stateResult, units, COL_STATE_EPS0, COL_STATE_KX, COL_STATE_KY
+    PutStateExtremes data, rowIndex, stateResult, units, _
         COL_STATE_EBC, COL_STATE_EBT, COL_STATE_ESC, COL_STATE_EST, _
         COL_STATE_SBC, COL_STATE_SBT, COL_STATE_SSC, COL_STATE_SST
-    PutStateGeometry data, RowIndex, stateResult, units, section, COL_STATE_H, COL_STATE_X
-    data(RowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
+    PutStateGeometry data, rowIndex, stateResult, units, section, COL_STATE_H, COL_STATE_X
+    data(rowIndex, COL_STATE_DIAGEXT) = ExtensionUsedText(batch, index, stateResult)
     If batch.ResultAt(index).StrengthResult.DirectState.StrainReserve > SMALL_VALUE Then _
-        data(RowIndex, COL_STATE_RESERVE) = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
-    data(RowIndex, COL_STATE_STATUS) = policy.ExternalStatus(stateResult.ResultMeta)
+        data(rowIndex, COL_STATE_RESERVE) = batch.ResultAt(index).StrengthResult.DirectState.StrainReserve
+    data(rowIndex, COL_STATE_STATUS) = policy.ExternalStatus(stateResult.ResultMeta)
 End Sub
 
 ' Показывает использование продолжения диаграммы только тогда, когда само
@@ -59221,76 +59221,76 @@ End Function
 ' Записывает путь нагрузки, метод, статус и подтверждённое предельное НДС.
 ' Если конечного состояния нет, последние пробные усилия или деформации
 ' вместо него не подставляются.
-Private Sub PutCapacityState(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CResultStatusPolicy)
     If Not batch.StrengthCapacityRequested(index) Then
-        data(RowIndex, COL_CAP_STATUS) = policy.NotApplicable
+        data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
         Exit Sub
     End If
 
-    data(RowIndex, COL_CAP_LIMIT_STATE) = batch.ResultAt(index).StrengthResult.capacity.limitState
-    data(RowIndex, COL_CAP_LOAD_PATH) = batch.ResultAt(index).CapacityPathDisplayName
-    data(RowIndex, COL_CAP_METHOD) = batch.ResultAt(index).StrengthResult.capacity.solutionMethod
-    If batch.ResultAt(index).StrengthResult.capacity.LambdaCapacity > SMALL_VALUE Then data(RowIndex, COL_CAP_LAMBDA) = batch.ResultAt(index).StrengthResult.capacity.LambdaCapacity
+    data(rowIndex, COL_CAP_LIMIT_STATE) = batch.ResultAt(index).StrengthResult.capacity.limitState
+    data(rowIndex, COL_CAP_LOAD_PATH) = batch.ResultAt(index).CapacityPathDisplayName
+    data(rowIndex, COL_CAP_METHOD) = batch.ResultAt(index).StrengthResult.capacity.solutionMethod
+    If batch.ResultAt(index).StrengthResult.capacity.LambdaCapacity > SMALL_VALUE Then data(rowIndex, COL_CAP_LAMBDA) = batch.ResultAt(index).StrengthResult.capacity.LambdaCapacity
 
     Dim stateResult As CSectionStateResult
     Set stateResult = batch.ResultAt(index).StateRepository.FindState(sstCapacityState)
     If Not stateResult Is Nothing Then
-        PutStatePlane data, RowIndex, stateResult, units, COL_CAP_EPS0, COL_CAP_KX, COL_CAP_KY
-        PutCapacityLoadPointComponents data, RowIndex, batch, index, units
-        PutStateExtremes data, RowIndex, stateResult, units, _
+        PutStatePlane data, rowIndex, stateResult, units, COL_CAP_EPS0, COL_CAP_KX, COL_CAP_KY
+        PutCapacityLoadPointComponents data, rowIndex, batch, index, units
+        PutStateExtremes data, rowIndex, stateResult, units, _
             COL_CAP_EBC, COL_CAP_EBT, COL_CAP_ESC, COL_CAP_EST, _
             0, 0, 0, 0
-        PutStateGeometry data, RowIndex, stateResult, units, section, COL_CAP_H, COL_CAP_X
+        PutStateGeometry data, rowIndex, stateResult, units, section, COL_CAP_H, COL_CAP_X
     End If
     If batch.ResultAt(index).StrengthResult.capacity.ReserveFactor > SMALL_VALUE Then _
-        data(RowIndex, COL_CAP_RESERVE) = batch.ResultAt(index).StrengthResult.capacity.ReserveFactor
-    data(RowIndex, COL_CAP_STATUS) = CapacityStatusText(batch, index, policy)
+        data(rowIndex, COL_CAP_RESERVE) = batch.ResultAt(index).StrengthResult.capacity.ReserveFactor
+    data(rowIndex, COL_CAP_STATUS) = CapacityStatusText(batch, index, policy)
 End Sub
 
 ' Выводит полный предельный вектор CapacityState в точке приложения нагрузки.
-Private Sub PutCapacityLoadPointComponents(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutCapacityLoadPointComponents(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
-    data(RowIndex, COL_CAP_N) = OutputForce(batch.ResultAt(index).StrengthResult.capacity.nUltimate, units)
-    data(RowIndex, COL_CAP_MX) = OutputMx(batch.ResultAt(index).StrengthResult.capacity.mxUltimate, units)
-    data(RowIndex, COL_CAP_MY) = OutputMy(batch.ResultAt(index).StrengthResult.capacity.myUltimate, units)
+    data(rowIndex, COL_CAP_N) = OutputForce(batch.ResultAt(index).StrengthResult.capacity.nUltimate, units)
+    data(rowIndex, COL_CAP_MX) = OutputMx(batch.ResultAt(index).StrengthResult.capacity.mxUltimate, units)
+    data(rowIndex, COL_CAP_MY) = OutputMy(batch.ResultAt(index).StrengthResult.capacity.myUltimate, units)
 End Sub
 
 ' Записывает сохранённое поле деформаций: epsilon0 в начале координат модели
 ' и кривизны в выбранных выходных единицах.
-Private Sub PutStatePlane(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutStatePlane(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal colEps0 As Long, ByVal colKx As Long, ByVal colKy As Long)
-    data(RowIndex, colEps0) = stateResult.epsilon0
-    data(RowIndex, colKx) = OutputCurvature(stateResult.kappaX, units)
-    data(RowIndex, colKy) = OutputCurvature(stateResult.kappaY, units)
+    data(rowIndex, colEps0) = stateResult.epsilon0
+    data(rowIndex, colKx) = OutputCurvature(stateResult.kappaX, units)
+    data(rowIndex, colKy) = OutputCurvature(stateResult.kappaY, units)
 End Sub
 
 ' Пишет экстремумы состояния по флагам наличия физической зоны.
-Private Sub PutStateExtremes(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutStateExtremes(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal colEbc As Long, ByVal colEbt As Long, ByVal colEsc As Long, ByVal colEst As Long, _
         ByVal colSbc As Long, ByVal colSbt As Long, ByVal colSsc As Long, ByVal colSst As Long)
-    If stateResult.HasConcreteCompression Then data(RowIndex, colEbc) = stateResult.minConcreteStrain
-    If stateResult.HasConcreteTension Then data(RowIndex, colEbt) = stateResult.maxConcreteStrain
-    If stateResult.HasSteelCompression Then data(RowIndex, colEsc) = stateResult.MinSteelStrain
-    If stateResult.HasSteelTension Then data(RowIndex, colEst) = stateResult.MaxSteelStrain
+    If stateResult.HasConcreteCompression Then data(rowIndex, colEbc) = stateResult.minConcreteStrain
+    If stateResult.HasConcreteTension Then data(rowIndex, colEbt) = stateResult.maxConcreteStrain
+    If stateResult.HasSteelCompression Then data(rowIndex, colEsc) = stateResult.MinSteelStrain
+    If stateResult.HasSteelTension Then data(rowIndex, colEst) = stateResult.MaxSteelStrain
 
-    If colSbc > 0 And stateResult.HasConcreteCompression Then data(RowIndex, colSbc) = OutputStress(stateResult.MinConcreteStress, units)
-    If colSbt > 0 And stateResult.HasConcreteTension Then data(RowIndex, colSbt) = OutputStress(stateResult.MaxConcreteStress, units)
-    If colSsc > 0 And stateResult.HasSteelCompression Then data(RowIndex, colSsc) = OutputStress(stateResult.MinSteelStress, units)
-    If colSst > 0 And stateResult.HasSteelTension Then data(RowIndex, colSst) = OutputStress(stateResult.MaxSteelStress, units)
+    If colSbc > 0 And stateResult.HasConcreteCompression Then data(rowIndex, colSbc) = OutputStress(stateResult.MinConcreteStress, units)
+    If colSbt > 0 And stateResult.HasConcreteTension Then data(rowIndex, colSbt) = OutputStress(stateResult.MaxConcreteStress, units)
+    If colSsc > 0 And stateResult.HasSteelCompression Then data(rowIndex, colSsc) = OutputStress(stateResult.MinSteelStress, units)
+    If colSst > 0 And stateResult.HasSteelTension Then data(rowIndex, colSst) = OutputStress(stateResult.MaxSteelStress, units)
 End Sub
 
 ' Записывает высоту сечения h и высоту сжатой зоны x для сохранённого поля деформаций.
-Private Sub PutStateGeometry(ByRef data() As Variant, ByVal RowIndex As Long, _
+Private Sub PutStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal section As CSectionModel, ByVal colH As Long, ByVal colX As Long)
-    Dim depthH As Double, compressedDepth As Double, hash As Boolean, hasX As Boolean
-    stateResult.GetGeometryDepths section, depthH, compressedDepth, hash, hasX
-    If hash Then data(RowIndex, colH) = OutputLength(depthH, units)
-    If hasX Then data(RowIndex, colX) = OutputLength(compressedDepth, units)
+    Dim depthH As Double, compressedDepth As Double, hasH As Boolean, hasX As Boolean
+    stateResult.GetGeometryDepths section, depthH, compressedDepth, hasH, hasX
+    If hasH Then data(rowIndex, colH) = OutputLength(depthH, units)
+    If hasX Then data(rowIndex, colX) = OutputLength(compressedDepth, units)
 End Sub
 
 ' Оформляет подробную таблицу прочности: шапку, рамки, числа и статусы.
@@ -59299,7 +59299,7 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         Optional ByRef preparedValues As Variant)
     If Not mCapturedSnapshot Is Nothing Then Exit Sub
     If mMinimalFormatting Then
-        ApplyStatusCells target, batch, target.rows.Count - HEADER_ROWS, preparedValues
+        ApplyStatusCells target, batch, target.rows.count - HEADER_ROWS, preparedValues
         Exit Sub
     End If
     target.font.name = "Arial"
@@ -59311,8 +59311,8 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     FormatBlock target, COL_LEFT_FIRST, COL_LEFT_LAST
     FormatBlock target, COL_STATE_FIRST, COL_STATE_LAST
     FormatBlock target, COL_CAPACITY_FIRST, COL_CAPACITY_LAST
-    target.columns(COL_SEPARATOR1).Clear
-    target.columns(COL_SEPARATOR2).Clear
+    target.columns(COL_SEPARATOR1).clear
+    target.columns(COL_SEPARATOR2).clear
 
     target.Resize(HEADER_ROWS, TOTAL_COLUMNS).HorizontalAlignment = -4108
     target.Resize(HEADER_ROWS, TOTAL_COLUMNS).VerticalAlignment = -4108
@@ -59323,17 +59323,17 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.rows(HEADER_LABEL_ROW).WrapText = False
 
     Dim dataRows As Long
-    dataRows = target.rows.Count - HEADER_ROWS
+    dataRows = target.rows.count - HEADER_ROWS
     If dataRows > 0 Then
-        target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).HorizontalAlignment = -4108
-        target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).VerticalAlignment = -4108
-        target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
-        target.Offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 3).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
-        target.Offset(HEADER_ROWS, COL_STATE_DIAGEXT - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_STATE_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_CAP_LIMIT_STATE - 1).Resize(dataRows, 3).NumberFormat = "@"
-        target.Offset(HEADER_ROWS, COL_CAP_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).HorizontalAlignment = -4108
+        target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).VerticalAlignment = -4108
+        target.offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).NumberFormat = "0.000"
+        target.offset(HEADER_ROWS, COL_ID - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
+        target.offset(HEADER_ROWS, COL_STATE_DIAGEXT - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_STATE_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_CAP_LIMIT_STATE - 1).Resize(dataRows, 3).NumberFormat = "@"
+        target.offset(HEADER_ROWS, COL_CAP_STATUS - 1).Resize(dataRows, 1).NumberFormat = "@"
         ApplyStrainNumberFormat target, dataRows
         ApplyStatusCells target, batch, dataRows, preparedValues
     End If
@@ -59342,23 +59342,23 @@ End Sub
 
 ' Форматирует относительные деформации и кривизны плоскости НДС с нужной точностью вывода.
 Private Sub ApplyStrainNumberFormat(ByVal target As Object, ByVal dataRows As Long)
-    target.Offset(HEADER_ROWS, COL_LIM_EBC - 1).Resize(dataRows, COL_LIM_EST - COL_LIM_EBC + 1).NumberFormat = "0.0000"
-    target.Offset(HEADER_ROWS, COL_STATE_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
-    target.Offset(HEADER_ROWS, COL_STATE_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
-    target.Offset(HEADER_ROWS, COL_STATE_EBC - 1).Resize(dataRows, COL_STATE_EST - COL_STATE_EBC + 1).NumberFormat = "0.0000"
-    target.Offset(HEADER_ROWS, COL_CAP_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
-    target.Offset(HEADER_ROWS, COL_CAP_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
-    target.Offset(HEADER_ROWS, COL_CAP_EBC - 1).Resize(dataRows, COL_CAP_EST - COL_CAP_EBC + 1).NumberFormat = "0.0000"
+    target.offset(HEADER_ROWS, COL_LIM_EBC - 1).Resize(dataRows, COL_LIM_EST - COL_LIM_EBC + 1).NumberFormat = "0.0000"
+    target.offset(HEADER_ROWS, COL_STATE_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
+    target.offset(HEADER_ROWS, COL_STATE_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
+    target.offset(HEADER_ROWS, COL_STATE_EBC - 1).Resize(dataRows, COL_STATE_EST - COL_STATE_EBC + 1).NumberFormat = "0.0000"
+    target.offset(HEADER_ROWS, COL_CAP_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
+    target.offset(HEADER_ROWS, COL_CAP_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
+    target.offset(HEADER_ROWS, COL_CAP_EBC - 1).Resize(dataRows, COL_CAP_EST - COL_CAP_EBC + 1).NumberFormat = "0.0000"
 End Sub
 
 ' Оформляет непрерывный блок таблицы, не затрагивая пустые разделители.
 Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal lastCol As Long)
     Dim block As Object
-    Set block = target.Offset(0, firstCol - 1).Resize(target.rows.Count, lastCol - firstCol + 1)
+    Set block = target.offset(0, firstCol - 1).Resize(target.rows.count, lastCol - firstCol + 1)
     block.Borders.LineStyle = 1
     block.Borders.weight = 2
     block.rows(1).Resize(HEADER_ROWS).font.Bold = True
-    target.Offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.color = HEADER_COLOR
+    target.offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.color = HEADER_COLOR
 End Sub
 
 ' Красит строковые блоки подробной таблицы по фактическому статусу каждой проверки.
@@ -59370,9 +59370,9 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
         If IsEmpty(storedRows) Then Exit Sub
         rows = storedRows
     Else
-    If batch.Count <= 0 Then Exit Sub
-    ReDim rows(1 To batch.Count)
-    For i = 1 To batch.Count
+    If batch.count <= 0 Then Exit Sub
+    ReDim rows(1 To batch.count)
+    For i = 1 To batch.count
         rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
     End If
@@ -59414,13 +59414,13 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
 End Sub
 
 ' Ставит нижний индекс найденному текстовому токену внутри одной ячейки.
-Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal ColumnIndex As Long, ByVal token As String)
+Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal columnIndex As Long, ByVal token As String)
     Dim textValue As String
-    textValue = CStr(headers(1, ColumnIndex))
+    textValue = CStr(headers(1, columnIndex))
     Dim startPos As Long
     startPos = InStr(1, textValue, token, vbTextCompare)
     If startPos = 0 Then Exit Sub
-    Dim cell As Object: Set cell = labels.cells(1, ColumnIndex)
+    Dim cell As Object: Set cell = labels.cells(1, columnIndex)
     Do While startPos > 0
         cell.Characters(startPos, Len(token)).font.Subscript = True
         startPos = InStr(startPos + Len(token), textValue, token, vbTextCompare)
@@ -59546,14 +59546,14 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     Dim data As Variant: data = snapshot.table("Strength.Data")
     Dim target As Object: Set target = TargetRange(Workbook, UBound(data, 1))
     Dim headers As Variant: headers = snapshot.table("Strength.Headers")
-    If mMinimalFormatting Then mMinimalFormatting = CStr(target.cells(target.rows.Count, 1).NumberFormat) = "@" And ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks())
+    If mMinimalFormatting Then mMinimalFormatting = CStr(target.cells(target.rows.count, 1).NumberFormat) = "@" And ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks())
     PrepareTarget target
     If Not mMinimalFormatting Then
         target.Resize(HEADER_ROWS, TOTAL_COLUMNS).value2 = headers
         MergeHeaders target
     End If
     WriteBlockTitle target, "Расчет НДС и несущей способности по модели прочности"
-    target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
+    target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
     FormatTable target, Nothing, data
 End Sub
 
