@@ -191,7 +191,6 @@ function Add-SectionSettingsTables {
         $height=Add-GeometrySettingsTable $Workbook $sheet $definition $row 1
         $row+=$height+3
     }
-    $sheet.PageSetup.PrintArea='$A$1:$K$'+($row-2)
     $sheet.PageSetup.Orientation=2
     $sheet.PageSetup.Zoom=$false;$sheet.PageSetup.FitToPagesWide=1;$sheet.PageSetup.FitToPagesTall=$false
     return $sheet
