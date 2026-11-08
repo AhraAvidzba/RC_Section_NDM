@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-08 01:30:51
+Date: 2026-11-08 23:13:35
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -64102,7 +64102,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modSectionIllustrations
 TYPE: 1
-LINES: 114
+LINES: 294
 ====================================================================================================
 Option Explicit
 
@@ -64113,85 +64113,265 @@ Private Const SOURCE_SHEET As String = "Сечения"
 Private Const TARGET_SHEET As String = "Расчет"
 Private Const SELECTOR_NAME As String = "rngSectionIllustrationSelector"
 Private Const TARGET_PICTURE As String = "CurrentSection"
+Private Const OFFICE_DRAWING_FORMAT As Long = 5 ' Формат Microsoft Office Drawing Object в Excel PasteSpecial.
+Private Const CLIPBOARD_BUSY As Long = &H800401D0 ' Windows не смог открыть буфер обмена.
 
-' Копирует выбранный рисунок, пропорционально вписывая его в текущую рамку.
-' Источник заменяется вручную; список выбранной ячейки содержит простое перечисление имён.
-' Расчётные таблицы и режим пересчёта не используются.
-' Обновление экрана не переключается; исходный лист не активируется.
+Private mSwitching As Boolean ' Вложенный вызов не должен перезаписывать буфер и рамку.
+
+' Копирует именованный рисунок и вписывает его в рамку CurrentSection.
+' Сохраняет текущий рисунок до готовности нового. Пересчёт и ScreenUpdating не переключаются.
 Public Sub SwitchSectionPicture()
     Dim sheet As Worksheet, selector As range, original As shape, frame As shape, replacement As shape
-    Dim pictureName As String, fitRatio As Double, previousName As String
-    Dim previousUpdating As Boolean, previousEvents As Boolean, previousSelection As Object, previousSheet As Object
-    Dim number As Long, description As String, action As String, renamed As Boolean
-    Dim attempt As Long, pasteNumber As Long, pasteDescription As String
-    ' Сохраняем общие флаги Excel и место пользователя до перехода между листами.
-    previousUpdating = Application.ScreenUpdating ' Флаг нужен только для обработки отложенной перерисовки в конце.
-    previousEvents = Application.EnableEvents
-    Set previousSheet = Application.ActiveSheet
-    If TypeOf Application.selection Is range Then Set previousSelection = Application.selection
+    Dim previousSheet As Object, pumpSheet As Object, activeSheet As Object, previousSelection As range
+    Dim pictureName As String, action As String, previousName As String, failureDetails As String
+    Dim value As Variant, fitRatio As Double, copyMode As Variant
+    Dim pictureWidth As Double, pictureHeight As Double, frameWidth As Double, frameHeight As Double
+    Dim previousUpdating As Boolean, previousEvents As Boolean, previousCancel As XlEnableCancelKey
+    Dim restoring As Boolean, usedClipboard As Boolean, changedContext As Boolean, renamed As Boolean
+    Dim number As Long, description As String, attempt As Long, copyNumber As Long, copyDescription As String
+    Dim frameId As Long, previousWindow As Long, oldIds() As Long, pasteStarted As Boolean
+
+    If mSwitching Then Exit Sub
+    mSwitching = True
     On Error GoTo Failed
-    action = SELECTOR_NAME
+    action = "чтение ячейки выбора иллюстрации"
     Set selector = SectionIllustrationSelector()
-    action = selector.Worksheet.name & "!" & selector.address(False, False) & " (" & SELECTOR_NAME & ")"
+    value = selector.value2
+    If IsError(value) Then Err.Raise vbObjectError + 2801, , _
+        "В ячейке " & IllustrationAddress(selector) & " ошибка Excel. Выберите имя рисунка из списка."
+    pictureName = CStr(value)
+    If Len(Trim$(pictureName)) = 0 Then Err.Raise vbObjectError + 2801, , _
+        "Выберите имя рисунка из списка в ячейке " & IllustrationAddress(selector) & "."
+
+    action = "проверка исходного рисунка"
+    Set original = FindIllustration(ThisWorkbook.Worksheets(SOURCE_SHEET), pictureName)
+    action = "проверка рамки CurrentSection"
     Set sheet = ThisWorkbook.Worksheets(TARGET_SHEET)
-    pictureName = CStr(selector.value2)
-    action = SOURCE_SHEET & "!" & pictureName
-    Set original = ThisWorkbook.Worksheets(SOURCE_SHEET).shapes(pictureName)
-    action = TARGET_SHEET & "!" & TARGET_PICTURE
-    Set frame = sheet.shapes(TARGET_PICTURE)
-    If original.Type <> msoPicture Or frame.Type <> msoPicture Then _
-        Err.Raise vbObjectError + 2801, , "Источник и CurrentSection должны быть рисунками."
-    action = "Вписывание рисунка «" & pictureName & "»"
-    ' Габариты CurrentSection постоянны; коэффициент выбирается по ограничивающей стороне.
-    fitRatio = frame.width / original.width
-    If original.height * fitRatio > frame.height Then fitRatio = frame.height / original.height
-    Application.EnableEvents = False ' Собственные переходы и выделения не вызывают обработчики книги повторно.
+    Set frame = FindIllustration(sheet, TARGET_PICTURE)
+    If sheet.Visible <> xlSheetVisible Then Err.Raise vbObjectError + 2801, , _
+        "Отобразите лист «" & TARGET_SHEET & "» и повторите выбор в ячейке " & IllustrationAddress(selector) & "."
+    If sheet.ProtectDrawingObjects Then
+        If Not sheet.ProtectionMode Then Err.Raise vbObjectError + 2801, , _
+            "Рисунки листа «" & TARGET_SHEET & "» защищены. Разрешите изменение объектов и повторите выбор."
+    End If
+    If Application.CutCopyMode <> False Then Err.Raise vbObjectError + 2801, , _
+        "Excel копирует или перемещает ячейки. Завершите вставку либо нажмите Esc и повторите выбор."
+
+    action = "подготовка рамки"
+    frameId = frame.id
+    previousUpdating = Application.ScreenUpdating
+    previousEvents = Application.EnableEvents
+    previousCancel = Application.EnableCancelKey
+    Set previousSheet = Application.activeSheet
+    If TypeOf Application.selection Is range Then Set previousSelection = Application.selection
+    restoring = True
+    Application.EnableEvents = False
+    Application.EnableCancelKey = xlErrorHandler ' Esc и Ctrl+Break проходят через восстановление рамки и флагов.
+
     For attempt = 1 To 3
-        original.copy ' Берём именованный рисунок напрямую, не переключаясь на исходный лист.
-        DoEvents ' Excel должен обработать отложенное заполнение буфера перед Paste.
-        If Not Application.ActiveSheet Is sheet Then sheet.Activate ' При выборе на целевом листе он уже активен.
+        pasteStarted = False
+        action = "копирование исходного рисунка"
+        usedClipboard = True
         On Error Resume Next
         Err.clear
-        sheet.Paste
-        pasteNumber = Err.number: pasteDescription = Err.description
+        original.copy
+        copyNumber = Err.number: copyDescription = Err.description
         On Error GoTo Failed
-        If pasteNumber = 0 Then Exit For
-        DoEvents ' При временной занятости буфера заново копируем исходный рисунок.
+        If copyNumber = 0 Then
+            previousWindow = ActiveIllustrationWindow()
+            Set pumpSheet = Application.activeSheet
+            copyMode = Application.CutCopyMode
+            DoEvents ' Excel завершает подготовку буфера перед Paste.
+            Set activeSheet = Application.activeSheet
+            changedContext = ActiveIllustrationWindow() <> previousWindow Or Not activeSheet Is pumpSheet Or _
+                Application.CutCopyMode <> copyMode
+            If changedContext Then Err.Raise vbObjectError + 2801, , _
+                "Во время копирования изменилось окно или состояние буфера. Повторите выбор в ячейке " & IllustrationAddress(selector) & "."
+            value = selector.value2
+            If IsError(value) Then Err.Raise vbObjectError + 2801, , _
+                "Выберите имя рисунка из списка в ячейке " & IllustrationAddress(selector) & "."
+            If CStr(value) <> pictureName Then Err.Raise vbObjectError + 2801, , _
+                "Значение выбора изменилось. Повторите выбор в ячейке " & IllustrationAddress(selector) & "."
+            If Not activeSheet Is sheet Then sheet.Activate
+            If Not TypeOf Application.selection Is range Then sheet.cells(1, 1).Select ' PasteSpecial требует выделенную ячейку.
+            action = "вставка рисунка на лист «" & TARGET_SHEET & "»"
+            ReadIllustrationShapeIds sheet, oldIds
+            pasteStarted = True
+            On Error Resume Next
+            Err.clear
+            sheet.PasteSpecial format:=OFFICE_DRAWING_FORMAT
+            copyNumber = Err.number: copyDescription = Err.description
+            On Error GoTo Failed
+            If copyNumber = 0 Then
+                action = "проверка результата вставки"
+                Set replacement = PastedIllustration(sheet, oldIds)
+                If Not replacement Is Nothing Then Exit For
+                copyNumber = 1004 ' Excel не создал рисунок либо создал неоднозначный набор фигур.
+                copyDescription = "Excel не подтвердил вставку одного рисунка на лист «" & TARGET_SHEET & "»."
+            End If
+            If RemoveIncompletePaste(sheet, oldIds) Then Err.Raise copyNumber, , copyDescription
+            pasteStarted = False
+        End If
+        If (copyNumber <> 1004 And copyNumber <> CLIPBOARD_BUSY) Or attempt = 3 Then Err.Raise copyNumber, , copyDescription
+
+        previousWindow = ActiveIllustrationWindow()
+        Set pumpSheet = Application.activeSheet
+        copyMode = Application.CutCopyMode
+        DoEvents ' Повтор нужен только после временного отказа буфера.
+        changedContext = ActiveIllustrationWindow() <> previousWindow Or Not Application.activeSheet Is pumpSheet Or _
+                Application.CutCopyMode <> copyMode
+        If changedContext Then Err.Raise vbObjectError + 2801, , _
+            "Во время копирования изменилось окно или состояние буфера. Повторите выбор в ячейке " & IllustrationAddress(selector) & "."
     Next attempt
-    If pasteNumber <> 0 Then Err.Raise pasteNumber, , pasteDescription
-    Set replacement = Application.selection.ShapeRange.item(1) ' Paste выделяет вставленный рисунок; индекс Shapes не равен порядку создания.
+
+    action = "вписывание рисунка"
+    pictureWidth = original.width: pictureHeight = original.height
+    frameWidth = frame.width: frameHeight = frame.height
+    fitRatio = frameWidth / pictureWidth
+    If pictureHeight * fitRatio > frameHeight Then fitRatio = frameHeight / pictureHeight
     With replacement.PictureFormat.Crop
-        .ShapeWidth = frame.width: .ShapeHeight = frame.height
+        .ShapeWidth = frameWidth: .ShapeHeight = frameHeight
         .ShapeLeft = frame.left: .ShapeTop = frame.top
-        .PictureWidth = original.width * fitRatio: .PictureHeight = original.height * fitRatio
-        .PictureOffsetX = 0: .PictureOffsetY = 0 ' Центр картинки внутри постоянной рамки, без обрезки.
+        .pictureWidth = pictureWidth * fitRatio: .pictureHeight = pictureHeight * fitRatio
+        .PictureOffsetX = 0: .PictureOffsetY = 0 ' Центр картинки внутри рамки.
     End With
     replacement.placement = frame.placement
     replacement.LockAspectRatio = frame.LockAspectRatio
     replacement.AlternativeText = pictureName
     replacement.OnAction = vbNullString
-    ' Пока новая картинка не готова, существующий CurrentSection сохраняется.
+    action = "замена рисунка CurrentSection"
     previousName = replacement.name
     frame.name = previousName & "_previous": renamed = True
     replacement.name = TARGET_PICTURE
-    frame.Delete ' Удаляем исходный рисунок только после успешной подготовки замены.
+    frame.Delete
     GoTo RestoreState
+
 Failed:
-    number = Err.number: description = action & ": " & Err.description
+    number = Err.number: failureDetails = Err.description
+    Select Case number
+        Case vbObjectError + 2801, vbObjectError + 2802
+            description = failureDetails
+        Case CLIPBOARD_BUSY
+            description = "Буфер обмена занят. Завершите копирование или вставку и повторите выбор в ячейке " & IllustrationAddress(selector) & "."
+        Case 18
+            description = "Переключение прервано. Повторите выбор в ячейке " & IllustrationAddress(selector) & "."
+        Case Else
+            description = "Excel не завершил действие «" & action & "» для иллюстрации «" & pictureName & "»." & _
+                vbCrLf & "Повторите выбор в ячейке " & IllustrationAddress(selector) & "." & vbCrLf & vbCrLf & _
+                "Код Excel " & CStr(number) & ". " & failureDetails
+    End Select
     On Error Resume Next
-    If Not replacement Is Nothing Then replacement.Delete
-    If renamed Then frame.name = TARGET_PICTURE
+    If pasteStarted Then
+        If renamed Then
+            Set frame = Nothing
+            Set frame = IllustrationById(sheet, frameId)
+            If Not frame Is Nothing Then frame.name = TARGET_PICTURE
+        End If
+        If Not frame Is Nothing Then RemoveIncompletePaste sheet, oldIds
+    End If
 RestoreState:
     On Error Resume Next
-    ' Возвращаем выделение и состояние событий; режим обновления экрана остаётся у вызывающего кода.
-    Application.CutCopyMode = False
-    If Not Application.ActiveSheet Is previousSheet Then previousSheet.Activate
-    If Not previousSelection Is Nothing Then previousSelection.Select
-    Application.EnableEvents = previousEvents
-    If previousUpdating Then DoEvents ' Даём Excel обработать отложенную перерисовку и стрелку списка.
+    If usedClipboard And Not changedContext Then Application.CutCopyMode = False
+    If restoring Then
+        If Not changedContext Then
+            If Not Application.activeSheet Is previousSheet Then previousSheet.Activate
+            If Not previousSelection Is Nothing Then previousSelection.Select
+        End If
+        Application.EnableCancelKey = previousCancel
+        Application.EnableEvents = previousEvents
+        If previousUpdating Then DoEvents ' Excel обновляет рисунок и стрелку списка.
+    End If
+    mSwitching = False
     On Error GoTo 0
     If number <> 0 Then Err.Raise number, "SwitchSectionPicture", description
 End Sub
+
+' Адрес ячейки нужен для диагностики. При недоступной ячейке возвращается имя диапазона.
+Private Function IllustrationAddress(ByVal selector As range) As String
+    IllustrationAddress = SELECTOR_NAME
+    If selector Is Nothing Then Exit Function
+    On Error Resume Next
+    IllustrationAddress = selector.Worksheet.name & "!" & selector.address(False, False)
+End Function
+
+' Возвращает дескриптор текущего окна для проверки контекста после DoEvents.
+Private Function ActiveIllustrationWindow() As Long
+    Dim window As window
+    Set window = Application.ActiveWindow
+    If Not window Is Nothing Then ActiveIllustrationWindow = window.hwnd
+End Function
+
+' Находит обычный рисунок по имени на заданном листе и объясняет, как восстановить отсутствующий объект.
+Private Function FindIllustration(ByVal sheet As Worksheet, ByVal pictureName As String) As shape
+    Dim item As shape
+    On Error Resume Next
+    Set item = sheet.shapes(pictureName)
+    On Error GoTo 0
+    If item Is Nothing Then Err.Raise vbObjectError + 2801, , _
+        "Рисунок «" & pictureName & "» на листе «" & sheet.name & "» отсутствует. Вставьте рисунок и присвойте ему это имя."
+    If item.Type <> msoPicture Then Err.Raise vbObjectError + 2801, , _
+        "Объект «" & pictureName & "» на листе «" & sheet.name & "» должен быть обычным рисунком Excel."
+    Set FindIllustration = item
+End Function
+
+' Запоминает идентификаторы фигур перед Paste для проверки вставки и отката.
+Private Sub ReadIllustrationShapeIds(ByVal sheet As Worksheet, ByRef ids() As Long)
+    Dim item As shape, index As Long
+    ReDim ids(1 To sheet.shapes.count)
+    For Each item In sheet.shapes
+        index = index + 1
+        ids(index) = item.id
+    Next item
+End Sub
+
+' Отличает вставленную фигуру от объектов, находившихся на листе до Paste.
+Private Function IsExistingIllustration(ByVal id As Long, ByRef ids() As Long) As Boolean
+    Dim index As Long
+    For index = LBound(ids) To UBound(ids)
+        If ids(index) = id Then IsExistingIllustration = True: Exit Function
+    Next index
+End Function
+
+' Обычно Paste выделяет новый рисунок. Если выделение осталось на ячейке, ищем ровно один новый рисунок по ID.
+Private Function PastedIllustration(ByVal sheet As Worksheet, ByRef ids() As Long) As shape
+    Dim selected As shape, item As shape, found As shape
+    On Error Resume Next
+    Set selected = Application.selection.ShapeRange.item(1)
+    On Error GoTo 0
+    If Not selected Is Nothing Then
+        If selected.parent Is sheet And selected.Type = msoPicture And Not IsExistingIllustration(selected.id, ids) Then
+            Set PastedIllustration = selected
+            Exit Function
+        End If
+    End If
+    For Each item In sheet.shapes
+        If item.Type = msoPicture And Not IsExistingIllustration(item.id, ids) Then
+            If Not found Is Nothing Then Exit Function ' Несколько новых рисунков не дают однозначной замены.
+            Set found = item
+        End If
+    Next item
+    Set PastedIllustration = found
+End Function
+
+' После отказа вставки удаляет только добавленные фигуры. Стрелка списка принадлежит Excel.
+Private Function RemoveIncompletePaste(ByVal sheet As Worksheet, ByRef ids() As Long) As Boolean
+    Dim item As shape, index As Long
+    For index = sheet.shapes.count To 1 Step -1
+        Set item = sheet.shapes(index)
+        If item.Type <> msoFormControl And Not IsExistingIllustration(item.id, ids) Then
+            RemoveIncompletePaste = True
+            item.Delete
+        End If
+    Next index
+End Function
+
+' Находит исходную рамку даже после переименования во время замены.
+Private Function IllustrationById(ByVal sheet As Worksheet, ByVal id As Long) As shape
+    Dim item As shape
+    For Each item In sheet.shapes
+        If item.id = id Then Set IllustrationById = item: Exit Function
+    Next item
+End Function
 
 ' Возвращает единственную ячейку выбора в этой книге; её адрес может изменяться при вырезании и вставке.
 Public Function SectionIllustrationSelector() As range
@@ -71606,7 +71786,7 @@ Public Function RunProgramMessageTests() As String
     Dim searchResult As CLimitSearchResult, inputTable As CSectionInputTable, units As CUnitSystem
     Dim values(1 To 1, 1 To 1) As Variant, addresses(1 To 1, 1 To 1) As Variant, lengthValue As Double
     On Error GoTo Failed
-    Set previousSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
+    Set previousSheet = ThisWorkbook.activeSheet: alerts = Application.DisplayAlerts
     Set sheet = ThisWorkbook.Worksheets.Add
     Set source = sheet.range("AA20:AG21")
     source.rows(1).value2 = Array("CombinationID", "N", "Mx", "My", "ProfileId", "LoadPath", "Comment")
@@ -80319,7 +80499,7 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
     Dim app As Object
     Set app = ThisWorkbook.Application
     Dim originalSheet As Object ' Временный лист не должен менять рабочий лист следующих тестов.
-    Set originalSheet = app.ActiveSheet
+    Set originalSheet = app.activeSheet
     Dim originalSheetCount As Long
     originalSheetCount = ThisWorkbook.Worksheets.count
     Dim oldDisplayAlerts As Boolean
@@ -80354,7 +80534,7 @@ Cleanup:
     app.DisplayAlerts = oldDisplayAlerts
     On Error GoTo 0
     If Not app Is Nothing Then
-        TestAssertTrue stats, "batch.writer.availableRows.activeSheetRestored", app.ActiveSheet Is originalSheet
+        TestAssertTrue stats, "batch.writer.availableRows.activeSheetRestored", app.activeSheet Is originalSheet
         TestAssertEquals stats, "batch.writer.availableRows.nameRestored", ThisWorkbook.names.item("rngLoadCombinations").RefersTo, originalRefersTo
         TestAssertTrue stats, "batch.writer.availableRows.sheetCountRestored", ThisWorkbook.Worksheets.count = originalSheetCount
         TestAssertTrue stats, "batch.writer.availableRows.alertsRestored", app.DisplayAlerts = oldDisplayAlerts
@@ -85281,7 +85461,7 @@ Private Sub TestAudit03TraceExcelContext(ByVal stage As String, Optional ByVal r
     End If
     Print #fileNumber, format$(Now, "yyyy-mm-dd hh:nn:ss") & "|" & stage
     Print #fileNumber, "styles=" & CStr(ThisWorkbook.Styles.count)
-    Print #fileNumber, "activeSheet=" & Application.ActiveSheet.name & "; screenUpdating=" & CStr(Application.ScreenUpdating)
+    Print #fileNumber, "activeSheet=" & Application.activeSheet.name & "; screenUpdating=" & CStr(Application.ScreenUpdating)
     For Each name In Array("rngLoadCombinations", "rngBatchSummary", "rngStrengthSummaryAnchor", _
             "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
         Print #fileNumber, CStr(name) & "=" & ThisWorkbook.names.item(CStr(name)).RefersToRange.address(external:=True)
@@ -85547,12 +85727,12 @@ End Function
 Public Function TestRunAudit03TemporaryLoadRangeIsolation() As String
     Dim stats As TBatchTestStats, originalSheet As Object, originalName As String
     Dim sheetCount As Long, originalAlerts As Boolean
-    Set originalSheet = Application.ActiveSheet
+    Set originalSheet = Application.activeSheet
     originalName = ThisWorkbook.names.item("rngLoadCombinations").RefersTo
     sheetCount = ThisWorkbook.Worksheets.count
     originalAlerts = Application.DisplayAlerts
     TestBatchSummaryRowsUseAvailableLoadRange stats
-    TestAssertTrue stats, "audit03.temporaryLoadRange.activeSheetRestored", Application.ActiveSheet Is originalSheet
+    TestAssertTrue stats, "audit03.temporaryLoadRange.activeSheetRestored", Application.activeSheet Is originalSheet
     TestAssertEquals stats, "audit03.temporaryLoadRange.nameRestored", ThisWorkbook.names.item("rngLoadCombinations").RefersTo, originalName
     TestAssertTrue stats, "audit03.temporaryLoadRange.sheetCountRestored", ThisWorkbook.Worksheets.count = sheetCount
     TestAssertTrue stats, "audit03.temporaryLoadRange.alertsRestored", Application.DisplayAlerts = originalAlerts
@@ -106108,7 +106288,7 @@ Private Sub TestAudit03CirclePlacementAddresses(ByRef stats As TTestStats)
     geometryRef = ThisWorkbook.names("rngCircleGeometry").RefersTo
     modTestShapeArchitecture.TestConfigureShapeFixture "Circle"
     Set geometry = ThisWorkbook.names("rngCircleGeometry").RefersToRange
-    Set previousSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
+    Set previousSheet = ThisWorkbook.activeSheet: alerts = Application.DisplayAlerts
     Set sheet = ThisWorkbook.Worksheets.Add
     Set units = New CUnitSystem: units.InitializeDefaults
     Set builder = New CRebarRuleExecutor
@@ -131617,7 +131797,7 @@ Public Function RunWorkbookInterfaceTests() As String
     Dim stats As TUiTestStats
     Dim t0 As Double
     Dim suiteSheet As Object
-    Set suiteSheet = ThisWorkbook.Application.ActiveSheet
+    Set suiteSheet = ThisWorkbook.Application.activeSheet
     t0 = Timer
     TestUiClockContract stats
 
@@ -131820,7 +132000,7 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Failed = stats.Failed + autoCADFailed
 
     suiteSheet.Activate
-    TestAssertTrue stats, "ui.suite.activeSheetRestored", ThisWorkbook.Application.ActiveSheet Is suiteSheet
+    TestAssertTrue stats, "ui.suite.activeSheetRestored", ThisWorkbook.Application.activeSheet Is suiteSheet
     TestAppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & TestFormatNumberInvariant(TestUiElapsedSeconds(t0, Timer))
     RunWorkbookInterfaceTests = stats.report
@@ -137284,7 +137464,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
     Dim lengthFactor As Double, areaFactor As Double, stressFactor As Double, curvatureFactor As Double
     Dim solveCount As Long, prefix As String, savedSheet As Object
     On Error GoTo Failed
-    Set savedSheet = ThisWorkbook.Application.ActiveSheet
+    Set savedSheet = ThisWorkbook.Application.activeSheet
     If stopAfterCases = 0 Then ThisWorkbook.Worksheets.item("Config").Activate
     Set unitRange = ThisWorkbook.names.item("rngUnitSettings").RefersToRange
     Set signRange = ThisWorkbook.names.item("rngSignConventionSettings").RefersToRange
@@ -137433,7 +137613,7 @@ Restore:
     End If
     On Error GoTo 0
     If stopAfterCases = 0 Then TestAssertTrue stats, "audit03.unitEquivalent.activeSheetRestored", _
-        ThisWorkbook.Application.ActiveSheet Is savedSheet
+        ThisWorkbook.Application.activeSheet Is savedSheet
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -137454,7 +137634,7 @@ End Function
 Public Function RunAudit03UnitSignStageScreenDiagnosticTests(Optional ByVal screenMode As String = "No") As String
     Dim savedScreen As Boolean, stats As TUiTestStats, guard As CExcelAppStateGuard, savedSheet As Object
     savedScreen = ThisWorkbook.Application.ScreenUpdating
-    Set savedSheet = ThisWorkbook.Application.ActiveSheet
+    Set savedSheet = ThisWorkbook.Application.activeSheet
     On Error GoTo Failed
     Select Case screenMode
         Case "No", "Yes"
@@ -137675,7 +137855,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     Dim actual As Variant, prefix As String, message As String, caseFailures As Long, savedSheet As Object
     Dim principalSign As Double
     On Error GoTo Failed
-    Set savedSheet = ThisWorkbook.Application.ActiveSheet
+    Set savedSheet = ThisWorkbook.Application.activeSheet
     ThisWorkbook.Worksheets.item("Config").Activate
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", _
@@ -137813,7 +137993,7 @@ Restore:
     End If
     If Not savedSheet Is Nothing Then savedSheet.Activate
     On Error GoTo 0
-    TestAssertTrue stats, "audit03.inputUnits.activeSheetRestored", ThisWorkbook.Application.ActiveSheet Is savedSheet
+    TestAssertTrue stats, "audit03.inputUnits.activeSheetRestored", ThisWorkbook.Application.activeSheet Is savedSheet
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -141242,7 +141422,7 @@ Private Sub TestUniqueCombinationIDs(ByRef stats As TUiTestStats)
     Dim shouldReject As Boolean, expectedCount As Long, before As Variant, results As Object, savedSentinel As Variant
     Dim alerts As Boolean, solves As Long, prefix As String
     On Error GoTo Failed
-    Set originalSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
+    Set originalSheet = ThisWorkbook.activeSheet: alerts = Application.DisplayAlerts
     originalRef = ThisWorkbook.names("rngLoadCombinations").RefersTo
     Set sheet = ThisWorkbook.Worksheets.Add: sheet.name = "__TestUniqueIDs"
     Set Target = sheet.cells(100, 35).Resize(7, 7)

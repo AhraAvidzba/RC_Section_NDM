@@ -1,0 +1,142 @@
+{
+  "Status": "PASS_ILLUSTRATION_RELIABILITY_AND_WORKBOOK_CODE_SYNC",
+  "SourceSHA256": "D5EB59ECF2606B46490CA66D334555DE96AC239AEE87FC28FD0557552DE7F66F",
+  "MainBookSHA256": "FFE31DDDD140FA25622B04629730D2AAB74D15C2C8AFE6E4356DB52972451608",
+  "MainVbaExportSHA256": "AD6341151572F49E5A29546FC861E5A19947FD2C32BA646EB50FA2513A013E6D",
+  "CommonVbaProjectSHA256": "D5036251CEABACE410394E9F58FDA4B129A2CAA1F2F46B6BD321D802E8A3D73E",
+  "DefaultPasteNativeException": "0xC0000374",
+  "LastCompletedTraceMarker": "before-paste",
+  "NativeDetectionStack": [
+    "ntdll!RtlGetUserInfoHeap",
+    "ntdll!RtlpReportHeapFailure"
+  ],
+  "PasteFormat": "Microsoft Office Drawing Object",
+  "LosslessPictures": [
+    "Circle",
+    "HollowRectangle",
+    "PointedSection",
+    "Rectangles"
+  ],
+  "StressSwitches": {
+    "Clean": 420,
+    "Formatted": 420,
+    "FinalSavedCopies": 288
+  },
+  "FormattedPeakPrivateBytes": 353587200,
+  "FaultScenarios": [
+    "MissingSource",
+    "EmptySelector",
+    "ExcelErrorInSelector",
+    "ProtectedDrawing",
+    "WrongSourceType",
+    "PasteInsertedThenFailed",
+    "CancelledAfterRename",
+    "BusyCopyRetried",
+    "BusyPasteRetried",
+    "BusyCopyExhausted",
+    "PastedPictureWithoutSelection",
+    "PasteReturnedNoPicture",
+    "PasteWithoutPictureRetried"
+  ],
+  "NativeDropdown": {
+    "Before": "PointedSection",
+    "After": "HollowRectangle",
+    "Reopened": true
+  },
+  "ParallelNdmIsolation": true,
+  "ComparedComponents": 187,
+  "SourceChange": "modSectionIllustrations",
+  "OnlyChangedWorkbookPart": "xl/vbaProject.bin",
+  "MainVbeIdentifierSpellingOnly": [
+    "modTestAudit02Api",
+    "modTestBatchCalculation",
+    "modTestGeometry",
+    "modTestWorkbookInterface"
+  ],
+  "SmokeCases": {
+    "Main": [
+      {
+        "Kind": "LSection",
+        "ResultRows": 342,
+        "PlotSeries": 0,
+        "PlotShapes": 423,
+        "FormationMs": 1607.4824,
+        "CalculationMs": 1422.4456,
+        "PlotMs": 474.6635
+      },
+      {
+        "Kind": "Circle",
+        "ResultRows": 292,
+        "PlotSeries": 0,
+        "PlotShapes": 341,
+        "FormationMs": 1314.9678000000001,
+        "CalculationMs": 1107.9633000000001,
+        "PlotMs": 328.1184
+      }
+    ],
+    "Formatted": [
+      {
+        "Kind": "LSection",
+        "ResultRows": 342,
+        "PlotSeries": 0,
+        "PlotShapes": 423,
+        "FormationMs": 1482.4921000000002,
+        "CalculationMs": 1710.6038,
+        "PlotMs": 331.7194
+      },
+      {
+        "Kind": "Circle",
+        "ResultRows": 292,
+        "PlotSeries": 0,
+        "PlotShapes": 341,
+        "FormationMs": 1058.3637,
+        "CalculationMs": 1609.5581,
+        "PlotMs": 288.5541
+      }
+    ],
+    "FormattedFast": [
+      {
+        "Kind": "LSection",
+        "ResultRows": 342,
+        "PlotSeries": 0,
+        "PlotShapes": 423,
+        "FormationMs": 1357.0432,
+        "CalculationMs": 1593.3747,
+        "PlotMs": 347.9261
+      },
+      {
+        "Kind": "Circle",
+        "ResultRows": 292,
+        "PlotSeries": 0,
+        "PlotShapes": 341,
+        "FormationMs": 1126.5167000000001,
+        "CalculationMs": 1462.383,
+        "PlotMs": 265.7977
+      }
+    ]
+  },
+  "MatchedIllustrationTiming": {
+    "Before": {
+      "Count": 91,
+      "MedianMs": 564.7419,
+      "P95Ms": 672.1199
+    },
+    "After": {
+      "Count": 91,
+      "MedianMs": 572.4591,
+      "P95Ms": 745.0172
+    },
+    "ExploratoryBlockBootstrap95Ms": [
+      -0.44619999999997617,
+      16.60609999999997
+    ],
+    "FirstBaselineCompleted": false
+  },
+  "MatchedVbaInspectionShutdown": {
+    "Code": "0xC0000005",
+    "Module": "combase.dll",
+    "SeenOnUnpatchedControls": true
+  },
+  "SelectedNativeRuntimeCrashes": 0,
+  "FullCalculationAcceptanceClaimForThisBuild": false
+}
