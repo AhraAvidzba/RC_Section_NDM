@@ -413,9 +413,9 @@ End Sub
 ' по СП 35 и СП 63 вычисляются относительно этих осей. Моменты уже пересчитаны
 ' относительно того же центра при подготовке сочетания. Плоскость 1
 ' связана с изгибом вокруг первой главной оси, плоскость 2 - вокруг второй.
-' Если главные оси совпали с X/Y, плоскость 1 - это изгиб Mx вокруг X:
-' расчетная плоскость YZ, эксцентриситет и габарит берутся по Y. Плоскость 2 -
-' это изгиб My вокруг Y: расчетная плоскость XZ, эксцентриситет и габарит по X.
+' Ось 1 ближе к X, ось 2 повёрнута от неё на +90°. При совпадении с X/Y
+' плоскость 1 соответствует изгибу Mx и габариту по Y, а плоскость 2 —
+' изгибу My и габариту по X. Знаки эксцентриситетов следуют нормалям.
 Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
         ByVal mxValue As Double, ByVal myValue As Double, ByVal sustainedMx As Double, _
         ByVal sustainedMy As Double, ByVal elementLength As Double, ByVal mu1 As Double, _

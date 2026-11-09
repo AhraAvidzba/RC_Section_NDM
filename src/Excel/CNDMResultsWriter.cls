@@ -963,9 +963,9 @@ Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно центральных осей X/Y через ц.т. бетонного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси X через ц.т. бетонного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y через ц.т. бетонного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X модели к главной центральной оси 1 бетонного сечения; положительный против часовой стрелки."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 1 (больший)."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 2 (меньший)."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X к ближайшей главной оси 1 бетонного сечения. Положительный угол направлен против часовой стрелки. При равном отклонении выбирается +45°."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 1, ближайшей к X."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 2, повёрнутой от оси 1 на +90°."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно главной центральной оси 2."
     PutAxisCoreDistanceProperties data, rowIndex, runID, "Concrete", _
@@ -991,9 +991,9 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно центральных осей X/Y через ц.т. приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси X через ц.т. приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y через ц.т. приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.PrincipalAngleRad, "rad", "Угол от +X модели к главной центральной оси 1 приведенного сечения; положительный против часовой стрелки."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведенного сечения относительно главной оси 1 (больший)."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведенного сечения относительно главной оси 2 (меньший)."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.PrincipalAngleRad, "rad", "Общий для всех сочетаний угол от +X к ближайшей главной оси 1 приведённого сечения. Положительное направление против часовой стрелки. При равном отклонении выбирается +45°."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведённого сечения относительно главной оси 1, ближайшей к X."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведённого сечения относительно главной оси 2, повёрнутой от оси 1 на +90°."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно главной центральной оси 2."
     PutAxisCoreDistanceProperties data, rowIndex, runID, "Transformed", _
@@ -1074,10 +1074,10 @@ Private Sub PutGeneralSectionCheckProperties(ByRef data() As Variant, ByRef rowI
         "Процент продольного армирования: суммарная As / gross-площадь бетонной сетки."
     PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness1", _
         SlendernessValue(batch.StabilityElementLength, batch.StabilityMu1, transformedProps.PrincipalRadius1), _
-        "-", "Гибкость l0/i по СП 35 для плоскости 1: расчет изгиба вокруг главной оси 1 приведенного сечения."
+        "-", "Справочная гибкость плоскости 1. l01 = L * Mu1, i1 — радиус инерции приведённого сечения относительно главной оси 1."
     PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness2", _
         SlendernessValue(batch.StabilityElementLength, batch.StabilityMu2, transformedProps.PrincipalRadius2), _
-        "-", "Гибкость l0/i по СП 35 для плоскости 2: расчет изгиба вокруг главной оси 2 приведенного сечения."
+        "-", "Справочная гибкость плоскости 2. l02 = L * Mu2, i2 — радиус инерции приведённого сечения относительно главной оси 2."
 End Sub
 
 ' Возвращает безразмерную гибкость l0/i, если расчетная длина и радиус

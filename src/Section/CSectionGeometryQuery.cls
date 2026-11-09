@@ -1738,18 +1738,9 @@ Public Sub RegionProperties(ByVal region As CConcreteRegion, ByRef properties As
     properties.Ix = properties.Ixc + properties.Area * properties.CentroidY ^ 2
     properties.Iy = properties.Iyc + properties.Area * properties.CentroidX ^ 2
     properties.Ixy = properties.Ixyc + properties.Area * properties.CentroidX * properties.CentroidY
-    Dim averageI As Double, radiusI As Double, inertiaReference As Double, angleReference As Double
-    averageI = (properties.Ixc + properties.Iyc) / 2#
-    radiusI = Sqr(((properties.Ixc - properties.Iyc) / 2#) ^ 2 + properties.Ixyc ^ 2)
-    properties.PrincipalI1 = averageI + radiusI
-    properties.PrincipalI2 = averageI - radiusI
-    properties.PrincipalAngleRad = 0#
-    inertiaReference = GeomMax(GeomMax(Abs(properties.Ixc), Abs(properties.Iyc)), 1#)
-    If Abs(properties.Ixc - properties.Iyc) / inertiaReference > 0.0000000001 Or _
-            Abs(properties.Ixyc) / inertiaReference > 0.0000000001 Then
-        angleReference = GeomMax(Abs(properties.Ixc - properties.Iyc), Abs(2# * properties.Ixyc))
-        properties.PrincipalAngleRad = 0.5 * modGeometryPrimitives.AngleOf((properties.Ixc - properties.Iyc) / angleReference, -2# * properties.Ixyc / angleReference)
-    End If
+    Const isotropicTolerance As Double = 0.0000000001 ' Допуск для точных контурных интегралов без дискретной сетки.
+    ResolvePrincipalAxes properties.Ixc, properties.Iyc, properties.Ixyc, isotropicTolerance, _
+        properties.PrincipalI1, properties.PrincipalI2, properties.PrincipalAngleRad
     properties.RadiusX = Sqr(properties.Ixc / properties.Area)
     properties.RadiusY = Sqr(properties.Iyc / properties.Area)
     properties.PrincipalRadius1 = Sqr(GeomMax(properties.PrincipalI1, 0#) / properties.Area)

@@ -41,6 +41,9 @@ Private Const SP35_DELTA_OFFSET As Long = 3 ' Смещение delta от нач
 Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви ec > r.
 Private Const SP35_NCR_OFFSET As Long = 5 ' Смещение Ncr после обоих коэффициентов плоскости.
 
+Private Const DEPTH1_NOTE As String = "Габарит бетона вдоль главной оси 2 при изгибе вокруг оси 1. При совпадении осей 1/2 с X/Y это размер по Y."
+Private Const DEPTH2_NOTE As String = "Габарит бетона вдоль главной оси 1 при изгибе вокруг оси 2. При совпадении осей 1/2 с X/Y это размер по X."
+
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
 
@@ -213,7 +216,10 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
     If mMinimalFormatting Then
         Dim expectedLabels As Variant: expectedLabels = HeaderRowLabels(units, batch)
         If CStr(target.Cells(2, 1).Value2) = "Combination ID" Then
-            If ResultHeaderMatches(target.Offset(4, 0), expectedLabels, firstColumn:=4) Then Exit Sub
+            If ResultHeaderMatches(target.Offset(4, 0), expectedLabels, firstColumn:=4) Then
+                RefreshHeaderNotes target
+                Exit Sub
+            End If
         End If
         mMinimalFormatting = False
         target.Resize(HEADER_ROWS, TOTAL_COLUMNS).UnMerge
@@ -260,6 +266,11 @@ Private Sub WriteSP63PlaneHeaders(ByVal target As Object, ByVal firstColumn As L
     MergeCells target, 2, firstColumn, 2, 12, titleText
 End Sub
 
+' Обновляет пояснения одним блоком, сохраняя готовую разметку и единицы шапки.
+Private Sub RefreshHeaderNotes(ByVal target As Object)
+    If CStr(target.Cells(4, 22).Value2) <> DEPTH1_NOTE Then PutHeaderNotes target
+End Sub
+
 ' Заполняет строку примечаний над обозначениями. Это обычный текст без переноса:
 ' если он не помещается, Excel просто обрезает его по ширине ячейки.
 Private Sub PutHeaderNotes(ByVal target As Object)
@@ -283,20 +294,20 @@ Private Sub PutHeaderNotes(ByVal target As Object)
     notes(1, 19) = "Продольная сила от постоянной или длительной части нагрузки"
     notes(1, 20) = "Момент в плоскости 1, вокруг главной оси 1, от постоянной или длительной части"
     notes(1, 21) = "Момент в плоскости 2, вокруг главной оси 2, от постоянной или длительной части"
-    notes(1, 22) = "Размер сечения по нормали к плоскости 1, то есть вдоль главной оси 2"
-    notes(1, 23) = "Размер сечения по нормали к плоскости 2, то есть вдоль главной оси 1"
+    notes(1, 22) = DEPTH1_NOTE
+    notes(1, 23) = DEPTH2_NOTE
     notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 1"
     notes(1, 25) = "Радиус инерции для изгиба вокруг главной оси 2"
     notes(1, COL_INERTIA_FIRST) = "Момент инерции бетона относительно главной оси 1 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 1) = "Момент инерции бетона относительно главной оси 2 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 2) = "Момент инерции арматуры относительно главной оси 1 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 3) = "Момент инерции арматуры относительно главной оси 2 приведённого сечения"
-    notes(1, 30) = "Расчетная длина для плоскости 1: изгиб вокруг главной оси 1"
-    notes(1, 31) = "Расчетная длина для плоскости 2: изгиб вокруг главной оси 2"
+    notes(1, 30) = "Расчётная длина L * Mu1 для изгиба вокруг главной оси 1"
+    notes(1, 31) = "Расчётная длина L * Mu2 для изгиба вокруг главной оси 2"
     notes(1, COL_MODULUS_FIRST) = "Модуль упругости бетона, использованный при расчёте устойчивости"
     notes(1, COL_MODULUS_FIRST + 1) = "Модуль упругости арматуры, использованный при расчёте устойчивости"
 
-    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры"
+    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры из Config для расчёта Ncr при ec > r"
     PutSP35PlaneNotes notes, SP35_PLANE1_FIRST
     PutSP35PlaneNotes notes, SP35_PLANE2_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
@@ -310,11 +321,11 @@ Private Sub PutSP35PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Lon
     notes(1, firstColumn) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 1) = "Расчетный эксцентриситет продольной силы"
     notes(1, firstColumn + 2) = "Ядровое расстояние для выбора ветви СП 35"
-    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Коэффициент формы эпюры для ветви ec > r"
+    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Отношение |ec|/h с нижним ограничением для ветви ec > r"
     notes(1, firstColumn + SP35_PHI_L_OFFSET) = "Коэффициент длительного действия нагрузки"
     notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви ec > r"
     notes(1, firstColumn + 6) = "Коэффициент увеличения момента"
-    notes(1, firstColumn + 7) = "Отношение действующей сжимающей силы к критической"
+    notes(1, firstColumn + 7) = "Запас k*Ncr/N. Коэффициент k — допустимое отношение N/Ncr из Config"
     notes(1, firstColumn + 8) = "Статус проверки ветви ec > r"
     notes(1, firstColumn + 9) = "Табличный коэффициент продольного изгиба"
     notes(1, firstColumn + 10) = "Коэффициент влияния момента"
@@ -1030,6 +1041,8 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
         WriteHeaders target, Nothing, Nothing
         target.Offset(4, 0).Resize(1, TOTAL_COLUMNS).Value2 = labels
         ApplyHeaderSubscripts target
+    Else
+        RefreshHeaderNotes target
     End If
     WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     target.Offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).Value2 = data

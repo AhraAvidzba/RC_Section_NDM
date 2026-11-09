@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-08 23:13:35
+Date: 2026-11-09 11:02:36
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -1898,7 +1898,7 @@ End Function
 ====================================================================================================
 COMPONENT: modGeometryPrimitives
 TYPE: 1
-LINES: 256
+LINES: 282
 ====================================================================================================
 Option Explicit
 Option Private Module
@@ -2111,6 +2111,32 @@ Public Function AngleOf(ByVal x As Double, ByVal y As Double) As Double
         End If
     End If
 End Function
+
+' Определяет главные центральные оси относительно X/Y. Ось 1 ближе к X, ось 2 повёрнута от неё на +90°.
+' При равных углах выбирает +45°. При почти изотропной инерции использует центральные X/Y.
+Public Sub ResolvePrincipalAxes(ByVal ix As Double, ByVal iy As Double, ByVal ixy As Double, _
+        ByVal isotropicTolerance As Double, ByRef inertia1 As Double, ByRef inertia2 As Double, ByRef angle1 As Double)
+    Dim difference As Double, product As Double, reference As Double
+    difference = ix - iy
+    reference = GeomMax(GeomMax(Abs(ix), Abs(iy)), 1#)
+    If Abs(ixy) / reference <= isotropicTolerance And Abs(difference) / reference <= isotropicTolerance Then
+        inertia1 = ix: inertia2 = iy: angle1 = 0# ' В пределах допуска выбранные X/Y определяют и значения I1/I2.
+        Exit Sub
+    End If
+
+    Dim average As Double, radius As Double, angleScale As Double
+    average = (ix + iy) / 2#
+    radius = Sqr((difference / 2#) ^ 2 + ixy ^ 2)
+    product = -2# * ixy ' Знак отвечает физическому углу оси с положительным обходом от +X против часовой стрелки.
+    If difference < 0# Or (difference = 0# And product < 0#) Then
+        inertia1 = average - radius: inertia2 = average + radius
+        difference = -difference: product = -product ' Удвоенный угол переходит к перпендикулярной главной оси.
+    Else
+        inertia1 = average + radius: inertia2 = average - radius
+    End If
+    angleScale = GeomMax(difference, Abs(product)) ' Нормирование сохраняет направление у очень малых сечений.
+    angle1 = 0.5 * AngleOf(difference / angleScale, product / angleScale)
+End Sub
 
 ' Возвращает угол линии для читаемой подписи, в радианах. Направление обхода
 ' не переворачивает текст вверх ногами; вертикальная подпись читается снизу вверх.
@@ -13868,7 +13894,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionGeometryQuery
 TYPE: 2
-LINES: 2274
+LINES: 2265
 ====================================================================================================
 Option Explicit
 
@@ -15601,18 +15627,9 @@ Public Sub RegionProperties(ByVal region As CConcreteRegion, ByRef properties As
     properties.ix = properties.Ixc + properties.area * properties.centroidY ^ 2
     properties.iy = properties.Iyc + properties.area * properties.centroidX ^ 2
     properties.ixy = properties.Ixyc + properties.area * properties.centroidX * properties.centroidY
-    Dim averageI As Double, radiusI As Double, inertiaReference As Double, angleReference As Double
-    averageI = (properties.Ixc + properties.Iyc) / 2#
-    radiusI = Sqr(((properties.Ixc - properties.Iyc) / 2#) ^ 2 + properties.Ixyc ^ 2)
-    properties.PrincipalI1 = averageI + radiusI
-    properties.PrincipalI2 = averageI - radiusI
-    properties.principalAngleRad = 0#
-    inertiaReference = GeomMax(GeomMax(Abs(properties.Ixc), Abs(properties.Iyc)), 1#)
-    If Abs(properties.Ixc - properties.Iyc) / inertiaReference > 0.0000000001 Or _
-            Abs(properties.Ixyc) / inertiaReference > 0.0000000001 Then
-        angleReference = GeomMax(Abs(properties.Ixc - properties.Iyc), Abs(2# * properties.Ixyc))
-        properties.principalAngleRad = 0.5 * modGeometryPrimitives.AngleOf((properties.Ixc - properties.Iyc) / angleReference, -2# * properties.Ixyc / angleReference)
-    End If
+    Const isotropicTolerance As Double = 0.0000000001 ' Допуск для точных контурных интегралов без дискретной сетки.
+    ResolvePrincipalAxes properties.Ixc, properties.Iyc, properties.Ixyc, isotropicTolerance, _
+        properties.PrincipalI1, properties.PrincipalI2, properties.principalAngleRad
     properties.RadiusX = Sqr(properties.Ixc / properties.area)
     properties.RadiusY = Sqr(properties.Iyc / properties.area)
     properties.PrincipalRadius1 = Sqr(GeomMax(properties.PrincipalI1, 0#) / properties.area)
@@ -17926,7 +17943,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionPropertiesCalculator
 TYPE: 2
-LINES: 828
+LINES: 793
 ====================================================================================================
 Option Explicit
 
@@ -17958,13 +17975,13 @@ Private mIxy As Double ' Центробежный момент инерции о
 Private mIxc As Double ' Центральный момент инерции относительно оси X через центр тяжести, мм4.
 Private mIyc As Double ' Центральный момент инерции относительно оси Y через центр тяжести, мм4.
 Private mIxyc As Double ' Центральный центробежный момент инерции, мм4.
-Private mPrincipalI1 As Double ' Больший главный центральный момент инерции, мм4.
-Private mPrincipalI2 As Double ' Меньший главный центральный момент инерции, мм4.
-Private mPrincipalAngleRad As Double ' Угол от +X к физической главной оси 1, для которой момент инерции равен I1; угол в радианах.
+Private mPrincipalI1 As Double ' Главный центральный момент инерции относительно оси 1, мм4.
+Private mPrincipalI2 As Double ' Главный центральный момент инерции относительно оси 2, мм4.
+Private mPrincipalAngleRad As Double ' Угол от +X к ближайшей главной оси 1, рад.
 Private mRadiusX As Double ' Радиус инерции относительно центральной оси X, мм.
 Private mRadiusY As Double ' Радиус инерции относительно центральной оси Y, мм.
-Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1, мм.
-Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2, мм.
+Private mPrincipalRadius1 As Double ' Радиус инерции относительно главной оси 1, мм.
+Private mPrincipalRadius2 As Double ' Радиус инерции относительно главной оси 2, мм.
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 Private mSnapshotSection As CSectionModel ' Модель, для которой заранее подготовлены свойства записи Results.
 Private mSnapshotRevision As Long ' Ревизия подготовленной геометрии.
@@ -18368,7 +18385,7 @@ End Function
 
 ' Возвращает направление физической главной оси 1 или 2.
 ' PrincipalAngleRad отсчитывается от глобальной +X против часовой стрелки до
-' оси 1, у которой момент инерции равен PrincipalI1. Ось 2 получается
+' ближайшей к X главной оси 1. Ось 2 получается
 ' поворотом оси 1 на +90 градусов и имеет момент инерции PrincipalI2.
 Public Sub PrincipalAxisDirection(ByVal axisIndex As Long, ByRef axisX As Double, ByRef axisY As Double)
     Dim axis1X As Double
@@ -18569,22 +18586,8 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
     mIy = mIyc + mArea * mCentroidX * mCentroidX
     mIxy = mIxyc + mArea * mCentroidX * mCentroidY
 
-    Dim avgI As Double
-    Dim radius As Double
-    avgI = (mIxc + mIyc) / 2#
-    radius = Sqr(((mIxc - mIyc) / 2#) ^ 2 + mIxyc ^ 2)
-    mPrincipalI1 = avgI + radius
-    mPrincipalI2 = avgI - radius
-
-    Dim inertiaRef As Double
-    inertiaRef = GeomMax(GeomMax(Abs(mIxc), Abs(mIyc)), 1#)
-
-    If Abs(mIxyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE And _
-            Abs(mIxc - mIyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE Then ' Для круга и почти изотропных сечений направление главных осей математически неопределено. Малый численный Ixy от дискретной сетки не должен поворачивать оси и раскладывать чистый Mx/My на две плоскости.
-        mPrincipalAngleRad = 0#
-    Else
-        mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIxc - mIyc)
-    End If
+    ResolvePrincipalAxes mIxc, mIyc, mIxyc, PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE, _
+        mPrincipalI1, mPrincipalI2, mPrincipalAngleRad
 
     mRadiusX = Sqr(GeomMax(mIxc, 0#) / mArea)
     mRadiusY = Sqr(GeomMax(mIyc, 0#) / mArea)
@@ -18684,17 +18687,17 @@ Public Property Get Ixyc() As Double
     Ixyc = mIxyc
 End Property
 
-' Больший главный центральный момент инерции, мм4.
+' Центральный момент инерции относительно главной оси 1, мм4.
 Public Property Get PrincipalI1() As Double
     PrincipalI1 = mPrincipalI1
 End Property
 
-' Меньший главный центральный момент инерции, мм4.
+' Центральный момент инерции относительно главной оси 2, мм4.
 Public Property Get PrincipalI2() As Double
     PrincipalI2 = mPrincipalI2
 End Property
 
-' Угол от +X к физической главной оси 1, для которой момент инерции равен I1; угол в радианах.
+' Угол от +X к ближайшей главной оси 1, рад.
 Public Property Get principalAngleRad() As Double
     principalAngleRad = mPrincipalAngleRad
 End Property
@@ -18709,36 +18712,15 @@ Public Property Get RadiusY() As Double
     RadiusY = mRadiusY
 End Property
 
-' Радиус инерции по главной оси I1, мм.
+' Радиус инерции относительно главной оси 1, мм.
 Public Property Get PrincipalRadius1() As Double
     PrincipalRadius1 = mPrincipalRadius1
 End Property
 
-' Радиус инерции по главной оси I2, мм.
+' Радиус инерции относительно главной оси 2, мм.
 Public Property Get PrincipalRadius2() As Double
     PrincipalRadius2 = mPrincipalRadius2
 End Property
-
-' Возвращает atan2(y, x) в диапазоне VBA-арифметики. Нужен для главных осей:
-' стандартной функции Atn хватает только на отношение y/x и она не знает
-' квадрант исходного вектора.
-Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
-    If Abs(x) <= GEOM_TOLERANCE Then
-        If y > 0# Then
-            Atn2 = GEOM_PI / 2#
-        ElseIf y < 0# Then
-            Atn2 = -GEOM_PI / 2#
-        Else
-            Atn2 = 0#
-        End If
-    ElseIf x > 0# Then
-        Atn2 = Atn(y / x)
-    ElseIf y >= 0# Then
-        Atn2 = Atn(y / x) + GEOM_PI
-    Else
-        Atn2 = Atn(y / x) - GEOM_PI
-    End If
-End Function
 
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
@@ -37262,9 +37244,9 @@ End Sub
 ' по СП 35 и СП 63 вычисляются относительно этих осей. Моменты уже пересчитаны
 ' относительно того же центра при подготовке сочетания. Плоскость 1
 ' связана с изгибом вокруг первой главной оси, плоскость 2 - вокруг второй.
-' Если главные оси совпали с X/Y, плоскость 1 - это изгиб Mx вокруг X:
-' расчетная плоскость YZ, эксцентриситет и габарит берутся по Y. Плоскость 2 -
-' это изгиб My вокруг Y: расчетная плоскость XZ, эксцентриситет и габарит по X.
+' Ось 1 ближе к X, ось 2 повёрнута от неё на +90°. При совпадении с X/Y
+' плоскость 1 соответствует изгибу Mx и габариту по Y, а плоскость 2 —
+' изгибу My и габариту по X. Знаки эксцентриситетов следуют нормалям.
 Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectionPropertiesCalculator, _
         ByVal mxValue As Double, ByVal myValue As Double, ByVal sustainedMx As Double, _
         ByVal sustainedMy As Double, ByVal elementLength As Double, ByVal mu1 As Double, _
@@ -51579,9 +51561,9 @@ Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex
     PutProperty data, rowIndex, runID, "ALL", "Concrete.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центробежный момент бетонного сечения относительно центральных осей X/Y через ц.т. бетонного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси X через ц.т. бетонного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно центральной оси Y через ц.т. бетонного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.principalAngleRad, "rad", "Угол от +X модели к главной центральной оси 1 бетонного сечения; положительный против часовой стрелки."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 1 (больший)."
-    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 2 (меньший)."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalAngle", props.principalAngleRad, "rad", "Угол от +X к ближайшей главной оси 1 бетонного сечения. Положительный угол направлен против часовой стрелки. При равном отклонении выбирается +45°."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 1, ближайшей к X."
+    PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции бетонного сечения относительно главной оси 2, повёрнутой от оси 1 на +90°."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", "Concrete.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции бетонного сечения относительно главной центральной оси 2."
     PutAxisCoreDistanceProperties data, rowIndex, runID, "Concrete", _
@@ -51607,9 +51589,9 @@ Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIn
     PutProperty data, rowIndex, runID, "ALL", "Transformed.Ixyc", OutputFourthPowerLength(props.Ixyc, units), OutputLengthUnit(units) & "4", "Центробежный момент приведенного сечения относительно центральных осей X/Y через ц.т. приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusX", OutputLength(props.RadiusX, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси X через ц.т. приведенного сечения."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.RadiusY", OutputLength(props.RadiusY, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно центральной оси Y через ц.т. приведенного сечения."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.principalAngleRad, "rad", "Угол от +X модели к главной центральной оси 1 приведенного сечения; положительный против часовой стрелки."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведенного сечения относительно главной оси 1 (больший)."
-    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведенного сечения относительно главной оси 2 (меньший)."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalAngle", props.principalAngleRad, "rad", "Общий для всех сочетаний угол от +X к ближайшей главной оси 1 приведённого сечения. Положительное направление против часовой стрелки. При равном отклонении выбирается +45°."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI1", OutputFourthPowerLength(props.PrincipalI1, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведённого сечения относительно главной оси 1, ближайшей к X."
+    PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalI2", OutputFourthPowerLength(props.PrincipalI2, units), OutputLengthUnit(units) & "4", "Главный центральный момент инерции приведённого сечения относительно главной оси 2, повёрнутой от оси 1 на +90°."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius1", OutputLength(props.PrincipalRadius1, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно главной центральной оси 1."
     PutProperty data, rowIndex, runID, "ALL", "Transformed.PrincipalRadius2", OutputLength(props.PrincipalRadius2, units), OutputLengthUnit(units), "Радиус инерции приведенного сечения относительно главной центральной оси 2."
     PutAxisCoreDistanceProperties data, rowIndex, runID, "Transformed", _
@@ -51690,10 +51672,10 @@ Private Sub PutGeneralSectionCheckProperties(ByRef data() As Variant, ByRef rowI
         "Процент продольного армирования: суммарная As / gross-площадь бетонной сетки."
     PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness1", _
         SlendernessValue(batch.StabilityElementLength, batch.StabilityMu1, transformedProps.PrincipalRadius1), _
-        "-", "Гибкость l0/i по СП 35 для плоскости 1: расчет изгиба вокруг главной оси 1 приведенного сечения."
+        "-", "Справочная гибкость плоскости 1. l01 = L * Mu1, i1 — радиус инерции приведённого сечения относительно главной оси 1."
     PutProperty data, rowIndex, runID, "ALL", "SP35.Slenderness2", _
         SlendernessValue(batch.StabilityElementLength, batch.StabilityMu2, transformedProps.PrincipalRadius2), _
-        "-", "Гибкость l0/i по СП 35 для плоскости 2: расчет изгиба вокруг главной оси 2 приведенного сечения."
+        "-", "Справочная гибкость плоскости 2. l02 = L * Mu2, i2 — радиус инерции приведённого сечения относительно главной оси 2."
 End Sub
 
 ' Возвращает безразмерную гибкость l0/i, если расчетная длина и радиус
@@ -57612,7 +57594,7 @@ End Function
 ====================================================================================================
 COMPONENT: CStabilitySummaryWriter
 TYPE: 2
-LINES: 1075
+LINES: 1088
 ====================================================================================================
 Option Explicit
 
@@ -57647,6 +57629,9 @@ Private Const COL_MODULUS_FIRST As Long = 32 ' Начало двух общих 
 Private Const SP35_DELTA_OFFSET As Long = 3 ' Смещение delta от начала плоскости СП 35.
 Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви ec > r.
 Private Const SP35_NCR_OFFSET As Long = 5 ' Смещение Ncr после обоих коэффициентов плоскости.
+
+Private Const DEPTH1_NOTE As String = "Габарит бетона вдоль главной оси 2 при изгибе вокруг оси 1. При совпадении осей 1/2 с X/Y это размер по Y."
+Private Const DEPTH2_NOTE As String = "Габарит бетона вдоль главной оси 1 при изгибе вокруг оси 2. При совпадении осей 1/2 с X/Y это размер по X."
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
@@ -57820,7 +57805,10 @@ Private Sub WriteHeaders(ByVal Target As Object, ByVal units As CUnitSystem, _
     If mMinimalFormatting Then
         Dim expectedLabels As Variant: expectedLabels = HeaderRowLabels(units, batch)
         If CStr(Target.cells(2, 1).value2) = "Combination ID" Then
-            If ResultHeaderMatches(Target.offset(4, 0), expectedLabels, firstColumn:=4) Then Exit Sub
+            If ResultHeaderMatches(Target.offset(4, 0), expectedLabels, firstColumn:=4) Then
+                RefreshHeaderNotes Target
+                Exit Sub
+            End If
         End If
         mMinimalFormatting = False
         Target.Resize(HEADER_ROWS, TOTAL_COLUMNS).UnMerge
@@ -57867,6 +57855,11 @@ Private Sub WriteSP63PlaneHeaders(ByVal Target As Object, ByVal firstColumn As L
     MergeCells Target, 2, firstColumn, 2, 12, titleText
 End Sub
 
+' Обновляет пояснения одним блоком, сохраняя готовую разметку и единицы шапки.
+Private Sub RefreshHeaderNotes(ByVal Target As Object)
+    If CStr(Target.cells(4, 22).value2) <> DEPTH1_NOTE Then PutHeaderNotes Target
+End Sub
+
 ' Заполняет строку примечаний над обозначениями. Это обычный текст без переноса:
 ' если он не помещается, Excel просто обрезает его по ширине ячейки.
 Private Sub PutHeaderNotes(ByVal Target As Object)
@@ -57890,20 +57883,20 @@ Private Sub PutHeaderNotes(ByVal Target As Object)
     notes(1, 19) = "Продольная сила от постоянной или длительной части нагрузки"
     notes(1, 20) = "Момент в плоскости 1, вокруг главной оси 1, от постоянной или длительной части"
     notes(1, 21) = "Момент в плоскости 2, вокруг главной оси 2, от постоянной или длительной части"
-    notes(1, 22) = "Размер сечения по нормали к плоскости 1, то есть вдоль главной оси 2"
-    notes(1, 23) = "Размер сечения по нормали к плоскости 2, то есть вдоль главной оси 1"
+    notes(1, 22) = DEPTH1_NOTE
+    notes(1, 23) = DEPTH2_NOTE
     notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 1"
     notes(1, 25) = "Радиус инерции для изгиба вокруг главной оси 2"
     notes(1, COL_INERTIA_FIRST) = "Момент инерции бетона относительно главной оси 1 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 1) = "Момент инерции бетона относительно главной оси 2 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 2) = "Момент инерции арматуры относительно главной оси 1 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 3) = "Момент инерции арматуры относительно главной оси 2 приведённого сечения"
-    notes(1, 30) = "Расчетная длина для плоскости 1: изгиб вокруг главной оси 1"
-    notes(1, 31) = "Расчетная длина для плоскости 2: изгиб вокруг главной оси 2"
+    notes(1, 30) = "Расчётная длина L * Mu1 для изгиба вокруг главной оси 1"
+    notes(1, 31) = "Расчётная длина L * Mu2 для изгиба вокруг главной оси 2"
     notes(1, COL_MODULUS_FIRST) = "Модуль упругости бетона, использованный при расчёте устойчивости"
     notes(1, COL_MODULUS_FIRST + 1) = "Модуль упругости арматуры, использованный при расчёте устойчивости"
 
-    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры"
+    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры из Config для расчёта Ncr при ec > r"
     PutSP35PlaneNotes notes, SP35_PLANE1_FIRST
     PutSP35PlaneNotes notes, SP35_PLANE2_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
@@ -57917,11 +57910,11 @@ Private Sub PutSP35PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Lon
     notes(1, firstColumn) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 1) = "Расчетный эксцентриситет продольной силы"
     notes(1, firstColumn + 2) = "Ядровое расстояние для выбора ветви СП 35"
-    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Коэффициент формы эпюры для ветви ec > r"
+    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Отношение |ec|/h с нижним ограничением для ветви ec > r"
     notes(1, firstColumn + SP35_PHI_L_OFFSET) = "Коэффициент длительного действия нагрузки"
     notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви ec > r"
     notes(1, firstColumn + 6) = "Коэффициент увеличения момента"
-    notes(1, firstColumn + 7) = "Отношение действующей сжимающей силы к критической"
+    notes(1, firstColumn + 7) = "Запас k*Ncr/N. Коэффициент k — допустимое отношение N/Ncr из Config"
     notes(1, firstColumn + 8) = "Статус проверки ветви ec > r"
     notes(1, firstColumn + 9) = "Табличный коэффициент продольного изгиба"
     notes(1, firstColumn + 10) = "Коэффициент влияния момента"
@@ -58637,6 +58630,8 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
         WriteHeaders Target, Nothing, Nothing
         Target.offset(4, 0).Resize(1, TOTAL_COLUMNS).value2 = labels
         ApplyHeaderSubscripts Target
+    Else
+        RefreshHeaderNotes Target
     End If
     WriteBlockTitle Target, "Расчет продольного изгиба и устойчивости"
     Target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
@@ -76274,7 +76269,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 11025
+LINES: 11098
 ====================================================================================================
 Option Explicit
 
@@ -85054,9 +85049,82 @@ End Function
 Public Function RunAudit03StabilityCommentTests() As String
     Dim stats As TBatchTestStats
     TestAudit03StabilityComments stats
+    TestPrincipalStabilityAxisMapping stats
     TestAppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03StabilityCommentTests = stats.report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет обе нормативные цепочки на широком прямоугольнике. Разные l0,
+' знаки и эксцентриситеты выявляют обмен плоскостей даже при одинаковом статусе.
+Private Sub TestPrincipalStabilityAxisMapping(ByRef stats As TBatchTestStats)
+    Dim section As CSectionModel, materials As CMaterialModelProvider, calculator As CStabilityCalculator
+    Dim result As CStabilityResult, meta As CResultMeta, code As Variant, angle As Variant, table As Variant
+    Dim valueSet As Variant, props As CSectionPropertiesCalculator
+    Dim c As Double, s As Double, expectedMx As Double, expectedMy As Double, prefix As String
+    Dim x As Variant, y As Variant, barArea As Double, steelI1 As Double, steelI2 As Double
+    barArea = GEOM_PI * 100#: steelI1 = 4# * (barArea * 50# ^ 2 + GEOM_PI * 10# ^ 4 / 4#)
+    steelI2 = 4# * (barArea * 200# ^ 2 + GEOM_PI * 10# ^ 4 / 4#)
+    Set materials = TestMaterialProvider()
+    table = ThisWorkbook.names.item("rngSP35Table721").RefersToRange.value2
+    For Each angle In Array(0#, GEOM_PI / 6#, -GEOM_PI / 6#)
+        c = Cos(CDbl(angle)): s = Sin(CDbl(angle))
+        Set section = New CSectionModel
+        section.AddConcreteElement 0#, 0#, 120000#, 1, "", "", "Rectangle", 600#, 200#, CDbl(angle)
+        For Each x In Array(-200#, 200#)
+            For Each y In Array(-50#, 50#)
+                section.AddRebarElement CDbl(x) * c - CDbl(y) * s, CDbl(x) * s + CDbl(y) * c, 20#, barArea, "A400", 1
+            Next y
+        Next x
+        Set props = New CSectionPropertiesCalculator
+        props.PrepareSnapshot section, materials
+        For Each code In Array("SP35", "SP63")
+            valueSet = IIf(CStr(code) = "SP35", mvsULS, mvsSLS)
+            prefix = "stability.axisNumbering." & CStr(code) & "." & CStr(angle)
+            Set calculator = New CStabilityCalculator
+            calculator.Calculate section, materials, CLng(valueSet), CStr(code), _
+                -100000#, 5000000# * c + 4000000# * s, 5000000# * s - 4000000# * c, _
+                -40000#, 1500000# * c + 700000# * s, 1500000# * s - 700000# * c, _
+                3000#, 1.2, 1.8, "Determinate", 1#, -1#, "Auto", "User", "BothPlanes", 7#, 13#, _
+                0.7, 0.15, 1.5, 1#, 0.7, table
+            TestAssertTrue stats, prefix & ".bothApplicable", calculator.PlaneApplicable1 And calculator.PlaneApplicable2
+            TestAssertClose stats, prefix & ".angle", calculator.principalAngleRad, CDbl(angle), 0.000000001
+            TestAssertClose stats, prefix & ".commonAngle", calculator.principalAngleRad, props.TransformedSnapshot.principalAngleRad, 0#
+            TestAssertClose stats, prefix & ".M1", calculator.Moment1, 5000000#, 0.001
+            TestAssertClose stats, prefix & ".M2", calculator.Moment2, -4000000#, 0.001
+            TestAssertClose stats, prefix & ".M1sustained", calculator.SustainedMoment1, 1500000#, 0.001
+            TestAssertClose stats, prefix & ".M2sustained", calculator.SustainedMoment2, -700000#, 0.001
+            TestAssertClose stats, prefix & ".ea1", calculator.AccidentalEccentricity1, 7#, 0.000001
+            TestAssertClose stats, prefix & ".ea2", calculator.AccidentalEccentricity2, -13#, 0.000001
+            TestAssertClose stats, prefix & ".h1", calculator.Depth1, 200#, 0.000001
+            TestAssertClose stats, prefix & ".h2", calculator.Depth2, 600#, 0.000001
+            TestAssertClose stats, prefix & ".l01", calculator.EffectiveLength1, 3600#, 0.000001
+            TestAssertClose stats, prefix & ".l02", calculator.EffectiveLength2, 5400#, 0.000001
+            TestAssertClose stats, prefix & ".Ib1", calculator.ConcreteInertia1, 400000000#, 0.01
+            TestAssertClose stats, prefix & ".Ib2", calculator.ConcreteInertia2, 3600000000#, 0.01
+            TestAssertClose stats, prefix & ".Is1", calculator.SteelInertia1, steelI1, 0.01
+            TestAssertClose stats, prefix & ".Is2", calculator.SteelInertia2, steelI2, 0.01
+            If CStr(code) = "SP35" Then
+                TestAssertEquals stats, prefix & ".branch1", calculator.PlaneBranch1, "SP35-eta"
+                TestAssertEquals stats, prefix & ".branch2", calculator.PlaneBranch2, "SP35-table"
+                TestAssertClose stats, prefix & ".Ncr1", calculator.Ncr1, calculator.StiffnessD1 / 3600# ^ 2, 0.01
+                TestAssertTrue stats, prefix & ".Nult2", calculator.Ncr2 = 0# And calculator.Nultimate2 > 0#
+            Else
+                TestAssertClose stats, prefix & ".Ncr1", calculator.Ncr1, GEOM_PI ^ 2 * calculator.StiffnessD1 / 3600# ^ 2, 0.01
+                TestAssertClose stats, prefix & ".Ncr2", calculator.Ncr2, GEOM_PI ^ 2 * calculator.StiffnessD2 / 5400# ^ 2, 0.01
+            End If
+            expectedMx = calculator.DesignMoment1 * c - calculator.DesignMoment2 * s
+            expectedMy = calculator.DesignMoment1 * s + calculator.DesignMoment2 * c
+            TestAssertClose stats, prefix & ".designMx", calculator.designMx, expectedMx, 0.001
+            TestAssertClose stats, prefix & ".designMy", calculator.designMy, expectedMy, 0.001
+            Set result = New CStabilityResult
+            result.InitializeFromCalculator meta, calculator, 0#, 0#
+            result.UpdateDesignLoads calculator.designN, expectedMx, expectedMy, CDbl(angle)
+            TestAssertClose stats, prefix & ".savedM1", result.DesignMoment1, calculator.DesignMoment1, 0.001
+            TestAssertClose stats, prefix & ".savedM2", result.DesignMoment2, calculator.DesignMoment2, 0.001
+        Next code
+    Next angle
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' четыре нормативные ветви, успешная/перегруженная сжатая нагрузка
@@ -103252,7 +103320,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestGeometry
 TYPE: 1
-LINES: 3763
+LINES: 3794
 ====================================================================================================
 Option Explicit
 
@@ -103294,6 +103362,7 @@ Public Function RunGeometryTests() As String
     TestAsymmetricCoreDistanceUsesOppositeFiber stats
     TestCoreDistanceWithProductInertiaMatchesLinearBoundary stats
     TestPrincipalAxisCoreDistanceIsAxisBased stats
+    TestPrincipalAxisNumbering stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
@@ -104676,7 +104745,7 @@ Private Sub TestAssertPrincipalAxesConsistent(ByRef stats As TTestStats, ByVal p
     s = Sin(props.principalAngleRad)
     rotatedIxy = (props.Ixc - props.Iyc) * s * c + props.Ixyc * (c * c - s * s)
     TestAssertTrue stats, prefix & ".principal.I12.zero", _
-        Abs(rotatedIxy) <= GeomMax(props.PrincipalI1, 1#) * 0.0000001
+        Abs(rotatedIxy) <= GeomMax(GeomMax(props.PrincipalI1, props.PrincipalI2), 1#) * 0.0000001
 
     Dim normal1X As Double
     Dim normal1Y As Double
@@ -105188,6 +105257,36 @@ Private Sub TestPrincipalAxisCoreDistanceIsAxisBased(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет ориентацию и инерции высокого, широкого и повёрнутого прямоугольников.
+' На границе 45° проверяет выбор +45° для обоих знаков Ixy.
+Private Sub TestPrincipalAxisNumbering(ByRef stats As TTestStats)
+    Dim section As CSectionModel, props As CSectionPropertiesCalculator
+    Dim width As Variant, angle As Variant, height As Double, area As Double, prefix As String
+    For Each width In Array(200#, 600#)
+        height = 800# - CDbl(width): area = CDbl(width) * height
+        For Each angle In Array(0#, GEOM_PI / 6#, -GEOM_PI / 6#)
+            Set section = New CSectionModel
+            section.AddConcreteElement 0#, 0#, area, 1, "", "", "Rectangle", CDbl(width), height, CDbl(angle)
+            Set props = New CSectionPropertiesCalculator
+            props.CalculateConcrete section
+            prefix = "principal.numbering." & CStr(width) & "." & CStr(angle)
+            TestAssertClose stats, prefix & ".angle", props.principalAngleRad, CDbl(angle), 0.000000001
+            TestAssertRelative stats, prefix & ".inertia1", props.PrincipalI1, area * height ^ 2 / 12#, 0.000000001
+            TestAssertRelative stats, prefix & ".inertia2", props.PrincipalI2, area * CDbl(width) ^ 2 / 12#, 0.000000001
+            TestAssertPrincipalAxesConsistent stats, prefix, section, props
+        Next angle
+    Next width
+    Dim ixy As Variant, inertia1 As Double, inertia2 As Double, angle1 As Double
+    For Each ixy In Array(-2#, 2#)
+        ResolvePrincipalAxes 10#, 10#, CDbl(ixy), 0.000001, inertia1, inertia2, angle1
+        prefix = "principal.numbering.tie." & CStr(ixy)
+        TestAssertClose stats, prefix & ".angle", angle1, GEOM_PI / 4#, 0.000000001
+        TestAssertClose stats, prefix & ".inertia1", inertia1, 10# - CDbl(ixy), 0.000000001
+        TestAssertClose stats, prefix & ".inertia2", inertia2, 10# + CDbl(ixy), 0.000000001
+    Next ixy
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что грубая, но симметричная сетка круга не разворачивает главные
 ' оси из-за микроскопического численного Ixy. Для устойчивости это важно:
 ' чистый пользовательский Mx не должен попадать во вторую плоскость только из-за
@@ -105245,7 +105344,7 @@ Private Sub TestSymmetricPointedSection(ByRef stats As TTestStats)
     TestAssertClose stats, "sym.cx", props.centroidX, 0#, 0.05
     TestAssertClose stats, "sym.cy", props.centroidY, 0#, 0.05
     TestAssertClose stats, "sym.Ixy", props.Ixyc, 0#, 0.000001 * props.area
-    TestAssertClose stats, "sym.principal.angle", props.principalAngleRad, GEOM_PI / 2#, 0.000001
+    TestAssertClose stats, "sym.principal.angle", props.principalAngleRad, 0#, 0.000001
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

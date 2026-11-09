@@ -37,13 +37,13 @@ Private mIxy As Double ' Центробежный момент инерции о
 Private mIxc As Double ' Центральный момент инерции относительно оси X через центр тяжести, мм4.
 Private mIyc As Double ' Центральный момент инерции относительно оси Y через центр тяжести, мм4.
 Private mIxyc As Double ' Центральный центробежный момент инерции, мм4.
-Private mPrincipalI1 As Double ' Больший главный центральный момент инерции, мм4.
-Private mPrincipalI2 As Double ' Меньший главный центральный момент инерции, мм4.
-Private mPrincipalAngleRad As Double ' Угол от +X к физической главной оси 1, для которой момент инерции равен I1; угол в радианах.
+Private mPrincipalI1 As Double ' Главный центральный момент инерции относительно оси 1, мм4.
+Private mPrincipalI2 As Double ' Главный центральный момент инерции относительно оси 2, мм4.
+Private mPrincipalAngleRad As Double ' Угол от +X к ближайшей главной оси 1, рад.
 Private mRadiusX As Double ' Радиус инерции относительно центральной оси X, мм.
 Private mRadiusY As Double ' Радиус инерции относительно центральной оси Y, мм.
-Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1, мм.
-Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2, мм.
+Private mPrincipalRadius1 As Double ' Радиус инерции относительно главной оси 1, мм.
+Private mPrincipalRadius2 As Double ' Радиус инерции относительно главной оси 2, мм.
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 Private mSnapshotSection As CSectionModel ' Модель, для которой заранее подготовлены свойства записи Results.
 Private mSnapshotRevision As Long ' Ревизия подготовленной геометрии.
@@ -447,7 +447,7 @@ End Function
 
 ' Возвращает направление физической главной оси 1 или 2.
 ' PrincipalAngleRad отсчитывается от глобальной +X против часовой стрелки до
-' оси 1, у которой момент инерции равен PrincipalI1. Ось 2 получается
+' ближайшей к X главной оси 1. Ось 2 получается
 ' поворотом оси 1 на +90 градусов и имеет момент инерции PrincipalI2.
 Public Sub PrincipalAxisDirection(ByVal axisIndex As Long, ByRef axisX As Double, ByRef axisY As Double)
     Dim axis1X As Double
@@ -648,22 +648,8 @@ Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCen
     mIy = mIyc + mArea * mCentroidX * mCentroidX
     mIxy = mIxyc + mArea * mCentroidX * mCentroidY
 
-    Dim avgI As Double
-    Dim radius As Double
-    avgI = (mIxc + mIyc) / 2#
-    radius = Sqr(((mIxc - mIyc) / 2#) ^ 2 + mIxyc ^ 2)
-    mPrincipalI1 = avgI + radius
-    mPrincipalI2 = avgI - radius
-
-    Dim inertiaRef As Double
-    inertiaRef = GeomMax(GeomMax(Abs(mIxc), Abs(mIyc)), 1#)
-
-    If Abs(mIxyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE And _
-            Abs(mIxc - mIyc) / inertiaRef <= PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE Then ' Для круга и почти изотропных сечений направление главных осей математически неопределено. Малый численный Ixy от дискретной сетки не должен поворачивать оси и раскладывать чистый Mx/My на две плоскости.
-        mPrincipalAngleRad = 0#
-    Else
-        mPrincipalAngleRad = 0.5 * Atn2(-2# * mIxyc, mIxc - mIyc)
-    End If
+    ResolvePrincipalAxes mIxc, mIyc, mIxyc, PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE, _
+        mPrincipalI1, mPrincipalI2, mPrincipalAngleRad
 
     mRadiusX = Sqr(GeomMax(mIxc, 0#) / mArea)
     mRadiusY = Sqr(GeomMax(mIyc, 0#) / mArea)
@@ -763,17 +749,17 @@ Public Property Get Ixyc() As Double
     Ixyc = mIxyc
 End Property
 
-' Больший главный центральный момент инерции, мм4.
+' Центральный момент инерции относительно главной оси 1, мм4.
 Public Property Get PrincipalI1() As Double
     PrincipalI1 = mPrincipalI1
 End Property
 
-' Меньший главный центральный момент инерции, мм4.
+' Центральный момент инерции относительно главной оси 2, мм4.
 Public Property Get PrincipalI2() As Double
     PrincipalI2 = mPrincipalI2
 End Property
 
-' Угол от +X к физической главной оси 1, для которой момент инерции равен I1; угол в радианах.
+' Угол от +X к ближайшей главной оси 1, рад.
 Public Property Get PrincipalAngleRad() As Double
     PrincipalAngleRad = mPrincipalAngleRad
 End Property
@@ -788,36 +774,15 @@ Public Property Get RadiusY() As Double
     RadiusY = mRadiusY
 End Property
 
-' Радиус инерции по главной оси I1, мм.
+' Радиус инерции относительно главной оси 1, мм.
 Public Property Get PrincipalRadius1() As Double
     PrincipalRadius1 = mPrincipalRadius1
 End Property
 
-' Радиус инерции по главной оси I2, мм.
+' Радиус инерции относительно главной оси 2, мм.
 Public Property Get PrincipalRadius2() As Double
     PrincipalRadius2 = mPrincipalRadius2
 End Property
-
-' Возвращает atan2(y, x) в диапазоне VBA-арифметики. Нужен для главных осей:
-' стандартной функции Atn хватает только на отношение y/x и она не знает
-' квадрант исходного вектора.
-Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
-    If Abs(x) <= GEOM_TOLERANCE Then
-        If y > 0# Then
-            Atn2 = GEOM_PI / 2#
-        ElseIf y < 0# Then
-            Atn2 = -GEOM_PI / 2#
-        Else
-            Atn2 = 0#
-        End If
-    ElseIf x > 0# Then
-        Atn2 = Atn(y / x)
-    ElseIf y >= 0# Then
-        Atn2 = Atn(y / x) + GEOM_PI
-    Else
-        Atn2 = Atn(y / x) - GEOM_PI
-    End If
-End Function
 
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ

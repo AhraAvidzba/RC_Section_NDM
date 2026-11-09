@@ -211,6 +211,32 @@ Public Function AngleOf(ByVal x As Double, ByVal y As Double) As Double
     End If
 End Function
 
+' Определяет главные центральные оси относительно X/Y. Ось 1 ближе к X, ось 2 повёрнута от неё на +90°.
+' При равных углах выбирает +45°. При почти изотропной инерции использует центральные X/Y.
+Public Sub ResolvePrincipalAxes(ByVal ix As Double, ByVal iy As Double, ByVal ixy As Double, _
+        ByVal isotropicTolerance As Double, ByRef inertia1 As Double, ByRef inertia2 As Double, ByRef angle1 As Double)
+    Dim difference As Double, product As Double, reference As Double
+    difference = ix - iy
+    reference = GeomMax(GeomMax(Abs(ix), Abs(iy)), 1#)
+    If Abs(ixy) / reference <= isotropicTolerance And Abs(difference) / reference <= isotropicTolerance Then
+        inertia1 = ix: inertia2 = iy: angle1 = 0# ' В пределах допуска выбранные X/Y определяют и значения I1/I2.
+        Exit Sub
+    End If
+
+    Dim average As Double, radius As Double, angleScale As Double
+    average = (ix + iy) / 2#
+    radius = Sqr((difference / 2#) ^ 2 + ixy ^ 2)
+    product = -2# * ixy ' Знак отвечает физическому углу оси с положительным обходом от +X против часовой стрелки.
+    If difference < 0# Or (difference = 0# And product < 0#) Then
+        inertia1 = average - radius: inertia2 = average + radius
+        difference = -difference: product = -product ' Удвоенный угол переходит к перпендикулярной главной оси.
+    Else
+        inertia1 = average + radius: inertia2 = average - radius
+    End If
+    angleScale = GeomMax(difference, Abs(product)) ' Нормирование сохраняет направление у очень малых сечений.
+    angle1 = 0.5 * AngleOf(difference / angleScale, product / angleScale)
+End Sub
+
 ' Возвращает угол линии для читаемой подписи, в радианах. Направление обхода
 ' не переворачивает текст вверх ногами; вертикальная подпись читается снизу вверх.
 Public Function ReadableLineAngle(ByVal directionX As Double, ByVal directionY As Double) As Double

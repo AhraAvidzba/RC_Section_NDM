@@ -39,6 +39,7 @@ Public Function RunGeometryTests() As String
     TestAsymmetricCoreDistanceUsesOppositeFiber stats
     TestCoreDistanceWithProductInertiaMatchesLinearBoundary stats
     TestPrincipalAxisCoreDistanceIsAxisBased stats
+    TestPrincipalAxisNumbering stats
     TestCirclePrincipalAxesStableOnCoarseMesh stats
     TestCircleInvalidData stats
     TestCircleAutoRebarLayout stats
@@ -1421,7 +1422,7 @@ Private Sub TestAssertPrincipalAxesConsistent(ByRef stats As TTestStats, ByVal p
     s = Sin(props.PrincipalAngleRad)
     rotatedIxy = (props.Ixc - props.Iyc) * s * c + props.Ixyc * (c * c - s * s)
     TestAssertTrue stats, prefix & ".principal.I12.zero", _
-        Abs(rotatedIxy) <= GeomMax(props.PrincipalI1, 1#) * 0.0000001
+        Abs(rotatedIxy) <= GeomMax(GeomMax(props.PrincipalI1, props.PrincipalI2), 1#) * 0.0000001
 
     Dim normal1X As Double
     Dim normal1Y As Double
@@ -1933,6 +1934,36 @@ Private Sub TestPrincipalAxisCoreDistanceIsAxisBased(ByRef stats As TTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет ориентацию и инерции высокого, широкого и повёрнутого прямоугольников.
+' На границе 45° проверяет выбор +45° для обоих знаков Ixy.
+Private Sub TestPrincipalAxisNumbering(ByRef stats As TTestStats)
+    Dim section As CSectionModel, props As CSectionPropertiesCalculator
+    Dim width As Variant, angle As Variant, height As Double, area As Double, prefix As String
+    For Each width In Array(200#, 600#)
+        height = 800# - CDbl(width): area = CDbl(width) * height
+        For Each angle In Array(0#, GEOM_PI / 6#, -GEOM_PI / 6#)
+            Set section = New CSectionModel
+            section.AddConcreteElement 0#, 0#, area, 1, "", "", "Rectangle", CDbl(width), height, CDbl(angle)
+            Set props = New CSectionPropertiesCalculator
+            props.CalculateConcrete section
+            prefix = "principal.numbering." & CStr(width) & "." & CStr(angle)
+            TestAssertClose stats, prefix & ".angle", props.PrincipalAngleRad, CDbl(angle), 0.000000001
+            TestAssertRelative stats, prefix & ".inertia1", props.PrincipalI1, area * height ^ 2 / 12#, 0.000000001
+            TestAssertRelative stats, prefix & ".inertia2", props.PrincipalI2, area * CDbl(width) ^ 2 / 12#, 0.000000001
+            TestAssertPrincipalAxesConsistent stats, prefix, section, props
+        Next angle
+    Next width
+    Dim ixy As Variant, inertia1 As Double, inertia2 As Double, angle1 As Double
+    For Each ixy In Array(-2#, 2#)
+        ResolvePrincipalAxes 10#, 10#, CDbl(ixy), 0.000001, inertia1, inertia2, angle1
+        prefix = "principal.numbering.tie." & CStr(ixy)
+        TestAssertClose stats, prefix & ".angle", angle1, GEOM_PI / 4#, 0.000000001
+        TestAssertClose stats, prefix & ".inertia1", inertia1, 10# - CDbl(ixy), 0.000000001
+        TestAssertClose stats, prefix & ".inertia2", inertia2, 10# + CDbl(ixy), 0.000000001
+    Next ixy
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что грубая, но симметричная сетка круга не разворачивает главные
 ' оси из-за микроскопического численного Ixy. Для устойчивости это важно:
 ' чистый пользовательский Mx не должен попадать во вторую плоскость только из-за
@@ -1990,7 +2021,7 @@ Private Sub TestSymmetricPointedSection(ByRef stats As TTestStats)
     TestAssertClose stats, "sym.cx", props.CentroidX, 0#, 0.05
     TestAssertClose stats, "sym.cy", props.CentroidY, 0#, 0.05
     TestAssertClose stats, "sym.Ixy", props.Ixyc, 0#, 0.000001 * props.Area
-    TestAssertClose stats, "sym.principal.angle", props.PrincipalAngleRad, GEOM_PI / 2#, 0.000001
+    TestAssertClose stats, "sym.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

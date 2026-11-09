@@ -8777,9 +8777,82 @@ End Function
 Public Function RunAudit03StabilityCommentTests() As String
     Dim stats As TBatchTestStats
     TestAudit03StabilityComments stats
+    TestPrincipalStabilityAxisMapping stats
     TestAppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03StabilityCommentTests = stats.Report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет обе нормативные цепочки на широком прямоугольнике. Разные l0,
+' знаки и эксцентриситеты выявляют обмен плоскостей даже при одинаковом статусе.
+Private Sub TestPrincipalStabilityAxisMapping(ByRef stats As TBatchTestStats)
+    Dim section As CSectionModel, materials As CMaterialModelProvider, calculator As CStabilityCalculator
+    Dim result As CStabilityResult, meta As CResultMeta, code As Variant, angle As Variant, table As Variant
+    Dim valueSet As Variant, props As CSectionPropertiesCalculator
+    Dim c As Double, s As Double, expectedMx As Double, expectedMy As Double, prefix As String
+    Dim x As Variant, y As Variant, barArea As Double, steelI1 As Double, steelI2 As Double
+    barArea = GEOM_PI * 100#: steelI1 = 4# * (barArea * 50# ^ 2 + GEOM_PI * 10# ^ 4 / 4#)
+    steelI2 = 4# * (barArea * 200# ^ 2 + GEOM_PI * 10# ^ 4 / 4#)
+    Set materials = TestMaterialProvider()
+    table = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    For Each angle In Array(0#, GEOM_PI / 6#, -GEOM_PI / 6#)
+        c = Cos(CDbl(angle)): s = Sin(CDbl(angle))
+        Set section = New CSectionModel
+        section.AddConcreteElement 0#, 0#, 120000#, 1, "", "", "Rectangle", 600#, 200#, CDbl(angle)
+        For Each x In Array(-200#, 200#)
+            For Each y In Array(-50#, 50#)
+                section.AddRebarElement CDbl(x) * c - CDbl(y) * s, CDbl(x) * s + CDbl(y) * c, 20#, barArea, "A400", 1
+            Next y
+        Next x
+        Set props = New CSectionPropertiesCalculator
+        props.PrepareSnapshot section, materials
+        For Each code In Array("SP35", "SP63")
+            valueSet = IIf(CStr(code) = "SP35", mvsULS, mvsSLS)
+            prefix = "stability.axisNumbering." & CStr(code) & "." & CStr(angle)
+            Set calculator = New CStabilityCalculator
+            calculator.Calculate section, materials, CLng(valueSet), CStr(code), _
+                -100000#, 5000000# * c + 4000000# * s, 5000000# * s - 4000000# * c, _
+                -40000#, 1500000# * c + 700000# * s, 1500000# * s - 700000# * c, _
+                3000#, 1.2, 1.8, "Determinate", 1#, -1#, "Auto", "User", "BothPlanes", 7#, 13#, _
+                0.7, 0.15, 1.5, 1#, 0.7, table
+            TestAssertTrue stats, prefix & ".bothApplicable", calculator.PlaneApplicable1 And calculator.PlaneApplicable2
+            TestAssertClose stats, prefix & ".angle", calculator.PrincipalAngleRad, CDbl(angle), 0.000000001
+            TestAssertClose stats, prefix & ".commonAngle", calculator.PrincipalAngleRad, props.TransformedSnapshot.PrincipalAngleRad, 0#
+            TestAssertClose stats, prefix & ".M1", calculator.Moment1, 5000000#, 0.001
+            TestAssertClose stats, prefix & ".M2", calculator.Moment2, -4000000#, 0.001
+            TestAssertClose stats, prefix & ".M1sustained", calculator.SustainedMoment1, 1500000#, 0.001
+            TestAssertClose stats, prefix & ".M2sustained", calculator.SustainedMoment2, -700000#, 0.001
+            TestAssertClose stats, prefix & ".ea1", calculator.AccidentalEccentricity1, 7#, 0.000001
+            TestAssertClose stats, prefix & ".ea2", calculator.AccidentalEccentricity2, -13#, 0.000001
+            TestAssertClose stats, prefix & ".h1", calculator.Depth1, 200#, 0.000001
+            TestAssertClose stats, prefix & ".h2", calculator.Depth2, 600#, 0.000001
+            TestAssertClose stats, prefix & ".l01", calculator.EffectiveLength1, 3600#, 0.000001
+            TestAssertClose stats, prefix & ".l02", calculator.EffectiveLength2, 5400#, 0.000001
+            TestAssertClose stats, prefix & ".Ib1", calculator.ConcreteInertia1, 400000000#, 0.01
+            TestAssertClose stats, prefix & ".Ib2", calculator.ConcreteInertia2, 3600000000#, 0.01
+            TestAssertClose stats, prefix & ".Is1", calculator.SteelInertia1, steelI1, 0.01
+            TestAssertClose stats, prefix & ".Is2", calculator.SteelInertia2, steelI2, 0.01
+            If CStr(code) = "SP35" Then
+                TestAssertEquals stats, prefix & ".branch1", calculator.PlaneBranch1, "SP35-eta"
+                TestAssertEquals stats, prefix & ".branch2", calculator.PlaneBranch2, "SP35-table"
+                TestAssertClose stats, prefix & ".Ncr1", calculator.Ncr1, calculator.StiffnessD1 / 3600# ^ 2, 0.01
+                TestAssertTrue stats, prefix & ".Nult2", calculator.Ncr2 = 0# And calculator.Nultimate2 > 0#
+            Else
+                TestAssertClose stats, prefix & ".Ncr1", calculator.Ncr1, GEOM_PI ^ 2 * calculator.StiffnessD1 / 3600# ^ 2, 0.01
+                TestAssertClose stats, prefix & ".Ncr2", calculator.Ncr2, GEOM_PI ^ 2 * calculator.StiffnessD2 / 5400# ^ 2, 0.01
+            End If
+            expectedMx = calculator.DesignMoment1 * c - calculator.DesignMoment2 * s
+            expectedMy = calculator.DesignMoment1 * s + calculator.DesignMoment2 * c
+            TestAssertClose stats, prefix & ".designMx", calculator.DesignMx, expectedMx, 0.001
+            TestAssertClose stats, prefix & ".designMy", calculator.DesignMy, expectedMy, 0.001
+            Set result = New CStabilityResult
+            result.InitializeFromCalculator meta, calculator, 0#, 0#
+            result.UpdateDesignLoads calculator.DesignN, expectedMx, expectedMy, CDbl(angle)
+            TestAssertClose stats, prefix & ".savedM1", result.DesignMoment1, calculator.DesignMoment1, 0.001
+            TestAssertClose stats, prefix & ".savedM2", result.DesignMoment2, calculator.DesignMoment2, 0.001
+        Next code
+    Next angle
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' четыре нормативные ветви, успешная/перегруженная сжатая нагрузка
