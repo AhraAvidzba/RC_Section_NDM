@@ -38,9 +38,10 @@ Private Const SP63_PLANE2_FIRST As Long = SP63_PLANE1_FIRST + 12 ' Первый 
 Private Const COL_INERTIA_FIRST As Long = 26 ' Начало четырёх моментов инерции бетона и арматуры.
 Private Const COL_MODULUS_FIRST As Long = 32 ' Начало двух общих модулей упругости.
 Private Const SP35_DELTA_OFFSET As Long = 3 ' Смещение delta от начала плоскости СП 35.
-Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви ec > r.
+Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви |ec| > r.
 Private Const SP35_NCR_OFFSET As Long = 5 ' Смещение Ncr после обоих коэффициентов плоскости.
 
+Private Const COMMON_TITLE As String = "Исходные усилия и характеристики устойчивости по главным осям приведённого сечения"
 Private Const DEPTH1_NOTE As String = "Габарит бетона вдоль главной оси 2 при изгибе вокруг оси 1. При совпадении осей 1/2 с X/Y это размер по Y."
 Private Const DEPTH2_NOTE As String = "Габарит бетона вдоль главной оси 1 при изгибе вокруг оси 2. При совпадении осей 1/2 с X/Y это размер по X."
 
@@ -215,7 +216,7 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
     End If
     If mMinimalFormatting Then
         Dim expectedLabels As Variant: expectedLabels = HeaderRowLabels(units, batch)
-        If CStr(target.Cells(2, 1).Value2) = "Combination ID" Then
+        If StabilityHeaderLayoutMatches(target) Then
             If ResultHeaderMatches(target.Offset(4, 0), expectedLabels, firstColumn:=4) Then
                 RefreshHeaderNotes target
                 Exit Sub
@@ -234,22 +235,22 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
     MergeCells target, 2, 12, 2, 3, "в точке приложения нагрузок"
 
     MergeCells target, 1, COL_COMMON_FIRST, 1, BlockWidth(COL_COMMON_FIRST, COL_COMMON_LAST), _
-        "Общие данные для учета продольного изгиба и проверки устойчивости (по главным осям 1, 2)"
+        COMMON_TITLE
     MergeCells target, 2, 16, 1, 6, "Нагрузки до применения " & ChrW$(&H3B7) & " в ц.т. приведенного сечения"
-    MergeCells target, 3, 16, 1, 3, "постоянные + временные"
-    MergeCells target, 3, 19, 1, 3, "постоянные"
-    MergeCells target, 2, 22, 2, BlockWidth(22, COL_COMMON_LAST), "характеристики сечения"
+    MergeCells target, 3, 16, 1, 3, "Полное сочетание"
+    MergeCells target, 3, 19, 1, 3, "Длительная / постоянная часть"
+    MergeCells target, 2, 22, 2, BlockWidth(22, COL_COMMON_LAST), "Сечение и расчётные длины"
 
     MergeCells target, 1, COL_SP35_FIRST, 1, BlockWidth(COL_SP35_FIRST, COL_SP35_LAST), "Расчет по СП 35"
-    MergeCells target, 2, COL_SP35_FIRST, 3, 1, "общие для СП"
-    WriteSP35PlaneHeaders target, SP35_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
-    WriteSP35PlaneHeaders target, SP35_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2)"
+    MergeCells target, 2, COL_SP35_FIRST, 2, 1, "Общее для СП 35" ' Строка 4 остаётся доступной для пояснения коэффициента.
+    WriteSP35PlaneHeaders target, SP35_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1, ближайшей к X)"
+    WriteSP35PlaneHeaders target, SP35_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2, ближайшей к Y)"
 
     MergeCells target, 1, COL_SP63_FIRST, 1, BlockWidth(COL_SP63_FIRST, COL_SP63_LAST), "Расчет по СП 63"
-    WriteSP63PlaneHeaders target, SP63_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
-    WriteSP63PlaneHeaders target, SP63_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2)"
+    WriteSP63PlaneHeaders target, SP63_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1, ближайшей к X)"
+    WriteSP63PlaneHeaders target, SP63_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2, ближайшей к Y)"
 
-    PutHeaderNotes target
+    target.Offset(3, 0).Resize(1, TOTAL_COLUMNS).Value2 = HeaderNotes()
     PutHeaderRowLabels target, units, batch
 End Sub
 
@@ -257,8 +258,8 @@ End Sub
 Private Sub WriteSP35PlaneHeaders(ByVal target As Object, ByVal firstColumn As Long, ByVal titleText As String)
     MergeCells target, 2, firstColumn, 1, 15, titleText
     MergeCells target, 3, firstColumn, 1, 3, "Общие для плоскости"
-    MergeCells target, 3, firstColumn + 3, 1, 6, "при ec > r"
-    MergeCells target, 3, firstColumn + 9, 1, 6, "при ec <= r"
+    MergeCells target, 3, firstColumn + 3, 1, 6, "при |ec| > r"
+    MergeCells target, 3, firstColumn + 9, 1, 6, "при |ec| <= r"
 End Sub
 
 ' Записывает верхние подписи для одной плоскости СП 63.
@@ -266,38 +267,45 @@ Private Sub WriteSP63PlaneHeaders(ByVal target As Object, ByVal firstColumn As L
     MergeCells target, 2, firstColumn, 2, 12, titleText
 End Sub
 
+' Проверяет актуальность структуры шапки перед сохранением разметки.
+Private Function StabilityHeaderLayoutMatches(ByVal target As Object) As Boolean
+    StabilityHeaderLayoutMatches = CStr(target.Cells(2, 1).Value2) = "Combination ID" And _
+        CStr(target.Cells(1, COL_COMMON_FIRST).Value2) = COMMON_TITLE
+End Function
+
 ' Обновляет пояснения одним блоком, сохраняя готовую разметку и единицы шапки.
 Private Sub RefreshHeaderNotes(ByVal target As Object)
-    If CStr(target.Cells(4, 22).Value2) <> DEPTH1_NOTE Then PutHeaderNotes target
+    Dim notes As Variant: notes = HeaderNotes()
+    If Not ResultHeaderMatches(target.Offset(3, 0), notes, firstColumn:=4) Then _
+        target.Offset(3, 0).Resize(1, TOTAL_COLUMNS).Value2 = notes
 End Sub
 
 ' Заполняет строку примечаний над обозначениями. Это обычный текст без переноса:
 ' если он не помещается, Excel просто обрезает его по ширине ячейки.
-Private Sub PutHeaderNotes(ByVal target As Object)
+Private Function HeaderNotes() As Variant
     Dim notes(1 To 1, 1 To TOTAL_COLUMNS) As Variant
-    notes(1, 2) = "пояснение расчетного статуса блока устойчивости"
     notes(1, 4) = "Коэффициент продольного изгиба в плоскости 1: изгиб вокруг главной оси 1"
     notes(1, 5) = "Коэффициент продольного изгиба в плоскости 2: изгиб вокруг главной оси 2"
     notes(1, 6) = "Продольная сила после учета продольного изгиба"
     notes(1, 7) = "Момент после учета продольного изгиба в плоскости 1, вокруг главной оси 1"
     notes(1, 8) = "Момент после учета продольного изгиба в плоскости 2, вокруг главной оси 2"
-    notes(1, 9) = "Продольная сила относительно центральных осей приведенного сечения"
-    notes(1, 10) = "Момент Mx относительно центральных осей приведенного сечения"
-    notes(1, 11) = "Момент My относительно центральных осей приведенного сечения"
-    notes(1, 12) = "Продольная сила в пользовательской точке приложения нагрузок"
-    notes(1, 13) = "Момент Mx в пользовательской точке приложения нагрузок"
-    notes(1, 14) = "Момент My в пользовательской точке приложения нагрузок"
+    notes(1, 9) = "Продольная сила после учёта продольного изгиба, в пользовательском знаке"
+    notes(1, 10) = "Момент после учёта продольного изгиба относительно оси X через приведённый центр тяжести"
+    notes(1, 11) = "Момент после учёта продольного изгиба относительно оси Y через приведённый центр тяжести"
+    notes(1, 12) = "Продольная сила после учёта продольного изгиба, в пользовательском знаке"
+    notes(1, 13) = "Момент вокруг X после учёта продольного изгиба, перенесённый к точке приложения нагрузки"
+    notes(1, 14) = "Момент вокруг Y после учёта продольного изгиба, перенесённый к точке приложения нагрузки"
 
     notes(1, 16) = "Продольная сила до учета продольного изгиба"
     notes(1, 17) = "Момент в плоскости 1, вокруг главной оси 1, до учета продольного изгиба"
     notes(1, 18) = "Момент в плоскости 2, вокруг главной оси 2, до учета продольного изгиба"
-    notes(1, 19) = "Продольная сила от постоянной или длительной части нагрузки"
+    notes(1, 19) = "Продольная сила от длительной части по СП 63 или постоянной части по СП 35"
     notes(1, 20) = "Момент в плоскости 1, вокруг главной оси 1, от постоянной или длительной части"
     notes(1, 21) = "Момент в плоскости 2, вокруг главной оси 2, от постоянной или длительной части"
     notes(1, 22) = DEPTH1_NOTE
     notes(1, 23) = DEPTH2_NOTE
-    notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 1"
-    notes(1, 25) = "Радиус инерции для изгиба вокруг главной оси 2"
+    notes(1, 24) = "Радиус инерции приведённого сечения относительно главной оси 1"
+    notes(1, 25) = "Радиус инерции приведённого сечения относительно главной оси 2"
     notes(1, COL_INERTIA_FIRST) = "Момент инерции бетона относительно главной оси 1 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 1) = "Момент инерции бетона относительно главной оси 2 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 2) = "Момент инерции арматуры относительно главной оси 1 приведённого сечения"
@@ -307,47 +315,47 @@ Private Sub PutHeaderNotes(ByVal target As Object)
     notes(1, COL_MODULUS_FIRST) = "Модуль упругости бетона, использованный при расчёте устойчивости"
     notes(1, COL_MODULUS_FIRST + 1) = "Модуль упругости арматуры, использованный при расчёте устойчивости"
 
-    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры из Config для расчёта Ncr при ec > r"
+    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры из Config для расчёта Ncr при |ec| > r"
     PutSP35PlaneNotes notes, SP35_PLANE1_FIRST
     PutSP35PlaneNotes notes, SP35_PLANE2_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE2_FIRST
 
-    target.Offset(3, 0).Resize(1, TOTAL_COLUMNS).Value2 = notes
-End Sub
+    HeaderNotes = notes
+End Function
 
 ' Заполняет примечания одной плоскости СП 35.
 Private Sub PutSP35PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Long)
     notes(1, firstColumn) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 1) = "Расчетный эксцентриситет продольной силы"
-    notes(1, firstColumn + 2) = "Ядровое расстояние для выбора ветви СП 35"
-    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Отношение |ec|/h с нижним ограничением для ветви ec > r"
+    notes(1, firstColumn + 2) = "Ядровое расстояние по направлению ec, перпендикулярно оси изгиба. Оно определяет ветвь СП 35"
+    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Отношение |ec|/h с нижним ограничением для ветви |ec| > r"
     notes(1, firstColumn + SP35_PHI_L_OFFSET) = "Коэффициент длительного действия нагрузки"
-    notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви ec > r"
+    notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви |ec| > r"
     notes(1, firstColumn + 6) = "Коэффициент увеличения момента"
     notes(1, firstColumn + 7) = "Запас k*Ncr/N. Коэффициент k — допустимое отношение N/Ncr из Config"
-    notes(1, firstColumn + 8) = "Статус проверки ветви ec > r"
-    notes(1, firstColumn + 9) = "Табличный коэффициент продольного изгиба"
-    notes(1, firstColumn + 10) = "Коэффициент влияния момента"
-    notes(1, firstColumn + 11) = "Итоговый коэффициент ветви ec <= r"
-    notes(1, firstColumn + 12) = "Предельная продольная сила по ветви ec <= r"
-    notes(1, firstColumn + 13) = "Отношение предельной силы к действующей сжимающей"
-    notes(1, firstColumn + 14) = "Статус проверки ветви ec <= r"
+    notes(1, firstColumn + 8) = "Статус проверки ветви |ec| > r"
+    notes(1, firstColumn + 9) = "Коэффициент постоянной нагрузки по таблице 7.21. Зависит от гибкости l0/i этой плоскости"
+    notes(1, firstColumn + 10) = "Коэффициент кратковременной нагрузки по таблице 7.21. Зависит от l0/i и |ec|/r"
+    notes(1, firstColumn + 11) = "Коэффициент снижения предельной силы с учётом доли постоянной нагрузки"
+    notes(1, firstColumn + 12) = "Предельная продольная сила по ветви |ec| <= r"
+    notes(1, firstColumn + 13) = "Запас Nult/N. Здесь N — модуль действующей сжимающей силы"
+    notes(1, firstColumn + 14) = "Статус проверки ветви |ec| <= r"
 End Sub
 
 ' Заполняет примечания одной плоскости СП 63.
 Private Sub PutSP63PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Long)
-    notes(1, firstColumn) = "Гибкость элемента в рассматриваемой плоскости изгиба вокруг главной оси"
+    notes(1, firstColumn) = "Гибкость l0/i. Длина и радиус инерции относятся к одной плоскости изгиба"
     notes(1, firstColumn + 1) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 2) = "Расчетный эксцентриситет продольной силы"
     notes(1, firstColumn + 3) = "Коэффициент длительного действия нагрузки"
-    notes(1, firstColumn + 4) = "Коэффициент влияния эксцентриситета"
+    notes(1, firstColumn + 4) = "Относительный эксцентриситет |e0|/h с границами DeltaEMin и DeltaEMax из Config"
     notes(1, firstColumn + 5) = "Коэффициент жесткости бетонной части"
     notes(1, firstColumn + 6) = "Коэффициент жесткости арматуры"
-    notes(1, firstColumn + 7) = "Условная жесткость элемента"
-    notes(1, firstColumn + 8) = "Критическая продольная сила"
+    notes(1, firstColumn + 7) = "Условная жёсткость D = kb*Eb*Ib + ks*Es*Is для этой плоскости"
+    notes(1, firstColumn + 8) = "Критическая сила Ncr = pi^2*D/l0^2 для этой плоскости"
     notes(1, firstColumn + 9) = "Коэффициент увеличения момента"
-    notes(1, firstColumn + 10) = "Отношение критической силы к действующей сжимающей"
+    notes(1, firstColumn + 10) = "Запас Ncr/N. Здесь N — модуль действующей сжимающей силы"
     notes(1, firstColumn + 11) = "Статус проверки рассматриваемой плоскости"
 End Sub
 
@@ -414,7 +422,7 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
     ApplyHeaderSubscripts target
 End Sub
 
-' Формирует заголовок запаса для ветви СП 35 ec > r.
+' Формирует заголовок запаса для ветви СП 35 |ec| > r.
 ' В нем показывается не условное k, а фактический лимит N/Ncr,
 ' заданный пользователем в Stability.SP35.NOverNcrLimit.
 Private Function SP35EtaReserveLabel(ByVal batch As CBatchSectionCalculator) As String
@@ -433,7 +441,7 @@ Private Function FormatCoefficientInvariant(ByVal value As Double) As String
 End Function
 
 ' Заполняет подписи одной плоскости СП 35, сохраняя раздельные колонки для
-' ветвей ec > r и ec <= r.
+' ветвей |ec| > r и |ec| <= r.
 Private Sub PutSP35PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Long, _
         ByVal units As CUnitSystem, ByVal etaReserveLabel As String)
     labels(1, firstColumn) = "ec,sl, " & OutputLengthUnit(units)
@@ -453,12 +461,17 @@ Private Sub PutSP35PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Lon
     labels(1, firstColumn + 14) = "статус"
 End Sub
 
+' Возвращает обозначение коэффициента длительности СП 63 для записи и восстановления.
+Private Function SP63DurationLabel() As String
+    SP63DurationLabel = ChrW$(&H3C6) & "l (длит)"
+End Function
+
 ' Заполняет обозначения одной плоскости СП 63.
 Private Sub PutSP63PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
     labels(1, firstColumn) = "l0/i"
     labels(1, firstColumn + 1) = "ea, " & OutputLengthUnit(units)
     labels(1, firstColumn + 2) = "e0, " & OutputLengthUnit(units)
-    labels(1, firstColumn + 3) = ChrW$(&H3C6) & "l (пост)"
+    labels(1, firstColumn + 3) = SP63DurationLabel()
     labels(1, firstColumn + 4) = ChrW$(&H3B4) & "e"
     labels(1, firstColumn + 5) = "kb"
     labels(1, firstColumn + 6) = "ks"
@@ -581,7 +594,7 @@ Private Sub PutSectionInputValues(ByRef data() As Variant, ByVal rowIndex As Lon
     data(rowIndex, COL_MODULUS_FIRST + 1) = es
 End Sub
 
-' Заполняет одну плоскость СП 35. В строке активна только ветвь ec > r или ec <= r.
+' Заполняет одну плоскость СП 35. В строке активна только ветвь |ec| > r или |ec| <= r.
 Private Sub PutSP35PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, ByVal firstColumn As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long, _
         ByVal units As CUnitSystem)
@@ -820,7 +833,7 @@ Private Function PlaneNcr(ByVal batch As CBatchSectionCalculator, ByVal index As
     If planeIndex = 1 Then PlaneNcr = batch.ResultAt(index).StabilityResult.Ncr1 Else PlaneNcr = batch.ResultAt(index).StabilityResult.Ncr2
 End Function
 
-' Возвращает табличную несущую силу Nult для ветви СП 35 ec <= r.
+' Возвращает табличную несущую силу Nult для ветви СП 35 |ec| <= r.
 Private Function PlaneNultimate(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneNultimate = batch.ResultAt(index).StabilityResult.Nultimate1 Else PlaneNultimate = batch.ResultAt(index).StabilityResult.Nultimate2
 End Function
@@ -835,12 +848,12 @@ Private Function PlanePhiL(ByVal batch As CBatchSectionCalculator, ByVal index A
     If planeIndex = 1 Then PlanePhiL = batch.ResultAt(index).StabilityResult.PhiL1 Else PlanePhiL = batch.ResultAt(index).StabilityResult.PhiL2
 End Function
 
-' Возвращает табличный phi_l для ветви СП 35 ec <= r.
+' Возвращает табличный phi_l для ветви СП 35 |ec| <= r.
 Private Function PlanePhiLTable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiLTable = batch.ResultAt(index).StabilityResult.PhiLTable1 Else PlanePhiLTable = batch.ResultAt(index).StabilityResult.PhiLTable2
 End Function
 
-' Возвращает табличный phi_m для ветви СП 35 ec <= r.
+' Возвращает табличный phi_m для ветви СП 35 |ec| <= r.
 Private Function PlanePhiM(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiM = batch.ResultAt(index).StabilityResult.PhiM1 Else PlanePhiM = batch.ResultAt(index).StabilityResult.PhiM2
 End Function
@@ -1034,8 +1047,10 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
     End If
     OrderSavedSP35Plane labels, data, SP35_PLANE1_FIRST
     OrderSavedSP35Plane labels, data, SP35_PLANE2_FIRST
+    labels(1, SP63_PLANE1_FIRST + 3) = SP63DurationLabel()
+    labels(1, SP63_PLANE2_FIRST + 3) = SP63DurationLabel()
     If mMinimalFormatting Then mMinimalFormatting = CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@" And _
-        CStr(target.Cells(2, 1).Value2) = "Combination ID" And ResultHeaderMatches(target.Offset(4, 0), labels, firstColumn:=4)
+        StabilityHeaderLayoutMatches(target) And ResultHeaderMatches(target.Offset(4, 0), labels, firstColumn:=4)
     PrepareTarget target
     If Not mMinimalFormatting Then
         WriteHeaders target, Nothing, Nothing

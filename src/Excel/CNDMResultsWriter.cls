@@ -1042,16 +1042,16 @@ Private Sub PutPrincipalCoreDistanceProperties(ByRef data() As Variant, ByRef ro
 
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Plus", _
         OutputLength(props.CoreDistanceAlong(section, axis1X, axis1Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +главной центральной оси 1."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль +оси 1. Изгиб происходит вокруг главной оси 2."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Minus", _
         OutputLength(props.CoreDistanceAlong(section, -axis1X, -axis1Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -главной центральной оси 1."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль -оси 1. Изгиб происходит вокруг главной оси 2."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Plus", _
         OutputLength(props.CoreDistanceAlong(section, axis2X, axis2Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +главной центральной оси 2."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль +оси 2. Изгиб происходит вокруг главной оси 1."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Minus", _
         OutputLength(props.CoreDistanceAlong(section, -axis2X, -axis2Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -главной центральной оси 2."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль -оси 2. Изгиб происходит вокруг главной оси 1."
 End Sub
 
 ' Записывает общие расчетные характеристики, которые полезны не только в

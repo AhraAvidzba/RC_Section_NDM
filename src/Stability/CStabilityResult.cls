@@ -45,14 +45,14 @@ Private mEta1 As Double ' Коэффициент eta первой плоскос
 Private mEta2 As Double ' Коэффициент eta второй плоскости.
 Private mPhiL1 As Double ' Коэффициент длительности первой плоскости.
 Private mPhiL2 As Double ' Коэффициент длительности второй плоскости.
-Private mPhiLTable1 As String ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
-Private mPhiLTable2 As String ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+Private mPhiLTable1 As String ' Табличный phi_l СП 35 первой плоскости для ветви |ec|/r <= 1.
+Private mPhiLTable2 As String ' Табличный phi_l СП 35 второй плоскости для ветви |ec|/r <= 1.
 Private mPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
 Private mPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
-Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
-Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
-Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
-Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви |ec| <= r.
+Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви |ec| <= r.
+Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви |ec| > r.
+Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви |ec| > r.
 Private mEccentricity1 As Double ' Расчетный эксцентриситет первой плоскости, мм.
 Private mEccentricity2 As Double ' Расчетный эксцентриситет второй плоскости, мм.
 Private mAccidentalEcc1 As Double ' Случайный эксцентриситет в первой плоскости, мм.
@@ -61,8 +61,8 @@ Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
 Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
 Private mSlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
 Private mSlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
-Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
-Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Private mDepth1 As Double ' Бетонный габарит h1 вдоль оси 2 при изгибе вокруг оси 1, мм.
+Private mDepth2 As Double ' Бетонный габарит h2 вдоль оси 1 при изгибе вокруг оси 2, мм.
 Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.
 Private mRadius2 As Double ' Радиус инерции i2 приведенного сечения.
 Private mCoreDistance1 As Double ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.
@@ -279,9 +279,9 @@ Private Function StabilityBranchDisplayName(ByVal branchText As String) As Strin
         Case "sp63"
             StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
         Case "sp35-eta"
-            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
+            StabilityBranchDisplayName = "СП 35: ветвь |ec| > r через eta и Ncr"
         Case "sp35-table"
-            StabilityBranchDisplayName = "СП 35: ветвь ec <= r через Nult,stab"
+            StabilityBranchDisplayName = "СП 35: ветвь |ec| <= r через Nult,stab"
         Case "sp35-mixed"
             StabilityBranchDisplayName = "СП 35: плоскости попали в разные расчетные ветви"
         Case Else

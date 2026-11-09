@@ -48,8 +48,8 @@ Private Type TPlaneResult
     GeometricLength As Double ' Геометрическая длина элемента, мм.
     EffectiveLength As Double ' Расчётная длина элемента, мм.
     Slenderness As Double ' Гибкость как отношение расчётной длины к радиусу инерции.
-    NormalX As Double ' Компонента X нормали рассматриваемой главной плоскости.
-    NormalY As Double ' Компонента Y нормали рассматриваемой главной плоскости.
+    NormalX As Double ' Компонента X положительной нормали к оси изгиба.
+    NormalY As Double ' Компонента Y положительной нормали к оси изгиба.
     CentroidX As Double ' Координата X центра приведённого сечения, мм.
     CentroidY As Double ' Координата Y центра приведённого сечения, мм.
     ConcreteMinProjection As Double ' Наименьшая координата бетонной границы вдоль нормали, мм.
@@ -109,14 +109,14 @@ Private mEta1 As Double ' Коэффициент eta первой плоскос
 Private mEta2 As Double ' Коэффициент eta второй плоскости.
 Private mPhiL1 As Double ' Коэффициент длительности первой плоскости.
 Private mPhiL2 As Double ' Коэффициент длительности второй плоскости.
-Private mPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
-Private mPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+Private mPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости для ветви |ec|/r <= 1.
+Private mPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости для ветви |ec|/r <= 1.
 Private mPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
 Private mPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
-Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
-Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
-Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
-Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви |ec| <= r.
+Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви |ec| <= r.
+Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви |ec| > r.
+Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви |ec| > r.
 Private mEccentricity1 As Double ' Расчетный эксцентриситет первой плоскости, мм.
 Private mEccentricity2 As Double ' Расчетный эксцентриситет второй плоскости, мм.
 Private mAccidentalEccentricity1 As Double ' Случайный эксцентриситет первой плоскости, мм.
@@ -125,8 +125,8 @@ Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
 Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
 Private mSlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
 Private mSlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
-Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
-Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Private mDepth1 As Double ' Бетонный габарит h1 вдоль оси 2 при изгибе вокруг оси 1, мм.
+Private mDepth2 As Double ' Бетонный габарит h2 вдоль оси 1 при изгибе вокруг оси 2, мм.
 Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.
 Private mRadius2 As Double ' Радиус инерции i2 приведенного сечения.
 Private mCoreDistance1 As Double ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.
@@ -709,7 +709,7 @@ Private Function StabilityNumber(ByVal value As Double) As String
     StabilityNumber = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
-' Считает одну главную плоскость по СП 35: табличная ветвь при ec/r <= 1,
+' Считает одну главную плоскость по СП 35: табличная ветвь при |ec|/r <= 1,
 ' иначе eta/Ncr. Таблица 7.21 передается с Config и не зашита в код.
 Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal eb As Double, ByVal es As Double, _
@@ -727,7 +727,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     plane.CoreDistance = coreDistance
 
     Dim q As Double
-    q = Abs(plane.Eccentricity) / coreDistance ' Безразмерное ec/r выбирает табличную ветвь или расчёт через критическую силу.
+    q = Abs(plane.Eccentricity) / coreDistance ' Модуль эксцентриситета делится на ядровое расстояние выбранной стороны.
     If q <= 1# Then
         CalculateSP35TablePlane concreteArea, totalSteelArea, nCompression, sustainedCompression, rb, rsc, table721, q, plane
     Else
@@ -735,7 +735,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     End If
 End Sub
 
-' Табличная ветвь СП 35 для ec/r <= 1.
+' Табличная ветвь СП 35 для |ec|/r <= 1.
 Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal rb As Double, ByVal rsc As Double, _
         ByVal table721 As Variant, ByVal q As Double, _
@@ -787,7 +787,7 @@ Private Function SP35ConcreteAreaForTableNult(ByVal concreteArea As Double, _
     End If
 End Function
 
-' Рассчитывает ветвь СП 35 для ec/r > 1: phi_l по моментам относительно
+' Рассчитывает ветвь СП 35 для |ec|/r > 1: phi_l по моментам относительно
 ' требуемой грани, delta, D, Ncr, eta и запас по условию N <= k*Ncr.
 Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedCompression As Double, _
         ByVal eb As Double, ByVal es As Double, _
@@ -1090,7 +1090,7 @@ Private Function CoreDistanceForEccentricity(ByRef plane As TPlaneResult) As Dou
 End Function
 
 ' Интерполирует таблицу 7.21 СП 35, переданную с листа Config. В книге
-' таблица содержит l0/i, четыре phi_m для ec/r = 0; 0.25; 0.5; 1 и phi_l.
+' таблица содержит l0/i, четыре phi_m для |ec|/r = 0; 0.25; 0.5; 1 и phi_l.
 Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
         ByRef phiM As Double, ByRef phiL As Double)
     If Len(mSP35TableInputError) > 0 Then RaiseInput mSP35TableInputError
@@ -1229,7 +1229,7 @@ Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long,
     If slenderness >= CDbl(tableData(rowCount, 1)) Then lowerRow = rowCount: upperRow = rowCount
 End Sub
 
-' Интерполяция phi_m по отношению ec/r.
+' Интерполяция phi_m по отношению |ec|/r.
 Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex As Long, ByVal q As Double) As Double
     Dim qValues(1 To 4) As Double
     qValues(1) = 0#: qValues(2) = 0.25: qValues(3) = 0.5: qValues(4) = 1#
@@ -1541,12 +1541,12 @@ Public Property Get PhiL2() As Double
     PhiL2 = mPhiL2
 End Property
 
-' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
+' Табличный phi_l СП 35 первой плоскости для ветви |ec|/r <= 1.
 Public Property Get PhiLTable1() As Double
     PhiLTable1 = mPhiLTable1
 End Property
 
-' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+' Табличный phi_l СП 35 второй плоскости для ветви |ec|/r <= 1.
 Public Property Get PhiLTable2() As Double
     PhiLTable2 = mPhiLTable2
 End Property
@@ -1561,22 +1561,22 @@ Public Property Get PhiM2() As Double
     PhiM2 = mPhiM2
 End Property
 
-' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
+' Итоговый phi СП 35 первой плоскости в ветви |ec| <= r.
 Public Property Get PhiValue1() As Double
     PhiValue1 = mPhiValue1
 End Property
 
-' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
+' Итоговый phi СП 35 второй плоскости в ветви |ec| <= r.
 Public Property Get PhiValue2() As Double
     PhiValue2 = mPhiValue2
 End Property
 
-' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
+' Коэффициент phi_p СП 35 первой плоскости в ветви |ec| > r.
 Public Property Get PhiP1() As Double
     PhiP1 = mPhiP1
 End Property
 
-' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+' Коэффициент phi_p СП 35 второй плоскости в ветви |ec| > r.
 Public Property Get PhiP2() As Double
     PhiP2 = mPhiP2
 End Property
@@ -1621,12 +1621,12 @@ Public Property Get Slenderness2() As Double
     Slenderness2 = mSlenderness2
 End Property
 
-' Размер сечения h1 по нормали первой главной плоскости, мм.
+' Бетонный габарит h1 вдоль оси 2 при изгибе вокруг оси 1, мм.
 Public Property Get Depth1() As Double
     Depth1 = mDepth1
 End Property
 
-' Размер сечения h2 по нормали второй главной плоскости, мм.
+' Бетонный габарит h2 вдоль оси 1 при изгибе вокруг оси 2, мм.
 Public Property Get Depth2() As Double
     Depth2 = mDepth2
 End Property

@@ -481,7 +481,7 @@ Public Sub PrincipalPlaneNormalDirection(ByVal planeIndex As Long, ByRef normalX
     End If
 End Sub
 
-' Считает габарит оболочек бетонных элементов по нормали выбранной главной плоскости.
+' Считает габарит оболочек бетонных элементов перпендикулярно главной оси изгиба.
 ' Это единая точка для устойчивости и справочного вывода: арматура не
 ' расширяет внешний бетонный контур, если вызывающий код передает False.
 Public Function PrincipalPlaneDepth(ByVal section As CSectionModel, ByVal planeIndex As Long, _
@@ -494,7 +494,7 @@ End Function
 
 ' Считает ядровое расстояние для выбранной главной плоскости и стороны.
 ' plusSide=True означает эксцентриситет в положительном направлении нормали
-' плоскости; крайнее волокно для c берется с противоположной стороны.
+' к оси изгиба; крайнее волокно для c берётся с противоположной стороны.
 Public Function PrincipalPlaneCoreDistance(ByVal section As CSectionModel, ByVal planeIndex As Long, _
         ByVal plusSide As Boolean, Optional ByVal includeRebar As Boolean = False) As Double
     Dim normalX As Double

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-09 11:02:36
+Date: 2026-11-09 12:11:50
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -18419,7 +18419,7 @@ Public Sub PrincipalPlaneNormalDirection(ByVal planeIndex As Long, ByRef normalX
     End If
 End Sub
 
-' Считает габарит оболочек бетонных элементов по нормали выбранной главной плоскости.
+' Считает габарит оболочек бетонных элементов перпендикулярно главной оси изгиба.
 ' Это единая точка для устойчивости и справочного вывода: арматура не
 ' расширяет внешний бетонный контур, если вызывающий код передает False.
 Public Function PrincipalPlaneDepth(ByVal section As CSectionModel, ByVal planeIndex As Long, _
@@ -18432,7 +18432,7 @@ End Function
 
 ' Считает ядровое расстояние для выбранной главной плоскости и стороны.
 ' plusSide=True означает эксцентриситет в положительном направлении нормали
-' плоскости; крайнее волокно для c берется с противоположной стороны.
+' к оси изгиба; крайнее волокно для c берётся с противоположной стороны.
 Public Function PrincipalPlaneCoreDistance(ByVal section As CSectionModel, ByVal planeIndex As Long, _
         ByVal plusSide As Boolean, Optional ByVal includeRebar As Boolean = False) As Double
     Dim normalX As Double
@@ -36879,8 +36879,8 @@ Private Type TPlaneResult
     geometricLength As Double ' Геометрическая длина элемента, мм.
     effectiveLength As Double ' Расчётная длина элемента, мм.
     slenderness As Double ' Гибкость как отношение расчётной длины к радиусу инерции.
-    normalX As Double ' Компонента X нормали рассматриваемой главной плоскости.
-    normalY As Double ' Компонента Y нормали рассматриваемой главной плоскости.
+    normalX As Double ' Компонента X положительной нормали к оси изгиба.
+    normalY As Double ' Компонента Y положительной нормали к оси изгиба.
     centroidX As Double ' Координата X центра приведённого сечения, мм.
     centroidY As Double ' Координата Y центра приведённого сечения, мм.
     ConcreteMinProjection As Double ' Наименьшая координата бетонной границы вдоль нормали, мм.
@@ -36940,14 +36940,14 @@ Private mEta1 As Double ' Коэффициент eta первой плоскос
 Private mEta2 As Double ' Коэффициент eta второй плоскости.
 Private mPhiL1 As Double ' Коэффициент длительности первой плоскости.
 Private mPhiL2 As Double ' Коэффициент длительности второй плоскости.
-Private mPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
-Private mPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+Private mPhiLTable1 As Double ' Табличный phi_l СП 35 первой плоскости для ветви |ec|/r <= 1.
+Private mPhiLTable2 As Double ' Табличный phi_l СП 35 второй плоскости для ветви |ec|/r <= 1.
 Private mPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
 Private mPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
-Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
-Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
-Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
-Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви |ec| <= r.
+Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви |ec| <= r.
+Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви |ec| > r.
+Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви |ec| > r.
 Private mEccentricity1 As Double ' Расчетный эксцентриситет первой плоскости, мм.
 Private mEccentricity2 As Double ' Расчетный эксцентриситет второй плоскости, мм.
 Private mAccidentalEccentricity1 As Double ' Случайный эксцентриситет первой плоскости, мм.
@@ -36956,8 +36956,8 @@ Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
 Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
 Private mSlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
 Private mSlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
-Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
-Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Private mDepth1 As Double ' Бетонный габарит h1 вдоль оси 2 при изгибе вокруг оси 1, мм.
+Private mDepth2 As Double ' Бетонный габарит h2 вдоль оси 1 при изгибе вокруг оси 2, мм.
 Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.
 Private mRadius2 As Double ' Радиус инерции i2 приведенного сечения.
 Private mCoreDistance1 As Double ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.
@@ -37540,7 +37540,7 @@ Private Function StabilityNumber(ByVal value As Double) As String
     StabilityNumber = Replace$(format$(value, "0.############"), ",", ".")
 End Function
 
-' Считает одну главную плоскость по СП 35: табличная ветвь при ec/r <= 1,
+' Считает одну главную плоскость по СП 35: табличная ветвь при |ec|/r <= 1,
 ' иначе eta/Ncr. Таблица 7.21 передается с Config и не зашита в код.
 Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal eb As Double, ByVal es As Double, _
@@ -37558,7 +37558,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     plane.coreDistance = coreDistance
 
     Dim q As Double
-    q = Abs(plane.eccentricity) / coreDistance ' Безразмерное ec/r выбирает табличную ветвь или расчёт через критическую силу.
+    q = Abs(plane.eccentricity) / coreDistance ' Модуль эксцентриситета делится на ядровое расстояние выбранной стороны.
     If q <= 1# Then
         CalculateSP35TablePlane concreteArea, totalSteelArea, nCompression, sustainedCompression, rb, rsc, table721, q, plane
     Else
@@ -37566,7 +37566,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
     End If
 End Sub
 
-' Табличная ветвь СП 35 для ec/r <= 1.
+' Табличная ветвь СП 35 для |ec|/r <= 1.
 Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
         ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal rb As Double, ByVal rsc As Double, _
         ByVal table721 As Variant, ByVal q As Double, _
@@ -37618,7 +37618,7 @@ Private Function SP35ConcreteAreaForTableNult(ByVal concreteArea As Double, _
     End If
 End Function
 
-' Рассчитывает ветвь СП 35 для ec/r > 1: phi_l по моментам относительно
+' Рассчитывает ветвь СП 35 для |ec|/r > 1: phi_l по моментам относительно
 ' требуемой грани, delta, D, Ncr, eta и запас по условию N <= k*Ncr.
 Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedCompression As Double, _
         ByVal eb As Double, ByVal es As Double, _
@@ -37921,7 +37921,7 @@ Private Function CoreDistanceForEccentricity(ByRef plane As TPlaneResult) As Dou
 End Function
 
 ' Интерполирует таблицу 7.21 СП 35, переданную с листа Config. В книге
-' таблица содержит l0/i, четыре phi_m для ec/r = 0; 0.25; 0.5; 1 и phi_l.
+' таблица содержит l0/i, четыре phi_m для |ec|/r = 0; 0.25; 0.5; 1 и phi_l.
 Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
         ByRef phiM As Double, ByRef phiL As Double)
     If Len(mSP35TableInputError) > 0 Then RaiseInput mSP35TableInputError
@@ -38060,7 +38060,7 @@ Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long,
     If slenderness >= CDbl(tableData(rowCount, 1)) Then lowerRow = rowCount: upperRow = rowCount
 End Sub
 
-' Интерполяция phi_m по отношению ec/r.
+' Интерполяция phi_m по отношению |ec|/r.
 Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex As Long, ByVal q As Double) As Double
     Dim qValues(1 To 4) As Double
     qValues(1) = 0#: qValues(2) = 0.25: qValues(3) = 0.5: qValues(4) = 1#
@@ -38372,12 +38372,12 @@ Public Property Get PhiL2() As Double
     PhiL2 = mPhiL2
 End Property
 
-' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
+' Табличный phi_l СП 35 первой плоскости для ветви |ec|/r <= 1.
 Public Property Get PhiLTable1() As Double
     PhiLTable1 = mPhiLTable1
 End Property
 
-' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+' Табличный phi_l СП 35 второй плоскости для ветви |ec|/r <= 1.
 Public Property Get PhiLTable2() As Double
     PhiLTable2 = mPhiLTable2
 End Property
@@ -38392,22 +38392,22 @@ Public Property Get PhiM2() As Double
     PhiM2 = mPhiM2
 End Property
 
-' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
+' Итоговый phi СП 35 первой плоскости в ветви |ec| <= r.
 Public Property Get PhiValue1() As Double
     PhiValue1 = mPhiValue1
 End Property
 
-' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
+' Итоговый phi СП 35 второй плоскости в ветви |ec| <= r.
 Public Property Get PhiValue2() As Double
     PhiValue2 = mPhiValue2
 End Property
 
-' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
+' Коэффициент phi_p СП 35 первой плоскости в ветви |ec| > r.
 Public Property Get PhiP1() As Double
     PhiP1 = mPhiP1
 End Property
 
-' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+' Коэффициент phi_p СП 35 второй плоскости в ветви |ec| > r.
 Public Property Get PhiP2() As Double
     PhiP2 = mPhiP2
 End Property
@@ -38452,12 +38452,12 @@ Public Property Get Slenderness2() As Double
     Slenderness2 = mSlenderness2
 End Property
 
-' Размер сечения h1 по нормали первой главной плоскости, мм.
+' Бетонный габарит h1 вдоль оси 2 при изгибе вокруг оси 1, мм.
 Public Property Get Depth1() As Double
     Depth1 = mDepth1
 End Property
 
-' Размер сечения h2 по нормали второй главной плоскости, мм.
+' Бетонный габарит h2 вдоль оси 1 при изгибе вокруг оси 2, мм.
 Public Property Get Depth2() As Double
     Depth2 = mDepth2
 End Property
@@ -38626,14 +38626,14 @@ Private mEta1 As Double ' Коэффициент eta первой плоскос
 Private mEta2 As Double ' Коэффициент eta второй плоскости.
 Private mPhiL1 As Double ' Коэффициент длительности первой плоскости.
 Private mPhiL2 As Double ' Коэффициент длительности второй плоскости.
-Private mPhiLTable1 As String ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
-Private mPhiLTable2 As String ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+Private mPhiLTable1 As String ' Табличный phi_l СП 35 первой плоскости для ветви |ec|/r <= 1.
+Private mPhiLTable2 As String ' Табличный phi_l СП 35 второй плоскости для ветви |ec|/r <= 1.
 Private mPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
 Private mPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
-Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
-Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
-Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
-Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви |ec| <= r.
+Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви |ec| <= r.
+Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви |ec| > r.
+Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви |ec| > r.
 Private mEccentricity1 As Double ' Расчетный эксцентриситет первой плоскости, мм.
 Private mEccentricity2 As Double ' Расчетный эксцентриситет второй плоскости, мм.
 Private mAccidentalEcc1 As Double ' Случайный эксцентриситет в первой плоскости, мм.
@@ -38642,8 +38642,8 @@ Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
 Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
 Private mSlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
 Private mSlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
-Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
-Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Private mDepth1 As Double ' Бетонный габарит h1 вдоль оси 2 при изгибе вокруг оси 1, мм.
+Private mDepth2 As Double ' Бетонный габарит h2 вдоль оси 1 при изгибе вокруг оси 2, мм.
 Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.
 Private mRadius2 As Double ' Радиус инерции i2 приведенного сечения.
 Private mCoreDistance1 As Double ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.
@@ -38860,9 +38860,9 @@ Private Function StabilityBranchDisplayName(ByVal branchText As String) As Strin
         Case "sp63"
             StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
         Case "sp35-eta"
-            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
+            StabilityBranchDisplayName = "СП 35: ветвь |ec| > r через eta и Ncr"
         Case "sp35-table"
-            StabilityBranchDisplayName = "СП 35: ветвь ec <= r через Nult,stab"
+            StabilityBranchDisplayName = "СП 35: ветвь |ec| <= r через Nult,stab"
         Case "sp35-mixed"
             StabilityBranchDisplayName = "СП 35: плоскости попали в разные расчетные ветви"
         Case Else
@@ -49313,9 +49313,9 @@ Public Function StabilityBranchDisplayName(ByVal branchText As String) As String
         Case "sp63"
             StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
         Case "sp35-eta"
-            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
+            StabilityBranchDisplayName = "СП 35: ветвь |ec| > r через eta и Ncr"
         Case "sp35-table"
-            StabilityBranchDisplayName = "СП 35: табличная ветвь ec <= r через Nult,stab"
+            StabilityBranchDisplayName = "СП 35: табличная ветвь |ec| <= r через Nult,stab"
         Case "sp35-mixed"
             StabilityBranchDisplayName = "СП 35: плоскости попали в разные ветви"
         Case Else
@@ -51640,16 +51640,16 @@ Private Sub PutPrincipalCoreDistanceProperties(ByRef data() As Variant, ByRef ro
 
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Plus", _
         OutputLength(props.CoreDistanceAlong(section, axis1X, axis1Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +главной центральной оси 1."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль +оси 1. Изгиб происходит вокруг главной оси 2."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance1Minus", _
         OutputLength(props.CoreDistanceAlong(section, -axis1X, -axis1Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -главной центральной оси 1."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль -оси 1. Изгиб происходит вокруг главной оси 2."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Plus", _
         OutputLength(props.CoreDistanceAlong(section, axis2X, axis2Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении +главной центральной оси 2."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль +оси 2. Изгиб происходит вокруг главной оси 1."
     PutProperty data, rowIndex, runID, "ALL", prefix & ".CoreDistance2Minus", _
         OutputLength(props.CoreDistanceAlong(section, -axis2X, -axis2Y, False), units), _
-        OutputLengthUnit(units), "Ядровое расстояние r " & description & " для эксцентриситета в направлении -главной центральной оси 2."
+        OutputLengthUnit(units), "Ядровое расстояние r " & description & " при смещении сжимающей силы вдоль -оси 2. Изгиб происходит вокруг главной оси 1."
 End Sub
 
 ' Записывает общие расчетные характеристики, которые полезны не только в
@@ -57594,7 +57594,7 @@ End Function
 ====================================================================================================
 COMPONENT: CStabilitySummaryWriter
 TYPE: 2
-LINES: 1088
+LINES: 1103
 ====================================================================================================
 Option Explicit
 
@@ -57627,9 +57627,10 @@ Private Const SP63_PLANE2_FIRST As Long = SP63_PLANE1_FIRST + 12 ' Первый 
 Private Const COL_INERTIA_FIRST As Long = 26 ' Начало четырёх моментов инерции бетона и арматуры.
 Private Const COL_MODULUS_FIRST As Long = 32 ' Начало двух общих модулей упругости.
 Private Const SP35_DELTA_OFFSET As Long = 3 ' Смещение delta от начала плоскости СП 35.
-Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви ec > r.
+Private Const SP35_PHI_L_OFFSET As Long = 4 ' Смещение phi_l для ветви |ec| > r.
 Private Const SP35_NCR_OFFSET As Long = 5 ' Смещение Ncr после обоих коэффициентов плоскости.
 
+Private Const COMMON_TITLE As String = "Исходные усилия и характеристики устойчивости по главным осям приведённого сечения"
 Private Const DEPTH1_NOTE As String = "Габарит бетона вдоль главной оси 2 при изгибе вокруг оси 1. При совпадении осей 1/2 с X/Y это размер по Y."
 Private Const DEPTH2_NOTE As String = "Габарит бетона вдоль главной оси 1 при изгибе вокруг оси 2. При совпадении осей 1/2 с X/Y это размер по X."
 
@@ -57804,7 +57805,7 @@ Private Sub WriteHeaders(ByVal Target As Object, ByVal units As CUnitSystem, _
     End If
     If mMinimalFormatting Then
         Dim expectedLabels As Variant: expectedLabels = HeaderRowLabels(units, batch)
-        If CStr(Target.cells(2, 1).value2) = "Combination ID" Then
+        If StabilityHeaderLayoutMatches(Target) Then
             If ResultHeaderMatches(Target.offset(4, 0), expectedLabels, firstColumn:=4) Then
                 RefreshHeaderNotes Target
                 Exit Sub
@@ -57823,22 +57824,22 @@ Private Sub WriteHeaders(ByVal Target As Object, ByVal units As CUnitSystem, _
     MergeCells Target, 2, 12, 2, 3, "в точке приложения нагрузок"
 
     MergeCells Target, 1, COL_COMMON_FIRST, 1, BlockWidth(COL_COMMON_FIRST, COL_COMMON_LAST), _
-        "Общие данные для учета продольного изгиба и проверки устойчивости (по главным осям 1, 2)"
+        COMMON_TITLE
     MergeCells Target, 2, 16, 1, 6, "Нагрузки до применения " & ChrW$(&H3B7) & " в ц.т. приведенного сечения"
-    MergeCells Target, 3, 16, 1, 3, "постоянные + временные"
-    MergeCells Target, 3, 19, 1, 3, "постоянные"
-    MergeCells Target, 2, 22, 2, BlockWidth(22, COL_COMMON_LAST), "характеристики сечения"
+    MergeCells Target, 3, 16, 1, 3, "Полное сочетание"
+    MergeCells Target, 3, 19, 1, 3, "Длительная / постоянная часть"
+    MergeCells Target, 2, 22, 2, BlockWidth(22, COL_COMMON_LAST), "Сечение и расчётные длины"
 
     MergeCells Target, 1, COL_SP35_FIRST, 1, BlockWidth(COL_SP35_FIRST, COL_SP35_LAST), "Расчет по СП 35"
-    MergeCells Target, 2, COL_SP35_FIRST, 3, 1, "общие для СП"
-    WriteSP35PlaneHeaders Target, SP35_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
-    WriteSP35PlaneHeaders Target, SP35_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2)"
+    MergeCells Target, 2, COL_SP35_FIRST, 2, 1, "Общее для СП 35" ' Строка 4 остаётся доступной для пояснения коэффициента.
+    WriteSP35PlaneHeaders Target, SP35_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1, ближайшей к X)"
+    WriteSP35PlaneHeaders Target, SP35_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2, ближайшей к Y)"
 
     MergeCells Target, 1, COL_SP63_FIRST, 1, BlockWidth(COL_SP63_FIRST, COL_SP63_LAST), "Расчет по СП 63"
-    WriteSP63PlaneHeaders Target, SP63_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1)"
-    WriteSP63PlaneHeaders Target, SP63_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2)"
+    WriteSP63PlaneHeaders Target, SP63_PLANE1_FIRST, "Плоскость 1 (изгиб вокруг главной оси 1, ближайшей к X)"
+    WriteSP63PlaneHeaders Target, SP63_PLANE2_FIRST, "Плоскость 2 (изгиб вокруг главной оси 2, ближайшей к Y)"
 
-    PutHeaderNotes Target
+    Target.offset(3, 0).Resize(1, TOTAL_COLUMNS).value2 = HeaderNotes()
     PutHeaderRowLabels Target, units, batch
 End Sub
 
@@ -57846,8 +57847,8 @@ End Sub
 Private Sub WriteSP35PlaneHeaders(ByVal Target As Object, ByVal firstColumn As Long, ByVal titleText As String)
     MergeCells Target, 2, firstColumn, 1, 15, titleText
     MergeCells Target, 3, firstColumn, 1, 3, "Общие для плоскости"
-    MergeCells Target, 3, firstColumn + 3, 1, 6, "при ec > r"
-    MergeCells Target, 3, firstColumn + 9, 1, 6, "при ec <= r"
+    MergeCells Target, 3, firstColumn + 3, 1, 6, "при |ec| > r"
+    MergeCells Target, 3, firstColumn + 9, 1, 6, "при |ec| <= r"
 End Sub
 
 ' Записывает верхние подписи для одной плоскости СП 63.
@@ -57855,38 +57856,45 @@ Private Sub WriteSP63PlaneHeaders(ByVal Target As Object, ByVal firstColumn As L
     MergeCells Target, 2, firstColumn, 2, 12, titleText
 End Sub
 
+' Проверяет актуальность структуры шапки перед сохранением разметки.
+Private Function StabilityHeaderLayoutMatches(ByVal Target As Object) As Boolean
+    StabilityHeaderLayoutMatches = CStr(Target.cells(2, 1).value2) = "Combination ID" And _
+        CStr(Target.cells(1, COL_COMMON_FIRST).value2) = COMMON_TITLE
+End Function
+
 ' Обновляет пояснения одним блоком, сохраняя готовую разметку и единицы шапки.
 Private Sub RefreshHeaderNotes(ByVal Target As Object)
-    If CStr(Target.cells(4, 22).value2) <> DEPTH1_NOTE Then PutHeaderNotes Target
+    Dim notes As Variant: notes = HeaderNotes()
+    If Not ResultHeaderMatches(Target.offset(3, 0), notes, firstColumn:=4) Then _
+        Target.offset(3, 0).Resize(1, TOTAL_COLUMNS).value2 = notes
 End Sub
 
 ' Заполняет строку примечаний над обозначениями. Это обычный текст без переноса:
 ' если он не помещается, Excel просто обрезает его по ширине ячейки.
-Private Sub PutHeaderNotes(ByVal Target As Object)
+Private Function HeaderNotes() As Variant
     Dim notes(1 To 1, 1 To TOTAL_COLUMNS) As Variant
-    notes(1, 2) = "пояснение расчетного статуса блока устойчивости"
     notes(1, 4) = "Коэффициент продольного изгиба в плоскости 1: изгиб вокруг главной оси 1"
     notes(1, 5) = "Коэффициент продольного изгиба в плоскости 2: изгиб вокруг главной оси 2"
     notes(1, 6) = "Продольная сила после учета продольного изгиба"
     notes(1, 7) = "Момент после учета продольного изгиба в плоскости 1, вокруг главной оси 1"
     notes(1, 8) = "Момент после учета продольного изгиба в плоскости 2, вокруг главной оси 2"
-    notes(1, 9) = "Продольная сила относительно центральных осей приведенного сечения"
-    notes(1, 10) = "Момент Mx относительно центральных осей приведенного сечения"
-    notes(1, 11) = "Момент My относительно центральных осей приведенного сечения"
-    notes(1, 12) = "Продольная сила в пользовательской точке приложения нагрузок"
-    notes(1, 13) = "Момент Mx в пользовательской точке приложения нагрузок"
-    notes(1, 14) = "Момент My в пользовательской точке приложения нагрузок"
+    notes(1, 9) = "Продольная сила после учёта продольного изгиба, в пользовательском знаке"
+    notes(1, 10) = "Момент после учёта продольного изгиба относительно оси X через приведённый центр тяжести"
+    notes(1, 11) = "Момент после учёта продольного изгиба относительно оси Y через приведённый центр тяжести"
+    notes(1, 12) = "Продольная сила после учёта продольного изгиба, в пользовательском знаке"
+    notes(1, 13) = "Момент вокруг X после учёта продольного изгиба, перенесённый к точке приложения нагрузки"
+    notes(1, 14) = "Момент вокруг Y после учёта продольного изгиба, перенесённый к точке приложения нагрузки"
 
     notes(1, 16) = "Продольная сила до учета продольного изгиба"
     notes(1, 17) = "Момент в плоскости 1, вокруг главной оси 1, до учета продольного изгиба"
     notes(1, 18) = "Момент в плоскости 2, вокруг главной оси 2, до учета продольного изгиба"
-    notes(1, 19) = "Продольная сила от постоянной или длительной части нагрузки"
+    notes(1, 19) = "Продольная сила от длительной части по СП 63 или постоянной части по СП 35"
     notes(1, 20) = "Момент в плоскости 1, вокруг главной оси 1, от постоянной или длительной части"
     notes(1, 21) = "Момент в плоскости 2, вокруг главной оси 2, от постоянной или длительной части"
     notes(1, 22) = DEPTH1_NOTE
     notes(1, 23) = DEPTH2_NOTE
-    notes(1, 24) = "Радиус инерции для изгиба вокруг главной оси 1"
-    notes(1, 25) = "Радиус инерции для изгиба вокруг главной оси 2"
+    notes(1, 24) = "Радиус инерции приведённого сечения относительно главной оси 1"
+    notes(1, 25) = "Радиус инерции приведённого сечения относительно главной оси 2"
     notes(1, COL_INERTIA_FIRST) = "Момент инерции бетона относительно главной оси 1 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 1) = "Момент инерции бетона относительно главной оси 2 приведённого сечения"
     notes(1, COL_INERTIA_FIRST + 2) = "Момент инерции арматуры относительно главной оси 1 приведённого сечения"
@@ -57896,47 +57904,47 @@ Private Sub PutHeaderNotes(ByVal Target As Object)
     notes(1, COL_MODULUS_FIRST) = "Модуль упругости бетона, использованный при расчёте устойчивости"
     notes(1, COL_MODULUS_FIRST + 1) = "Модуль упругости арматуры, использованный при расчёте устойчивости"
 
-    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры из Config для расчёта Ncr при ec > r"
+    notes(1, COL_SP35_FIRST) = "Коэффициент для ненапрягаемой арматуры из Config для расчёта Ncr при |ec| > r"
     PutSP35PlaneNotes notes, SP35_PLANE1_FIRST
     PutSP35PlaneNotes notes, SP35_PLANE2_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE1_FIRST
     PutSP63PlaneNotes notes, SP63_PLANE2_FIRST
 
-    Target.offset(3, 0).Resize(1, TOTAL_COLUMNS).value2 = notes
-End Sub
+    HeaderNotes = notes
+End Function
 
 ' Заполняет примечания одной плоскости СП 35.
 Private Sub PutSP35PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Long)
     notes(1, firstColumn) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 1) = "Расчетный эксцентриситет продольной силы"
-    notes(1, firstColumn + 2) = "Ядровое расстояние для выбора ветви СП 35"
-    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Отношение |ec|/h с нижним ограничением для ветви ec > r"
+    notes(1, firstColumn + 2) = "Ядровое расстояние по направлению ec, перпендикулярно оси изгиба. Оно определяет ветвь СП 35"
+    notes(1, firstColumn + SP35_DELTA_OFFSET) = "Отношение |ec|/h с нижним ограничением для ветви |ec| > r"
     notes(1, firstColumn + SP35_PHI_L_OFFSET) = "Коэффициент длительного действия нагрузки"
-    notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви ec > r"
+    notes(1, firstColumn + SP35_NCR_OFFSET) = "Критическая продольная сила для ветви |ec| > r"
     notes(1, firstColumn + 6) = "Коэффициент увеличения момента"
     notes(1, firstColumn + 7) = "Запас k*Ncr/N. Коэффициент k — допустимое отношение N/Ncr из Config"
-    notes(1, firstColumn + 8) = "Статус проверки ветви ec > r"
-    notes(1, firstColumn + 9) = "Табличный коэффициент продольного изгиба"
-    notes(1, firstColumn + 10) = "Коэффициент влияния момента"
-    notes(1, firstColumn + 11) = "Итоговый коэффициент ветви ec <= r"
-    notes(1, firstColumn + 12) = "Предельная продольная сила по ветви ec <= r"
-    notes(1, firstColumn + 13) = "Отношение предельной силы к действующей сжимающей"
-    notes(1, firstColumn + 14) = "Статус проверки ветви ec <= r"
+    notes(1, firstColumn + 8) = "Статус проверки ветви |ec| > r"
+    notes(1, firstColumn + 9) = "Коэффициент постоянной нагрузки по таблице 7.21. Зависит от гибкости l0/i этой плоскости"
+    notes(1, firstColumn + 10) = "Коэффициент кратковременной нагрузки по таблице 7.21. Зависит от l0/i и |ec|/r"
+    notes(1, firstColumn + 11) = "Коэффициент снижения предельной силы с учётом доли постоянной нагрузки"
+    notes(1, firstColumn + 12) = "Предельная продольная сила по ветви |ec| <= r"
+    notes(1, firstColumn + 13) = "Запас Nult/N. Здесь N — модуль действующей сжимающей силы"
+    notes(1, firstColumn + 14) = "Статус проверки ветви |ec| <= r"
 End Sub
 
 ' Заполняет примечания одной плоскости СП 63.
 Private Sub PutSP63PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Long)
-    notes(1, firstColumn) = "Гибкость элемента в рассматриваемой плоскости изгиба вокруг главной оси"
+    notes(1, firstColumn) = "Гибкость l0/i. Длина и радиус инерции относятся к одной плоскости изгиба"
     notes(1, firstColumn + 1) = "Случайный эксцентриситет для рассматриваемой плоскости"
     notes(1, firstColumn + 2) = "Расчетный эксцентриситет продольной силы"
     notes(1, firstColumn + 3) = "Коэффициент длительного действия нагрузки"
-    notes(1, firstColumn + 4) = "Коэффициент влияния эксцентриситета"
+    notes(1, firstColumn + 4) = "Относительный эксцентриситет |e0|/h с границами DeltaEMin и DeltaEMax из Config"
     notes(1, firstColumn + 5) = "Коэффициент жесткости бетонной части"
     notes(1, firstColumn + 6) = "Коэффициент жесткости арматуры"
-    notes(1, firstColumn + 7) = "Условная жесткость элемента"
-    notes(1, firstColumn + 8) = "Критическая продольная сила"
+    notes(1, firstColumn + 7) = "Условная жёсткость D = kb*Eb*Ib + ks*Es*Is для этой плоскости"
+    notes(1, firstColumn + 8) = "Критическая сила Ncr = pi^2*D/l0^2 для этой плоскости"
     notes(1, firstColumn + 9) = "Коэффициент увеличения момента"
-    notes(1, firstColumn + 10) = "Отношение критической силы к действующей сжимающей"
+    notes(1, firstColumn + 10) = "Запас Ncr/N. Здесь N — модуль действующей сжимающей силы"
     notes(1, firstColumn + 11) = "Статус проверки рассматриваемой плоскости"
 End Sub
 
@@ -58003,7 +58011,7 @@ Private Sub PutHeaderRowLabels(ByVal Target As Object, ByVal units As CUnitSyste
     ApplyHeaderSubscripts Target
 End Sub
 
-' Формирует заголовок запаса для ветви СП 35 ec > r.
+' Формирует заголовок запаса для ветви СП 35 |ec| > r.
 ' В нем показывается не условное k, а фактический лимит N/Ncr,
 ' заданный пользователем в Stability.SP35.NOverNcrLimit.
 Private Function SP35EtaReserveLabel(ByVal batch As CBatchSectionCalculator) As String
@@ -58022,7 +58030,7 @@ Private Function FormatCoefficientInvariant(ByVal value As Double) As String
 End Function
 
 ' Заполняет подписи одной плоскости СП 35, сохраняя раздельные колонки для
-' ветвей ec > r и ec <= r.
+' ветвей |ec| > r и |ec| <= r.
 Private Sub PutSP35PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Long, _
         ByVal units As CUnitSystem, ByVal etaReserveLabel As String)
     labels(1, firstColumn) = "ec,sl, " & OutputLengthUnit(units)
@@ -58042,12 +58050,17 @@ Private Sub PutSP35PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Lon
     labels(1, firstColumn + 14) = "статус"
 End Sub
 
+' Возвращает обозначение коэффициента длительности СП 63 для записи и восстановления.
+Private Function SP63DurationLabel() As String
+    SP63DurationLabel = ChrW$(&H3C6) & "l (длит)"
+End Function
+
 ' Заполняет обозначения одной плоскости СП 63.
 Private Sub PutSP63PlaneLabels(ByRef labels As Variant, ByVal firstColumn As Long, ByVal units As CUnitSystem)
     labels(1, firstColumn) = "l0/i"
     labels(1, firstColumn + 1) = "ea, " & OutputLengthUnit(units)
     labels(1, firstColumn + 2) = "e0, " & OutputLengthUnit(units)
-    labels(1, firstColumn + 3) = ChrW$(&H3C6) & "l (пост)"
+    labels(1, firstColumn + 3) = SP63DurationLabel()
     labels(1, firstColumn + 4) = ChrW$(&H3B4) & "e"
     labels(1, firstColumn + 5) = "kb"
     labels(1, firstColumn + 6) = "ks"
@@ -58170,7 +58183,7 @@ Private Sub PutSectionInputValues(ByRef data() As Variant, ByVal rowIndex As Lon
     data(rowIndex, COL_MODULUS_FIRST + 1) = es
 End Sub
 
-' Заполняет одну плоскость СП 35. В строке активна только ветвь ec > r или ec <= r.
+' Заполняет одну плоскость СП 35. В строке активна только ветвь |ec| > r или |ec| <= r.
 Private Sub PutSP35PlaneValues(ByRef data() As Variant, ByVal rowIndex As Long, ByVal firstColumn As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long, _
         ByVal units As CUnitSystem)
@@ -58409,7 +58422,7 @@ Private Function PlaneNcr(ByVal batch As CBatchSectionCalculator, ByVal index As
     If planeIndex = 1 Then PlaneNcr = batch.ResultAt(index).StabilityResult.Ncr1 Else PlaneNcr = batch.ResultAt(index).StabilityResult.Ncr2
 End Function
 
-' Возвращает табличную несущую силу Nult для ветви СП 35 ec <= r.
+' Возвращает табличную несущую силу Nult для ветви СП 35 |ec| <= r.
 Private Function PlaneNultimate(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlaneNultimate = batch.ResultAt(index).StabilityResult.Nultimate1 Else PlaneNultimate = batch.ResultAt(index).StabilityResult.Nultimate2
 End Function
@@ -58424,12 +58437,12 @@ Private Function PlanePhiL(ByVal batch As CBatchSectionCalculator, ByVal index A
     If planeIndex = 1 Then PlanePhiL = batch.ResultAt(index).StabilityResult.PhiL1 Else PlanePhiL = batch.ResultAt(index).StabilityResult.PhiL2
 End Function
 
-' Возвращает табличный phi_l для ветви СП 35 ec <= r.
+' Возвращает табличный phi_l для ветви СП 35 |ec| <= r.
 Private Function PlanePhiLTable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiLTable = batch.ResultAt(index).StabilityResult.PhiLTable1 Else PlanePhiLTable = batch.ResultAt(index).StabilityResult.PhiLTable2
 End Function
 
-' Возвращает табличный phi_m для ветви СП 35 ec <= r.
+' Возвращает табличный phi_m для ветви СП 35 |ec| <= r.
 Private Function PlanePhiM(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Double
     If planeIndex = 1 Then PlanePhiM = batch.ResultAt(index).StabilityResult.PhiM1 Else PlanePhiM = batch.ResultAt(index).StabilityResult.PhiM2
 End Function
@@ -58623,8 +58636,10 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     End If
     OrderSavedSP35Plane labels, data, SP35_PLANE1_FIRST
     OrderSavedSP35Plane labels, data, SP35_PLANE2_FIRST
+    labels(1, SP63_PLANE1_FIRST + 3) = SP63DurationLabel()
+    labels(1, SP63_PLANE2_FIRST + 3) = SP63DurationLabel()
     If mMinimalFormatting Then mMinimalFormatting = CStr(Target.cells(Target.rows.count, 1).NumberFormat) = "@" And _
-        CStr(Target.cells(2, 1).value2) = "Combination ID" And ResultHeaderMatches(Target.offset(4, 0), labels, firstColumn:=4)
+        StabilityHeaderLayoutMatches(Target) And ResultHeaderMatches(Target.offset(4, 0), labels, firstColumn:=4)
     PrepareTarget Target
     If Not mMinimalFormatting Then
         WriteHeaders Target, Nothing, Nothing
@@ -76269,7 +76284,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 11098
+LINES: 11142
 ====================================================================================================
 Option Explicit
 
@@ -80755,7 +80770,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     TestAssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.cells.item(stabilityAnchor.row - 2, 4).font.Bold And _
         resultsSheet.cells.item(stabilityAnchor.row - 2, 4).HorizontalAlignment = -4131
     TestAssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.cells.item(stabilityAnchor.row - 2, 4).Interior.color) = RGB(217, 217, 217)
-    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.cells.item(stabilityAnchor.row - 3, 39).value2) = "при ec > r"
+    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.cells.item(stabilityAnchor.row - 3, 39).value2) = "при |ec| > r"
     TestAssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.cells.item(stabilityAnchor.row - 4, 67).MergeArea.rows.count = 2
     TestAssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.cells.item(stabilityAnchor.row - 1, 43).value2) = "0.7*Ncr/N"
     TestAssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.columns.item(1).ColumnWidth), widthsBefore(0), 0#
@@ -85050,6 +85065,7 @@ Public Function RunAudit03StabilityCommentTests() As String
     Dim stats As TBatchTestStats
     TestAudit03StabilityComments stats
     TestPrincipalStabilityAxisMapping stats
+    TestPrincipalKernelDirections stats
     TestAppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03StabilityCommentTests = stats.report
 End Function
@@ -85124,6 +85140,49 @@ Private Sub TestPrincipalStabilityAxisMapping(ByRef stats As TBatchTestStats)
             TestAssertClose stats, prefix & ".savedM2", result.DesignMoment2, calculator.DesignMoment2, 0.001
         Next code
     Next angle
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет четыре ядровых расстояния несимметричного Г-сечения и выбор r в СП 35.
+' Эталон получен из прямоугольников и стержней через I/(A*c), где c измерено до противоположной грани.
+Private Sub TestPrincipalKernelDirections(ByRef stats As TBatchTestStats)
+    Const r1Plus As Double = 53.6896273600845, r1Minus As Double = 54.7126463085677
+    Const r2Plus As Double = 145.856512205667, r2Minus As Double = 126.012615589798
+    Dim section As New CSectionModel, props As New CSectionPropertiesCalculator
+    Dim materials As CMaterialModelProvider, calc As CStabilityCalculator, table As Variant
+    Dim points As Variant, point As Variant, side As Variant, prefix As String
+    section.AddConcreteElement 300#, 125#, 150000#, 1, "", "", "Rectangle", 600#, 250#, 0#
+    section.AddConcreteElement 125#, 525#, 137500#, 1, "", "", "Rectangle", 250#, 550#, 0#
+    points = Array(Array(50#, 750#), Array(125#, 750#), Array(200#, 750#), Array(50#, 500#), _
+        Array(50#, 300#), Array(125#, 50#), Array(300#, 50#), Array(550#, 50#))
+    For Each point In points
+        section.AddRebarElement CDbl(point(0)), CDbl(point(1)), 25#, 0#, "A400", 1
+    Next point
+    Set materials = TestMaterialProvider()
+    props.CalculateTransformedByModuli section, 32500#, 200000#
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double
+    props.PrincipalAxisDirection 1, x1, y1
+    props.PrincipalAxisDirection 2, x2, y2
+    TestAssertClose stats, "stability.kernel.angle", props.principalAngleRad * 180# / GEOM_PI, 24.4220871875075, 0.000001
+    TestAssertClose stats, "stability.kernel.axis1.plus", props.CoreDistanceAlong(section, x1, y1, False), r1Plus, 0.000001
+    TestAssertClose stats, "stability.kernel.axis1.minus", props.CoreDistanceAlong(section, -x1, -y1, False), r1Minus, 0.000001
+    TestAssertClose stats, "stability.kernel.axis2.plus", props.CoreDistanceAlong(section, x2, y2, False), r2Plus, 0.000001
+    TestAssertClose stats, "stability.kernel.axis2.minus", props.CoreDistanceAlong(section, -x2, -y2, False), r2Minus, 0.000001
+    table = ThisWorkbook.names.item("rngSP35Table721").RefersToRange.value2
+    For Each side In Array(1#, -1#)
+        Set calc = New CStabilityCalculator
+        ' Эксцентриситеты лежат между r+ и r- своих направлений, поэтому знак меняет ветвь.
+        calc.Calculate section, materials, mvsULS, "SP35", -100000#, 0#, 0#, -40000#, 0#, 0#, _
+            3000#, 1.2, 1.8, "Determinate", CDbl(side), CDbl(side), "Auto", "User", "BothPlanes", _
+            136#, 54.2, 0.7, 0.15, 1.5, 1#, 0.7, table
+        prefix = "stability.kernel.plane." & CStr(side)
+        TestAssertClose stats, prefix & ".e1", calc.Eccentricity1, CDbl(side) * 136#, 0.000001
+        TestAssertClose stats, prefix & ".e2", calc.Eccentricity2, CDbl(side) * 54.2, 0.000001
+        TestAssertClose stats, prefix & ".r1AlongAxis2", calc.CoreDistance1, CDbl(IIf(side > 0#, r2Plus, r2Minus)), 0.000001
+        TestAssertClose stats, prefix & ".r2AlongAxis1", calc.CoreDistance2, CDbl(IIf(side > 0#, r1Plus, r1Minus)), 0.000001
+        TestAssertEquals stats, prefix & ".branch1", calc.PlaneBranch1, CStr(IIf(side > 0#, "SP35-table", "SP35-eta"))
+        TestAssertEquals stats, prefix & ".branch2", calc.PlaneBranch2, CStr(IIf(side > 0#, "SP35-eta", "SP35-table"))
+    Next side
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

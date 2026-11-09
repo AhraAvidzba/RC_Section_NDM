@@ -4483,7 +4483,7 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     TestAssertTrue stats, "batch.writer.stability.header.notesPlain", Not resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Font.Bold And _
         resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).HorizontalAlignment = -4131
     TestAssertTrue stats, "batch.writer.stability.header.notesFill", CLng(resultsSheet.Cells.Item(stabilityAnchor.Row - 2, 4).Interior.Color) = RGB(217, 217, 217)
-    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 39).Value2) = "при ec > r"
+    TestAssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 39).Value2) = "при |ec| > r"
     TestAssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 67).MergeArea.Rows.Count = 2
     TestAssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 43).Value2) = "0.7*Ncr/N"
     TestAssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), widthsBefore(0), 0#
@@ -8778,6 +8778,7 @@ Public Function RunAudit03StabilityCommentTests() As String
     Dim stats As TBatchTestStats
     TestAudit03StabilityComments stats
     TestPrincipalStabilityAxisMapping stats
+    TestPrincipalKernelDirections stats
     TestAppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03StabilityCommentTests = stats.Report
 End Function
@@ -8852,6 +8853,49 @@ Private Sub TestPrincipalStabilityAxisMapping(ByRef stats As TBatchTestStats)
             TestAssertClose stats, prefix & ".savedM2", result.DesignMoment2, calculator.DesignMoment2, 0.001
         Next code
     Next angle
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет четыре ядровых расстояния несимметричного Г-сечения и выбор r в СП 35.
+' Эталон получен из прямоугольников и стержней через I/(A*c), где c измерено до противоположной грани.
+Private Sub TestPrincipalKernelDirections(ByRef stats As TBatchTestStats)
+    Const r1Plus As Double = 53.6896273600845, r1Minus As Double = 54.7126463085677
+    Const r2Plus As Double = 145.856512205667, r2Minus As Double = 126.012615589798
+    Dim section As New CSectionModel, props As New CSectionPropertiesCalculator
+    Dim materials As CMaterialModelProvider, calc As CStabilityCalculator, table As Variant
+    Dim points As Variant, point As Variant, side As Variant, prefix As String
+    section.AddConcreteElement 300#, 125#, 150000#, 1, "", "", "Rectangle", 600#, 250#, 0#
+    section.AddConcreteElement 125#, 525#, 137500#, 1, "", "", "Rectangle", 250#, 550#, 0#
+    points = Array(Array(50#, 750#), Array(125#, 750#), Array(200#, 750#), Array(50#, 500#), _
+        Array(50#, 300#), Array(125#, 50#), Array(300#, 50#), Array(550#, 50#))
+    For Each point In points
+        section.AddRebarElement CDbl(point(0)), CDbl(point(1)), 25#, 0#, "A400", 1
+    Next point
+    Set materials = TestMaterialProvider()
+    props.CalculateTransformedByModuli section, 32500#, 200000#
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double
+    props.PrincipalAxisDirection 1, x1, y1
+    props.PrincipalAxisDirection 2, x2, y2
+    TestAssertClose stats, "stability.kernel.angle", props.PrincipalAngleRad * 180# / GEOM_PI, 24.4220871875075, 0.000001
+    TestAssertClose stats, "stability.kernel.axis1.plus", props.CoreDistanceAlong(section, x1, y1, False), r1Plus, 0.000001
+    TestAssertClose stats, "stability.kernel.axis1.minus", props.CoreDistanceAlong(section, -x1, -y1, False), r1Minus, 0.000001
+    TestAssertClose stats, "stability.kernel.axis2.plus", props.CoreDistanceAlong(section, x2, y2, False), r2Plus, 0.000001
+    TestAssertClose stats, "stability.kernel.axis2.minus", props.CoreDistanceAlong(section, -x2, -y2, False), r2Minus, 0.000001
+    table = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    For Each side In Array(1#, -1#)
+        Set calc = New CStabilityCalculator
+        ' Эксцентриситеты лежат между r+ и r- своих направлений, поэтому знак меняет ветвь.
+        calc.Calculate section, materials, mvsULS, "SP35", -100000#, 0#, 0#, -40000#, 0#, 0#, _
+            3000#, 1.2, 1.8, "Determinate", CDbl(side), CDbl(side), "Auto", "User", "BothPlanes", _
+            136#, 54.2, 0.7, 0.15, 1.5, 1#, 0.7, table
+        prefix = "stability.kernel.plane." & CStr(side)
+        TestAssertClose stats, prefix & ".e1", calc.Eccentricity1, CDbl(side) * 136#, 0.000001
+        TestAssertClose stats, prefix & ".e2", calc.Eccentricity2, CDbl(side) * 54.2, 0.000001
+        TestAssertClose stats, prefix & ".r1AlongAxis2", calc.CoreDistance1, CDbl(IIf(side > 0#, r2Plus, r2Minus)), 0.000001
+        TestAssertClose stats, prefix & ".r2AlongAxis1", calc.CoreDistance2, CDbl(IIf(side > 0#, r1Plus, r1Minus)), 0.000001
+        TestAssertEquals stats, prefix & ".branch1", calc.PlaneBranch1, CStr(IIf(side > 0#, "SP35-table", "SP35-eta"))
+        TestAssertEquals stats, prefix & ".branch2", calc.PlaneBranch2, CStr(IIf(side > 0#, "SP35-eta", "SP35-table"))
+    Next side
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

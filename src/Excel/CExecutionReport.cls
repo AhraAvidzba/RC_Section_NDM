@@ -323,9 +323,9 @@ Public Function StabilityBranchDisplayName(ByVal branchText As String) As String
         Case "sp63"
             StabilityBranchDisplayName = "СП 63: расчет eta и Ncr"
         Case "sp35-eta"
-            StabilityBranchDisplayName = "СП 35: ветвь ec > r через eta и Ncr"
+            StabilityBranchDisplayName = "СП 35: ветвь |ec| > r через eta и Ncr"
         Case "sp35-table"
-            StabilityBranchDisplayName = "СП 35: табличная ветвь ec <= r через Nult,stab"
+            StabilityBranchDisplayName = "СП 35: табличная ветвь |ec| <= r через Nult,stab"
         Case "sp35-mixed"
             StabilityBranchDisplayName = "СП 35: плоскости попали в разные ветви"
         Case Else
