@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-09 18:28:48
+Date: 2026-11-09 18:47:10
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -67522,7 +67522,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
-LINES: 505
+LINES: 509
 ====================================================================================================
 Option Explicit
 
@@ -67878,7 +67878,7 @@ Private Function ErrorInputAddresses(ByVal Workbook As Object, ByVal reason As S
 KeepOriginal:
 End Function
 
-' Возвращает полный путь прямых A1-ссылок до ячейки ввода. Если путь не удаётся подтвердить целиком, остаётся адрес проверки.
+' Возвращает подтверждённые прямые A1-ссылки до ячейки ввода или до формулы без единственного прямого адреса.
 Private Function DirectInputChain(ByVal Workbook As Object, ByVal sheetName As String, _
         ByVal address As String, ByVal direct As Object) As String
     On Error GoTo Unresolved
@@ -67897,7 +67897,10 @@ Private Function DirectInputChain(ByVal Workbook As Object, ByVal sheetName As S
             Exit Function
         End If
         Set matches = direct.Execute(Trim$(CStr(cell.formula)))
-        If matches.count <> 1 Then Exit Function
+        If matches.count <> 1 Then
+            If hop > 1 Then DirectInputChain = path ' Текущая ячейка подтверждена предыдущей прямой ссылкой.
+            Exit Function
+        End If
         nextSheet = CStr(matches.item(0).SubMatches(0))
         If Len(nextSheet) > 0 Then
             sheetName = nextSheet
@@ -68028,6 +68031,7 @@ Public Function TestWorkbookDrawingPending(ByVal Workbook As Object) As Boolean
         If pending Is Workbook Then TestWorkbookDrawingPending = True: Exit Function
     Next pending
 End Function
+
 
 
 ====================================================================================================

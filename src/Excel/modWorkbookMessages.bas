@@ -353,7 +353,7 @@ Private Function ErrorInputAddresses(ByVal workbook As Object, ByVal reason As S
 KeepOriginal:
 End Function
 
-' Возвращает полный путь прямых A1-ссылок до ячейки ввода. Если путь не удаётся подтвердить целиком, остаётся адрес проверки.
+' Возвращает подтверждённые прямые A1-ссылки до ячейки ввода или до формулы без единственного прямого адреса.
 Private Function DirectInputChain(ByVal workbook As Object, ByVal sheetName As String, _
         ByVal address As String, ByVal direct As Object) As String
     On Error GoTo Unresolved
@@ -372,7 +372,10 @@ Private Function DirectInputChain(ByVal workbook As Object, ByVal sheetName As S
             Exit Function
         End If
         Set matches = direct.Execute(Trim$(CStr(cell.Formula)))
-        If matches.Count <> 1 Then Exit Function
+        If matches.Count <> 1 Then
+            If hop > 1 Then DirectInputChain = path ' Текущая ячейка подтверждена предыдущей прямой ссылкой.
+            Exit Function
+        End If
         nextSheet = CStr(matches.Item(0).SubMatches(0))
         If Len(nextSheet) > 0 Then
             sheetName = nextSheet

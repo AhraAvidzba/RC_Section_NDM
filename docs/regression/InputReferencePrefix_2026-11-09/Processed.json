@@ -1,0 +1,49 @@
+{
+  "Status": "NATIVE_INPUT_PREFIX_PASS",
+  "PublishedBooks": 3,
+  "VbaProjectSHA256": "4AB45F068DF15C0D685E3C0CD6F16BE187EC6F6E5FFD8CBFADCE2DB04B059550",
+  "MainWorkbookSHA256": "7C91A0CB8C04EE1A85EE7D2343B8F51BCAC262097797AE25AE38D58C7438DA75",
+  "ExportSHA256": "D28473EAB6295EE18265180590CB0B76683291B767099985D54FCEBC199D9965",
+  "OtherPackagePartsUnchanged": true,
+  "NativeChecks": [
+    {
+      "Kind": "Main",
+      "Cases": [
+        "StopAtSecondCell",
+        "StopAtThirdCell",
+        "FormulaAtRoot",
+        "CompleteDirectPath",
+        "CircularFallback",
+        "BrokenFormulaAtConfirmedCell",
+        "SettingsError"
+      ],
+      "NativeUnicodeChain": "Config!J19 ⟶ Расчет!AA41 ⟶ Расчет!AA42"
+    },
+    {
+      "Kind": "Formatted",
+      "Cases": [
+        "StopAtSecondCell",
+        "StopAtThirdCell",
+        "FormulaAtRoot",
+        "CompleteDirectPath",
+        "CircularFallback",
+        "BrokenFormulaAtConfirmedCell",
+        "SettingsError"
+      ],
+      "NativeUnicodeChain": "Config!J19 ⟶ Расчет!AA41 ⟶ Расчет!AA142"
+    },
+    {
+      "Kind": "FormattedFast",
+      "Cases": [
+        "StopAtSecondCell",
+        "StopAtThirdCell",
+        "FormulaAtRoot",
+        "CompleteDirectPath",
+        "CircularFallback",
+        "BrokenFormulaAtConfirmedCell",
+        "SettingsError"
+      ],
+      "NativeUnicodeChain": "Config!J19 ⟶ Расчет!AA41 ⟶ Расчет!AA142"
+    }
+  ]
+}
