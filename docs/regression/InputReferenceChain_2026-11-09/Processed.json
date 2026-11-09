@@ -1,0 +1,36 @@
+{
+  "Status": "NATIVE_REFERENCE_CHAIN_PASS",
+  "Package": {
+    "Passed": true,
+    "PreviousSHA256": "AAA2D06DAC33ED3C5F83D561A264A5313288E805262147F95B8E5D3800524BAF",
+    "BuildSHA256": "E50FC06E9FFBFDCE1909EB33185067D072507ECD97D23D9036B82BC4037B0C5C",
+    "CandidateSHA256": "47CE52571B09C4165262075EC57E16019E98B916FB7A775E1E8BD9D8B7CCD666",
+    "VbaSHA256": "3DFEDFB4FC9645447D79778F323CACDC6A3BC62FC0949F1DE5FFB95D95E0047A",
+    "ChangedParts": [
+      "xl/vbaProject.bin"
+    ]
+  },
+  "Native": {
+    "Passed": true,
+    "CandidateSHA256": "47CE52571B09C4165262075EC57E16019E98B916FB7A775E1E8BD9D8B7CCD666",
+    "Cases": 8,
+    "Components": 187,
+    "ExportSHA256": "C45A7B659CB14F4E08841C1C731A4338692A365249DC054F14D45D2C67185B29",
+    "MessagePresentationPassed": 49,
+    "NativeUnicodeChain": "Config!J19 ⟶ Расчет!AA41 ⟶ 'Ввод О''Б'!A1",
+    "QuitRequested": true
+  },
+  "Source": {
+    "Passed": true,
+    "Components": 187,
+    "UnchangedComponents": 186,
+    "ReviewedSourceModules": [
+      "src/Excel/modWorkbookMessages.bas"
+    ],
+    "ExistingVbeLiteralSpellingGroups": {},
+    "ExportSHA256": "C45A7B659CB14F4E08841C1C731A4338692A365249DC054F14D45D2C67185B29"
+  },
+  "PublishedBackupVerified": true,
+  "NativeControlDialogRuns": 2,
+  "EarlierHarnessExitCrashes": 3
+}

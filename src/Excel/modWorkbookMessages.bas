@@ -340,36 +340,44 @@ Private Function ErrorInputAddresses(ByVal workbook As Object, ByVal reason As S
     direct.IgnoreCase = True
     direct.Pattern = "^=(?:('(?:[^']|'')+'|[\w.\u0080-\uFFFF]+)!)?(" & INPUT_CELL_A1 & ")$"
 
-    Dim index As Long, offset As Long, inputAddress As String
+    Dim index As Long, offset As Long, inputChain As String
     For index = matches.Count - 1 To 0 Step -1 ' Замены справа налево сохраняют позиции остальных адресов.
         Set item = matches.Item(index)
-        inputAddress = DirectInputAddress(workbook, CStr(item.SubMatches(2)), CStr(item.SubMatches(3)), direct)
-        If Len(inputAddress) > 0 Then
+        inputChain = DirectInputChain(workbook, CStr(item.SubMatches(2)), CStr(item.SubMatches(3)), direct)
+        If Len(inputChain) > 0 Then
             offset = item.FirstIndex + Len(item.SubMatches(0)) + Len(item.SubMatches(1))
-            addresses = Left$(addresses, offset) & inputAddress & Mid$(addresses, item.FirstIndex + item.Length + 1)
+            addresses = Left$(addresses, offset) & inputChain & Mid$(addresses, item.FirstIndex + item.Length + 1)
         End If
     Next index
     ErrorInputAddresses = caption & addresses & Mid$(reason, ending)
 KeepOriginal:
 End Function
 
-' Проходит только цепочку прямых A1-ссылок внутри книги. Сложная формула, цикл или недоступный лист оставляют адрес проверки.
-Private Function DirectInputAddress(ByVal workbook As Object, ByVal sheetName As String, _
+' Возвращает полный путь прямых A1-ссылок до ячейки ввода. Если путь не удаётся подтвердить целиком, остаётся адрес проверки.
+Private Function DirectInputChain(ByVal workbook As Object, ByVal sheetName As String, _
         ByVal address As String, ByVal direct As Object) As String
     On Error GoTo Unresolved
     Dim sheet As Object, cell As Object, matches As Object, hop As Long, nextSheet As String
+    Dim path As String, cellAddress As String, arrow As String
+    arrow = " " & ChrW$(&H27F6) & " " ' Длинная Unicode-стрелка передаётся в MessageBoxW без преобразования в ANSI.
     Set sheet = workbook.Worksheets.Item(InputSheetName(sheetName))
     For hop = 1 To 32 ' Ограничивает обход циклических и аномально длинных ссылок только в диагностике.
         Set cell = sheet.Range(address)
-        If StrComp(cell.Address(False, False), Replace$(address, "$", vbNullString), vbTextCompare) <> 0 Then Exit Function
+        cellAddress = cell.Address(False, False)
+        If StrComp(cellAddress, Replace$(address, "$", vbNullString), vbTextCompare) <> 0 Then Exit Function
+        If hop > 1 Then path = path & arrow
+        path = path & sheetName & "!" & cellAddress ' Кавычки в ссылке сохраняют точное имя листа с пробелами или апострофом.
         If Not cell.HasFormula Then
-            If hop > 1 Then DirectInputAddress = sheet.Name & "!" & cell.Address(False, False)
+            If hop > 1 Then DirectInputChain = path
             Exit Function
         End If
         Set matches = direct.Execute(Trim$(CStr(cell.Formula)))
         If matches.Count <> 1 Then Exit Function
         nextSheet = CStr(matches.Item(0).SubMatches(0))
-        If Len(nextSheet) > 0 Then Set sheet = workbook.Worksheets.Item(InputSheetName(nextSheet))
+        If Len(nextSheet) > 0 Then
+            sheetName = nextSheet
+            Set sheet = workbook.Worksheets.Item(InputSheetName(sheetName))
+        End If
         address = CStr(matches.Item(0).SubMatches(1))
     Next hop
 Unresolved:
