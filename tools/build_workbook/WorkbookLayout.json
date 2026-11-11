@@ -188,11 +188,19 @@
     },
     {
       "Name": "rngSystemSettings",
-      "RefersTo": "=Config!$A$3:$E$152",
+      "RefersTo": "=Config!$A$3:$E$153",
       "Sheet": "Config",
-      "Address": "$A$3:$E$152",
-      "Rows": 150,
+      "Address": "$A$3:$E$153",
+      "Rows": 151,
       "Columns": 5
+    },
+    {
+      "Name": "rngPlotRebarScale",
+      "RefersTo": "=Config!$B$153",
+      "Sheet": "Config",
+      "Address": "$B$153",
+      "Rows": 1,
+      "Columns": 1
     },
     {
       "Name": "rngUnitSettings",

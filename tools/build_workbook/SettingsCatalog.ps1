@@ -27,8 +27,8 @@ function Get-SystemSettingsCatalog {
             @("Load.ReferenceOffsetY", "0", "мм", "Смещение точки приложения нагрузок по Y относительно центра тяжести бетонного сечения. Рабочие моменты для решателя автоматически переносятся к координатам расчётных элементов."),
             @("Calculation.ZeroMomentPerDepth", "0.0005", "Н*мм/мм", "Порог обнуления малых моментов: M_tol = значение·h. Убирает численный остаток после переносов и поворотов; слишком большое значение может обнулить значимый малый момент."),
             @("[Выводимое сочетание]", "", "-", ""),
-            @("Output.CombinationMode", "Worst", "-", "Общий выбор сочетания для схемы Excel и экспорта AutoCAD: Worst — определяющее сочетание сохранённого расчёта; User — сочетание из Output.CombinationID."),
-            @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора сочетания Worst при расчёте: прочность по деформациям, прочность по несущей, трещины или устойчивость. Схема и экспорт используют сохранённый выбор."),
+            @("Output.CombinationMode", "Worst", "-", "Выбор сочетания для схемы и экспорта AutoCAD. Worst использует текущий критерий и сохранённые результаты. User использует Output.CombinationID."),
+            @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора Worst по сохранённым запасам. После смены критерия нажмите «Обновить схему и результаты», чтобы обновить ID и нагрузки в сводке."),
             @("Output.CombinationID", "", "-", "ID сочетания для схемы и экспорта при Output.CombinationMode = User. Список берётся непосредственно из таблицы сочетаний; в режиме Worst поле не используется."),
             @("[Диаграммы материалов]", "", "-", ""),
             @("General.PlateauSlopeFactor", "0.001", "-", "Коэффициент α определяет наклон ненулевых плато бетона и арматуры: Et = α·E. По умолчанию α = 0,001, наклон плато — 0,001·E (0,1% от E своей ветви). 0 — горизонтальное плато. Наклон помогает сходимости и меняет напряжения; предельные деформации сохраняются."),
@@ -162,7 +162,8 @@ function Get-SystemSettingsCatalog {
             @("Plot.Color.RebarCompression", "30,80,220", "RGB", "Цвет максимального сжатия арматуры. В режиме Plot.LegendMode=Common используется как цвет сжатия для всех элементов."),
             @("Plot.Color.RebarTension", "210,30,20", "RGB", "Цвет максимального растяжения арматуры. В режиме Plot.LegendMode=Common используется как цвет растяжения для всех элементов."),
             @("Plot.Color.ConcreteCompression", "125,35,210", "RGB", "Цвет максимального сжатия бетона при Plot.LegendMode=Separate."),
-            @("Plot.Color.ConcreteTension", "0,155,85", "RGB", "Цвет максимального растяжения бетона при Plot.LegendMode=Separate; неработающий растянутый бетон остается серым.")
+            @("Plot.Color.ConcreteTension", "0,155,85", "RGB", "Цвет максимального растяжения бетона при Plot.LegendMode=Separate; неработающий растянутый бетон остается серым."),
+            @("Plot.RebarScale", "1", "-", "Множитель диаметров всех стержней на схеме Excel. Формула делит наибольший габарит сечения на 800 мм и принимает не меньше 1. Для ручного масштаба введите положительное число.")
         )}
     )
 }
@@ -2209,7 +2210,7 @@ function Add-ResultsSheetGuide {
     $row = Add-GuideTitle $Sheet $row "1. Сводка и подробные проверки" 13
     $row = Add-GuideParagraph $Sheet $row "В верхней сводке одна строка на сочетание: общий статус, прочность, трещины, устойчивость и запасы. Worst означает определяющее сочетание; критерий выбирается на Config в General.WorstCombinationCriterion. N/A не означает успех: проверка может быть выключена, неприменима или не иметь обязательного результата. Причина указана рядом."
     $row = Add-GuideParagraph $Sheet $row (Get-BatchSummaryInstruction)
-    $row = Add-GuideParagraph $Sheet $row "В конце верхней сводки показаны N, Mx, My в точке приложения: исходные до фильтров и рабочие после учёта продольного изгиба, если он применим. Коэффициент η изменяет моменты, а не N. Выделенная строка нагрузок относится к определяющему сочетанию в самом верху сводки. Новые файловые снимки сохраняют этот блок и восстанавливают его без чтения текущих нагрузок Config. В снимках без этих необязательных полей значения остаются пустыми."
+    $row = Add-GuideParagraph $Sheet $row "В конце верхней сводки показаны N, Mx, My в точке приложения до фильтрации и после учёта продольного изгиба, когда он применим. Коэффициент η изменяет моменты при сохранении N. Выделенная строка нагрузок следует за выбранным Worst. При обновлении она заполняется из сохранённой строки этого сочетания. В снимках без этих полей нагрузки остаются пустыми."
     $row = Add-GuideParagraph $Sheet $row "Блок прочности содержит текущее НДС и найденное предельное состояние; блок трещин - трещинообразование, ширину нормальных и проверку продольных трещин; блок устойчивости - продольный изгиб и итоговые усилия. Методики приведены выше."
     $row = Add-GuideParagraph $Sheet $row "ResultComment содержит расчетную ветвь, причину отказа или пропуска, предупреждения и адреса ошибок ввода. Общий комментарий объединяет сообщения отдельных проверок."
     $row++
@@ -3736,12 +3737,18 @@ function Apply-SystemSettingsLayout {
         }
     }
     for ($r = 2; $r -le $settingsRange.Rows.Count; $r++) {
-        if ([string]$settingsRange.Cells.Item($r, 1).Value2 -ceq 'General.PlateauSlopeFactor') {
+        $key = [string]$settingsRange.Cells.Item($r, 1).Value2
+        if ($key -ceq 'General.PlateauSlopeFactor') {
             $cell = $settingsRange.Cells.Item($r, 2)
             Set-ConfigNumericValue $cell ([double]::Parse(([string]$cell.Value2), [Globalization.CultureInfo]::InvariantCulture))
             $cell.NumberFormat = '0.########'
             $cell.Validation.Delete(); $cell.Validation.Add(2, 1, 7, '0')
             $cell.Validation.IgnoreBlank = $false; $cell.Validation.ShowError = $true
+        }
+        elseif ($key -ceq 'Plot.RebarScale') {
+            $rebarScaleCell = $settingsRange.Cells.Item($r, 2)
+            $rebarScaleCell.Validation.Delete(); $rebarScaleCell.Validation.Add(2, 1, 5, '0')
+            $rebarScaleCell.Validation.IgnoreBlank = $false; $rebarScaleCell.Validation.ShowError = $true
         }
     }
 
@@ -3781,6 +3788,12 @@ function Apply-SystemSettingsLayout {
     Apply-ConfigCommentColumnAlignment $Workbook
     Apply-ConfigShortColumnAlignment $Workbook
     Apply-ConfigNamedRangeBorders $Workbook
+    # Это редактируемая настройка. Сначала применяем оформление ввода, затем задаём формулу и имя для её точечного пересчёта.
+    $rebarScaleAddress = '=Config!' + $rebarScaleCell.Address()
+    try { $Workbook.Names.Item('rngPlotRebarScale').RefersTo = $rebarScaleAddress }
+    catch { $Workbook.Names.Add('rngPlotRebarScale', $rebarScaleAddress) | Out-Null }
+    # Results!V157:W160 хранит четыре границы сечения и единицы сохранённого снимка.
+    $rebarScaleCell.Formula = '=IFERROR(IF(COUNT(Results!$V$157:$V$160)=4,MAX(1,MAX(Results!$V$158-Results!$V$157,Results!$V$160-Results!$V$159)*CHOOSE(MATCH(Results!$W$157,{"mm","cm","m"},0),1,10,1000)/800),1),1)'
 
     return @{ Settings = $settingsRange }
 }

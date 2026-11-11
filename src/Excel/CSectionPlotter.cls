@@ -113,6 +113,7 @@ Private mLegendMode As String ' Separate или Common для легенд бе�
 Private mLegendScale As Double ' Общий коэффициент размеров, шрифтов и отступов легенды.
 Private mLegendLeft As Double ' Левый край масштабированного блока внутри диаграммы, в пунктах.
 Private mLegendTop As Double ' Верх блока легенды совпадает с верхом рабочей области схемы.
+Private mRebarScale As Double ' Коэффициент диаметра стержней на схеме Excel.
 Private mRebarCompressionColor As Long ' Цвет максимального сжатия арматуры.
 Private mRebarTensionColor As Long ' Цвет максимального растяжения арматуры.
 Private mConcreteCompressionColor As Long ' Цвет максимального сжатия бетона.
@@ -160,6 +161,10 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     End If
     mResultGradientEnabled = settings.GetRequiredBoolean("Plot.ResultGradient")
     mLegendMode = settings.GetRequiredChoice("Plot.LegendMode", Array("Separate", "Common"))
+    settings.RefreshNamedFormulaValue workbook, "Plot.RebarScale", "rngPlotRebarScale" ' Габариты Results могут быть записаны после загрузки настроек.
+    mRebarScale = settings.GetDouble("Plot.RebarScale", 1#, False)
+    If mRebarScale <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+        settings.InputErrorMessage("Plot.RebarScale", "Масштаб отображения арматуры должен быть больше нуля.", "Введите положительный коэффициент.")
     mRebarCompressionColor = settings.GetRequiredRgbColor("Plot.Color.RebarCompression")
     mRebarTensionColor = settings.GetRequiredRgbColor("Plot.Color.RebarTension")
     If mLegendMode = "Separate" Then
@@ -752,6 +757,7 @@ Private Function AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVa
     diameterValue = data.Diameter(index)
     If diameterValue <= 0# Then diameterValue = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
     If diameterValue <= 0# Then Exit Function
+    diameterValue = diameterValue * mRebarScale ' Центр стержня остаётся в сохранённой координате.
 
     Set AddRebarElementShape = DrawModelOval(data.X(index) - diameterValue / 2#, data.Y(index) - diameterValue / 2#, _
         data.X(index) + diameterValue / 2#, data.Y(index) + diameterValue / 2#, _
@@ -786,7 +792,13 @@ End Function
 ' Возвращает размер маркера grouped-series в points.
 Private Function ElementMarkerSize(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long
     If StrComp(data.MaterialType(index), "Rebar", vbTextCompare) = 0 Then
-        ElementMarkerSize = RoundToLong(ClampDouble(data.Diameter(index) * ChartScale(), 4#, 42#))
+        Dim baseSize As Long
+        baseSize = RoundToLong(ClampDouble(data.Diameter(index) * ChartScale(), 4#, 42#))
+        If mRebarScale >= 72# / baseSize Then
+            ElementMarkerSize = 72
+        Else
+            ElementMarkerSize = RoundToLong(MaxDouble(2#, baseSize * mRebarScale)) ' Excel принимает целые размеры маркера от 2 до 72 пт.
+        End If
     Else
         ElementMarkerSize = RoundToLong(ClampDouble(0.7 * ConcreteMarkerLength(data, index) * ChartScale(), 2#, 48#))
     End If

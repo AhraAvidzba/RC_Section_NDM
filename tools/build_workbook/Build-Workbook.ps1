@@ -2,7 +2,8 @@
 
 param(
     [string]$OutputPath = "workbook/output/RC_Section_NDM.xlsm",
-    [string]$FormulaImageDirectory = ""
+    [string]$FormulaImageDirectory = "",
+    [string]$FormattedOutputPath = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -413,6 +414,37 @@ $fullOutputPath = [IO.Path]::GetFullPath((Join-Path $root $OutputPath)) # Excel 
 $outputDir = Split-Path -Parent $fullOutputPath
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 
+# Штатная полная сборка создаёт также оформленный вариант. Частная сборка для проверок может задать отдельный путь.
+$defaultOutputPath = [IO.Path]::GetFullPath((Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'))
+if (-not $FormattedOutputPath -and $fullOutputPath -eq $defaultOutputPath) {
+    $FormattedOutputPath = 'workbook/output/RC_Section_NDM_оформление_быстро.xlsm'
+}
+$formattedPath = $null
+$presentationPython = $null
+if ($FormattedOutputPath) {
+    $formattedPath = [IO.Path]::GetFullPath((Join-Path $root $FormattedOutputPath))
+    $workspacePrefix = [IO.Path]::GetFullPath([string]$root) + [IO.Path]::DirectorySeparatorChar
+    if ($formattedPath -eq $fullOutputPath -or [IO.Path]::GetExtension($formattedPath) -ne '.xlsm' -or
+        -not $formattedPath.StartsWith($workspacePrefix, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Для оформленной книги укажите отдельный путь .xlsm внутри проекта.'
+    }
+    $presentationTemplate = Join-Path $PSScriptRoot 'CalculationPresentation.zip'
+    if (-not (Test-Path -LiteralPath $presentationTemplate -PathType Leaf)) {
+        throw 'Не найден шаблон листа «Расчет» CalculationPresentation.zip.'
+    }
+    $bundledPython = Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'
+    if (Test-Path -LiteralPath $bundledPython -PathType Leaf) {
+        $presentationPython = $bundledPython
+    }
+    else {
+        $pythonCommand = Get-Command python -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($pythonCommand) { $presentationPython = $pythonCommand.Source }
+    }
+    if (-not $presentationPython) { throw 'Для оформленной сборки требуется Python с пакетом lxml.' }
+    & $presentationPython -c 'from lxml import etree'
+    if ($LASTEXITCODE -ne 0) { throw 'Python для оформленной сборки не смог загрузить lxml.' }
+}
+
 # HWND связывается с PID до любых изменений Excel: COM не должен вернуть ранее открытый пользовательский процесс.
 if (-not ('NDMWorkbookBuildWindow' -as [type])) {
     Add-Type -TypeDefinition @"
@@ -632,6 +664,15 @@ Save-SectionIllustrationImageBytes $fullOutputPath
 # Сохраняем встроенный префикс областей печати после локализованного COM-save.
 $printAreas = @(Get-WorkbookPrintAreas $fullOutputPath)
 Restore-WorkbookPrintAreas $fullOutputPath $printAreas
+
+# Оформление берётся из автономного шаблона и накладывается после закрытия Excel на только что скомпилированную книгу.
+if ($formattedPath) {
+    $presentationBuilder = Join-Path $PSScriptRoot 'CalculationPresentation.py'
+    & $presentationPython -X utf8 $presentationBuilder make-portable $fullOutputPath
+    if ($LASTEXITCODE -ne 0) { throw 'Не удалось отвязать шаблон от локального принтера.' }
+    & $presentationPython -X utf8 $presentationBuilder apply $fullOutputPath $presentationTemplate $formattedPath
+    if ($LASTEXITCODE -ne 0) { throw 'Не удалось собрать оформленную книгу.' }
+}
 
 
 

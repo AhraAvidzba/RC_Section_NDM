@@ -2470,6 +2470,99 @@ Public Function RunLegendScaleTests() As String
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет размеры стержней в фигурах и группах XY по сохранённой геометрии.
+Public Function RunPlotRebarScaleTests() As String
+    Dim stats As TUiTestStats, fixture As Object, table As Object, cell As Object, chart As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim bar As Object, concrete As Object, baseWidth As Double, baseHeight As Double, centerX As Double, centerY As Double
+    Dim concreteWidth As Double, concreteHeight As Double, factor As Variant, prefix As String
+    Dim baseMarker As Long, concreteMarker As Long, code As Long, reason As String, signature As String, solveCount As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = TestLegendScaleFixture()
+    Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
+    Set cell = TestAudit03PlotSettingCell(table, "Plot.RebarScale")
+    Set settings = New CSystemSettingsReader: Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    cell.Value2 = 1#
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    Set bar = TestAudit03PlotShape(chart, "ElementRebar")
+    Set concrete = TestAudit03PlotShape(chart, "ElementConcrete")
+    baseWidth = bar.Width: baseHeight = bar.Height
+    centerX = bar.Left + bar.Width / 2#: centerY = bar.Top + bar.Height / 2#
+    concreteWidth = concrete.Width: concreteHeight = concrete.Height
+    For Each factor In Array(0.5, 2#)
+        prefix = "rebarScale.shape." & CStr(factor)
+        cell.Value2 = factor: settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        Set bar = TestAudit03PlotShape(chart, "ElementRebar")
+        Set concrete = TestAudit03PlotShape(chart, "ElementConcrete")
+        TestAssertClose stats, prefix & ".width", bar.Width, baseWidth * CDbl(factor), 0.05
+        TestAssertClose stats, prefix & ".height", bar.Height, baseHeight * CDbl(factor), 0.05
+        TestAssertClose stats, prefix & ".centerX", bar.Left + bar.Width / 2#, centerX, 0.05
+        TestAssertClose stats, prefix & ".centerY", bar.Top + bar.Height / 2#, centerY, 0.05
+        TestAssertClose stats, prefix & ".concreteWidth", concrete.Width, concreteWidth, 0.05
+        TestAssertClose stats, prefix & ".concreteHeight", concrete.Height, concreteHeight, 0.05
+    Next factor
+    signature = TestLegendDrawingSignature(chart)
+    cell.Value2 = 0#: settings.LoadFromWorkbook fixture
+    TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+    TestAssertTrue stats, "rebarScale.invalid.address", code <> 0 And InStr(reason, "Plot.RebarScale") > 0 And InStr(reason, cell.Address(False, False)) > 0
+    TestAssertTrue stats, "rebarScale.invalid.preserved", signature = TestLegendDrawingSignature(chart)
+
+    TestPreparePlotRebarScaleLargeGeometry fixture
+    cell.Value2 = 1#: settings.LoadFromWorkbook fixture
+    reader.LoadGeometryPreviewFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    baseMarker = TestPlotRebarScaleMarkerSize(chart, 8): concreteMarker = TestPlotRebarScaleMarkerSize(chart, 1)
+    TestAssertTrue stats, "rebarScale.xy.markers", baseMarker >= 4 And concreteMarker >= 2
+    For Each factor In Array(2#, 100#, 0.01)
+        prefix = "rebarScale.xy." & CStr(factor)
+        cell.Value2 = factor: settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        TestAssertTrue stats, prefix & ".diameter", TestPlotRebarScaleMarkerSize(chart, 8) = _
+            fixture.Application.WorksheetFunction.Max(2#, fixture.Application.WorksheetFunction.Min(72#, baseMarker * CDbl(factor)))
+        TestAssertTrue stats, prefix & ".concrete", TestPlotRebarScaleMarkerSize(chart, 1) = concreteMarker
+    Next factor
+    TestAssertTrue stats, "rebarScale.noSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Finish
+Failed:
+    TestAssertTrue stats, "rebarScale.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finish:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    TestAppendLine stats, "TOTAL_PLOT_REBAR_SCALE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunPlotRebarScaleTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит 5000 прямоугольных элементов без явных границ и один стержень для режима XY.
+Private Sub TestPreparePlotRebarScaleLargeGeometry(ByVal fixture As Object)
+    Dim original As Variant, grid(1 To 5002, 1 To 15) As Variant, row As Long, column As Long
+    original = TestAudit03GeometrySnapshotArray("mm", 1#)
+    For column = 1 To 15
+        grid(1, column) = original(1, column): grid(5002, column) = original(3, column)
+    Next column
+    For row = 2 To 5001
+        For column = 1 To 15: grid(row, column) = original(2, column): Next column
+        grid(row, 1) = "C" & CStr(row - 1)
+        grid(row, 3) = -90# + (row Mod 19) * 10#: grid(row, 4) = -90# + (row Mod 17) * 10#
+        grid(row, 5) = 100#: grid(row, 8) = 10#: grid(row, 9) = 10#: grid(row, 11) = 0#
+    Next row
+    fixture.Worksheets.Item("Results").Range("AF5").Resize(5002, 15).Value2 = grid
+    fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Results!$AF$5"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает размер маркера нужного типа в фактически построенном ряду XY.
+Private Function TestPlotRebarScaleMarkerSize(ByVal chart As Object, ByVal markerStyle As Long) As Long
+    Dim series As Object
+    For Each series In chart.Chart.SeriesCollection
+        If series.MarkerStyle = markerStyle Then TestPlotRebarScaleMarkerSize = series.MarkerSize: Exit Function
+    Next series
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сравнивает реальные фигуры при разных масштабах, режимах и размерах диаграммы.
 ' Координаты считаются от независимого правого верхнего якоря, а не из полей plotter-а.
 Private Sub TestLegendScaleContracts(ByRef stats As TUiTestStats)

@@ -14,6 +14,89 @@ End Type
 Private mTestReport As String, mTestPassed As Long, mTestFailed As Long ' Итог и компактные адреса расхождений.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет повторный выбор Worst на одном расчёте в частной копии Excel или File.
+Public Function RunTestWorstCriterionRefresh(ByVal storageMode As String) As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    modTestPerformance.TestConfigurePerformanceFixture "REPEAT", 2, "Newton", "Circle"
+    TestSnapshotSetting "Results.SnapshotStorage", storageMode
+    TestSnapshotSetting "Results.SnapshotName", "TestWorstCriterionRefresh"
+    TestSnapshotSetting "General.ExecutionReportEnabled", "No"
+    TestSnapshotSetting "General.WorstCombinationCriterion", "StrengthStrain"
+    TestSnapshotSetting "Output.CombinationMode", "Worst"
+    TestSnapshotSetting "Plot.Enabled", "Yes"
+    TestSnapshotSetting "Plot.AutoUpdateAfterCalculation", "No"
+    FormSectionForWorkbook ThisWorkbook
+    RunSectionCalculationForWorkbook ThisWorkbook
+    Dim solverCalls As Long: solverCalls = SectionEquilibriumSolveCount()
+    TestSnapshotCheck "worst.initialSolver", solverCalls > 0
+
+    Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
+    Dim data As Variant, output As Object: Set output = anchor.Resize(42, 33)
+    Dim store As New CCalculationSnapshotStore, checksum As New CFileChecksum, original As CCalculationSnapshot
+    If storageMode = "File" Then
+        Set original = store.LoadFile(ThisWorkbook)
+        data = original.Table("Summary")
+    Else
+        data = output.Value2
+    End If
+    TestSnapshotCheck "worst.twoCases", CStr(data(13, 1)) = "PERF_01" And CStr(data(14, 1)) = "PERF_02"
+    data(1, 1) = "PERF_01"
+    data(13, 17) = 1.2: data(14, 17) = 2.5
+    data(13, 18) = 2.5: data(14, 18) = 1.2
+    data(13, 19) = 3#: data(13, 20) = 1.2: data(14, 19) = 2#
+    data(13, 10) = "NumFail": data(13, 21) = 0.01
+    data(14, 14) = "OK": data(14, 25) = 2#
+    Dim archivePath As String, archiveHash As String
+    If storageMode = "File" Then
+        Dim sample As New CCalculationSnapshot, key As Variant, values As Variant
+        sample.RunID = original.RunID: sample.ElapsedSeconds = original.ElapsedSeconds
+        For Each key In original.Keys()
+            If CStr(key) = "Summary" Then values = data Else values = original.Table(CStr(key))
+            sample.AddTable CStr(key), values
+        Next key
+        store.SaveFile ThisWorkbook, sample
+        archivePath = store.SnapshotPath(ThisWorkbook): archiveHash = checksum.FileSHA256(archivePath)
+        anchor.Cells(13, 18).Value2 = 0.01 ' Лист не является источником выбора при файловом хранении.
+    Else
+        output.Value2 = data
+    End If
+
+    Dim criterion As Variant, expected As String, expectedRow As Long, settings As CSystemSettingsReader, reader As CSectionPlotDataReader
+    For Each criterion In Array("StrengthCapacity", "StrengthStrain", "Cracks", "Stability")
+        expectedRow = IIf(CStr(criterion) = "StrengthCapacity" Or CStr(criterion) = "Stability", 14, 13)
+        expected = CStr(data(expectedRow, 1))
+        TestSnapshotSetting "General.WorstCombinationCriterion", CStr(criterion)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        TestSnapshotCheck "worst.resolver." & CStr(criterion), ReadOutputCombinationID(ThisWorkbook, settings) = expected
+        UpdateSectionResultsForWorkbook ThisWorkbook
+        TestSnapshotCheck "worst.visible." & CStr(criterion), CStr(anchor.Value2) = expected
+        TestSnapshotCheck "worst.visibleLoads." & CStr(criterion), _
+            TestSnapshotSameMatrix(anchor.Cells(12, 28).Resize(1, 6).Value2, anchor.Cells(expectedRow, 28).Resize(1, 6).Value2)
+        Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+        TestSnapshotCheck "worst.plot." & CStr(criterion), reader.LoadCase = expected
+        TestSnapshotCheck "worst.export." & CStr(criterion), _
+            Left$(Audit02ReadExportSnapshotForTests(ThisWorkbook), Len(expected) + 1) = expected & "|"
+        TestSnapshotCheck "worst.solves." & CStr(criterion), SectionEquilibriumSolveCount() = solverCalls
+    Next criterion
+    If storageMode = "File" Then TestSnapshotCheck "worst.fileBytes", checksum.FileSHA256(archivePath) = archiveHash
+    TestSnapshotSetting "General.WorstCombinationCriterion", "StrengthCapacity"
+    TestSnapshotSetting "Output.CombinationMode", "User"
+    TestSnapshotSetting "Output.CombinationID", "PERF_01"
+    TestSnapshotSetting "Plot.Enabled", "No"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestSnapshotCheck "worst.userSelection", ReadOutputCombinationID(ThisWorkbook, settings) = "PERF_01"
+    TestSnapshotCheck "worst.summaryWithPlotDisabled", CStr(anchor.Value2) = "PERF_02"
+    TestSnapshotCheck "worst.solves.final", SectionEquilibriumSolveCount() = solverCalls
+    GoTo Finish
+Failed:
+    TestSnapshotCheck "worst.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finish:
+    RunTestWorstCriterionRefresh = mTestReport & "TOTAL: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет реальные вызовы расчёта и кнопки, полную замену файла и защиту сохранённых Results.
 Public Function RunCalculationSnapshotTests() As String
     mTestReport = "": mTestPassed = 0: mTestFailed = 0

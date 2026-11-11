@@ -1,0 +1,53 @@
+{
+  "Status": "TARGETED_ACCEPTANCE_PASS",
+  "Build": {
+    "StandardSHA256": "35CA5E7D03D1FDB479FA446BA8E3401C3A7BB6C05CBA4E92B61D97E995AEB7C0",
+    "FreshFormattedSHA256": "2FC7F2ADF22E1C5FF7BFB5A16790CADDB7B81242C4C7A643745C80FC72BE977A",
+    "WorkingFormattedSHA256": "8E795FE3B7449B779FD4FBEF82C18C15110A27677FAC19AB2075F18F408AD8F8",
+    "TemplateSHA256": "6A549F76A53E7795D5D17245A00D0536BA67A3DBAAC94696B45FF6A280126ECD",
+    "VbaSHA256": "253BD17C65681152E8DB341374B56A8B7478C08D7B4416F6A12296C700A68D7E",
+    "ExportSHA256": "709CC88D7F01816F57073402564A386B8AE919DFF68D577E1DBAFFF4BD792D28",
+    "CodeComponents": 187
+  },
+  "Worst": {
+    "ExcelTests": 29,
+    "FileTests": 30,
+    "NewSolves": 0,
+    "WorkingBefore": "1",
+    "WorkingAfter": "16"
+  },
+  "Plot": {
+    "ShapeAndXYTests": 22,
+    "Config": "Config!B153",
+    "SectionReferenceMillimeters": 800,
+    "LargeMillimeters": 2400,
+    "ScaleAtReference": 1,
+    "LargeWidthRatioExcel": 3,
+    "LargeWidthRatioFile": 3,
+    "FileUnchanged": true
+  },
+  "Formatted": {
+    "CalcFormulas": 303,
+    "StyleReferences": 3444,
+    "NoVisibleFormulaErrorsAfterCalculation": true,
+    "RoundedReserves": [
+      693.17,
+      261.34
+    ],
+    "ComparedPages": 3,
+    "VisualScaleOne": [
+      0,
+      0,
+      742
+    ],
+    "VisualAutoScale": [
+      0,
+      3769,
+      742
+    ],
+    "PreservedSavedResults": true,
+    "PreservedWorkingDrawings": true
+  },
+  "OwnExcelProcesses": 33,
+  "PublishedToWorkspace": true
+}

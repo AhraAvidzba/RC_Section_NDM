@@ -499,13 +499,56 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
     Dim value As String, valueError As String, valueHasError As Boolean
     If IsError(data(rowIndex, columnIndex)) Then
         valueHasError = True
-        valueError = "Настройка " & key & " (" & InputCellLocation(rowIndex, columnIndex) & _
-            ") содержит ошибку Excel в колонке ""значение"". " & _
-            "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+        valueError = DeferredInputError(key, InputCellLocation(rowIndex, columnIndex))
     Else
         value = ConfigCellText(data(rowIndex, columnIndex), "значение", rowIndex, key, False, columnIndex)
     End If
     AppendSetting key, value, value, source, rowIndex, columnIndex, valueError, valueHasError
+End Sub
+
+' Возвращает сообщение о формуле с ошибкой по фактическому адресу настройки.
+Private Function DeferredInputError(ByVal key As String, ByVal location As String) As String
+    DeferredInputError = "Настройка " & key & " (" & location & _
+        ") содержит ошибку Excel в колонке ""значение"". " & _
+        "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+End Function
+
+' Пересчитывает только формулу указанной настройки после записи её зависимостей.
+' Книги без имени и ячейки с константой используют уже прочитанное значение.
+Public Sub RefreshNamedFormulaValue(ByVal workbook As Object, ByVal key As String, ByVal rangeName As String)
+    Dim index As Long, nameObject As Object, cell As Object, value As Variant, location As String
+    index = FindKey(key)
+    If index = 0 Then Exit Sub
+
+    On Error Resume Next
+    Set nameObject = workbook.Names.Item(rangeName)
+    On Error GoTo 0
+    If nameObject Is Nothing Then Exit Sub
+
+    On Error GoTo InvalidRange
+    Set cell = nameObject.RefersToRange
+    If cell.CountLarge <> 1 Then GoTo InvalidRange
+    location = "лист " & cell.Worksheet.Name & ", ячейка " & cell.Address(False, False)
+    If StrComp(mLocations(index), location, vbTextCompare) <> 0 Then GoTo InvalidRange
+    On Error GoTo 0
+    If Not cell.HasFormula Then Exit Sub
+
+    cell.Calculate
+    value = cell.Value2
+    mValues(index) = vbNullString
+    mValueHasError(index) = IsError(value)
+    If mValueHasError(index) Then
+        mValueErrors(index) = DeferredInputError(key, location)
+    Else
+        mValues(index) = Trim$(CStr(value))
+        mValueErrors(index) = vbNullString
+    End If
+    Exit Sub
+
+InvalidRange:
+    Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        InputErrorMessage(key, "Имя " & rangeName & " должно указывать на одну ячейку значения этой настройки.", _
+            "Исправьте ссылку в диспетчере имён Excel.")
 End Sub
 
 ' Добавляет имя настройки и значение в общие массивы. Для небольшого

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-09 18:47:10
+Date: 2026-11-11 22:11:39
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -45389,7 +45389,7 @@ End Property
 ====================================================================================================
 COMPONENT: CBatchResultWriter
 TYPE: 2
-LINES: 1079
+LINES: 1190
 ====================================================================================================
 Option Explicit
 
@@ -46396,6 +46396,103 @@ Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
     Set mCapturedSnapshot = value
 End Property
 
+' Читает критерий просмотра из текущих настроек Config.
+Friend Function SavedWorstCriterion(ByVal settings As CSystemSettingsReader) As String
+    SavedWorstCriterion = settings.GetRequiredChoice("General.WorstCombinationCriterion", _
+        Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability"))
+End Function
+
+' Выбирает сочетание из готовой сводки Excel. Команда обновления также публикует его в верхних строках.
+Friend Function SavedWorstExcelID(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal updateSummary As Boolean = False) As String
+    Dim Target As Object: Set Target = SummaryClearRange(Workbook)
+    If updateSummary Then
+        If Not Target.Worksheet Is Workbook.Worksheets.item("Results") Then _
+            Err.Raise 5, "CBatchResultWriter.SavedWorstExcelID", "Диапазон rngBatchSummary должен находиться на листе Results."
+    End If
+    Dim data() As Variant: data = Target.value2
+    SavedWorstExcelID = Trim$(SafeText(data(1, 1)))
+    If Not IsCalculatedSummary(data) Then Exit Function
+    Dim row As Long: row = SavedWorstRow(data, SavedWorstCriterion(settings))
+    If row = 0 Then Exit Function
+    SavedWorstExcelID = Trim$(SafeText(data(row, SUM_COL_ID)))
+    If Not updateSummary Then Exit Function
+
+    Dim meta(1 To 2, 1 To 1) As Variant, loads(1 To 1, 1 To 6) As Variant, column As Long
+    meta(1, 1) = data(row, SUM_COL_ID): meta(2, 1) = data(row, SUM_COL_COMMENT)
+    For column = SUM_COL_ORIGINAL_N To SUM_COL_DESIGN_MY
+        loads(1, column - SUM_COL_ORIGINAL_N + 1) = data(row, column)
+    Next column
+    Target.cells(1, 1).Resize(2, 1).value2 = meta
+    Target.cells(WORST_HEADER_ROW, SUM_COL_ORIGINAL_N).Resize(1, 6).value2 = loads
+End Function
+
+' Выбирает ID по числам из сохранённой файловой сводки.
+Friend Function SavedWorstFileID(ByRef data() As Variant, ByVal settings As CSystemSettingsReader) As String
+    SavedWorstFileID = Trim$(SafeText(data(1, 1)))
+    If Not IsCalculatedSummary(data) Then Exit Function
+    Dim row As Long: row = SavedWorstRow(data, SavedWorstCriterion(settings))
+    If row > 0 Then SavedWorstFileID = Trim$(SafeText(data(row, SUM_COL_ID)))
+End Function
+
+' Отличает сводку расчёта от пустого Results и геометрического эскиза.
+Private Function IsCalculatedSummary(ByRef data() As Variant) As Boolean
+    If UBound(data, 1) < FIRST_DATA_ROW Or UBound(data, 2) < SUM_COL_RESERVE_SP63_P2 Then Exit Function
+    IsCalculatedSummary = (SafeText(data(WORST_HEADER_ROW, SUM_COL_ID)) = "worst LC")
+End Function
+
+' Повторяет порядок пакетного выбора: критерий, несущая способность,
+' затем первое сочетание с прочитанными усилиями. При равенстве сохраняется более ранняя строка.
+Private Function SavedWorstRow(ByRef data() As Variant, ByVal criterion As String) As Long
+    Dim firstColumn As Long, lastColumn As Long
+    Select Case criterion
+        Case "StrengthStrain": firstColumn = SUM_COL_RESERVE_STRAIN: lastColumn = firstColumn
+        Case "StrengthCapacity": firstColumn = SUM_COL_RESERVE_CAPACITY: lastColumn = firstColumn
+        Case "Cracks": firstColumn = SUM_COL_RESERVE_CRACK: lastColumn = SUM_COL_RESERVE_LONG_CRACK
+        Case "Stability": firstColumn = SUM_COL_RESERVE_SP35_P1_ETA: lastColumn = SUM_COL_RESERVE_SP63_P2
+        Case Else: Exit Function
+    End Select
+    Dim policy As CResultStatusPolicy: Set policy = StatusPolicy()
+    Dim row As Long, column As Long, reserve As Double, minimum As Double, capacity As Double, minimumCapacity As Double
+    Dim firstValid As Long, capacityRow As Long, usable As Boolean, status As String, hasOriginalLoads As Boolean
+    If UBound(data, 2) >= SUM_COL_ORIGINAL_N Then
+        hasOriginalLoads = (SafeText(data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_N)) <> "Не сохранено в этом снимке")
+    End If
+    For row = FIRST_DATA_ROW To UBound(data, 1)
+        If Len(Trim$(SafeText(data(row, SUM_COL_ID)))) = 0 Then GoTo nextRow
+        If hasOriginalLoads Then
+            If Not TryReadStrictDouble(data(row, SUM_COL_ORIGINAL_N), reserve) Then GoTo nextRow
+            If firstValid = 0 Then firstValid = row
+        ElseIf firstValid = 0 Then
+            ' Сводка из 26 столбцов хранит статус строки для резервного выбора без запасов.
+            status = SafeText(data(row, SUM_COL_OVERALL_STATUS))
+            If Len(status) > 0 And status <> policy.InputErr Then firstValid = row
+        End If
+        If TryReadStrictDouble(data(row, SUM_COL_RESERVE_CAPACITY), capacity) Then
+            If capacity > 0# And (minimumCapacity = 0# Or capacity < minimumCapacity) Then
+                minimumCapacity = capacity: capacityRow = row
+            End If
+        End If
+        For column = firstColumn To lastColumn
+            usable = True
+            If criterion = "Stability" Then
+                status = SafeText(data(row, SUM_COL_STATUS_SP35_P1_ETA + column - SUM_COL_RESERVE_SP35_P1_ETA))
+                usable = (status = policy.OK Or status = policy.Fail) ' Число относится к завершённой проверке устойчивости.
+            End If
+            If usable Then
+                If TryReadStrictDouble(data(row, column), reserve) Then
+                    If reserve > 0# And (minimum = 0# Or reserve < minimum) Then
+                        minimum = reserve: SavedWorstRow = row
+                    End If
+                End If
+            End If
+        Next column
+nextRow:
+    Next row
+    If SavedWorstRow = 0 Then SavedWorstRow = capacityRow
+    If SavedWorstRow = 0 Then SavedWorstRow = firstValid
+End Function
+
 ' Восстанавливает общую и три подробные сводки из одних сохранённых массивов.
 Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
     snapshot.Validate
@@ -46403,16 +46500,31 @@ Public Sub RestoreSummary(ByVal Workbook As Object, ByVal snapshot As CCalculati
 End Sub
 
 ' Восстанавливает только готовые общие сводки из проверенного адресного источника.
-Public Sub RestoreIndexedSummary(ByVal Workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean)
+Public Sub RestoreIndexedSummary(ByVal Workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean, _
+        Optional ByVal worstCriterion As String = vbNullString)
     source.ValidateForDisplay
-    RestoreSummaryTables Workbook, source, fullFormatting
+    RestoreSummaryTables Workbook, source, fullFormatting, worstCriterion
 End Sub
 
 ' Записывает те же массивы и оформление для двух явно проверенных входных контрактов.
-Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean)
+Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean, _
+        Optional ByVal worstCriterion As String = vbNullString)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting
-    Dim data() As Variant: data = SummaryForDisplay(snapshot)
+    Dim saved() As Variant: saved = snapshot.table("Summary")
+    Dim data() As Variant: data = SummaryForDisplay(snapshot, saved)
+    If Len(worstCriterion) > 0 Then
+        If IsCalculatedSummary(saved) Then
+            Dim row As Long: row = SavedWorstRow(saved, worstCriterion)
+            If row > 0 Then
+                data(1, 1) = data(row, SUM_COL_ID): data(2, 1) = data(row, SUM_COL_COMMENT)
+                Dim column As Long
+                For column = SUM_COL_ORIGINAL_N To SUM_COL_DESIGN_MY
+                    data(WORST_HEADER_ROW, column) = data(row, column)
+                Next column
+            End If
+        End If
+    End If
     PrepareSummaryTarget SummaryClearRange(Workbook), UBound(data, 1)
     Dim Target As Object: Set Target = SummaryTargetRange(Workbook, UBound(data, 1))
     WriteSummaryBody Target, data
@@ -46439,8 +46551,7 @@ End Sub
 
 ' Читает поддерживаемые файловые снимки без блока нагрузок, не придумывая исходный ввод.
 ' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
-Private Function SummaryForDisplay(ByVal snapshot As Object) As Variant
-    Dim saved As Variant: saved = snapshot.table("Summary")
+Private Function SummaryForDisplay(ByVal snapshot As Object, ByRef saved() As Variant) As Variant
     If UBound(saved, 2) = TARGET_COLUMNS Then
         saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
         saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
@@ -55216,7 +55327,7 @@ Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: Annotat
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2297
+LINES: 2309
 ====================================================================================================
 Option Explicit
 
@@ -55324,6 +55435,7 @@ Private mLegendMode As String ' Separate или Common для легенд бе�
 Private mLegendScale As Double ' Общий коэффициент размеров, шрифтов и отступов легенды.
 Private mLegendLeft As Double ' Левый край масштабированного блока внутри диаграммы, в пунктах.
 Private mLegendTop As Double ' Верх блока легенды совпадает с верхом рабочей области схемы.
+Private mRebarScale As Double ' Коэффициент диаметра стержней на схеме Excel.
 Private mRebarCompressionColor As Long ' Цвет максимального сжатия арматуры.
 Private mRebarTensionColor As Long ' Цвет максимального растяжения арматуры.
 Private mConcreteCompressionColor As Long ' Цвет максимального сжатия бетона.
@@ -55371,6 +55483,10 @@ Public Sub Draw(ByVal Workbook As Object, ByVal data As CSectionPlotDataReader, 
     End If
     mResultGradientEnabled = settings.GetRequiredBoolean("Plot.ResultGradient")
     mLegendMode = settings.GetRequiredChoice("Plot.LegendMode", Array("Separate", "Common"))
+    settings.RefreshNamedFormulaValue Workbook, "Plot.RebarScale", "rngPlotRebarScale" ' Габариты Results могут быть записаны после загрузки настроек.
+    mRebarScale = settings.GetDouble("Plot.RebarScale", 1#, False)
+    If mRebarScale <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+        settings.InputErrorMessage("Plot.RebarScale", "Масштаб отображения арматуры должен быть больше нуля.", "Введите положительный коэффициент.")
     mRebarCompressionColor = settings.GetRequiredRgbColor("Plot.Color.RebarCompression")
     mRebarTensionColor = settings.GetRequiredRgbColor("Plot.Color.RebarTension")
     If mLegendMode = "Separate" Then
@@ -55963,6 +56079,7 @@ Private Function AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVa
     diameterValue = data.diameter(index)
     If diameterValue <= 0# Then diameterValue = EquivalentLengthFromArea(data.area(index), data.areaUnit, data.lengthUnit)
     If diameterValue <= 0# Then Exit Function
+    diameterValue = diameterValue * mRebarScale ' Центр стержня остаётся в сохранённой координате.
 
     Set AddRebarElementShape = DrawModelOval(data.x(index) - diameterValue / 2#, data.y(index) - diameterValue / 2#, _
         data.x(index) + diameterValue / 2#, data.y(index) + diameterValue / 2#, _
@@ -55997,7 +56114,13 @@ End Function
 ' Возвращает размер маркера grouped-series в points.
 Private Function ElementMarkerSize(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long
     If StrComp(data.materialType(index), "Rebar", vbTextCompare) = 0 Then
-        ElementMarkerSize = RoundToLong(ClampDouble(data.diameter(index) * ChartScale(), 4#, 42#))
+        Dim baseSize As Long
+        baseSize = RoundToLong(ClampDouble(data.diameter(index) * ChartScale(), 4#, 42#))
+        If mRebarScale >= 72# / baseSize Then
+            ElementMarkerSize = 72
+        Else
+            ElementMarkerSize = RoundToLong(MaxDouble(2#, baseSize * mRebarScale)) ' Excel принимает целые размеры маркера от 2 до 72 пт.
+        End If
     Else
         ElementMarkerSize = RoundToLong(ClampDouble(0.7 * ConcreteMarkerLength(data, index) * ChartScale(), 2#, 48#))
     End If
@@ -59567,7 +59690,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSystemSettingsReader
 TYPE: 2
-LINES: 874
+LINES: 917
 ====================================================================================================
 Option Explicit
 
@@ -60061,13 +60184,56 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
     Dim value As String, valueError As String, valueHasError As Boolean
     If IsError(data(rowIndex, columnIndex)) Then
         valueHasError = True
-        valueError = "Настройка " & key & " (" & InputCellLocation(rowIndex, columnIndex) & _
-            ") содержит ошибку Excel в колонке ""значение"". " & _
-            "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+        valueError = DeferredInputError(key, InputCellLocation(rowIndex, columnIndex))
     Else
         value = ConfigCellText(data(rowIndex, columnIndex), "значение", rowIndex, key, False, columnIndex)
     End If
     AppendSetting key, value, value, source, rowIndex, columnIndex, valueError, valueHasError
+End Sub
+
+' Возвращает сообщение о формуле с ошибкой по фактическому адресу настройки.
+Private Function DeferredInputError(ByVal key As String, ByVal location As String) As String
+    DeferredInputError = "Настройка " & key & " (" & location & _
+        ") содержит ошибку Excel в колонке ""значение"". " & _
+        "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+End Function
+
+' Пересчитывает только формулу указанной настройки после записи её зависимостей.
+' Книги без имени и ячейки с константой используют уже прочитанное значение.
+Public Sub RefreshNamedFormulaValue(ByVal Workbook As Object, ByVal key As String, ByVal rangeName As String)
+    Dim index As Long, nameObject As Object, cell As Object, value As Variant, location As String
+    index = FindKey(key)
+    If index = 0 Then Exit Sub
+
+    On Error Resume Next
+    Set nameObject = Workbook.names.item(rangeName)
+    On Error GoTo 0
+    If nameObject Is Nothing Then Exit Sub
+
+    On Error GoTo InvalidRange
+    Set cell = nameObject.RefersToRange
+    If cell.CountLarge <> 1 Then GoTo InvalidRange
+    location = "лист " & cell.Worksheet.name & ", ячейка " & cell.address(False, False)
+    If StrComp(mLocations(index), location, vbTextCompare) <> 0 Then GoTo InvalidRange
+    On Error GoTo 0
+    If Not cell.HasFormula Then Exit Sub
+
+    cell.Calculate
+    value = cell.value2
+    mValues(index) = vbNullString
+    mValueHasError(index) = IsError(value)
+    If mValueHasError(index) Then
+        mValueErrors(index) = DeferredInputError(key, location)
+    Else
+        mValues(index) = Trim$(CStr(value))
+        mValueErrors(index) = vbNullString
+    End If
+    Exit Sub
+
+InvalidRange:
+    Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        InputErrorMessage(key, "Имя " & rangeName & " должно указывать на одну ячейку значения этой настройки.", _
+            "Исправьте ссылку в диспетчере имён Excel.")
 End Sub
 
 ' Добавляет имя настройки и значение в общие массивы. Для небольшого
@@ -63317,7 +63483,7 @@ End Function
 ====================================================================================================
 COMPONENT: modCalculationSnapshot
 TYPE: 1
-LINES: 377
+LINES: 384
 ====================================================================================================
 Option Explicit
 
@@ -63399,7 +63565,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal Workbook As Object, Optional By
             Exit Sub
         Else
             store.ClearReference Workbook ' Источник Excel — только лист; служебная файловая привязка не участвует в чтении.
-            UpdateSectionPlotForWorkbook Workbook, True, plotWarning
+            UpdateSectionPlotForWorkbook Workbook, True, plotWarning, True
             plotHasWarning = (Len(plotWarning) > 0)
             guard.Restore True
     CompleteWorkbookDrawing Workbook
@@ -63681,10 +63847,17 @@ Private Sub UpdateIndexedResultsForWorkbook(ByVal Workbook As Object, ByRef plot
     Dim writer As New CNDMResultsWriter, summary As New CBatchResultWriter, store As New CCalculationSnapshotStore
     Dim settings As New CSystemSettingsReader: settings.LoadFromWorkbook Workbook
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
+    Dim preview As Boolean: preview = source.IsGeometryPreview
+    Dim worstCriterion As String
+    If Not preview Then worstCriterion = summary.SavedWorstCriterion(settings)
     writer.RestoreIndexedBase Workbook, source, fullFormatting
-    If source.IsGeometryPreview Then summary.ClearSummary Workbook, fullFormatting Else summary.RestoreIndexedSummary Workbook, source, fullFormatting
+    If preview Then
+        summary.ClearSummary Workbook, fullFormatting
+    Else
+        summary.RestoreIndexedSummary Workbook, source, fullFormatting, worstCriterion
+    End If
     store.LinkFile Workbook
-    If source.IsGeometryPreview Then UpdateSectionGeometryPreviewForWorkbook Workbook, plotWarning Else UpdateSectionPlotForWorkbook Workbook, False, plotWarning
+    If preview Then UpdateSectionGeometryPreviewForWorkbook Workbook, plotWarning Else UpdateSectionPlotForWorkbook Workbook, False, plotWarning
     plotHasWarning = (Len(plotWarning) > 0)
     EndCalculationSnapshotRead
     entered = False
@@ -64630,7 +64803,7 @@ End Function
 ====================================================================================================
 COMPONENT: modSectionSnapshot
 TYPE: 1
-LINES: 1247
+LINES: 1258
 ====================================================================================================
 Option Explicit
 Private mTestBoundaryFullReads As Long, mTestBoundaryHashReads As Long ' ДЛЯ ТЕСТОВ: число полных и подтверждённых хешем элементов.
@@ -64767,12 +64940,23 @@ End Function
 
 ' Читает определяющее сочетание сохранённого расчёта, не доверяя справочной сводке при File.
 ' Переключатели выбора сочетания остаются в Config; Worst принадлежит конкретному снимку.
-Public Function ReadSavedWorstCombinationID(ByVal Workbook As Object) As String
+Public Function ReadSavedWorstCombinationID(ByVal Workbook As Object, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(Workbook)
+    Dim writer As CBatchResultWriter
+    If Not settings Is Nothing Then
+        If settings.HasKey("General.WorstCombinationCriterion") Then Set writer = New CBatchResultWriter
+    End If
     If Not snapshot Is Nothing Then
         If snapshot.IsGeometryPreview Then Exit Function
-        Dim summary As Variant: summary = snapshot.table("Summary")
-        ReadSavedWorstCombinationID = Trim$(SafeText(summary(1, 1)))
+        Dim summary() As Variant: summary = snapshot.table("Summary")
+        If writer Is Nothing Then
+            ReadSavedWorstCombinationID = Trim$(SafeText(summary(1, 1)))
+        Else
+            ReadSavedWorstCombinationID = writer.SavedWorstFileID(summary, settings)
+        End If
+    ElseIf Not writer Is Nothing Then
+        ReadSavedWorstCombinationID = writer.SavedWorstExcelID(Workbook, settings)
     Else
         ReadSavedWorstCombinationID = Trim$(SafeText(Workbook.names.item("rngBatchSummary").RefersToRange.cells(1, 1).value2))
     End If
@@ -64787,7 +64971,7 @@ Public Function ReadOutputCombinationID(ByVal Workbook As Object, ByVal settings
         ReadOutputCombinationID = settings.GetRequiredString("Output.CombinationID")
         Exit Function
     End If
-    ReadOutputCombinationID = ReadSavedWorstCombinationID(Workbook)
+    ReadOutputCombinationID = ReadSavedWorstCombinationID(Workbook, settings)
     If Len(ReadOutputCombinationID) = 0 Then ReadOutputCombinationID = FirstOutputCombinationInTable(Workbook, "rngNDMElementResults")
     If Len(ReadOutputCombinationID) = 0 Then ReadOutputCombinationID = FirstOutputCombinationInTable(Workbook, "rngNDMSectionProperties")
     If Len(ReadOutputCombinationID) = 0 Then Err.Raise vbObjectError + 4702, "ReadOutputCombinationID", _
@@ -66136,7 +66320,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1380
+LINES: 1384
 ====================================================================================================
 Option Explicit
 
@@ -66229,13 +66413,17 @@ End Sub
 ' Если расчётных результатов ещё нет, может показать сформированную
 ' геометрию. НДС и таблицы Results при этом не меняются.
 Public Sub UpdateSectionPlotForWorkbook(ByVal Workbook As Object, Optional ByVal raiseIfNoData As Boolean = True, _
-        Optional ByRef containerNotice As String = "")
+        Optional ByRef containerNotice As String = "", Optional ByVal refreshWorst As Boolean = False)
     containerNotice = vbNullString
     If Workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook Workbook
+    If refreshWorst Then
+        Dim summary As New CBatchResultWriter
+        summary.SavedWorstExcelID Workbook, settings, True
+    End If
 
     If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Sub
 
@@ -67522,7 +67710,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
-LINES: 509
+LINES: 508
 ====================================================================================================
 Option Explicit
 
@@ -68031,7 +68219,6 @@ Public Function TestWorkbookDrawingPending(ByVal Workbook As Object) As Boolean
         If pending Is Workbook Then TestWorkbookDrawingPending = True: Exit Function
     Next pending
 End Function
-
 
 
 ====================================================================================================
@@ -87444,7 +87631,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
-LINES: 2361
+LINES: 2444
 ====================================================================================================
 Option Explicit
 
@@ -87459,6 +87646,89 @@ Private Type TTestSnapshotBits
     high As Long ' Последние четыре байта Double.
 End Type
 Private mTestReport As String, mTestPassed As Long, mTestFailed As Long ' Итог и компактные адреса расхождений.
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет повторный выбор Worst на одном расчёте в частной копии Excel или File.
+Public Function RunTestWorstCriterionRefresh(ByVal storageMode As String) As String
+    mTestReport = "": mTestPassed = 0: mTestFailed = 0
+    On Error GoTo Failed
+    modTestPerformance.TestConfigurePerformanceFixture "REPEAT", 2, "Newton", "Circle"
+    TestSnapshotSetting "Results.SnapshotStorage", storageMode
+    TestSnapshotSetting "Results.SnapshotName", "TestWorstCriterionRefresh"
+    TestSnapshotSetting "General.ExecutionReportEnabled", "No"
+    TestSnapshotSetting "General.WorstCombinationCriterion", "StrengthStrain"
+    TestSnapshotSetting "Output.CombinationMode", "Worst"
+    TestSnapshotSetting "Plot.Enabled", "Yes"
+    TestSnapshotSetting "Plot.AutoUpdateAfterCalculation", "No"
+    FormSectionForWorkbook ThisWorkbook
+    RunSectionCalculationForWorkbook ThisWorkbook
+    Dim solverCalls As Long: solverCalls = SectionEquilibriumSolveCount()
+    TestSnapshotCheck "worst.initialSolver", solverCalls > 0
+
+    Dim anchor As Object: Set anchor = ThisWorkbook.names.item("rngBatchSummary").RefersToRange.cells(1, 1)
+    Dim data As Variant, output As Object: Set output = anchor.Resize(42, 33)
+    Dim store As New CCalculationSnapshotStore, checksum As New CFileChecksum, original As CCalculationSnapshot
+    If storageMode = "File" Then
+        Set original = store.LoadFile(ThisWorkbook)
+        data = original.table("Summary")
+    Else
+        data = output.value2
+    End If
+    TestSnapshotCheck "worst.twoCases", CStr(data(13, 1)) = "PERF_01" And CStr(data(14, 1)) = "PERF_02"
+    data(1, 1) = "PERF_01"
+    data(13, 17) = 1.2: data(14, 17) = 2.5
+    data(13, 18) = 2.5: data(14, 18) = 1.2
+    data(13, 19) = 3#: data(13, 20) = 1.2: data(14, 19) = 2#
+    data(13, 10) = "NumFail": data(13, 21) = 0.01
+    data(14, 14) = "OK": data(14, 25) = 2#
+    Dim archivePath As String, archiveHash As String
+    If storageMode = "File" Then
+        Dim sample As New CCalculationSnapshot, key As Variant, values As Variant
+        sample.runID = original.runID: sample.elapsedSeconds = original.elapsedSeconds
+        For Each key In original.keys()
+            If CStr(key) = "Summary" Then values = data Else values = original.table(CStr(key))
+            sample.AddTable CStr(key), values
+        Next key
+        store.SaveFile ThisWorkbook, sample
+        archivePath = store.SnapshotPath(ThisWorkbook): archiveHash = checksum.FileSHA256(archivePath)
+        anchor.cells(13, 18).value2 = 0.01 ' Лист не является источником выбора при файловом хранении.
+    Else
+        output.value2 = data
+    End If
+
+    Dim criterion As Variant, expected As String, expectedRow As Long, settings As CSystemSettingsReader, reader As CSectionPlotDataReader
+    For Each criterion In Array("StrengthCapacity", "StrengthStrain", "Cracks", "Stability")
+        expectedRow = IIf(CStr(criterion) = "StrengthCapacity" Or CStr(criterion) = "Stability", 14, 13)
+        expected = CStr(data(expectedRow, 1))
+        TestSnapshotSetting "General.WorstCombinationCriterion", CStr(criterion)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        TestSnapshotCheck "worst.resolver." & CStr(criterion), ReadOutputCombinationID(ThisWorkbook, settings) = expected
+        UpdateSectionResultsForWorkbook ThisWorkbook
+        TestSnapshotCheck "worst.visible." & CStr(criterion), CStr(anchor.value2) = expected
+        TestSnapshotCheck "worst.visibleLoads." & CStr(criterion), _
+            TestSnapshotSameMatrix(anchor.cells(12, 28).Resize(1, 6).value2, anchor.cells(expectedRow, 28).Resize(1, 6).value2)
+        Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+        TestSnapshotCheck "worst.plot." & CStr(criterion), reader.loadCase = expected
+        TestSnapshotCheck "worst.export." & CStr(criterion), _
+            left$(Audit02ReadExportSnapshotForTests(ThisWorkbook), Len(expected) + 1) = expected & "|"
+        TestSnapshotCheck "worst.solves." & CStr(criterion), SectionEquilibriumSolveCount() = solverCalls
+    Next criterion
+    If storageMode = "File" Then TestSnapshotCheck "worst.fileBytes", checksum.FileSHA256(archivePath) = archiveHash
+    TestSnapshotSetting "General.WorstCombinationCriterion", "StrengthCapacity"
+    TestSnapshotSetting "Output.CombinationMode", "User"
+    TestSnapshotSetting "Output.CombinationID", "PERF_01"
+    TestSnapshotSetting "Plot.Enabled", "No"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    UpdateSectionResultsForWorkbook ThisWorkbook
+    TestSnapshotCheck "worst.userSelection", ReadOutputCombinationID(ThisWorkbook, settings) = "PERF_01"
+    TestSnapshotCheck "worst.summaryWithPlotDisabled", CStr(anchor.value2) = "PERF_02"
+    TestSnapshotCheck "worst.solves.final", SectionEquilibriumSolveCount() = solverCalls
+    GoTo Finish
+Failed:
+    TestSnapshotCheck "worst.runtime." & CStr(Err.number) & "." & Err.description, False
+Finish:
+    RunTestWorstCriterionRefresh = mTestReport & "TOTAL: passed=" & CStr(mTestPassed) & "; failed=" & CStr(mTestFailed)
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет реальные вызовы расчёта и кнопки, полную замену файла и защиту сохранённых Results.
@@ -116656,7 +116926,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestPlotConfig
 TYPE: 1
-LINES: 2878
+LINES: 2971
 ====================================================================================================
 Option Explicit
 
@@ -119126,6 +119396,99 @@ Public Function RunLegendScaleTests() As String
     TestLegendScaleContracts stats
     TestAppendLine stats, "TOTAL_LEGEND_SCALE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
     RunLegendScaleTests = stats.report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет размеры стержней в фигурах и группах XY по сохранённой геометрии.
+Public Function RunPlotRebarScaleTests() As String
+    Dim stats As TUiTestStats, fixture As Object, table As Object, cell As Object, chart As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim bar As Object, concrete As Object, baseWidth As Double, baseHeight As Double, centerX As Double, centerY As Double
+    Dim concreteWidth As Double, concreteHeight As Double, factor As Variant, prefix As String
+    Dim baseMarker As Long, concreteMarker As Long, code As Long, reason As String, signature As String, solveCount As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = TestLegendScaleFixture()
+    Set table = fixture.names.item("rngSystemSettings").RefersToRange
+    Set cell = TestAudit03PlotSettingCell(table, "Plot.RebarScale")
+    Set settings = New CSystemSettingsReader: Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    cell.value2 = 1#
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    Set chart = fixture.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
+    Set bar = TestAudit03PlotShape(chart, "ElementRebar")
+    Set concrete = TestAudit03PlotShape(chart, "ElementConcrete")
+    baseWidth = bar.width: baseHeight = bar.height
+    centerX = bar.left + bar.width / 2#: centerY = bar.top + bar.height / 2#
+    concreteWidth = concrete.width: concreteHeight = concrete.height
+    For Each factor In Array(0.5, 2#)
+        prefix = "rebarScale.shape." & CStr(factor)
+        cell.value2 = factor: settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        Set bar = TestAudit03PlotShape(chart, "ElementRebar")
+        Set concrete = TestAudit03PlotShape(chart, "ElementConcrete")
+        TestAssertClose stats, prefix & ".width", bar.width, baseWidth * CDbl(factor), 0.05
+        TestAssertClose stats, prefix & ".height", bar.height, baseHeight * CDbl(factor), 0.05
+        TestAssertClose stats, prefix & ".centerX", bar.left + bar.width / 2#, centerX, 0.05
+        TestAssertClose stats, prefix & ".centerY", bar.top + bar.height / 2#, centerY, 0.05
+        TestAssertClose stats, prefix & ".concreteWidth", concrete.width, concreteWidth, 0.05
+        TestAssertClose stats, prefix & ".concreteHeight", concrete.height, concreteHeight, 0.05
+    Next factor
+    signature = TestLegendDrawingSignature(chart)
+    cell.value2 = 0#: settings.LoadFromWorkbook fixture
+    TestAudit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
+    TestAssertTrue stats, "rebarScale.invalid.address", code <> 0 And InStr(reason, "Plot.RebarScale") > 0 And InStr(reason, cell.address(False, False)) > 0
+    TestAssertTrue stats, "rebarScale.invalid.preserved", signature = TestLegendDrawingSignature(chart)
+
+    TestPreparePlotRebarScaleLargeGeometry fixture
+    cell.value2 = 1#: settings.LoadFromWorkbook fixture
+    reader.LoadGeometryPreviewFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    baseMarker = TestPlotRebarScaleMarkerSize(chart, 8): concreteMarker = TestPlotRebarScaleMarkerSize(chart, 1)
+    TestAssertTrue stats, "rebarScale.xy.markers", baseMarker >= 4 And concreteMarker >= 2
+    For Each factor In Array(2#, 100#, 0.01)
+        prefix = "rebarScale.xy." & CStr(factor)
+        cell.value2 = factor: settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        TestAssertTrue stats, prefix & ".diameter", TestPlotRebarScaleMarkerSize(chart, 8) = _
+            fixture.Application.WorksheetFunction.Max(2#, fixture.Application.WorksheetFunction.Min(72#, baseMarker * CDbl(factor)))
+        TestAssertTrue stats, prefix & ".concrete", TestPlotRebarScaleMarkerSize(chart, 1) = concreteMarker
+    Next factor
+    TestAssertTrue stats, "rebarScale.noSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Finish
+Failed:
+    TestAssertTrue stats, "rebarScale.runtime." & CStr(Err.number) & "." & Err.description, False
+Finish:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    TestAppendLine stats, "TOTAL_PLOT_REBAR_SCALE: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+    RunPlotRebarScaleTests = stats.report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит 5000 прямоугольных элементов без явных границ и один стержень для режима XY.
+Private Sub TestPreparePlotRebarScaleLargeGeometry(ByVal fixture As Object)
+    Dim original As Variant, grid(1 To 5002, 1 To 15) As Variant, row As Long, column As Long
+    original = TestAudit03GeometrySnapshotArray("mm", 1#)
+    For column = 1 To 15
+        grid(1, column) = original(1, column): grid(5002, column) = original(3, column)
+    Next column
+    For row = 2 To 5001
+        For column = 1 To 15: grid(row, column) = original(2, column): Next column
+        grid(row, 1) = "C" & CStr(row - 1)
+        grid(row, 3) = -90# + (row Mod 19) * 10#: grid(row, 4) = -90# + (row Mod 17) * 10#
+        grid(row, 5) = 100#: grid(row, 8) = 10#: grid(row, 9) = 10#: grid(row, 11) = 0#
+    Next row
+    fixture.Worksheets.item("Results").range("AF5").Resize(5002, 15).value2 = grid
+    fixture.names.item("rngNDMSectionGeometry").RefersTo = "=Results!$AF$5"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Читает размер маркера нужного типа в фактически построенном ряду XY.
+Private Function TestPlotRebarScaleMarkerSize(ByVal chart As Object, ByVal markerStyle As Long) As Long
+    Dim series As Object
+    For Each series In chart.chart.SeriesCollection
+        If series.markerStyle = markerStyle Then TestPlotRebarScaleMarkerSize = series.markerSize: Exit Function
+    Next series
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

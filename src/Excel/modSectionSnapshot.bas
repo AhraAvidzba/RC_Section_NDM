@@ -134,12 +134,23 @@ End Function
 
 ' Читает определяющее сочетание сохранённого расчёта, не доверяя справочной сводке при File.
 ' Переключатели выбора сочетания остаются в Config; Worst принадлежит конкретному снимку.
-Public Function ReadSavedWorstCombinationID(ByVal workbook As Object) As String
+Public Function ReadSavedWorstCombinationID(ByVal workbook As Object, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
+    Dim writer As CBatchResultWriter
+    If Not settings Is Nothing Then
+        If settings.HasKey("General.WorstCombinationCriterion") Then Set writer = New CBatchResultWriter
+    End If
     If Not snapshot Is Nothing Then
         If snapshot.IsGeometryPreview Then Exit Function
-        Dim summary As Variant: summary = snapshot.Table("Summary")
-        ReadSavedWorstCombinationID = Trim$(SafeText(summary(1, 1)))
+        Dim summary() As Variant: summary = snapshot.Table("Summary")
+        If writer Is Nothing Then
+            ReadSavedWorstCombinationID = Trim$(SafeText(summary(1, 1)))
+        Else
+            ReadSavedWorstCombinationID = writer.SavedWorstFileID(summary, settings)
+        End If
+    ElseIf Not writer Is Nothing Then
+        ReadSavedWorstCombinationID = writer.SavedWorstExcelID(workbook, settings)
     Else
         ReadSavedWorstCombinationID = Trim$(SafeText(workbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2))
     End If
@@ -154,7 +165,7 @@ Public Function ReadOutputCombinationID(ByVal workbook As Object, ByVal settings
         ReadOutputCombinationID = settings.GetRequiredString("Output.CombinationID")
         Exit Function
     End If
-    ReadOutputCombinationID = ReadSavedWorstCombinationID(workbook)
+    ReadOutputCombinationID = ReadSavedWorstCombinationID(workbook, settings)
     If Len(ReadOutputCombinationID) = 0 Then ReadOutputCombinationID = FirstOutputCombinationInTable(workbook, "rngNDMElementResults")
     If Len(ReadOutputCombinationID) = 0 Then ReadOutputCombinationID = FirstOutputCombinationInTable(workbook, "rngNDMSectionProperties")
     If Len(ReadOutputCombinationID) = 0 Then Err.Raise vbObjectError + 4702, "ReadOutputCombinationID", _

@@ -1012,6 +1012,103 @@ Friend Property Set CaptureSnapshot(ByVal value As CCalculationSnapshot)
     Set mCapturedSnapshot = value
 End Property
 
+' Читает критерий просмотра из текущих настроек Config.
+Friend Function SavedWorstCriterion(ByVal settings As CSystemSettingsReader) As String
+    SavedWorstCriterion = settings.GetRequiredChoice("General.WorstCombinationCriterion", _
+        Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability"))
+End Function
+
+' Выбирает сочетание из готовой сводки Excel. Команда обновления также публикует его в верхних строках.
+Friend Function SavedWorstExcelID(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal updateSummary As Boolean = False) As String
+    Dim target As Object: Set target = SummaryClearRange(workbook)
+    If updateSummary Then
+        If Not target.Worksheet Is workbook.Worksheets.Item("Results") Then _
+            Err.Raise 5, "CBatchResultWriter.SavedWorstExcelID", "Диапазон rngBatchSummary должен находиться на листе Results."
+    End If
+    Dim data() As Variant: data = target.Value2
+    SavedWorstExcelID = Trim$(SafeText(data(1, 1)))
+    If Not IsCalculatedSummary(data) Then Exit Function
+    Dim row As Long: row = SavedWorstRow(data, SavedWorstCriterion(settings))
+    If row = 0 Then Exit Function
+    SavedWorstExcelID = Trim$(SafeText(data(row, SUM_COL_ID)))
+    If Not updateSummary Then Exit Function
+
+    Dim meta(1 To 2, 1 To 1) As Variant, loads(1 To 1, 1 To 6) As Variant, column As Long
+    meta(1, 1) = data(row, SUM_COL_ID): meta(2, 1) = data(row, SUM_COL_COMMENT)
+    For column = SUM_COL_ORIGINAL_N To SUM_COL_DESIGN_MY
+        loads(1, column - SUM_COL_ORIGINAL_N + 1) = data(row, column)
+    Next column
+    target.Cells(1, 1).Resize(2, 1).Value2 = meta
+    target.Cells(WORST_HEADER_ROW, SUM_COL_ORIGINAL_N).Resize(1, 6).Value2 = loads
+End Function
+
+' Выбирает ID по числам из сохранённой файловой сводки.
+Friend Function SavedWorstFileID(ByRef data() As Variant, ByVal settings As CSystemSettingsReader) As String
+    SavedWorstFileID = Trim$(SafeText(data(1, 1)))
+    If Not IsCalculatedSummary(data) Then Exit Function
+    Dim row As Long: row = SavedWorstRow(data, SavedWorstCriterion(settings))
+    If row > 0 Then SavedWorstFileID = Trim$(SafeText(data(row, SUM_COL_ID)))
+End Function
+
+' Отличает сводку расчёта от пустого Results и геометрического эскиза.
+Private Function IsCalculatedSummary(ByRef data() As Variant) As Boolean
+    If UBound(data, 1) < FIRST_DATA_ROW Or UBound(data, 2) < SUM_COL_RESERVE_SP63_P2 Then Exit Function
+    IsCalculatedSummary = (SafeText(data(WORST_HEADER_ROW, SUM_COL_ID)) = "worst LC")
+End Function
+
+' Повторяет порядок пакетного выбора: критерий, несущая способность,
+' затем первое сочетание с прочитанными усилиями. При равенстве сохраняется более ранняя строка.
+Private Function SavedWorstRow(ByRef data() As Variant, ByVal criterion As String) As Long
+    Dim firstColumn As Long, lastColumn As Long
+    Select Case criterion
+        Case "StrengthStrain": firstColumn = SUM_COL_RESERVE_STRAIN: lastColumn = firstColumn
+        Case "StrengthCapacity": firstColumn = SUM_COL_RESERVE_CAPACITY: lastColumn = firstColumn
+        Case "Cracks": firstColumn = SUM_COL_RESERVE_CRACK: lastColumn = SUM_COL_RESERVE_LONG_CRACK
+        Case "Stability": firstColumn = SUM_COL_RESERVE_SP35_P1_ETA: lastColumn = SUM_COL_RESERVE_SP63_P2
+        Case Else: Exit Function
+    End Select
+    Dim policy As CResultStatusPolicy: Set policy = StatusPolicy()
+    Dim row As Long, column As Long, reserve As Double, minimum As Double, capacity As Double, minimumCapacity As Double
+    Dim firstValid As Long, capacityRow As Long, usable As Boolean, status As String, hasOriginalLoads As Boolean
+    If UBound(data, 2) >= SUM_COL_ORIGINAL_N Then
+        hasOriginalLoads = (SafeText(data(COMMENT_HEADER_ROW, SUM_COL_ORIGINAL_N)) <> "Не сохранено в этом снимке")
+    End If
+    For row = FIRST_DATA_ROW To UBound(data, 1)
+        If Len(Trim$(SafeText(data(row, SUM_COL_ID)))) = 0 Then GoTo NextRow
+        If hasOriginalLoads Then
+            If Not TryReadStrictDouble(data(row, SUM_COL_ORIGINAL_N), reserve) Then GoTo NextRow
+            If firstValid = 0 Then firstValid = row
+        ElseIf firstValid = 0 Then
+            ' Сводка из 26 столбцов хранит статус строки для резервного выбора без запасов.
+            status = SafeText(data(row, SUM_COL_OVERALL_STATUS))
+            If Len(status) > 0 And status <> policy.InputErr Then firstValid = row
+        End If
+        If TryReadStrictDouble(data(row, SUM_COL_RESERVE_CAPACITY), capacity) Then
+            If capacity > 0# And (minimumCapacity = 0# Or capacity < minimumCapacity) Then
+                minimumCapacity = capacity: capacityRow = row
+            End If
+        End If
+        For column = firstColumn To lastColumn
+            usable = True
+            If criterion = "Stability" Then
+                status = SafeText(data(row, SUM_COL_STATUS_SP35_P1_ETA + column - SUM_COL_RESERVE_SP35_P1_ETA))
+                usable = (status = policy.OK Or status = policy.Fail) ' Число относится к завершённой проверке устойчивости.
+            End If
+            If usable Then
+                If TryReadStrictDouble(data(row, column), reserve) Then
+                    If reserve > 0# And (minimum = 0# Or reserve < minimum) Then
+                        minimum = reserve: SavedWorstRow = row
+                    End If
+                End If
+            End If
+        Next column
+NextRow:
+    Next row
+    If SavedWorstRow = 0 Then SavedWorstRow = capacityRow
+    If SavedWorstRow = 0 Then SavedWorstRow = firstValid
+End Function
+
 ' Восстанавливает общую и три подробные сводки из одних сохранённых массивов.
 Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculationSnapshot, Optional ByVal fullFormatting As Boolean = True)
     snapshot.Validate
@@ -1019,16 +1116,31 @@ Public Sub RestoreSummary(ByVal workbook As Object, ByVal snapshot As CCalculati
 End Sub
 
 ' Восстанавливает только готовые общие сводки из проверенного адресного источника.
-Public Sub RestoreIndexedSummary(ByVal workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean)
+Public Sub RestoreIndexedSummary(ByVal workbook As Object, ByVal source As CResultReadSource, ByVal fullFormatting As Boolean, _
+        Optional ByVal worstCriterion As String = vbNullString)
     source.ValidateForDisplay
-    RestoreSummaryTables workbook, source, fullFormatting
+    RestoreSummaryTables workbook, source, fullFormatting, worstCriterion
 End Sub
 
 ' Записывает те же массивы и оформление для двух явно проверенных входных контрактов.
-Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean)
+Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Object, ByVal fullFormatting As Boolean, _
+        Optional ByVal worstCriterion As String = vbNullString)
     Set mCapturedSnapshot = Nothing
     mMinimalFormatting = Not fullFormatting
-    Dim data() As Variant: data = SummaryForDisplay(snapshot)
+    Dim saved() As Variant: saved = snapshot.Table("Summary")
+    Dim data() As Variant: data = SummaryForDisplay(snapshot, saved)
+    If Len(worstCriterion) > 0 Then
+        If IsCalculatedSummary(saved) Then
+            Dim row As Long: row = SavedWorstRow(saved, worstCriterion)
+            If row > 0 Then
+                data(1, 1) = data(row, SUM_COL_ID): data(2, 1) = data(row, SUM_COL_COMMENT)
+                Dim column As Long
+                For column = SUM_COL_ORIGINAL_N To SUM_COL_DESIGN_MY
+                    data(WORST_HEADER_ROW, column) = data(row, column)
+                Next column
+            End If
+        End If
+    End If
     PrepareSummaryTarget SummaryClearRange(workbook), UBound(data, 1)
     Dim target As Object: Set target = SummaryTargetRange(workbook, UBound(data, 1))
     WriteSummaryBody target, data
@@ -1055,8 +1167,7 @@ End Sub
 
 ' Читает поддерживаемые файловые снимки без блока нагрузок, не придумывая исходный ввод.
 ' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
-Private Function SummaryForDisplay(ByVal snapshot As Object) As Variant
-    Dim saved As Variant: saved = snapshot.Table("Summary")
+Private Function SummaryForDisplay(ByVal snapshot As Object, ByRef saved() As Variant) As Variant
     If UBound(saved, 2) = TARGET_COLUMNS Then
         saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
         saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")

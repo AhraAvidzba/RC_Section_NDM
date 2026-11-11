@@ -79,7 +79,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
             Exit Sub
         Else
             store.ClearReference workbook ' Источник Excel — только лист; служебная файловая привязка не участвует в чтении.
-            UpdateSectionPlotForWorkbook workbook, True, plotWarning
+            UpdateSectionPlotForWorkbook workbook, True, plotWarning, True
             plotHasWarning = (Len(plotWarning) > 0)
             guard.Restore True
     CompleteWorkbookDrawing workbook
@@ -361,10 +361,17 @@ Private Sub UpdateIndexedResultsForWorkbook(ByVal workbook As Object, ByRef plot
     Dim writer As New CNDMResultsWriter, summary As New CBatchResultWriter, store As New CCalculationSnapshotStore
     Dim settings As New CSystemSettingsReader: settings.LoadFromWorkbook workbook
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
+    Dim preview As Boolean: preview = source.IsGeometryPreview
+    Dim worstCriterion As String
+    If Not preview Then worstCriterion = summary.SavedWorstCriterion(settings)
     writer.RestoreIndexedBase workbook, source, fullFormatting
-    If source.IsGeometryPreview Then summary.ClearSummary workbook, fullFormatting Else summary.RestoreIndexedSummary workbook, source, fullFormatting
+    If preview Then
+        summary.ClearSummary workbook, fullFormatting
+    Else
+        summary.RestoreIndexedSummary workbook, source, fullFormatting, worstCriterion
+    End If
     store.LinkFile workbook
-    If source.IsGeometryPreview Then UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning Else UpdateSectionPlotForWorkbook workbook, False, plotWarning
+    If preview Then UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning Else UpdateSectionPlotForWorkbook workbook, False, plotWarning
     plotHasWarning = (Len(plotWarning) > 0)
     EndCalculationSnapshotRead
     entered = False

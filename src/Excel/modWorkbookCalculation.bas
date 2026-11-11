@@ -90,13 +90,17 @@ End Sub
 ' Если расчётных результатов ещё нет, может показать сформированную
 ' геометрию. НДС и таблицы Results при этом не меняются.
 Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True, _
-        Optional ByRef containerNotice As String = "")
+        Optional ByRef containerNotice As String = "", Optional ByVal refreshWorst As Boolean = False)
     containerNotice = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
+    If refreshWorst Then
+        Dim summary As New CBatchResultWriter
+        summary.SavedWorstExcelID workbook, settings, True
+    End If
 
     If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Sub
 

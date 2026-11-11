@@ -22,7 +22,9 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.ps1
 ```
 
-Сборка создает книгу с настройками шаблона. Не запускайте ее поверх открытой рабочей книги.
+Полная сборка создаёт обычную книгу и `RC_Section_NDM_оформление_быстро.xlsm` в `workbook/output`. Для оформленного варианта нужны Python 3 и пакет `lxml`. Сохраните рабочие книги перед сборкой и закройте их в Excel.
+
+Для сборки в отдельную папку укажите `-OutputPath` для обычной книги и `-FormattedOutputPath` для оформленной.
 
 ## Разработка
 
