@@ -1,0 +1,40 @@
+{
+  "Status": "REVIEW_REQUIRED",
+  "SourceCommit": "b825cae1f90fb29ec04dca2c1991aba3d29db8c4",
+  "SourceSHA256": "35CA5E7D03D1FDB479FA446BA8E3401C3A7BB6C05CBA4E92B61D97E995AEB7C0",
+  "Minutes": 212.201,
+  "CoreGroupsRead": 12,
+  "CoreMacrosRead": 182,
+  "FocusedRecords": 26,
+  "FocusedCases": 122,
+  "RealAutoCADCases": 2,
+  "FailedAssertions": 2,
+  "DistinctFailedTests": 1,
+  "Failures": [
+    {
+      "Path": "docs/regression/FullOnOff_2026-11-12_WorstFormatted_Run01/Full_Off.txt",
+      "Message": "FAIL: batch.stability.accidental.user; actual=25.; expected=40."
+    },
+    {
+      "Path": "docs/regression/FullOnOff_2026-11-12_WorstFormatted_Run01/Full_On.txt",
+      "Message": "FAIL: batch.stability.accidental.user; actual=25.; expected=40."
+    }
+  ],
+  "FrozenInputs": 524,
+  "OwnProcessesTerminal": 44,
+  "PrimaryReviewSHA256": "8467E376619E9BFCFCD62607FB0DB37AB74804FA721DD96CA6A768215D3C6A0D",
+  "StdIO": [
+    {
+      "Name": "FullLaunch.stdout.log",
+      "Bytes": 14686,
+      "SHA256": "8E4DD017B9298CD9740210A02CE3A7865C30AE059191A764121C375404FC9598",
+      "EntireLogRead": true
+    },
+    {
+      "Name": "FullLaunch.stderr.log",
+      "Bytes": 5235,
+      "SHA256": "90AD39AAA8FF4F73EA94F6641AC1BA2127E06451DFE666B2FF0C43C83D2CECA7",
+      "EntireLogRead": true
+    }
+  ]
+}

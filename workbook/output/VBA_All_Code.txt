@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-11 22:11:39
+Date: 2026-11-12 04:01:02
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -76483,7 +76483,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 11142
+LINES: 11165
 ====================================================================================================
 Option Explicit
 
@@ -80279,6 +80279,15 @@ RestoreAndFail:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает адресную проверку пользовательских эксцентриситетов в обеих плоскостях.
+Public Function TestRunStabilityAccidentalUserMode() As String
+    Dim stats As TBatchTestStats
+    TestStabilityAccidentalUserMode stats
+    TestRunStabilityAccidentalUserMode = stats.report & "TOTAL_STABILITY_ACCIDENTAL_USER: passed=" & CStr(stats.passed) & _
+        "; failed=" & CStr(stats.Failed)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет пользовательский режим случайного эксцентриситета: пользователь
 ' задает только модуль, а знак выбирается по направлению момента
 ' или настройкам для нулевого момента.
@@ -80307,10 +80316,19 @@ Private Sub TestStabilityAccidentalUserMode(ByRef stats As TBatchTestStats)
     TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "25"
     TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "40"
 
-    TestAssertClose stats, "batch.stability.accidental.user", TestStabilityAccidentalForSingleMoment(), 40#, 0.000001
+    ' У симметричного прямоугольника ось 1 совпадает с X, ось 2 — с Y.
+    Dim result As CStabilityResult
+    Set result = TestStabilityAccidentalResponse(1000000#, 0#)
+    TestAssertClose stats, "batch.stability.accidental.user.Mx.plane1", Abs(result.AccidentalEcc1), 25#, 0.000001
+    TestAssertClose stats, "batch.stability.accidental.user.Mx.plane2", Abs(result.AccidentalEcc2), 0#, 0.000001
+    Set result = TestStabilityAccidentalResponse(0#, 1000000#)
+    TestAssertClose stats, "batch.stability.accidental.user.My.plane1", Abs(result.AccidentalEcc1), 0#, 0.000001
+    TestAssertClose stats, "batch.stability.accidental.user.My.plane2", Abs(result.AccidentalEcc2), 40#, 0.000001
 
     TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
-    TestAssertClose stats, "batch.stability.accidental.userBoth", TestStabilityAccidentalForSingleMoment(), 65#, 0.000001
+    Set result = TestStabilityAccidentalResponse(1000000#, 0#)
+    TestAssertClose stats, "batch.stability.accidental.userBoth.plane1", Abs(result.AccidentalEcc1), 25#, 0.000001
+    TestAssertClose stats, "batch.stability.accidental.userBoth.plane2", Abs(result.AccidentalEcc2), 40#, 0.000001
 
 Restore:
     TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -81533,6 +81551,14 @@ End Function
 ' Выполняет короткий расчет устойчивости с одним изгибающим моментом и
 ' возвращает модуль фактически добавленного случайного эксцентриситета.
 Private Function TestStabilityAccidentalForSingleMoment() As Double
+    Dim result As CStabilityResult
+    Set result = TestStabilityAccidentalResponse(1000000#, 0#)
+    TestStabilityAccidentalForSingleMoment = Abs(result.AccidentalEcc1) + Abs(result.AccidentalEcc2)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет расчёт устойчивости при заданных моментах и возвращает данные обеих плоскостей.
+Private Function TestStabilityAccidentalResponse(ByVal momentX As Double, ByVal momentY As Double) As CStabilityResult
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
@@ -81541,11 +81567,10 @@ Private Function TestStabilityAccidentalForSingleMoment() As Double
     Set batch = TestBuildBatchCalculator()
     batch.ApplySettings settings
     batch.SetSP35Table721 ThisWorkbook.names.item("rngSP35Table721").RefersToRange.value2
-    batch.AddCombination "ACC_E", -120000#, 1000000#, 0#, "PR1", "accidental eccentricity"
+    batch.AddCombination "ACC_E", -120000#, momentX, momentY, "PR1", "accidental eccentricity"
     batch.Execute
 
-    TestStabilityAccidentalForSingleMoment = Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc1) + _
-        Abs(batch.ResultAt(1).StabilityResult.AccidentalEcc2)
+    Set TestStabilityAccidentalResponse = batch.ResultAt(1).StabilityResult
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -81608,10 +81633,8 @@ Private Function TestStabilityPhiLForDurationLoad(ByVal combinationID As String,
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Возвращает значение из той плоскости, где фактически есть больший главный
-' изгибающий момент. После явного соглашения "ось 1 = I1" у широкого
-' прямоугольника глобальный Mx попадает во вторую главную плоскость, поэтому
-' выбирать просто первое ненулевое значение нельзя.
+' Возвращает значение из плоскости с большим модулем главного момента.
+' Для повёрнутого сечения выбор определяется разложением Mx и My по главным осям.
 Private Function TestActiveMomentPlaneValue(ByVal batch As CBatchSectionCalculator, _
         ByVal firstValue As Double, ByVal secondValue As Double) As Double
     If Abs(batch.ResultAt(1).StabilityResult.Moment1) >= Abs(batch.ResultAt(1).StabilityResult.Moment2) Then
