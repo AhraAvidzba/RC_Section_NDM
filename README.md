@@ -22,9 +22,9 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1
 powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.ps1
 ```
 
-Полная сборка создаёт обычную книгу и `RC_Section_NDM_оформление_быстро.xlsm` в `workbook/output`. Для оформленного варианта нужны Python 3 и пакет `lxml`. Сохраните рабочие книги перед сборкой и закройте их в Excel.
+Полная сборка создаёт одну книгу с оформленным листом «Расчет» — `workbook/output/RC_Section_NDM.xlsm`. Для неё нужны Python 3 и пакет `lxml`. Сохраните рабочие книги перед сборкой и закройте их в Excel.
 
-Для сборки в отдельную папку укажите `-OutputPath` для обычной книги и `-FormattedOutputPath` для оформленной.
+Для сборки оформленной книги в отдельную папку укажите `-OutputPath` и `-UseFormattedLayout`. С `-OutputPath` без этих параметров оформления создаётся обычная книга. Чтобы получить оба варианта за одну сборку, задайте два разных пути в `-OutputPath` и `-FormattedOutputPath`.
 
 ## Разработка
 

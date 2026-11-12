@@ -3,7 +3,8 @@
 param(
     [string]$OutputPath = "workbook/output/RC_Section_NDM.xlsm",
     [string]$FormulaImageDirectory = "",
-    [string]$FormattedOutputPath = ""
+    [string]$FormattedOutputPath = "",
+    [switch]$UseFormattedLayout
 )
 
 $ErrorActionPreference = "Stop"
@@ -414,19 +415,25 @@ $fullOutputPath = [IO.Path]::GetFullPath((Join-Path $root $OutputPath)) # Excel 
 $outputDir = Split-Path -Parent $fullOutputPath
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 
-# Штатная полная сборка создаёт также оформленный вариант. Частная сборка для проверок может задать отдельный путь.
+# Штатная сборка выпускает одну оформленную книгу. Для проверок можно запросить обычную книгу или оба варианта.
 $defaultOutputPath = [IO.Path]::GetFullPath((Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'))
-if (-not $FormattedOutputPath -and $fullOutputPath -eq $defaultOutputPath) {
-    $FormattedOutputPath = 'workbook/output/RC_Section_NDM_оформление_быстро.xlsm'
+if ($UseFormattedLayout -and $FormattedOutputPath) {
+    throw 'Для одной оформленной книги укажите -UseFormattedLayout без -FormattedOutputPath.'
 }
+$singleFormattedBook = $UseFormattedLayout -or (-not $FormattedOutputPath -and $fullOutputPath -eq $defaultOutputPath)
 $formattedPath = $null
 $presentationPython = $null
-if ($FormattedOutputPath) {
+if ($singleFormattedBook) {
+    $formattedPath = $fullOutputPath
+}
+elseif ($FormattedOutputPath) {
     $formattedPath = [IO.Path]::GetFullPath((Join-Path $root $FormattedOutputPath))
+}
+if ($formattedPath) {
     $workspacePrefix = [IO.Path]::GetFullPath([string]$root) + [IO.Path]::DirectorySeparatorChar
-    if ($formattedPath -eq $fullOutputPath -or [IO.Path]::GetExtension($formattedPath) -ne '.xlsm' -or
+    if ((-not $singleFormattedBook -and $formattedPath -eq $fullOutputPath) -or [IO.Path]::GetExtension($formattedPath) -ne '.xlsm' -or
         -not $formattedPath.StartsWith($workspacePrefix, [StringComparison]::OrdinalIgnoreCase)) {
-        throw 'Для оформленной книги укажите отдельный путь .xlsm внутри проекта.'
+        throw 'Для оформленной книги укажите путь .xlsm внутри проекта. При выпуске двух книг пути должны различаться.'
     }
     $presentationTemplate = Join-Path $PSScriptRoot 'CalculationPresentation.zip'
     if (-not (Test-Path -LiteralPath $presentationTemplate -PathType Leaf)) {
@@ -474,6 +481,17 @@ $excel = $null
 $workbook = $null
 $ownedExcelProcessId = 0
 [long]$ownedExcelStartTicks = 0
+$nativeOutputPath = $fullOutputPath
+$nativeSaved = $false
+$stagingDirectory = $null
+
+# Удаляет только промежуточную книгу и её отдельный пустой каталог.
+function Remove-StagedBuild {
+    if ($stagingDirectory -and [IO.Directory]::Exists($stagingDirectory)) {
+        [IO.File]::Delete($nativeOutputPath)
+        [IO.Directory]::Delete($stagingDirectory)
+    }
+}
 
 try {
     $preexistingExcelProcessIds = @([Diagnostics.Process]::GetProcessesByName('EXCEL') | ForEach-Object { $_.Id }) # Ошибка инвентаризации не подавляется: без полного снимка владение новым COM-процессом не доказано.
@@ -637,8 +655,15 @@ try {
     if ($null -eq $compileCommand) { throw 'Недоступна команда компиляции проекта VBA.' }
     if ($compileCommand.Enabled) { $compileCommand.Execute() }
     if ($compileCommand.Enabled) { throw 'Проект VBA не скомпилирован; новая книга не сохранена.' }
-    $workbook.SaveAs($fullOutputPath, 52)
-    Write-Output "Workbook built: $fullOutputPath"
+    if ($singleFormattedBook) {
+        # Итоговый файл заменяется только после успешного наложения оформления.
+        $stagingDirectory = Join-Path ([IO.Path]::GetTempPath()) ('NDM-build-' + [guid]::NewGuid().ToString('N'))
+        $nativeOutputPath = Join-Path $stagingDirectory ([IO.Path]::GetFileName($fullOutputPath))
+        [void][IO.Directory]::CreateDirectory($stagingDirectory)
+    }
+    $workbook.SaveAs($nativeOutputPath, 52)
+    $nativeSaved = $true
+    if (-not $singleFormattedBook) { Write-Output "Workbook built: $fullOutputPath" }
 }
 catch {
     [ordered]@{Status='FAIL';Reason=$_.Exception.Message;ScriptStackTrace=$_.ScriptStackTrace} |
@@ -657,21 +682,27 @@ finally {
     }
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
+    if (-not $nativeSaved) { Remove-StagedBuild }
 }
 
-# Excel уже закрыл файл: закрепляем точные исходные PNG и отключаем их автосжатие.
-Save-SectionIllustrationImageBytes $fullOutputPath
-# Сохраняем встроенный префикс областей печати после локализованного COM-save.
-$printAreas = @(Get-WorkbookPrintAreas $fullOutputPath)
-Restore-WorkbookPrintAreas $fullOutputPath $printAreas
+try {
+    # Excel уже закрыл файл: закрепляем точные исходные PNG и отключаем их автосжатие.
+    Save-SectionIllustrationImageBytes $nativeOutputPath
+    # Сохраняем встроенный префикс областей печати после локализованного COM-save.
+    $printAreas = @(Get-WorkbookPrintAreas $nativeOutputPath)
+    Restore-WorkbookPrintAreas $nativeOutputPath $printAreas
 
-# Оформление берётся из автономного шаблона и накладывается после закрытия Excel на только что скомпилированную книгу.
-if ($formattedPath) {
-    $presentationBuilder = Join-Path $PSScriptRoot 'CalculationPresentation.py'
-    & $presentationPython -X utf8 $presentationBuilder make-portable $fullOutputPath
-    if ($LASTEXITCODE -ne 0) { throw 'Не удалось отвязать шаблон от локального принтера.' }
-    & $presentationPython -X utf8 $presentationBuilder apply $fullOutputPath $presentationTemplate $formattedPath
-    if ($LASTEXITCODE -ne 0) { throw 'Не удалось собрать оформленную книгу.' }
+    # Оформление берётся из автономного шаблона и накладывается на скомпилированную книгу.
+    if ($formattedPath) {
+        $presentationBuilder = Join-Path $PSScriptRoot 'CalculationPresentation.py'
+        & $presentationPython -X utf8 $presentationBuilder make-portable $nativeOutputPath
+        if ($LASTEXITCODE -ne 0) { throw 'Не удалось отвязать шаблон от локального принтера.' }
+        & $presentationPython -X utf8 $presentationBuilder apply $nativeOutputPath $presentationTemplate $formattedPath
+        if ($LASTEXITCODE -ne 0) { throw 'Не удалось собрать оформленную книгу.' }
+    }
+}
+finally {
+    Remove-StagedBuild
 }
 
 

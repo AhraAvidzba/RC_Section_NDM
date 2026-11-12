@@ -163,7 +163,7 @@ function Get-SystemSettingsCatalog {
             @("Plot.Color.RebarTension", "210,30,20", "RGB", "Цвет максимального растяжения арматуры. В режиме Plot.LegendMode=Common используется как цвет растяжения для всех элементов."),
             @("Plot.Color.ConcreteCompression", "125,35,210", "RGB", "Цвет максимального сжатия бетона при Plot.LegendMode=Separate."),
             @("Plot.Color.ConcreteTension", "0,155,85", "RGB", "Цвет максимального растяжения бетона при Plot.LegendMode=Separate; неработающий растянутый бетон остается серым."),
-            @("Plot.RebarScale", "1", "-", "Множитель диаметров всех стержней на схеме Excel. Формула делит наибольший габарит сечения на 800 мм и принимает не меньше 1. Для ручного масштаба введите положительное число.")
+            @("Plot.RebarScale", "1", "-", "Множитель диаметров всех стержней на схеме Excel. Формула делит наибольший габарит сечения на 1000 мм и принимает не меньше 1. Для ручного масштаба введите положительное число.")
         )}
     )
 }
@@ -3793,7 +3793,7 @@ function Apply-SystemSettingsLayout {
     try { $Workbook.Names.Item('rngPlotRebarScale').RefersTo = $rebarScaleAddress }
     catch { $Workbook.Names.Add('rngPlotRebarScale', $rebarScaleAddress) | Out-Null }
     # Results!V157:W160 хранит четыре границы сечения и единицы сохранённого снимка.
-    $rebarScaleCell.Formula = '=IFERROR(IF(COUNT(Results!$V$157:$V$160)=4,MAX(1,MAX(Results!$V$158-Results!$V$157,Results!$V$160-Results!$V$159)*CHOOSE(MATCH(Results!$W$157,{"mm","cm","m"},0),1,10,1000)/800),1),1)'
+    $rebarScaleCell.Formula = '=IFERROR(IF(COUNT(Results!$V$157:$V$160)=4,MAX(1,MAX(Results!$V$158-Results!$V$157,Results!$V$160-Results!$V$159)*CHOOSE(MATCH(Results!$W$157,{"mm","cm","m"},0),1,10,1000)/1000),1),1)'
 
     return @{ Settings = $settingsRange }
 }
