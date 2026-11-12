@@ -1,0 +1,35 @@
+{
+  "Status": "PASS",
+  "Commit": "d36d602fd38b838a57fcf236932929302e530826",
+  "WorkbookSHA256": "3DBDDBFEE0EBDA031D5A189BE043EFB2B35A49C11E7B24BB1B38B229EA96B989",
+  "Started": "2026-11-12T04:02:08.960749+03:00",
+  "Finished": "2026-11-12T04:34:49.984013+00:00",
+  "Minutes": 212.68,
+  "CoreGroups": 12,
+  "CoreMacros": 182,
+  "FocusedRecords": 26,
+  "FocusedIndividualCases": 122,
+  "RealAutoCADCases": 2,
+  "ReviewedNumFailStates": 10,
+  "PrimaryLogsRead": 40,
+  "FrozenInputs": 524,
+  "OwnProcessesTerminal": 44,
+  "LaunchLogs": [
+    {
+      "Name": "FullLaunch.stdout.log",
+      "Bytes": 15413,
+      "SHA256": "3AA46BC3966A5623DAEF9E88D1E256B145E1CB78668F375811837AADCB1B0C55",
+      "EntireLogRead": true,
+      "Errors": []
+    },
+    {
+      "Name": "FullLaunch.stderr.log",
+      "Bytes": 4016,
+      "SHA256": "E2150CB9B70EF88DC91B237ECE87BF98C544BD7C808948A26DDDAA7A1693780D",
+      "EntireLogRead": true,
+      "Errors": []
+    }
+  ],
+  "WholeProofSHA256": "DF27C8829A9E158BDCEE75B2B4D06E67F32976953323C031CF37DF895347C1FD",
+  "PrimaryReviewSHA256": "4578A1F228B610B687B2A9638217EB8F6670E786AE6E4D6D9193557F7DB49C7B"
+}
