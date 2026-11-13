@@ -163,7 +163,8 @@ function Get-SystemSettingsCatalog {
             @("Plot.Color.RebarTension", "210,30,20", "RGB", "Цвет максимального растяжения арматуры. В режиме Plot.LegendMode=Common используется как цвет растяжения для всех элементов."),
             @("Plot.Color.ConcreteCompression", "125,35,210", "RGB", "Цвет максимального сжатия бетона при Plot.LegendMode=Separate."),
             @("Plot.Color.ConcreteTension", "0,155,85", "RGB", "Цвет максимального растяжения бетона при Plot.LegendMode=Separate; неработающий растянутый бетон остается серым."),
-            @("Plot.RebarScale", "1", "-", "Множитель диаметров всех стержней на схеме Excel. Формула делит наибольший габарит сечения на 1000 мм и принимает не меньше 1. Для ручного масштаба введите положительное число.")
+            @("Plot.RebarScale", "1", "-", "Множитель диаметров всех стержней на схеме Excel. Формула делит наибольший габарит сечения на 1000 мм и принимает не меньше 1. Для ручного масштаба введите положительное число."),
+            @("Plot.CrackInteractionContourEnabled", "Yes", "-", "Показывать сохранённый контур зоны взаимодействия на схеме Excel для выбранного сочетания при PreCrackState, PostCrackState или CrackedState.")
         )}
     )
 }
@@ -3721,6 +3722,7 @@ function Apply-SystemSettingsLayout {
         "Plot.LoadApplicationPointEnabled" = @("Yes", "No")
         "Plot.AxisLabelsEnabled" = @("Yes", "No")
         "Plot.ContourEnabled" = @("Yes", "No")
+        "Plot.CrackInteractionContourEnabled" = @("Yes", "No")
         "Plot.LegendEnabled" = @("Yes", "No")
         "Plot.LegendMode" = @("Separate", "Common")
     }

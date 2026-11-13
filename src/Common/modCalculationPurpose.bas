@@ -230,6 +230,17 @@ Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionS
     End Select
 End Function
 
+' Проверяет, относится ли выбранный вид НДС к расчёту трещин.
+' Для неизвестного имени пояснение о трещинах не выдаётся.
+Public Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
+    On Error GoTo NotCrackState
+    Select Case SectionStateTypeFromText(stateType)
+        Case sstPreCrackState, sstPostCrackState, sstCrackedState
+            IsCrackVisualizationState = True
+    End Select
+NotCrackState:
+End Function
+
 ' Возвращает общее имя расчётного состояния для хранилища, Results и диагностики.
 ' Состояния до и после трещины обозначаются PreCrackState и PostCrackState.
 Public Function SectionStateTypeToText(ByVal stateType As ESectionStateType) As String

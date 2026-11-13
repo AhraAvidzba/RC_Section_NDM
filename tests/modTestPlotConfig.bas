@@ -188,9 +188,94 @@ End Sub
 Public Function RunCrackAnnotationPlotTests() As String
     Dim stats As TUiTestStats
     TestCrackAnnotationsDoNotRequirePlotNormals stats
+    TestSavedCrackInteractionOverlay stats
     TestAppendLine stats, "TOTAL_CRACK_ANNOTATION_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunCrackAnnotationPlotTests = stats.Report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отбор сохранённых линий и дуг по сочетанию, их масштаб и исчезновение при отключении.
+Private Sub TestSavedCrackInteractionOverlay(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, table As Object, profile As Object, chart As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim contours As CSectionContours, selectedRows As Object, headers As Variant, elements As Variant
+    Dim i As Long, row As Long, solves As Long, state As Variant, code As Long, reason As String
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = TestLegendScaleFixture(): Set sheet = fixture.Worksheets("Results")
+    Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
+    Set profile = fixture.Names.Item("rngCalculationProfiles").RefersToRange
+    For row = 2 To profile.Rows.Count
+        If CStr(profile.Cells(row, 2).Value2) = "Visualization.State" Then Exit For
+    Next row
+    Set profile = profile.Cells(row, 3)
+    sheet.Range("AF5").Value2 = "RunID": sheet.Range("AF6:AF31").Value2 = "TEST_RUN"
+    sheet.Range("AB31").Value2 = "ALL": sheet.Range("AC31").Value2 = "Geometry.Revision": sheet.Range("AD31").Value2 = 7#
+    headers = Array("RunID", "AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit", "CoordinateUnit", "CombinationID", "Standard", "AnchorID", "LoopID", "SectionRevision")
+    Dim data() As Variant: ReDim data(1 To 4, 1 To UBound(headers) + 1)
+    For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
+    For row = 2 To 4
+        data(row, 1) = "TEST_RUN": data(row, 2) = "CRACK_REGION_LINE"
+        data(row, 3) = -2#: data(row, 4) = 0#: data(row, 5) = 2#: data(row, 6) = 0#
+        data(row, 10) = "cm": data(row, 12) = "PLOT": data(row, 13) = "SP35": data(row, 14) = "R1"
+        data(row, 15) = 1#: data(row, 16) = 7#
+    Next row
+    data(3, 2) = "CRACK_REGION_ARC": data(3, 3) = 2#: data(3, 5) = -2#
+    data(3, 7) = 0#: data(3, 8) = 0#: data(3, 9) = "3.141592653589793"
+    data(4, 12) = "ALT": data(4, 3) = "не читать"
+    sheet.Range("A20").Resize(4, UBound(data, 2)).Value2 = data
+    elements = sheet.Range("R35:Z39").Value2
+    Set settings = New CSystemSettingsReader: Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    TestAudit03SetPlotSetting table, "Plot.ContourEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.CrackInteractionContourEnabled", "Yes"
+    Dim field As Variant, fieldRow As Long, correctGeometry As Boolean
+    For Each state In Array("StrengthState", "PreCrackState", "PostCrackState", "CrackedState")
+        profile.Value2 = state
+        fieldRow = 18
+        For Each field In Array("Epsilon0", "KappaX", "KappaY", "ProfileId", "ExtensionUsed", "Status")
+            If field <> "ProfileId" Then sheet.Cells(fieldRow, 29).Value2 = "State." & state & "." & field
+            fieldRow = fieldRow + 1
+        Next field
+        elements(2, 4) = state: elements(3, 4) = state
+        TestWriteIndexedElementFixture fixture, sheet.Range("R35"), elements
+        settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+        plotter.Draw fixture, reader, settings
+        Set chart = fixture.Worksheets("Расчет").ChartObjects("chtNDMSectionPlot")
+        Set contours = reader.CrackInteractionContour
+        If state = "StrengthState" Then
+            TestAssertTrue stats, "crackOverlay.strength", contours Is Nothing And Not TestAudit03PlotShapeExists(chart, "CrackInteraction")
+        Else
+            TestAssertTrue stats, "crackOverlay.line." & state, TestAudit03PlotShapeExists(chart, "CrackInteractionLine")
+            TestAssertTrue stats, "crackOverlay.arc." & state, TestAudit03PlotShapeExists(chart, "CrackInteractionArc")
+            correctGeometry = False
+            If Not contours Is Nothing Then
+                If contours.Count = 2 Then correctGeometry = contours.StartX(1) = -20# And contours.Radius(2) = 20#
+            End If
+            TestAssertTrue stats, "crackOverlay.geometry." & state, correctGeometry
+            TestAssertTrue stats, "crackOverlay.independent." & state, Not TestAudit03PlotShapeExists(chart, "ContourCircle")
+        End If
+    Next state
+    Set selectedRows = CurrentCrackRegionRows(fixture, "PLOT")
+    TestAssertTrue stats, "crackOverlay.sharedExportSelection", selectedRows.Count = 2
+    TestAudit03SetPlotSetting table, "Plot.CrackInteractionContourEnabled", "No"
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    TestAssertTrue stats, "crackOverlay.off", Not TestAudit03PlotShapeExists(chart, "CrackInteraction")
+    TestAudit03SetPlotSetting table, "Plot.CrackInteractionContourEnabled", "Yes"
+    sheet.Range("P22").Value2 = 8#
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    TestAssertTrue stats, "crackOverlay.staleWholeRegion", Not TestAudit03PlotShapeExists(chart, "CrackInteraction")
+    TestAssertTrue stats, "crackOverlay.noSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Finish
+Failed:
+    code = Err.Number: reason = Err.Description
+    TestAssertTrue stats, "crackOverlay.runtime." & CStr(code) & " " & reason, False
+Finish:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' переносит named anchor и проверяет геометрическое preview.

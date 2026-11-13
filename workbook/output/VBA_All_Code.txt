@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-13 19:09:29
+Date: 2026-11-13 20:12:40
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -63,7 +63,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal Target As Hy
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     Set targetCell = helpSheet.range(addressText)
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.Goto targetCell, True
+    Application.GoTo targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -1574,7 +1574,7 @@ End Function
 ====================================================================================================
 COMPONENT: modCalculationPurpose
 TYPE: 1
-LINES: 318
+LINES: 329
 ====================================================================================================
 Option Explicit
 
@@ -1805,6 +1805,17 @@ Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionS
             Err.Raise vbObjectError + 3319, "modCalculationPurpose", _
                 "Visualization.State должен быть StrengthState, CapacityState, PreCrackState, PostCrackState или CrackedState."
     End Select
+End Function
+
+' Проверяет, относится ли выбранный вид НДС к расчёту трещин.
+' Для неизвестного имени пояснение о трещинах не выдаётся.
+Public Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
+    On Error GoTo NotCrackState
+    Select Case SectionStateTypeFromText(stateType)
+        Case sstPreCrackState, sstPostCrackState, sstCrackedState
+            IsCrackVisualizationState = True
+    End Select
+NotCrackState:
 End Function
 
 ' Возвращает общее имя расчётного состояния для хранилища, Results и диагностики.
@@ -53926,7 +53937,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
 TYPE: 2
-LINES: 1463
+LINES: 1473
 ====================================================================================================
 Option Explicit
 
@@ -54004,6 +54015,7 @@ Private mAnnotationNormalX() As Double ' Компонента безразмер
 Private mAnnotationNormalY() As Double ' Компонента безразмерной нормали; для CONTOUR_ARC — координата центра дуги в мм.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
 Private mAnnotationSweepAngle() As Double ' Проверенный signed sweep CONTOUR_ARC, рад; для остальных типов 0.
+Private mCrackInteractionContour As CSectionContours ' Сохранённая зона выбранного сочетания, отдельно от границ сечения и подписей.
 Private mUnits As CUnitSystem ' Общий перевод единиц, сохранённых с результатами; текущие единицы Config на эти значения не влияют.
 
 ' Создаёт один объект перевода единиц для всего чтения. Единицы передаются
@@ -54041,7 +54053,9 @@ Public Sub LoadFromWorkbook(ByVal Workbook As Object, ByVal settings As CSystemS
     Dim stateFields As Object
     Set stateFields = ReadSectionProperties(Workbook)
     ReadGeometryAndResults Workbook, stateFields
-    ReadAnnotations Workbook
+    Dim showCrackContour As Boolean
+    If IsCrackVisualizationState(mStateType) Then showCrackContour = settings.GetBoolean("Plot.CrackInteractionContourEnabled", True)
+    ReadAnnotations Workbook, showCrackContour
     Set mReadTables = Nothing
     EndCalculationSnapshotRead
     snapshotReadEntered = False
@@ -54756,7 +54770,7 @@ End Sub
 ' Читает сохранённые размеры, подписи и другие аннотации схемы.
 ' Если таблица отсутствует или пуста, схема всё равно строится:
 ' это допустимо при отсутствии необязательного оформления; исходные контуры читаются отдельно.
-Private Sub ReadAnnotations(ByVal Workbook As Object)
+Private Sub ReadAnnotations(ByVal Workbook As Object, Optional ByVal showCrackContour As Boolean = False)
     ReadMaterialContours Workbook
     Dim tableName As Object, anchor As Object
     On Error Resume Next ' Отсутствие необязательного Name отличается от повреждения его данных.
@@ -54767,6 +54781,7 @@ Private Sub ReadAnnotations(ByVal Workbook As Object)
     Dim data As Variant
     data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
     If Not HasRows(data) Then Exit Sub
+    If showCrackContour Then Set mCrackInteractionContour = ReadSavedCrackInteractionContour(Workbook, mLoadCase, data, anchor)
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
     Dim colStartX As Long: colStartX = ResultColumn(data, "StartX")
@@ -54938,6 +54953,7 @@ Private Sub ResetReaderState()
     mCount = 0
     mAnnotationCount = 0
     mAnnotationCapacity = 0
+    Set mCrackInteractionContour = Nothing
     Set mLabelContours = Nothing: Set mLabelBoundary = Nothing
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
     mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#
@@ -55346,6 +55362,11 @@ End Property
 ' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
 Public Property Get annotationCount() As Long: annotationCount = mAnnotationCount: End Property
 
+' Возвращает готовую область только для выбранного сочетания и состояния трещин.
+Public Property Get CrackInteractionContour() As CSectionContours
+    Set CrackInteractionContour = mCrackInteractionContour
+End Property
+
 ' Отсчёт отступа подписи от сохранённого бетонного контура. На прямой грани
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.
 ' Сохранённые Results читаются без нового расчёта или обращения к геометрии Config.
@@ -55395,7 +55416,7 @@ Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: Annotat
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2309
+LINES: 2335
 ====================================================================================================
 Option Explicit
 
@@ -55430,6 +55451,7 @@ Private Const MSO_SEGMENT_LINE As Long = 0 ' Код прямолинейного
 Private Const MSO_SEGMENT_CURVE As Long = 1 ' Код кубической кривой Безье в свободной фигуре Excel.
 Private Const MSO_EDITING_CORNER As Long = 1 ' Контрольные точки дуги задаются явно, без автоматического сглаживания соседних ребер.
 Private Const MSO_EDITING_AUTO As Long = 0 ' Код автоматического соединения узлов фигуры.
+Private Const MSO_LINE_DASH As Long = 4 ' Штриховой контур зоны взаимодействия виден и поверх границы сечения.
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2 ' Код треугольной стрелки.
 Private Const MSO_ARROWHEAD_STEALTH As Long = 3 ' Код стрелки с выемкой.
 Private Const MSO_ARROWHEAD_DIAMOND As Long = 4 ' Код ромбовидной стрелки.
@@ -56371,6 +56393,7 @@ End Sub
 ' Расчётные значения берёт только из сохранённых Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
     If mContourEnabled Then DrawConcreteContour data
+    DrawCrackInteractionContour data.CrackInteractionContour
     DrawShapeAnnotations data, mAnnotationLayout.dimensionsEnabled, mAnnotationLayout.rebarLabelsEnabled
     If data.geometryOnly Then
         DrawGeometryOnlyNote data
@@ -56379,6 +56402,28 @@ Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
     If mResultLabelsEnabled Then DrawResultLabels data, mResultLabelSpacing
     If mLegendEnabled Then DrawLegend data
     DrawStateWarning data
+End Sub
+
+' Рисует сохранённые отрезки и дуги зоны поверх элементов, отдельно от контура бетона.
+Private Sub DrawCrackInteractionContour(ByVal contours As CSectionContours)
+    If contours Is Nothing Then Exit Sub
+    Dim i As Long, lineShape As Object, colorValue As Long
+    colorValue = RGB(225, 95, 0)
+    For i = 1 To contours.count
+        Select Case contours.SegmentType(i)
+            Case "CONTOUR_LINE"
+                Set lineShape = DrawModelLine(contours.startX(i), contours.startY(i), contours.endX(i), contours.endY(i), _
+                    colorValue, 1.5, "CrackInteractionLine")
+            Case "CONTOUR_ARC"
+                Set lineShape = DrawContourArc(contours.centerX(i), contours.centerY(i), contours.startX(i), contours.startY(i), _
+                    contours.endX(i), contours.endY(i), contours.sweepAngle(i), colorValue, 1.5, "CrackInteractionArc")
+            Case "CONTOUR_CIRCLE"
+                Dim radius As Double: radius = contours.radius(i)
+                Set lineShape = DrawModelOval(contours.centerX(i) - radius, contours.centerY(i) - radius, _
+                    contours.centerX(i) + radius, contours.centerY(i) + radius, colorValue, 1.5, "CrackInteractionCircle", False)
+        End Select
+        lineShape.line.DashStyle = MSO_LINE_DASH
+    Next i
 End Sub
 
 ' Пишет под схемой короткое пояснение, почему у geometry-only схемы нет
@@ -56503,14 +56548,15 @@ End Sub
 ' Рисует сохранённую аналитическую дугу ломаной для Excel Chart.
 ' Шаг не превышает 5 градусов, число отрезков не меньше шести;
 ' дискретизация влияет только на рисунок, а не на расчётную геометрию.
-Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
+Private Function DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
+        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double, _
+        Optional ByVal suffix As String = "ContourArcLine") As Object
     Dim radius As Double
     radius = Sqr((startX - centerX) * (startX - centerX) + (startY - centerY) * (startY - centerY))
     If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then
-        DrawModelLine startX, startY, endX, endY, colorValue, weight, "ContourArcLine"
-        Exit Sub
+        Set DrawContourArc = DrawModelLine(startX, startY, endX, endY, colorValue, weight, suffix)
+        Exit Function
     End If
 
     Dim startAngle As Double
@@ -56538,12 +56584,13 @@ Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, ModelToChartX(nextX), ModelToChartY(nextY)
     Next i
     Set arcShape = builder.ConvertToShape
-    arcShape.name = SHAPE_PREFIX & "ContourArcLine" & CStr(mChart.shapes.count)
+    arcShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     arcShape.Fill.Visible = False
     arcShape.line.Visible = True
     arcShape.line.ForeColor.RGB = colorValue
     arcShape.line.weight = weight
-End Sub
+    Set DrawContourArc = arcShape
+End Function
 
 ' Строит нейтральную линию по сохранённому полю деформаций сочетания.
 ' Обрезает её по сохранённому контуру сечения. Если контура нет,
@@ -61161,7 +61208,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 2384
+LINES: 2326
 ====================================================================================================
 Option Explicit
 
@@ -61235,7 +61282,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
     exportSettings = ReadAutoCADExportSettings(settings)
     Dim crackRows As Object, crackSweeps As Object
-    If exportSettings.ExportCrackInteractionContour And IsCrackExportState(stateType) Then
+    If exportSettings.ExportCrackInteractionContour And IsCrackVisualizationState(stateType) Then
         Set crackRows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
         Set crackSweeps = ReadSavedContourArcSweeps(ThisWorkbook, crackRows, "CRACK_REGION_")
     End If
@@ -61685,7 +61732,7 @@ End Sub
 Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
     MissingExportStateMessage = "Запрашиваемое состояние """ & stateType & _
         """ не найдено в Results для AutoCAD export, сочетание " & combinationID & "."
-    If IsCrackExportState(stateType) Then
+    If IsCrackVisualizationState(stateType) Then
         If Not ExportCombinationHasCrackWidth(combinationID) Then
             MissingExportStateMessage = MissingExportStateMessage & _
                 " Для запрашиваемого сочетания расчет трещин не выполнялся: этому сочетанию назначен профиль, где Calculation.Crack.Width = No."
@@ -61697,17 +61744,6 @@ Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal 
                 " Для запрашиваемого сочетания расчет трещин был включен, но пороговое состояние образования трещины не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."
         End If
     End If
-End Function
-
-' Проверяет, относится ли выбранный вид НДС к расчёту трещин.
-' Для неизвестного имени пояснение о трещинах не выдаётся.
-Private Function IsCrackExportState(ByVal stateType As String) As Boolean
-    On Error GoTo NotCrackState
-    Select Case SectionStateTypeFromText(stateType)
-        Case sstPreCrackState, sstPostCrackState, sstCrackedState
-            IsCrackExportState = True
-    End Select
-NotCrackState:
 End Function
 
 ' Проверяет, предусмотрен ли расчёт ширины трещин сохранённым профилем сочетания.
@@ -61914,53 +61950,6 @@ Private Function ReadGeometryExportSettings(ByVal settings As CSystemSettingsRea
         If hasOpening Then options.OpeningContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.OpeningContourLayer")
     End If
     ReadGeometryExportSettings = options
-End Function
-
-' Отбирает все контуры актуальной области трещин нужного сочетания.
-' Если данные устарели или относятся к разным состояниям, вся область пропускается.
-' Проверяются сведения о состоянии и запуске. Область завершённой проверки
-' с превышенной шириной трещин тоже пригодна для показа; новое НДС не рассчитывается.
-Private Function CurrentCrackRegionRows(ByVal Workbook As Object, ByVal combinationID As String) As Object
-    Dim selected As Object, data As Variant, geometry As Variant, properties As Variant
-    Set selected = CreateObject("Scripting.Dictionary")
-    Set CurrentCrackRegionRows = selected
-    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
-    geometry = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
-    properties = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
-    If Not HasResultTableRows(data) Or Not HasResultTableRows(geometry) Or Not HasResultTableRows(properties) Then Exit Function
-    Dim colOwner As Long, colRevision As Long, colType As Long, colRun As Long
-    colOwner = ResultColumn(data, "CombinationID"): colRevision = ResultColumn(data, "SectionRevision")
-    colType = ResultColumn(data, "AnnotationType"): colRun = ResultColumn(data, "RunID")
-    Dim colParameter As Long, colValue As Long, colCase As Long, revision As Variant, runID As Variant, row As Long
-    colParameter = ResultColumn(properties, "Parameter"): colValue = ResultColumn(properties, "Value")
-    colCase = ResultColumn(properties, "LoadCase")
-    runID = geometry(2, ResultColumn(geometry, "RunID"))
-    For row = 2 To UBound(properties, 1)
-        If SafeText(properties(row, colCase)) = "ALL" And SafeText(properties(row, colParameter)) = "Geometry.Revision" Then
-            revision = properties(row, colValue)
-            If CStr(properties(row, ResultColumn(properties, "RunID"))) <> CStr(runID) Then Exit Function
-            Exit For
-        End If
-    Next row
-    If IsEmpty(revision) Then Exit Function
-    Dim anchor As Object, colLoop As Long, colStandard As Long, colAnchor As Long, identity As String, rowIdentity As String
-    Set anchor = Workbook.names.item("rngNDMSectionAnnotations").RefersToRange
-    colLoop = ResultColumn(data, "LoopID"): colStandard = ResultColumn(data, "Standard"): colAnchor = ResultColumn(data, "AnchorID")
-    For row = 2 To UBound(data, 1)
-        If left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
-                StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
-            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с другим сечением.
-                selected.RemoveAll: Exit Function
-            End If
-            rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
-            If Len(identity) = 0 Then identity = rowIdentity
-            If rowIdentity <> identity Then selected.RemoveAll: Exit Function
-            If ReadGeometryNumber(data, anchor, row, colLoop) < 1# Then Err.Raise vbObjectError + 4376, _
-                "CurrentCrackRegionRows", "Номер замкнутого контура расчетной области должен быть положительным: " & _
-                anchor.parent.name & "!" & anchor.offset(row - 1, colLoop - 1).address(False, False) & ". Повторите расчет."
-            selected.Add CStr(row), True
-        End If
-    Next row
 End Function
 
 ' Выводит исходные контуры в выбранном формате Region/Polyline,
@@ -63387,7 +63376,7 @@ End Function
 ' Сохранённые контуры записывает в собственный тестовый чертёж без нового расчёта.
 Public Function SP35ExportSavedCrackRegionForTests(ByVal doc As Object, ByVal combinationID As String, _
         ByVal stateType As String, ByVal enabled As Boolean) As Long
-    If Not enabled Or Not IsCrackExportState(stateType) Then Exit Function
+    If Not enabled Or Not IsCrackVisualizationState(stateType) Then Exit Function
     Dim rows As Object, sweeps As Object
     Set rows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
     If rows.count = 0 Then Exit Function
@@ -64871,7 +64860,7 @@ End Function
 ====================================================================================================
 COMPONENT: modSectionSnapshot
 TYPE: 1
-LINES: 1258
+LINES: 1361
 ====================================================================================================
 Option Explicit
 Private mTestBoundaryFullReads As Long, mTestBoundaryHashReads As Long ' ДЛЯ ТЕСТОВ: число полных и подтверждённых хешем элементов.
@@ -65564,6 +65553,109 @@ Private Sub CopySectionContours(ByVal source As CSectionContours, ByVal Target A
         End Select
     Next i
 End Sub
+
+' Отбирает все контуры актуальной области трещин нужного сочетания.
+' Если данные устарели или относятся к разным состояниям, вся область пропускается.
+' Проверяются сведения о состоянии и запуске. Область завершённой проверки
+' с превышенной шириной трещин тоже пригодна для показа; новое НДС не рассчитывается.
+Public Function CurrentCrackRegionRows(ByVal Workbook As Object, ByVal combinationID As String, _
+        Optional ByRef data As Variant) As Object
+    Dim selected As Object, geometry As Variant, properties As Variant
+    Set selected = CreateObject("Scripting.Dictionary")
+    Set CurrentCrackRegionRows = selected
+    If Not IsArray(data) Then data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
+    If Not HasResultTableRows(data) Then Exit Function
+    Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
+    Dim colOwner As Long: colOwner = ResultColumn(data, "CombinationID", False)
+    If colOwner = 0 Then Exit Function ' В снимке без владельца нельзя сопоставить зону сочетанию.
+    Dim row As Long, firstRow As Long
+    For row = 2 To UBound(data, 1)
+        If left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
+                StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
+            firstRow = row: Exit For
+        End If
+    Next row
+    If firstRow = 0 Then Exit Function
+    geometry = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
+    properties = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(geometry) Or Not HasResultTableRows(properties) Then Exit Function
+    Dim colRevision As Long, colRun As Long
+    colRevision = ResultColumn(data, "SectionRevision")
+    colRun = ResultColumn(data, "RunID")
+    Dim colParameter As Long, colValue As Long, colCase As Long, revision As Variant, runID As Variant, colPropertyRun As Long
+    colParameter = ResultColumn(properties, "Parameter"): colValue = ResultColumn(properties, "Value")
+    colCase = ResultColumn(properties, "LoadCase"): colPropertyRun = ResultColumn(properties, "RunID")
+    runID = geometry(2, ResultColumn(geometry, "RunID"))
+    For row = 2 To UBound(properties, 1)
+        If SafeText(properties(row, colCase)) = "ALL" And SafeText(properties(row, colParameter)) = "Geometry.Revision" Then
+            revision = properties(row, colValue)
+            If CStr(properties(row, colPropertyRun)) <> CStr(runID) Then Exit Function
+            Exit For
+        End If
+    Next row
+    If IsEmpty(revision) Then Exit Function
+    Dim anchor As Object, colLoop As Long, colStandard As Long, colAnchor As Long, identity As String, rowIdentity As String
+    Set anchor = Workbook.names.item("rngNDMSectionAnnotations").RefersToRange
+    colLoop = ResultColumn(data, "LoopID"): colStandard = ResultColumn(data, "Standard"): colAnchor = ResultColumn(data, "AnchorID")
+    For row = firstRow To UBound(data, 1)
+        If left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
+                StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
+            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с другим сечением.
+                selected.RemoveAll: Exit Function
+            End If
+            rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
+            If Len(identity) = 0 Then identity = rowIdentity
+            If rowIdentity <> identity Then selected.RemoveAll: Exit Function
+            If ReadGeometryNumber(data, anchor, row, colLoop) < 1# Then Err.Raise vbObjectError + 4376, _
+                "CurrentCrackRegionRows", "Номер замкнутого контура расчетной области должен быть положительным: " & _
+                anchor.parent.name & "!" & anchor.offset(row - 1, colLoop - 1).address(False, False) & ". Повторите расчет."
+            selected.Add CStr(row), True
+        End If
+    Next row
+End Function
+
+' Читает геометрию отобранной зоны для схемы. Использует единицы каждой записи
+' и сохранённый знаковый угол. Исходные границы сечения не меняются.
+Public Function ReadSavedCrackInteractionContour(ByVal Workbook As Object, ByVal combinationID As String, _
+        ByRef data As Variant, ByVal anchor As Object) As CSectionContours
+    Dim selected As Object: Set selected = CurrentCrackRegionRows(Workbook, combinationID, data)
+    If selected.count = 0 Then Exit Function
+    Dim result As CSectionContours: Set result = New CSectionContours
+    Dim colType As Long, colX1 As Long, colY1 As Long, colX2 As Long, colY2 As Long
+    Dim colCX As Long, colCY As Long, colSweep As Long, colUnit As Long
+    colType = ResultColumn(data, "AnnotationType"): colUnit = ResultColumn(data, "Unit")
+    colX1 = ResultColumn(data, "StartX"): colY1 = ResultColumn(data, "StartY")
+    colX2 = ResultColumn(data, "EndX"): colY2 = ResultColumn(data, "EndY")
+    colCX = ResultColumn(data, "OutsideNormalX"): colCY = ResultColumn(data, "OutsideNormalY")
+    colSweep = ResultColumn(data, "Text")
+    Dim entry As Variant, row As Long, id As String, unitText As String, kind As String
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double
+    For Each entry In selected.keys
+        row = CLng(entry): id = "CrackInteraction" & CStr(row)
+        unitText = LCase$(Trim$(ReadSavedAnnotationText(data, anchor, row, colUnit)))
+        If unitText <> "mm" And unitText <> "cm" And unitText <> "m" Then Err.Raise vbObjectError + 4376, _
+            "ReadSavedCrackInteractionContour", "В контуре зоны взаимодействия неверная единица длины: " & _
+            anchor.parent.name & "!" & anchor.offset(row - 1, colUnit - 1).address(False, False) & ". Повторите расчёт."
+        x1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX1), unitText)
+        y1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY1), unitText)
+        x2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX2), unitText)
+        kind = UCase$(SafeText(data(row, colType)))
+        Select Case kind
+            Case "CRACK_REGION_CIRCLE": result.AddContourCircle id, x1, y1, x2
+            Case "CRACK_REGION_LINE", "CRACK_REGION_ARC"
+                y2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY2), unitText)
+                If kind = "CRACK_REGION_LINE" Then
+                    result.AddContourLine id, x1, y1, x2, y2
+                Else
+                    cx = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colCX), unitText)
+                    cy = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colCY), unitText)
+                    sweep = ReadSavedContourArcSweep(data, anchor, row, colSweep)
+                    result.AddContourArc id, x1, y1, x2, y2, cx, cy, Sqr((x1 - cx) ^ 2 + (y1 - cy) ^ 2), sweep
+                End If
+        End Select
+    Next entry
+    Set ReadSavedCrackInteractionContour = result
+End Function
 
 ' Читает текст сохранённой аннотации сечения. Ошибка формулы не заменяется
 ' пустой строкой; её адрес определяется по текущему началу именованной таблицы.
@@ -117123,7 +117215,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestPlotConfig
 TYPE: 1
-LINES: 2971
+LINES: 3056
 ====================================================================================================
 Option Explicit
 
@@ -117314,9 +117406,94 @@ End Sub
 Public Function RunCrackAnnotationPlotTests() As String
     Dim stats As TUiTestStats
     TestCrackAnnotationsDoNotRequirePlotNormals stats
+    TestSavedCrackInteractionOverlay stats
     TestAppendLine stats, "TOTAL_CRACK_ANNOTATION_PLOT: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
     RunCrackAnnotationPlotTests = stats.report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отбор сохранённых линий и дуг по сочетанию, их масштаб и исчезновение при отключении.
+Private Sub TestSavedCrackInteractionOverlay(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, table As Object, profile As Object, chart As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim contours As CSectionContours, selectedRows As Object, headers As Variant, elements As Variant
+    Dim i As Long, row As Long, solves As Long, state As Variant, code As Long, reason As String
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = TestLegendScaleFixture(): Set sheet = fixture.Worksheets("Results")
+    Set table = fixture.names.item("rngSystemSettings").RefersToRange
+    Set profile = fixture.names.item("rngCalculationProfiles").RefersToRange
+    For row = 2 To profile.rows.count
+        If CStr(profile.cells(row, 2).value2) = "Visualization.State" Then Exit For
+    Next row
+    Set profile = profile.cells(row, 3)
+    sheet.range("AF5").value2 = "RunID": sheet.range("AF6:AF31").value2 = "TEST_RUN"
+    sheet.range("AB31").value2 = "ALL": sheet.range("AC31").value2 = "Geometry.Revision": sheet.range("AD31").value2 = 7#
+    headers = Array("RunID", "AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit", "CoordinateUnit", "CombinationID", "Standard", "AnchorID", "LoopID", "SectionRevision")
+    Dim data() As Variant: ReDim data(1 To 4, 1 To UBound(headers) + 1)
+    For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
+    For row = 2 To 4
+        data(row, 1) = "TEST_RUN": data(row, 2) = "CRACK_REGION_LINE"
+        data(row, 3) = -2#: data(row, 4) = 0#: data(row, 5) = 2#: data(row, 6) = 0#
+        data(row, 10) = "cm": data(row, 12) = "PLOT": data(row, 13) = "SP35": data(row, 14) = "R1"
+        data(row, 15) = 1#: data(row, 16) = 7#
+    Next row
+    data(3, 2) = "CRACK_REGION_ARC": data(3, 3) = 2#: data(3, 5) = -2#
+    data(3, 7) = 0#: data(3, 8) = 0#: data(3, 9) = "3.141592653589793"
+    data(4, 12) = "ALT": data(4, 3) = "не читать"
+    sheet.range("A20").Resize(4, UBound(data, 2)).value2 = data
+    elements = sheet.range("R35:Z39").value2
+    Set settings = New CSystemSettingsReader: Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    TestAudit03SetPlotSetting table, "Plot.ContourEnabled", "No"
+    TestAudit03SetPlotSetting table, "Plot.CrackInteractionContourEnabled", "Yes"
+    Dim field As Variant, fieldRow As Long, correctGeometry As Boolean
+    For Each state In Array("StrengthState", "PreCrackState", "PostCrackState", "CrackedState")
+        profile.value2 = state
+        fieldRow = 18
+        For Each field In Array("Epsilon0", "KappaX", "KappaY", "ProfileId", "ExtensionUsed", "Status")
+            If field <> "ProfileId" Then sheet.cells(fieldRow, 29).value2 = "State." & state & "." & field
+            fieldRow = fieldRow + 1
+        Next field
+        elements(2, 4) = state: elements(3, 4) = state
+        TestWriteIndexedElementFixture fixture, sheet.range("R35"), elements
+        settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+        plotter.Draw fixture, reader, settings
+        Set chart = fixture.Worksheets("Расчет").ChartObjects("chtNDMSectionPlot")
+        Set contours = reader.CrackInteractionContour
+        If state = "StrengthState" Then
+            TestAssertTrue stats, "crackOverlay.strength", contours Is Nothing And Not TestAudit03PlotShapeExists(chart, "CrackInteraction")
+        Else
+            TestAssertTrue stats, "crackOverlay.line." & state, TestAudit03PlotShapeExists(chart, "CrackInteractionLine")
+            TestAssertTrue stats, "crackOverlay.arc." & state, TestAudit03PlotShapeExists(chart, "CrackInteractionArc")
+            correctGeometry = False
+            If Not contours Is Nothing Then
+                If contours.count = 2 Then correctGeometry = contours.startX(1) = -20# And contours.radius(2) = 20#
+            End If
+            TestAssertTrue stats, "crackOverlay.geometry." & state, correctGeometry
+            TestAssertTrue stats, "crackOverlay.independent." & state, Not TestAudit03PlotShapeExists(chart, "ContourCircle")
+        End If
+    Next state
+    Set selectedRows = CurrentCrackRegionRows(fixture, "PLOT")
+    TestAssertTrue stats, "crackOverlay.sharedExportSelection", selectedRows.count = 2
+    TestAudit03SetPlotSetting table, "Plot.CrackInteractionContourEnabled", "No"
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    TestAssertTrue stats, "crackOverlay.off", Not TestAudit03PlotShapeExists(chart, "CrackInteraction")
+    TestAudit03SetPlotSetting table, "Plot.CrackInteractionContourEnabled", "Yes"
+    sheet.range("P22").value2 = 8#
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+    plotter.Draw fixture, reader, settings
+    TestAssertTrue stats, "crackOverlay.staleWholeRegion", Not TestAudit03PlotShapeExists(chart, "CrackInteraction")
+    TestAssertTrue stats, "crackOverlay.noSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Finish
+Failed:
+    code = Err.number: reason = Err.description
+    TestAssertTrue stats, "crackOverlay.runtime." & CStr(code) & " " & reason, False
+Finish:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' переносит named anchor и проверяет геометрическое preview.

@@ -71,7 +71,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim informationEnabled As Boolean: informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
     exportSettings = ReadAutoCADExportSettings(settings)
     Dim crackRows As Object, crackSweeps As Object
-    If exportSettings.ExportCrackInteractionContour And IsCrackExportState(stateType) Then
+    If exportSettings.ExportCrackInteractionContour And IsCrackVisualizationState(stateType) Then
         Set crackRows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
         Set crackSweeps = ReadSavedContourArcSweeps(ThisWorkbook, crackRows, "CRACK_REGION_")
     End If
@@ -521,7 +521,7 @@ End Sub
 Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal stateType As String) As String
     MissingExportStateMessage = "Запрашиваемое состояние """ & stateType & _
         """ не найдено в Results для AutoCAD export, сочетание " & combinationID & "."
-    If IsCrackExportState(stateType) Then
+    If IsCrackVisualizationState(stateType) Then
         If Not ExportCombinationHasCrackWidth(combinationID) Then
             MissingExportStateMessage = MissingExportStateMessage & _
                 " Для запрашиваемого сочетания расчет трещин не выполнялся: этому сочетанию назначен профиль, где Calculation.Crack.Width = No."
@@ -533,17 +533,6 @@ Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal 
                 " Для запрашиваемого сочетания расчет трещин был включен, но пороговое состояние образования трещины не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."
         End If
     End If
-End Function
-
-' Проверяет, относится ли выбранный вид НДС к расчёту трещин.
-' Для неизвестного имени пояснение о трещинах не выдаётся.
-Private Function IsCrackExportState(ByVal stateType As String) As Boolean
-    On Error GoTo NotCrackState
-    Select Case SectionStateTypeFromText(stateType)
-        Case sstPreCrackState, sstPostCrackState, sstCrackedState
-            IsCrackExportState = True
-    End Select
-NotCrackState:
 End Function
 
 ' Проверяет, предусмотрен ли расчёт ширины трещин сохранённым профилем сочетания.
@@ -750,53 +739,6 @@ Private Function ReadGeometryExportSettings(ByVal settings As CSystemSettingsRea
         If hasOpening Then options.OpeningContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.OpeningContourLayer")
     End If
     ReadGeometryExportSettings = options
-End Function
-
-' Отбирает все контуры актуальной области трещин нужного сочетания.
-' Если данные устарели или относятся к разным состояниям, вся область пропускается.
-' Проверяются сведения о состоянии и запуске. Область завершённой проверки
-' с превышенной шириной трещин тоже пригодна для показа; новое НДС не рассчитывается.
-Private Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinationID As String) As Object
-    Dim selected As Object, data As Variant, geometry As Variant, properties As Variant
-    Set selected = CreateObject("Scripting.Dictionary")
-    Set CurrentCrackRegionRows = selected
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
-    geometry = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
-    properties = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
-    If Not HasResultTableRows(data) Or Not HasResultTableRows(geometry) Or Not HasResultTableRows(properties) Then Exit Function
-    Dim colOwner As Long, colRevision As Long, colType As Long, colRun As Long
-    colOwner = ResultColumn(data, "CombinationID"): colRevision = ResultColumn(data, "SectionRevision")
-    colType = ResultColumn(data, "AnnotationType"): colRun = ResultColumn(data, "RunID")
-    Dim colParameter As Long, colValue As Long, colCase As Long, revision As Variant, runID As Variant, row As Long
-    colParameter = ResultColumn(properties, "Parameter"): colValue = ResultColumn(properties, "Value")
-    colCase = ResultColumn(properties, "LoadCase")
-    runID = geometry(2, ResultColumn(geometry, "RunID"))
-    For row = 2 To UBound(properties, 1)
-        If SafeText(properties(row, colCase)) = "ALL" And SafeText(properties(row, colParameter)) = "Geometry.Revision" Then
-            revision = properties(row, colValue)
-            If CStr(properties(row, ResultColumn(properties, "RunID"))) <> CStr(runID) Then Exit Function
-            Exit For
-        End If
-    Next row
-    If IsEmpty(revision) Then Exit Function
-    Dim anchor As Object, colLoop As Long, colStandard As Long, colAnchor As Long, identity As String, rowIdentity As String
-    Set anchor = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
-    colLoop = ResultColumn(data, "LoopID"): colStandard = ResultColumn(data, "Standard"): colAnchor = ResultColumn(data, "AnchorID")
-    For row = 2 To UBound(data, 1)
-        If Left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
-                StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
-            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с другим сечением.
-                selected.RemoveAll: Exit Function
-            End If
-            rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
-            If Len(identity) = 0 Then identity = rowIdentity
-            If rowIdentity <> identity Then selected.RemoveAll: Exit Function
-            If ReadGeometryNumber(data, anchor, row, colLoop) < 1# Then Err.Raise vbObjectError + 4376, _
-                "CurrentCrackRegionRows", "Номер замкнутого контура расчетной области должен быть положительным: " & _
-                anchor.Parent.Name & "!" & anchor.Offset(row - 1, colLoop - 1).Address(False, False) & ". Повторите расчет."
-            selected.Add CStr(row), True
-        End If
-    Next row
 End Function
 
 ' Выводит исходные контуры в выбранном формате Region/Polyline,
@@ -2223,7 +2165,7 @@ End Function
 ' Сохранённые контуры записывает в собственный тестовый чертёж без нового расчёта.
 Public Function SP35ExportSavedCrackRegionForTests(ByVal doc As Object, ByVal combinationID As String, _
         ByVal stateType As String, ByVal enabled As Boolean) As Long
-    If Not enabled Or Not IsCrackExportState(stateType) Then Exit Function
+    If Not enabled Or Not IsCrackVisualizationState(stateType) Then Exit Function
     Dim rows As Object, sweeps As Object
     Set rows = CurrentCrackRegionRows(ThisWorkbook, combinationID)
     If rows.Count = 0 Then Exit Function

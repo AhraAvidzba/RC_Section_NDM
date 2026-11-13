@@ -515,9 +515,6 @@ def apply(source, template_path, destination):
     names = workbook.find(M + 'definedNames')
     input_names = {node.get('name'): node.text for node in names if not node.get('localSheetId')}
     for name, reference in metadata['inputNames'].items():
-        if name == 'rngSystemSettings' and reference == 'Config!$A$3:$E$152':
-            # Полный реестр включает строку масштаба стержней ниже всех связанных ячеек.
-            reference = 'Config!$A$3:$E$153'
         require(input_names.get(name) == reference, f'Изменилось расположение входного диапазона {name}')
     for name in INPUTS:
         part = locations[name][1]

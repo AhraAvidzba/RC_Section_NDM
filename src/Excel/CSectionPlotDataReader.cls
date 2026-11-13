@@ -83,6 +83,7 @@ Private mAnnotationNormalX() As Double ' Компонента безразмер
 Private mAnnotationNormalY() As Double ' Компонента безразмерной нормали; для CONTOUR_ARC — координата центра дуги в мм.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
 Private mAnnotationSweepAngle() As Double ' Проверенный signed sweep CONTOUR_ARC, рад; для остальных типов 0.
+Private mCrackInteractionContour As CSectionContours ' Сохранённая зона выбранного сочетания, отдельно от границ сечения и подписей.
 Private mUnits As CUnitSystem ' Общий перевод единиц, сохранённых с результатами; текущие единицы Config на эти значения не влияют.
 
 ' Создаёт один объект перевода единиц для всего чтения. Единицы передаются
@@ -120,7 +121,9 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     Dim stateFields As Object
     Set stateFields = ReadSectionProperties(workbook)
     ReadGeometryAndResults workbook, stateFields
-    ReadAnnotations workbook
+    Dim showCrackContour As Boolean
+    If IsCrackVisualizationState(mStateType) Then showCrackContour = settings.GetBoolean("Plot.CrackInteractionContourEnabled", True)
+    ReadAnnotations workbook, showCrackContour
     Set mReadTables = Nothing
     EndCalculationSnapshotRead
     snapshotReadEntered = False
@@ -835,7 +838,7 @@ End Sub
 ' Читает сохранённые размеры, подписи и другие аннотации схемы.
 ' Если таблица отсутствует или пуста, схема всё равно строится:
 ' это допустимо при отсутствии необязательного оформления; исходные контуры читаются отдельно.
-Private Sub ReadAnnotations(ByVal workbook As Object)
+Private Sub ReadAnnotations(ByVal workbook As Object, Optional ByVal showCrackContour As Boolean = False)
     ReadMaterialContours workbook
     Dim tableName As Object, anchor As Object
     On Error Resume Next ' Отсутствие необязательного Name отличается от повреждения его данных.
@@ -846,6 +849,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     If Not HasRows(data) Then Exit Sub
+    If showCrackContour Then Set mCrackInteractionContour = ReadSavedCrackInteractionContour(workbook, mLoadCase, data, anchor)
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
     Dim colStartX As Long: colStartX = ResultColumn(data, "StartX")
@@ -1017,6 +1021,7 @@ Private Sub ResetReaderState()
     mCount = 0
     mAnnotationCount = 0
     mAnnotationCapacity = 0
+    Set mCrackInteractionContour = Nothing
     Set mLabelContours = Nothing: Set mLabelBoundary = Nothing
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
     mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#
@@ -1424,6 +1429,11 @@ Public Property Get PhysicalDiagramWarningRequired() As Boolean
 End Property
 ' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
+
+' Возвращает готовую область только для выбранного сочетания и состояния трещин.
+Public Property Get CrackInteractionContour() As CSectionContours
+    Set CrackInteractionContour = mCrackInteractionContour
+End Property
 
 ' Отсчёт отступа подписи от сохранённого бетонного контура. На прямой грани
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.

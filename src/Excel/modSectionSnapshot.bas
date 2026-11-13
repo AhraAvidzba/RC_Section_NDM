@@ -691,6 +691,109 @@ Private Sub CopySectionContours(ByVal source As CSectionContours, ByVal target A
     Next i
 End Sub
 
+' Отбирает все контуры актуальной области трещин нужного сочетания.
+' Если данные устарели или относятся к разным состояниям, вся область пропускается.
+' Проверяются сведения о состоянии и запуске. Область завершённой проверки
+' с превышенной шириной трещин тоже пригодна для показа; новое НДС не рассчитывается.
+Public Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinationID As String, _
+        Optional ByRef data As Variant) As Object
+    Dim selected As Object, geometry As Variant, properties As Variant
+    Set selected = CreateObject("Scripting.Dictionary")
+    Set CurrentCrackRegionRows = selected
+    If Not IsArray(data) Then data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
+    If Not HasResultTableRows(data) Then Exit Function
+    Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
+    Dim colOwner As Long: colOwner = ResultColumn(data, "CombinationID", False)
+    If colOwner = 0 Then Exit Function ' В снимке без владельца нельзя сопоставить зону сочетанию.
+    Dim row As Long, firstRow As Long
+    For row = 2 To UBound(data, 1)
+        If Left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
+                StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
+            firstRow = row: Exit For
+        End If
+    Next row
+    If firstRow = 0 Then Exit Function
+    geometry = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    properties = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    If Not HasResultTableRows(geometry) Or Not HasResultTableRows(properties) Then Exit Function
+    Dim colRevision As Long, colRun As Long
+    colRevision = ResultColumn(data, "SectionRevision")
+    colRun = ResultColumn(data, "RunID")
+    Dim colParameter As Long, colValue As Long, colCase As Long, revision As Variant, runID As Variant, colPropertyRun As Long
+    colParameter = ResultColumn(properties, "Parameter"): colValue = ResultColumn(properties, "Value")
+    colCase = ResultColumn(properties, "LoadCase"): colPropertyRun = ResultColumn(properties, "RunID")
+    runID = geometry(2, ResultColumn(geometry, "RunID"))
+    For row = 2 To UBound(properties, 1)
+        If SafeText(properties(row, colCase)) = "ALL" And SafeText(properties(row, colParameter)) = "Geometry.Revision" Then
+            revision = properties(row, colValue)
+            If CStr(properties(row, colPropertyRun)) <> CStr(runID) Then Exit Function
+            Exit For
+        End If
+    Next row
+    If IsEmpty(revision) Then Exit Function
+    Dim anchor As Object, colLoop As Long, colStandard As Long, colAnchor As Long, identity As String, rowIdentity As String
+    Set anchor = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
+    colLoop = ResultColumn(data, "LoopID"): colStandard = ResultColumn(data, "Standard"): colAnchor = ResultColumn(data, "AnchorID")
+    For row = firstRow To UBound(data, 1)
+        If Left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
+                StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
+            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с другим сечением.
+                selected.RemoveAll: Exit Function
+            End If
+            rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
+            If Len(identity) = 0 Then identity = rowIdentity
+            If rowIdentity <> identity Then selected.RemoveAll: Exit Function
+            If ReadGeometryNumber(data, anchor, row, colLoop) < 1# Then Err.Raise vbObjectError + 4376, _
+                "CurrentCrackRegionRows", "Номер замкнутого контура расчетной области должен быть положительным: " & _
+                anchor.Parent.Name & "!" & anchor.Offset(row - 1, colLoop - 1).Address(False, False) & ". Повторите расчет."
+            selected.Add CStr(row), True
+        End If
+    Next row
+End Function
+
+' Читает геометрию отобранной зоны для схемы. Использует единицы каждой записи
+' и сохранённый знаковый угол. Исходные границы сечения не меняются.
+Public Function ReadSavedCrackInteractionContour(ByVal workbook As Object, ByVal combinationID As String, _
+        ByRef data As Variant, ByVal anchor As Object) As CSectionContours
+    Dim selected As Object: Set selected = CurrentCrackRegionRows(workbook, combinationID, data)
+    If selected.Count = 0 Then Exit Function
+    Dim result As CSectionContours: Set result = New CSectionContours
+    Dim colType As Long, colX1 As Long, colY1 As Long, colX2 As Long, colY2 As Long
+    Dim colCX As Long, colCY As Long, colSweep As Long, colUnit As Long
+    colType = ResultColumn(data, "AnnotationType"): colUnit = ResultColumn(data, "Unit")
+    colX1 = ResultColumn(data, "StartX"): colY1 = ResultColumn(data, "StartY")
+    colX2 = ResultColumn(data, "EndX"): colY2 = ResultColumn(data, "EndY")
+    colCX = ResultColumn(data, "OutsideNormalX"): colCY = ResultColumn(data, "OutsideNormalY")
+    colSweep = ResultColumn(data, "Text")
+    Dim entry As Variant, row As Long, id As String, unitText As String, kind As String
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double
+    For Each entry In selected.Keys
+        row = CLng(entry): id = "CrackInteraction" & CStr(row)
+        unitText = LCase$(Trim$(ReadSavedAnnotationText(data, anchor, row, colUnit)))
+        If unitText <> "mm" And unitText <> "cm" And unitText <> "m" Then Err.Raise vbObjectError + 4376, _
+            "ReadSavedCrackInteractionContour", "В контуре зоны взаимодействия неверная единица длины: " & _
+            anchor.Parent.Name & "!" & anchor.Offset(row - 1, colUnit - 1).Address(False, False) & ". Повторите расчёт."
+        x1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX1), unitText)
+        y1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY1), unitText)
+        x2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX2), unitText)
+        kind = UCase$(SafeText(data(row, colType)))
+        Select Case kind
+            Case "CRACK_REGION_CIRCLE": result.AddContourCircle id, x1, y1, x2
+            Case "CRACK_REGION_LINE", "CRACK_REGION_ARC"
+                y2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY2), unitText)
+                If kind = "CRACK_REGION_LINE" Then
+                    result.AddContourLine id, x1, y1, x2, y2
+                Else
+                    cx = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colCX), unitText)
+                    cy = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colCY), unitText)
+                    sweep = ReadSavedContourArcSweep(data, anchor, row, colSweep)
+                    result.AddContourArc id, x1, y1, x2, y2, cx, cy, Sqr((x1 - cx) ^ 2 + (y1 - cy) ^ 2), sweep
+                End If
+        End Select
+    Next entry
+    Set ReadSavedCrackInteractionContour = result
+End Function
+
 ' Читает текст сохранённой аннотации сечения. Ошибка формулы не заменяется
 ' пустой строкой; её адрес определяется по текущему началу именованной таблицы.
 Public Function ReadSavedAnnotationText(ByRef data As Variant, ByVal anchor As Object, _

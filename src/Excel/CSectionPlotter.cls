@@ -40,6 +40,7 @@ Private Const MSO_SEGMENT_LINE As Long = 0 ' Код прямолинейного
 Private Const MSO_SEGMENT_CURVE As Long = 1 ' Код кубической кривой Безье в свободной фигуре Excel.
 Private Const MSO_EDITING_CORNER As Long = 1 ' Контрольные точки дуги задаются явно, без автоматического сглаживания соседних ребер.
 Private Const MSO_EDITING_AUTO As Long = 0 ' Код автоматического соединения узлов фигуры.
+Private Const MSO_LINE_DASH As Long = 4 ' Штриховой контур зоны взаимодействия виден и поверх границы сечения.
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2 ' Код треугольной стрелки.
 Private Const MSO_ARROWHEAD_STEALTH As Long = 3 ' Код стрелки с выемкой.
 Private Const MSO_ARROWHEAD_DIAMOND As Long = 4 ' Код ромбовидной стрелки.
@@ -981,6 +982,7 @@ End Sub
 ' Расчётные значения берёт только из сохранённых Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
     If mContourEnabled Then DrawConcreteContour data
+    DrawCrackInteractionContour data.CrackInteractionContour
     DrawShapeAnnotations data, mAnnotationLayout.DimensionsEnabled, mAnnotationLayout.RebarLabelsEnabled
     If data.GeometryOnly Then
         DrawGeometryOnlyNote data
@@ -989,6 +991,28 @@ Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
     If mResultLabelsEnabled Then DrawResultLabels data, mResultLabelSpacing
     If mLegendEnabled Then DrawLegend data
     DrawStateWarning data
+End Sub
+
+' Рисует сохранённые отрезки и дуги зоны поверх элементов, отдельно от контура бетона.
+Private Sub DrawCrackInteractionContour(ByVal contours As CSectionContours)
+    If contours Is Nothing Then Exit Sub
+    Dim i As Long, lineShape As Object, colorValue As Long
+    colorValue = RGB(225, 95, 0)
+    For i = 1 To contours.Count
+        Select Case contours.SegmentType(i)
+            Case "CONTOUR_LINE"
+                Set lineShape = DrawModelLine(contours.StartX(i), contours.StartY(i), contours.EndX(i), contours.EndY(i), _
+                    colorValue, 1.5, "CrackInteractionLine")
+            Case "CONTOUR_ARC"
+                Set lineShape = DrawContourArc(contours.CenterX(i), contours.CenterY(i), contours.StartX(i), contours.StartY(i), _
+                    contours.EndX(i), contours.EndY(i), contours.SweepAngle(i), colorValue, 1.5, "CrackInteractionArc")
+            Case "CONTOUR_CIRCLE"
+                Dim radius As Double: radius = contours.Radius(i)
+                Set lineShape = DrawModelOval(contours.CenterX(i) - radius, contours.CenterY(i) - radius, _
+                    contours.CenterX(i) + radius, contours.CenterY(i) + radius, colorValue, 1.5, "CrackInteractionCircle", False)
+        End Select
+        lineShape.Line.DashStyle = MSO_LINE_DASH
+    Next i
 End Sub
 
 ' Пишет под схемой короткое пояснение, почему у geometry-only схемы нет
@@ -1113,14 +1137,15 @@ End Sub
 ' Рисует сохранённую аналитическую дугу ломаной для Excel Chart.
 ' Шаг не превышает 5 градусов, число отрезков не меньше шести;
 ' дискретизация влияет только на рисунок, а не на расчётную геометрию.
-Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
+Private Function DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
+        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double, _
+        Optional ByVal suffix As String = "ContourArcLine") As Object
     Dim radius As Double
     radius = Sqr((startX - centerX) * (startX - centerX) + (startY - centerY) * (startY - centerY))
     If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then
-        DrawModelLine startX, startY, endX, endY, colorValue, weight, "ContourArcLine"
-        Exit Sub
+        Set DrawContourArc = DrawModelLine(startX, startY, endX, endY, colorValue, weight, suffix)
+        Exit Function
     End If
 
     Dim startAngle As Double
@@ -1148,12 +1173,13 @@ Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, ModelToChartX(nextX), ModelToChartY(nextY)
     Next i
     Set arcShape = builder.ConvertToShape
-    arcShape.Name = SHAPE_PREFIX & "ContourArcLine" & CStr(mChart.Shapes.Count)
+    arcShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
     arcShape.Fill.Visible = False
     arcShape.Line.Visible = True
     arcShape.Line.ForeColor.RGB = colorValue
     arcShape.Line.Weight = weight
-End Sub
+    Set DrawContourArc = arcShape
+End Function
 
 ' Строит нейтральную линию по сохранённому полю деформаций сочетания.
 ' Обрезает её по сохранённому контуру сечения. Если контура нет,
