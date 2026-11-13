@@ -490,9 +490,9 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     If dataRows < 1 Then dataRows = 1
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
-    Dim i As Long
+    Dim i As Long, workbook As Object: Set workbook = target.Worksheet.Parent
     For i = 1 To batch.Count
-        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, workbook
     Next i
 
     If Not mCapturedSnapshot Is Nothing Then
@@ -525,14 +525,14 @@ End Function
 ' Подробные числовые поля доступны только завершенной проверке; активная ветвь
 ' СП 35/СП 63 выбирается по сохраненному результату, без повторения формул.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
-        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem, ByVal workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     Dim statusText As String
     statusText = StabilityStatusText(batch, index, policy)
     data(rowIndex, 1) = batch.CombinationID(index)
-    data(rowIndex, 2) = CalculationResultMessage(batch, index, batch.ResultAt(index).StabilityMeta)
+    data(rowIndex, 2) = CalculationResultMessage(batch, index, batch.ResultAt(index).StabilityMeta, workbook)
     data(rowIndex, 3) = statusText
     PutDefaultStatusCells data, rowIndex, policy.NotApplicable
     If Not policy.IsMetaFinished(batch.ResultAt(index).StabilityMeta) Then Exit Sub

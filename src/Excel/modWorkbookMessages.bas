@@ -257,7 +257,7 @@ End Function
 ' Дополняет готовое пояснение проверки номером сочетания и сохранённым адресом ввода.
 ' Статус и физическую причину определяют расчётные классы; здесь меняется только текст.
 Public Function CalculationResultMessage(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal meta As CResultMeta) As String
+        ByVal meta As CResultMeta, Optional ByVal workbook As Object = Nothing) As String
     If meta Is Nothing Then Exit Function
     Dim reason As String, reference As String, parameterReferences As String
     reason = Trim$(meta.ResultComment)
@@ -269,6 +269,10 @@ Public Function CalculationResultMessage(ByVal batch As CBatchSectionCalculator,
     If Len(parameterReferences) > 0 Then CalculationResultMessage = CalculationResultMessage & " " & parameterReferences
     reference = batch.SourceReference(index)
     If Len(reference) > 0 Then CalculationResultMessage = CalculationResultMessage & " Исходная строка сочетания: " & reference & "."
+    If Not workbook Is Nothing Then
+        If meta.InternalStatus = rsInvalidInput Or meta.InternalStatus = rsInvalidConfiguration Then _
+            CalculationResultMessage = ErrorInputAddresses(workbook, CalculationResultMessage)
+    End If
 End Function
 
 ' Распознаёт только общее системное описание Excel, которое само по себе не называет причину.
@@ -334,22 +338,28 @@ Private Function ErrorInputAddresses(ByVal workbook As Object, ByVal reason As S
     direct.IgnoreCase = True
     direct.Pattern = "^=(?:('(?:[^']|'')+'|[\w.\u0080-\uFFFF]+)!)?(" & INPUT_CELL_A1 & ")$"
 
-    Dim blocks As Variant, i As Long, lineBreak As Long, text As String, heading As String
+    Dim blocks As Variant, i As Long, lineBreak As Long, text As String, heading As Variant, headingAt As Long
     blocks = Split(reason, paragraph)
     For i = LBound(blocks) To UBound(blocks)
         text = CStr(blocks(i))
-        lineBreak = InStr(1, text, vbCrLf, vbBinaryCompare)
-        If lineBreak > 0 Then
-            heading = Left$(text, lineBreak - 1)
-            Select Case heading
-                Case "Адреса ячеек:", "Подробности и адреса полей:"
-                    blocks(i) = Left$(text, lineBreak + 1) & ResolvedInputAddressBlock(workbook, Mid$(text, lineBreak + 2), locations, direct)
-            End Select
-        End If
+        For Each heading In Array("Адреса ячеек:", "Подробности и адреса полей:")
+            headingAt = InStr(1, vbCrLf & text, vbCrLf & CStr(heading) & vbCrLf, vbBinaryCompare)
+            If headingAt > 0 Then
+                lineBreak = headingAt + Len(CStr(heading)) - 1
+                text = Left$(text, lineBreak + 2) & ResolvedInputAddressBlock(workbook, Mid$(text, lineBreak + 3), locations, direct)
+            End If
+        Next heading
+        blocks(i) = text
     Next i
     text = Join(blocks, paragraph)
     ' Ошибки отдельных сочетаний содержат поле и ячейку в самой строке пояснения.
-    locations.Pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My|ProfileId|CombinationID|LoadPath|Комментарий), )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=[ :;,.])(?![ \t]*\u27F6)"
+    locations.Pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My|ProfileId|CombinationID|LoadPath|Комментарий)(?: \(rngLoadCombinations\))?, )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=$|[ ;,.\r\n]|: )(?![ \t]*\u27F6)"
+    text = ResolvedInputAddressBlock(workbook, text, locations, direct)
+    locations.Pattern = "(^|[ \t\n])(Таблица 7\.21 СП 35, )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=: )"
+    text = ResolvedInputAddressBlock(workbook, text, locations, direct)
+    locations.Pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My) \()('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=\))"
+    text = ResolvedInputAddressBlock(workbook, text, locations, direct)
+    locations.Pattern = "(^|[ \t\n])((?:Настройка [\w.]+ \()|(?:Таблица [^\r\n()]+ \())лист ('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?), ячейка (" & INPUT_CELL_A1 & ")(?=\))"
     text = ResolvedInputAddressBlock(workbook, text, locations, direct)
     locations.Pattern = "(^|[ \t\n])([A-Za-z][\w.]*: )лист ('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?), ячейка (" & INPUT_CELL_A1 & ")(?=\.)"
     ErrorInputAddresses = ResolvedInputAddressBlock(workbook, text, locations, direct)

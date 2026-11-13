@@ -174,6 +174,22 @@ Public Function ReadOutputCombinationID(ByVal workbook As Object, ByVal settings
             "Выполните расчёт либо выберите User и ID сочетания, уже сохранённого в текущем снимке.")
 End Function
 
+' Называет действующий селектор сочетания. В Worst поле ручного ID не читается.
+Public Function MissingOutputCombinationMessage(ByVal settings As CSystemSettingsReader, ByVal combinationID As String) As String
+    Dim key As String: key = "Output.CombinationID"
+    If settings.GetRequiredChoice("Output.CombinationMode", Array("Worst", "User")) = "Worst" Then key = "General.WorstCombinationCriterion"
+    MissingOutputCombinationMessage = settings.InputErrorMessage(key, _
+        "В сохранённых результатах не найдено сочетание «" & combinationID & "» с расчётным профилем.", _
+        "Выберите сохранённое сочетание. Для новых нагрузок выполните расчёт.")
+End Function
+
+' Указывает настройку вывода состояния, когда требуемое НДС отсутствует в снимке.
+Public Function VisualizationStateInputMessage(ByVal location As String, ByVal profileId As String, _
+        ByVal stateType As String, ByVal reason As String) As String
+    If Len(location) = 0 Then VisualizationStateInputMessage = reason: Exit Function
+    VisualizationStateInputMessage = InputDiagnosticText(reason, location, "Профиль " & profileId & ": параметр Visualization.State", stateType)
+End Function
+
 ' Возвращает первое сохранённое сочетание, если верхняя сводка не содержит Worst.
 ' Общие свойства ALL не являются сочетанием. Отсутствующая необязательная таблица пропускается.
 Private Function FirstOutputCombinationInTable(ByVal workbook As Object, ByVal rangeName As String) As String

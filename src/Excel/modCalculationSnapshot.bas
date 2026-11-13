@@ -258,7 +258,7 @@ Private Function TryUpdateCalculatedSnapshotPlot(ByVal workbook As Object, ByVal
     Exit Function
 Failed:
     plotHasWarning = True
-    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & _
+    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & vbCrLf & _
         Err.Description & vbCrLf & "Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется."
 End Function
 

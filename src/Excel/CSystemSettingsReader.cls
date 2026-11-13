@@ -266,7 +266,7 @@ Private Function ConfigCellText(ByVal cellValue As Variant, ByVal columnName As 
         Err.Raise vbObjectError + 4309, "CSystemSettingsReader", _
             "Настройка " & keyValue & " (" & InputCellLocation(rowIndex, columnIndex) & _
             ") содержит ошибку Excel в колонке """ & columnName & _
-            """. Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+            """. " & InputDiagnosticValueLine(cellValue) & " Исправьте формулу или введите допустимое значение вместо ошибки Excel."
     End If
     ConfigCellText = Trim$(CStr(cellValue))
 End Function
@@ -499,7 +499,7 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
     Dim value As String, valueError As String, valueHasError As Boolean
     If IsError(data(rowIndex, columnIndex)) Then
         valueHasError = True
-        valueError = DeferredInputError(key, InputCellLocation(rowIndex, columnIndex))
+        valueError = DeferredInputError(key, InputCellLocation(rowIndex, columnIndex), data(rowIndex, columnIndex))
     Else
         value = ConfigCellText(data(rowIndex, columnIndex), "значение", rowIndex, key, False, columnIndex)
     End If
@@ -507,9 +507,9 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
 End Sub
 
 ' Возвращает сообщение о формуле с ошибкой по фактическому адресу настройки.
-Private Function DeferredInputError(ByVal key As String, ByVal location As String) As String
+Private Function DeferredInputError(ByVal key As String, ByVal location As String, ByVal value As Variant) As String
     DeferredInputError = "Настройка " & key & " (" & location & _
-        ") содержит ошибку Excel в колонке ""значение"". " & _
+        ") содержит ошибку Excel в колонке ""значение"". " & InputDiagnosticValueLine(value) & " " & _
         "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
 End Function
 
@@ -538,7 +538,7 @@ Public Sub RefreshNamedFormulaValue(ByVal workbook As Object, ByVal key As Strin
     mValues(index) = vbNullString
     mValueHasError(index) = IsError(value)
     If mValueHasError(index) Then
-        mValueErrors(index) = DeferredInputError(key, location)
+        mValueErrors(index) = DeferredInputError(key, location, value)
     Else
         mValues(index) = Trim$(CStr(value))
         mValueErrors(index) = vbNullString
@@ -601,7 +601,7 @@ Public Function InputErrorMessage(ByVal key As String, ByVal reason As String, B
     InputErrorMessage = "Настройка " & key & " (" & location & "): " & reason
     If index > 0 Then
         If Len(mValues(index)) > 0 Then
-            InputErrorMessage = InputErrorMessage & " Введённое значение: """ & mValues(index) & """."
+            InputErrorMessage = InputErrorMessage & " " & InputDiagnosticValueLine(mValues(index))
         Else
             InputErrorMessage = InputErrorMessage & " Ячейка значения не заполнена."
         End If

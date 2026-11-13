@@ -495,9 +495,9 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     Dim data() As Variant
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
-    Dim i As Long
+    Dim i As Long, workbook As Object: Set workbook = target.Worksheet.Parent
     For i = 1 To batch.Count
-        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, workbook
     Next i
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "Cracks.Data", data
@@ -508,12 +508,12 @@ End Sub
 
 ' Заполняет одну строку сочетания фактически рассчитанными величинами трещин.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
-        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem, ByVal workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta, workbook)
     data(rowIndex, COL_STATUS) = batch.ResultAt(index).CrackSummaryStatus
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _

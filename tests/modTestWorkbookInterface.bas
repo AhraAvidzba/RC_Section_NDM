@@ -6845,6 +6845,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
     Dim keys As Variant, entry As Variant, invalid As Variant, key As String, row As Long, i As Long
     Dim numericValue As Boolean, oldValue As Variant, description As String, code As Long, prefix As String
     Dim result As Double, text As String, concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
+    Dim coupledCell As Object, coupledFormula As Variant, arrow As String, formatted As String
     On Error GoTo Failed
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set concreteRange = ThisWorkbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
@@ -6922,8 +6923,29 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
         Next row
         If cell Is Nothing Then Err.Raise 5, , "Не найдена материальная строка " & CStr(entry(1))
         oldValue = cell.Formula
+        Set coupledCell = Nothing
+        If CLng(entry(2)) = 3 Then
+            Set coupledCell = cell.Offset(0, -1)
+            If StrComp(Replace$(CStr(coupledCell.Formula), "$", ""), "=" & cell.Address(False, False), vbTextCompare) <> 0 Then Set coupledCell = Nothing
+        End If
+        If Not coupledCell Is Nothing Then coupledFormula = coupledCell.Formula
         For Each invalid In Array("", "TODO", "abc", 0#, CVErr(xlErrValue))
             cell.Value2 = invalid
+            If Not coupledCell Is Nothing Then
+                If IsError(invalid) Then
+                    arrow = " " & ChrW$(&H27F6) & " "
+                    On Error Resume Next
+                    Err.Clear
+                    Set settings = New CSystemSettingsReader: settings.LoadFromRange target
+                    code = Err.Number: description = Err.Description
+                    On Error GoTo Failed
+                    formatted = WorkbookDialogText(description, ThisWorkbook)
+                    TestAssertTrue stats, "audit03.settingMessage.material.dependent." & key, code <> 0 And _
+                        InStr(1, formatted, "Config!" & coupledCell.Address(False, False) & arrow & "Config!" & cell.Address(False, False), vbBinaryCompare) > 0 And _
+                        InStr(1, formatted, "#VALUE!", vbBinaryCompare) > 0
+                End If
+                coupledCell.Value2 = 1# ' Изолируем диагностический контракт второй стороны от прямой ссылки первой.
+            End If
             On Error Resume Next
             Err.Clear
             Set settings = New CSystemSettingsReader: settings.LoadFromRange target
@@ -6942,6 +6964,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
             If IsError(invalid) Then text = CStr(entry(1)) Else text = key
             TestAudit03AssertSettingMessage stats, prefix, description, text, cell
             cell.Formula = oldValue
+            If Not coupledCell Is Nothing Then coupledCell.Formula = coupledFormula
         Next invalid
     Next entry
 

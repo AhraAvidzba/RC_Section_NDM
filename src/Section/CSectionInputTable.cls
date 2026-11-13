@@ -266,7 +266,7 @@ Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
         End If
         value = mValues(row, column)
         If IsError(value) Then
-            valueText = "ошибка формулы Excel"
+            reason = InputDiagnosticValueLine(value, "Прочитано") & vbCrLf & reason
         ElseIf IsNull(value) Then
             valueText = "неопределённое значение"
         ElseIf IsEmpty(value) Then

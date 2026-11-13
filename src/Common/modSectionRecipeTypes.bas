@@ -230,6 +230,36 @@ Public Function SectionRecipeErrorText(ByVal reason As String, Optional ByVal so
     SectionRecipeErrorText = text
 End Function
 
+' Оформляет адресную ошибку ввода с прочитанным значением. Проверка и причина
+' принадлежат вызывающему классу; адрес и значение передаются без Excel-объектов.
+Public Function InputDiagnosticText(ByVal reason As String, ByVal sourceReference As String, _
+        ByVal context As String, ByVal value As Variant, Optional ByVal valueCaption As String = "Введённое значение") As String
+    InputDiagnosticText = SectionRecipeErrorText(reason, sourceReference, context, InputDiagnosticValueLine(value, valueCaption))
+End Function
+
+' Даёт единое представление уже прочитанного значения для окон и строк Results.
+Public Function InputDiagnosticValueLine(ByVal value As Variant, Optional ByVal caption As String = "Введённое значение") As String
+    Dim text As String
+    If IsError(value) Then
+        text = CStr(value)
+        Select Case Right$(text, 4)
+            Case "2000": text = "#NULL!"
+            Case "2007": text = "#DIV/0!"
+            Case "2015": text = "#VALUE!"
+            Case "2023": text = "#REF!"
+            Case "2029": text = "#NAME?"
+            Case "2036": text = "#NUM!"
+            Case "2042": text = "#N/A"
+            Case "2043": text = "#GETTING_DATA"
+        End Select
+    ElseIf IsNull(value) Then
+        text = "значение не определено"
+    ElseIf Not IsObject(value) And Not IsArray(value) Then
+        text = CStr(value)
+    End If
+    InputDiagnosticValueLine = caption & ": «" & text & "»."
+End Function
+
 ' Находит первое действие в начале предложения; условие перед запятой не отрывается от него.
 Private Function FirstActionSentence(ByVal text As String) As Long
     Dim verb As Variant, position As Long, prefix As String, lastCharacter As String

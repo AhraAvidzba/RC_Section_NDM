@@ -160,10 +160,11 @@ Public Function LoadFile(ByVal workbook As Object) As CCalculationSnapshot
         Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
         settings.LoadFromRange workbook.Names.Item("rngSystemSettings").RefersToRange
         Err.Raise vbObjectError + 4956, "CCalculationSnapshotStore", _
-            "Файл снимка «" & CreateObject("Scripting.FileSystemObject").GetFileName(path) & "» не найден." & vbCrLf & vbCrLf & _
-            "Проверьте имя Results.SnapshotName и поместите файл в папку книги." & vbCrLf & _
+            settings.InputErrorMessage("Results.SnapshotName", _
+            "Файл снимка «" & CreateObject("Scripting.FileSystemObject").GetFileName(path) & "» не найден.", _
+            "Проверьте имя Results.SnapshotName и поместите файл в папку книги.") & vbCrLf & _
             "Если снимка ещё нет, нажмите «Сформировать сечение»." & vbCrLf & vbCrLf & _
-            "Настройка: " & settings.InputLocation("Results.SnapshotName") & vbCrLf & "Ожидаемый файл:" & vbCrLf & path
+            "Ожидаемый файл:" & vbCrLf & path
     End If
     Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(path)
     snapshot.Validate

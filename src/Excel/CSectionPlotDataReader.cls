@@ -27,6 +27,7 @@ Private mProfileCrackWidthEnabled As Boolean ' Показывает, запра�
 Private mGeometryOnly As Boolean ' True для схемы без расчетных Stress/Strain.
 Private mGeometryOnlyTitle As String ' Заголовок схемы без НДС, например для import-preview.
 Private mGeometryOnlyNote As String ' Пояснение под схемой, если НДС намеренно отсутствует.
+Private mStateInputLocation As String ' Адрес настройки профиля для диагностики отсутствующего НДС.
 Private mGeometryReferenceItemsEnabled As Boolean ' Можно ли показывать оси/точку нагрузки без НДС.
 Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
 Private mResultCaption As String ' Название выбранной величины для легенды.
@@ -116,7 +117,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ReadOutputCombinationID(workbook, settings)
     mLoadCaseComment = ReadBatchSummaryComment(workbook, mLoadCase)
-    ApplyVisualizationProfile workbook
+    ApplyVisualizationProfile workbook, settings
 
     Dim stateFields As Object
     Set stateFields = ReadSectionProperties(workbook)
@@ -186,12 +187,13 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ReadOutputCombinationID(workbook, settings)
     mLoadCaseComment = ReadBatchSummaryComment(workbook, mLoadCase)
-    ApplyVisualizationProfile workbook
+    ApplyVisualizationProfile workbook, settings
 
     mGeometryOnly = True
     mGeometryOnlyTitle = "Геометрия расчетного сечения: " & mLoadCase
     mGeometryOnlyNote = Trim$(noteText)
     If Len(mGeometryOnlyNote) = 0 Then mGeometryOnlyNote = MissingStateMessage(mLoadCase, mStateType)
+    mGeometryOnlyNote = WorkbookDialogText(mGeometryOnlyNote, workbook)
     mGeometryReferenceItemsEnabled = True
 
     ReadSectionProperties workbook
@@ -211,10 +213,10 @@ End Sub
 ' Применяет оформление профиля выбранного сочетания. ProfileId берёт
 ' из сохранённых Results, чтобы показывать фактически рассчитанный запуск
 ' независимо от последующих правок таблицы нагрузок.
-Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
+Private Sub ApplyVisualizationProfile(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     mProfileId = ReadProfileIdForLoadCase(workbook, mLoadCase)
     If Len(mProfileId) = 0 Then Err.Raise vbObjectError + 4710, "CSectionPlotDataReader", _
-        "В Results не найден ProfileId для сочетания: " & mLoadCase
+        MissingOutputCombinationMessage(settings, mLoadCase)
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
@@ -233,6 +235,7 @@ Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
         mProfileCrackWidthEnabled = savedProfile.CrackWidthEnabled ' Это сведения о выполненном расчёте; текущий Config управляет только видом схемы.
     End If
     mStateType = profile.VisualizationStateText
+    mStateInputLocation = profile.VisualizationStateLocation
     mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
     mResultPrecision = profile.VisualizationPrecisionForQuantity(profile.VisualizationQuantity)
 End Sub
@@ -1001,6 +1004,7 @@ Private Sub ResetReaderState()
     mGeometryOnly = False
     mGeometryOnlyTitle = vbNullString
     mGeometryOnlyNote = vbNullString
+    mStateInputLocation = vbNullString
     mGeometryReferenceItemsEnabled = False
     mVisualizationQuantity = vbNullString
     mLoadCase = vbNullString
@@ -1110,6 +1114,7 @@ Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType A
                 " Для запрашиваемого сочетания расчет трещин был включен, но пороговое состояние образования трещины не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."
         End If
     End If
+    MissingStateMessage = VisualizationStateInputMessage(mStateInputLocation, mProfileId, stateType, MissingStateMessage)
 End Function
 
 ' Проверяет, относится ли выбранный вид НДС к трещинам,

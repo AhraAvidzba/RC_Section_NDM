@@ -117,9 +117,13 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
                 ClearSectionPlotForNoData workbook, _
                     "Схема не обновлена: в Results нет выбранного состояния НДС.", containerNotice
                 If raiseIfNoData Then
+                    If plotLoadErrorNumber = vbObjectError + 4710 Then _
+                        Err.Raise plotLoadErrorNumber, "UpdateSectionPlotForWorkbook", plotLoadErrorDescription
                     Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
                         WorkbookMessageParagraph("В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State.", containerNotice)
                 End If
+                If plotLoadErrorNumber = vbObjectError + 4710 Then _
+                    containerNotice = WorkbookMessageParagraph(containerNotice, plotLoadErrorDescription)
                 Exit Sub
             End If
 
@@ -221,6 +225,7 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     Dim completed As Boolean, message As String
     message = FormSectionCore(workbook, startedAt, informationEnabled, requiresAttention, completed)
     If completed Then message = FinishWorkbookAction(workbook, message, startedAt, "Время формирования сечения", requiresAttention)
+    If requiresAttention Then message = WorkbookDialogText(message, workbook)
     FormSectionForWorkbook = message
 End Function
 
@@ -351,6 +356,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
         message = FinishWorkbookAction(workbook, message, startedAt, "Время расчёта", requiresAttention, True, savedRunID)
         message = WorkbookMessageParagraph(message, "Данные сохранены " & destination & ".")
     End If
+    If requiresAttention Then message = WorkbookDialogText(message, workbook)
     RunSectionCalculationForWorkbook = message
 End Function
 
@@ -1088,9 +1094,9 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
     For rowIndex = 2 To UBound(values, 1)
         If IsError(values(rowIndex, 1)) Or IsNull(values(rowIndex, 1)) Then
             RecordDurationTableError batch, activeIDs, _
-                "В таблице rngStabilityDurationLoads ссылка на сочетание (" & _
-                range.Worksheet.Name & "!" & range.Cells(rowIndex, 1).Address(False, False) & _
-                ") содержит ошибку. Исправьте формулу или Combination ID; без этой ссылки нельзя сопоставить дополнительные нагрузки."
+                InputDiagnosticText("Ссылка на сочетание содержит ошибку. Исправьте формулу или Combination ID; без этой ссылки нельзя сопоставить дополнительные нагрузки.", _
+                    range.Worksheet.Name & "!" & range.Cells(rowIndex, 1).Address(False, False), "Дополнительные нагрузки устойчивости", _
+                    values(rowIndex, 1))
             Exit Sub
         End If
         Dim combinationID As String
@@ -1144,14 +1150,14 @@ End Sub
 Private Function TryReadDurationLoad(ByVal value As Variant, ByVal component As Long, _
         ByVal units As CUnitSystem, ByRef internalValue As Double, ByRef reason As String) As Boolean
     internalValue = 0#: reason = vbNullString
-    If IsError(value) Then reason = "ячейка содержит ошибку формулы Excel.": Exit Function
+    If IsError(value) Then reason = "ячейка содержит ошибку формулы Excel. " & InputDiagnosticValueLine(value): Exit Function
     If IsNull(value) Then reason = "значение не определено.": Exit Function
     If IsEmpty(value) Then TryReadDurationLoad = True: Exit Function
     If VarType(value) = vbString Then
         If Len(Trim$(CStr(value))) = 0 Then TryReadDurationLoad = True: Exit Function
     End If
     Dim parsed As Double
-    If Not TryReadStrictDouble(value, parsed) Then reason = "вместо числа задан текст, разделители разрядов или другой недопустимый тип значения.": Exit Function
+    If Not TryReadStrictDouble(value, parsed) Then reason = "вместо числа задан текст, разделители разрядов или другой недопустимый тип значения. " & InputDiagnosticValueLine(value): Exit Function
     On Error GoTo InvalidNumber
     Select Case component
         Case 2: internalValue = units.InputForceToInternal(parsed)
@@ -1216,6 +1222,7 @@ Public Function ReadSP35Table721FromWorkbook(ByVal workbook As Object, ByRef inp
             address = address & range.Address(False, False)
         End If
         inputError = "Таблица 7.21 СП 35, " & address & ": " & reason
+        If row > 0 And column > 0 Then inputError = inputError & " " & InputDiagnosticValueLine(data(row, column))
     End If
     ReadSP35Table721FromWorkbook = data
     Exit Function

@@ -21,6 +21,7 @@ Private mProfileId As String ' Стабильный ID столбца профи
 Private mDisplayName As String ' Человекочитаемое имя профиля.
 Private mDescription As String ' Короткое описание для пользователя.
 Private mInputLocations As Object ' Копии адресов полей профиля; используется только для пояснений, без ссылок на Excel.
+Private mInputValues As Object ' Прочитанные значения полей для пояснения несовместимых настроек.
 Private mStrengthDirectState As Boolean ' Запрошено StrengthState.
 Private mStrengthCapacity As Boolean ' Запрошена несущая способность.
 Private mCrackWidth As Boolean ' Запрошен расчет раскрытия нормальных трещин.
@@ -56,6 +57,7 @@ Public Sub Initialize(ByVal profileId As String, ByVal displayName As String, By
         ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, _
         ByVal crackWidth As Boolean, Optional ByVal stabilityEnabled As Boolean = False)
     Set mInputLocations = Nothing
+    Set mInputValues = Nothing
     mProfileId = Trim$(profileId)
     mDisplayName = Trim$(displayName)
     mDescription = Trim$(description)
@@ -167,19 +169,26 @@ Public Function ValidateForCalculation(ByRef errorText As String) As Boolean
 End Function
 
 ' Получает только строковые адреса из ридера профилей и делает независимую копию.
-Friend Sub SetInputLocations(ByVal locations As Object)
+Friend Sub SetInputLocations(ByVal locations As Object, Optional ByVal values As Object = Nothing)
     Dim key As Variant
     Set mInputLocations = CreateObject("Scripting.Dictionary")
     mInputLocations.CompareMode = vbTextCompare
     For Each key In locations.Keys
         mInputLocations(CStr(key)) = CStr(locations(key))
     Next key
+    Set mInputValues = values ' Каталог завершил заполнение словаря до передачи профилю.
 End Sub
+
+' Возвращает адрес настройки просмотра, прочитанный вместе с профилем Config.
+Friend Function VisualizationStateLocation() As String
+    If mInputLocations Is Nothing Then Exit Function
+    If mInputLocations.Exists("Visualization.State") Then VisualizationStateLocation = mInputLocations("Visualization.State")
+End Function
 
 ' Добавляет к нарушенному условию профиль и сохранённые адреса связанных полей.
 ' Допустимость профиля определяется выше; пояснение не участвует в выборе расчётных ветвей.
 Private Function ValidationMessage(ByVal keys As String, ByVal reason As String) As String
-    Dim key As Variant
+    Dim key As Variant, addresses As String, values As String
     ValidationMessage = "Профиль " & mProfileId & ": " & reason
     If mInputLocations Is Nothing Then
         ValidationMessage = ValidationMessage & " Параметры: " & keys & "."
@@ -187,11 +196,18 @@ Private Function ValidationMessage(ByVal keys As String, ByVal reason As String)
     End If
     For Each key In Split(keys, ";")
         If mInputLocations.Exists(CStr(key)) Then
-            ValidationMessage = ValidationMessage & " " & CStr(key) & ": " & mInputLocations(key) & "."
+            If Len(addresses) > 0 Then addresses = addresses & "; "
+            addresses = addresses & CStr(key) & ": " & mInputLocations(key)
+            If Not mInputValues Is Nothing Then
+                If Len(values) > 0 Then values = values & vbCrLf
+                values = values & InputDiagnosticValueLine(mInputValues(key), CStr(key))
+            End If
         Else
             ValidationMessage = ValidationMessage & " Параметр " & CStr(key) & ": восстановите его строку в таблице профилей."
         End If
     Next key
+    If Len(values) > 0 Then values = "Введённые значения:" & vbCrLf & values
+    If Len(addresses) > 0 Then ValidationMessage = SectionRecipeErrorText(ValidationMessage, addresses, , values)
 End Function
 
 ' Стабильный ID столбца профиля, например PR1.

@@ -66,7 +66,7 @@ Public Sub LoadFromRange(ByVal source As Object, Optional ByVal includeVisualiza
     Dim profileColumns() As Long
     Dim profileIds() As String
     Dim profileCount As Long
-    CollectProfileColumns data, headerRow, profileColumns, profileIds, profileCount
+    CollectProfileColumns data, source, headerRow, profileColumns, profileIds, profileCount
     If profileCount = 0 Then Err.Raise vbObjectError + 3983, "CCalculationProfileCatalog", "В rngCalculationProfiles нет столбцов PR*."
 
     ReDim mProfiles(1 To profileCount)
@@ -128,7 +128,7 @@ NextProfileValue:
         YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId, locations)
     End If
 
-    profile.SetInputLocations locations
+    profile.SetInputLocations locations, values
     Dim spec As CMaterialModelSpec
     If Not visualizationOnly Then
     Set spec = SpecFromValues(values, locations, profileId, "MaterialModel.Strength")
@@ -166,7 +166,7 @@ InvalidValue:
     Dim errorNumber As Long, description As String
     errorNumber = Err.Number: description = Err.Description
     If Len(activeKey) = 0 Then Err.Raise errorNumber, "CCalculationProfileCatalog", description
-    RaiseProfileInputError errorNumber, description, activeKey, profileId, locations
+    RaiseProfileInputError errorNumber, description, activeKey, profileId, locations, ProfileValue(values, activeKey)
 End Function
 
 ' Готовит параметры модели материалов по тем же правилам чтения вариантов,
@@ -205,7 +205,7 @@ Private Function SpecFromValues(ByVal values As Object, ByVal locations As Objec
     Set SpecFromValues = spec
     Exit Function
 InvalidValue:
-    RaiseProfileInputError Err.Number, Err.Description, activeKey, profileId, locations
+    RaiseProfileInputError Err.Number, Err.Description, activeKey, profileId, locations, ProfileValue(values, activeKey)
 End Function
 
 ' До преобразования в текст различает строку, пустую ячейку и ошибку формулы Excel.
@@ -215,7 +215,7 @@ Private Function ProfileCellText(ByVal value As Variant, ByVal key As String, _
     Dim errorNumber As Long
     errorNumber = vbObjectError + 3989
     If Left$(key, 12) = "Calculation." Then errorNumber = vbObjectError + 3988
-    If IsError(value) Then RaiseProfileInputError errorNumber, "Ячейка содержит ошибку формулы Excel.", key, profileId, locations
+    If IsError(value) Then RaiseProfileInputError errorNumber, "Ячейка содержит ошибку формулы Excel.", key, profileId, locations, value
     If IsNull(value) Then RaiseProfileInputError errorNumber, "Значение ячейки не определено.", key, profileId, locations
     ProfileCellText = Trim$(CStr(value))
 End Function
@@ -230,14 +230,14 @@ End Sub
 ' Добавляет адрес исходной ячейки к причине ошибки ввода, сохраняя её код.
 ' Сам текст сообщения не определяет статус результата.
 Private Sub RaiseProfileInputError(ByVal errorNumber As Long, ByVal description As String, _
-        ByVal key As String, ByVal profileId As String, ByVal locations As Object)
+        ByVal key As String, ByVal profileId As String, ByVal locations As Object, Optional ByVal value As Variant = "")
     Dim location As String
     location = "лист Config, таблица rngCalculationProfiles"
     If Not locations Is Nothing Then
         If locations.Exists(key) Then location = CStr(locations(key))
     End If
-    Err.Raise errorNumber, "CCalculationProfileCatalog", SectionRecipeErrorText(description, location, _
-        "Профиль " & profileId & ": параметр " & key) & vbCrLf & vbCrLf & _
+    Err.Raise errorNumber, "CCalculationProfileCatalog", InputDiagnosticText(description, location, _
+        "Профиль " & profileId & ": параметр " & key, value) & vbCrLf & vbCrLf & _
         "Проверьте указанную ячейку или восстановите строку параметра в таблице профилей."
 End Sub
 
@@ -251,22 +251,35 @@ Private Function FindProfileHeaderRow(ByRef data As Variant) As Long
     Dim rowIndex As Long
     Dim colIndex As Long
     For rowIndex = 1 To UBound(data, 1)
+        If VarType(data(rowIndex, 2)) = vbString Then
+            If StrComp(Trim$(CStr(data(rowIndex, 2))), "Key", vbTextCompare) = 0 Then
+                FindProfileHeaderRow = rowIndex
+                Exit Function
+            End If
+        End If
+    Next rowIndex
+    For rowIndex = 1 To UBound(data, 1)
         For colIndex = 3 To UBound(data, 2)
+            If IsError(data(rowIndex, colIndex)) Then GoTo NextColumn
             If IsProfileIdText(CStr(data(rowIndex, colIndex))) Then
                 FindProfileHeaderRow = rowIndex
                 Exit Function
             End If
+NextColumn:
         Next colIndex
     Next rowIndex
 End Function
 
 ' Собирает все столбцы с именами PR*, чтобы количество профилей
 ' не ограничивалось заранее четырьмя столбцами.
-Private Sub CollectProfileColumns(ByRef data As Variant, ByVal headerRow As Long, _
+Private Sub CollectProfileColumns(ByRef data As Variant, ByVal source As Object, ByVal headerRow As Long, _
         ByRef profileColumns() As Long, ByRef profileIds() As String, ByRef profileCount As Long)
     Dim colIndex As Long
     For colIndex = 3 To UBound(data, 2)
         Dim profileId As String
+        If IsError(data(headerRow, colIndex)) Then Err.Raise vbObjectError + 3983, "CCalculationProfileCatalog", _
+            InputDiagnosticText("Идентификатор профиля содержит ошибку Excel. Введите допустимый ID вида PR1.", _
+                source.Worksheet.Name & "!" & source.Cells(headerRow, colIndex).Address(False, False), "Заголовок профиля", data(headerRow, colIndex))
         profileId = Trim$(CStr(data(headerRow, colIndex)))
         If IsProfileIdText(profileId) Then
             profileCount = profileCount + 1
@@ -289,13 +302,12 @@ End Function
 ' а не отключает проверку незаметно для пользователя.
 Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileId As String, _
         ByVal locations As Object) As Boolean
-    value = UCase$(Trim$(value))
-    Select Case value
+    Select Case UCase$(Trim$(value))
         Case "YES", "TRUE", "1", "ДА": YesNo = True
         Case "NO", "FALSE", "0", "НЕТ": YesNo = False
         Case Else
             RaiseProfileInputError vbObjectError + 3988, _
-                "Выберите Yes или No; прочитано: """ & value & """.", key, profileId, locations
+                "Значение переключателя не распознано. Выберите Yes или No.", key, profileId, locations, value
     End Select
 End Function
 

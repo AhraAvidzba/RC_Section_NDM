@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-13 20:33:05
+Date: 2026-11-13 21:48:30
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -27,7 +27,7 @@ Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As range)
     modSectionIllustrations.SwitchSectionPicture
     Exit Sub
 Failed:
-    MsgBox "Иллюстрация не обновлена." & vbCrLf & vbCrLf & Err.description, vbExclamation, "Выбор сечения"
+    ShowWorkbookMessage "Иллюстрация не обновлена." & vbCrLf & vbCrLf & Err.description, vbExclamation, "Выбор сечения"
 End Sub
 
 ' После Save As переносит файл того же снимка рядом с новой книгой.
@@ -6268,7 +6268,7 @@ LINES: 3731
 ====================================================================================================
 COMPONENT: modSectionRecipeTypes
 TYPE: 1
-LINES: 305
+LINES: 335
 ====================================================================================================
 Option Explicit
 
@@ -6499,6 +6499,36 @@ Public Function SectionRecipeErrorText(ByVal reason As String, Optional ByVal so
     If Len(body) > 0 Then text = MessageParagraph(text, Replace$(body, vbLf, vbCrLf))
     If Len(action) > 0 Then text = MessageParagraph(text, "Возможное решение:" & vbCrLf & Replace$(action, vbLf, vbCrLf))
     SectionRecipeErrorText = text
+End Function
+
+' Оформляет адресную ошибку ввода с прочитанным значением. Проверка и причина
+' принадлежат вызывающему классу; адрес и значение передаются без Excel-объектов.
+Public Function InputDiagnosticText(ByVal reason As String, ByVal sourceReference As String, _
+        ByVal context As String, ByVal value As Variant, Optional ByVal valueCaption As String = "Введённое значение") As String
+    InputDiagnosticText = SectionRecipeErrorText(reason, sourceReference, context, InputDiagnosticValueLine(value, valueCaption))
+End Function
+
+' Даёт единое представление уже прочитанного значения для окон и строк Results.
+Public Function InputDiagnosticValueLine(ByVal value As Variant, Optional ByVal caption As String = "Введённое значение") As String
+    Dim text As String
+    If IsError(value) Then
+        text = CStr(value)
+        Select Case right$(text, 4)
+            Case "2000": text = "#NULL!"
+            Case "2007": text = "#DIV/0!"
+            Case "2015": text = "#VALUE!"
+            Case "2023": text = "#REF!"
+            Case "2029": text = "#NAME?"
+            Case "2036": text = "#NUM!"
+            Case "2042": text = "#N/A"
+            Case "2043": text = "#GETTING_DATA"
+        End Select
+    ElseIf IsNull(value) Then
+        text = "значение не определено"
+    ElseIf Not IsObject(value) And Not IsArray(value) Then
+        text = CStr(value)
+    End If
+    InputDiagnosticValueLine = caption & ": «" & text & "»."
 End Function
 
 ' Находит первое действие в начале предложения; условие перед запятой не отрывается от него.
@@ -16680,7 +16710,7 @@ Private Sub inputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
         End If
         value = mValues(row, column)
         If IsError(value) Then
-            valueText = "ошибка формулы Excel"
+            reason = InputDiagnosticValueLine(value, "Прочитано") & vbCrLf & reason
         ElseIf IsNull(value) Then
             valueText = "неопределённое значение"
         ElseIf IsEmpty(value) Then
@@ -39344,7 +39374,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2261
+LINES: 2267
 ====================================================================================================
 Option Explicit
 
@@ -39368,6 +39398,7 @@ Private Type TCombinationInput
     combinationID As String ' Номер сочетания из входной таблицы.
     SourceDataOffset As Long ' Смещение строки сочетания от начала входной таблицы.
     sourceReference As String ' Фактический адрес исходной строки, переданный ридером без зависимости расчёта от Excel.
+    profileReference As String ' Адрес ячейки ProfileId для отсутствующего профиля.
     n As Double ' Продольная сила во внутренних единицах, Н.
     mx As Double ' Момент Mx во внутренних единицах, Н*мм.
     my As Double ' Момент My во внутренних единицах, Н*мм.
@@ -39833,8 +39864,9 @@ End Sub
 Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileID As String, ByVal comment As String, _
         Optional ByVal loadPathText As String = vbNullString, Optional ByVal SourceDataOffset As Long = 0, _
-        Optional ByVal sourceReference As String = vbNullString)
+        Optional ByVal sourceReference As String = vbNullString, Optional ByVal profileReference As String = vbNullString)
     AddCombinationInternal combinationID, nValue, mxValue, myValue, profileID, comment, True, vbNullString, loadPathText, SourceDataOffset, sourceReference
+    mInputs(mCount).profileReference = profileReference
 End Sub
 
 ' Сохраняет сочетание с ошибкой ввода для вывода причины в отчёте.
@@ -40153,8 +40185,12 @@ Private Sub RunCombination(ByVal index As Long)
 
     Dim profile As CCalculationProfile
     If Not mProfiles.HasProfile(mInputs(index).profileID) Then
-        MarkInvalid index, "Расчетный профиль " & mInputs(index).profileID & _
+        Dim missingProfile As String
+        missingProfile = "Расчетный профиль " & mInputs(index).profileID & _
             " не найден. Выберите ProfileId из таблицы расчетных профилей на листе Config."
+        If Len(mInputs(index).profileReference) > 0 Then missingProfile = InputDiagnosticText(missingProfile, _
+            mInputs(index).profileReference, "Параметр ProfileId", mInputs(index).profileID)
+        MarkInvalid index, missingProfile
         Exit Sub
     End If
     Set profile = mProfiles.ProfileById(mInputs(index).profileID)
@@ -41611,7 +41647,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationProfile
 TYPE: 2
-LINES: 329
+LINES: 345
 ====================================================================================================
 Option Explicit
 
@@ -41627,6 +41663,7 @@ Private mProfileId As String ' Стабильный ID столбца профи
 Private mDisplayName As String ' Человекочитаемое имя профиля.
 Private mDescription As String ' Короткое описание для пользователя.
 Private mInputLocations As Object ' Копии адресов полей профиля; используется только для пояснений, без ссылок на Excel.
+Private mInputValues As Object ' Прочитанные значения полей для пояснения несовместимых настроек.
 Private mStrengthDirectState As Boolean ' Запрошено StrengthState.
 Private mStrengthCapacity As Boolean ' Запрошена несущая способность.
 Private mCrackWidth As Boolean ' Запрошен расчет раскрытия нормальных трещин.
@@ -41662,6 +41699,7 @@ Public Sub Initialize(ByVal profileID As String, ByVal DisplayName As String, By
         ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, _
         ByVal crackWidth As Boolean, Optional ByVal StabilityEnabled As Boolean = False)
     Set mInputLocations = Nothing
+    Set mInputValues = Nothing
     mProfileId = Trim$(profileID)
     mDisplayName = Trim$(DisplayName)
     mDescription = Trim$(description)
@@ -41773,19 +41811,26 @@ Public Function ValidateForCalculation(ByRef errorText As String) As Boolean
 End Function
 
 ' Получает только строковые адреса из ридера профилей и делает независимую копию.
-Friend Sub SetInputLocations(ByVal locations As Object)
+Friend Sub SetInputLocations(ByVal locations As Object, Optional ByVal values As Object = Nothing)
     Dim key As Variant
     Set mInputLocations = CreateObject("Scripting.Dictionary")
     mInputLocations.CompareMode = vbTextCompare
     For Each key In locations.keys
         mInputLocations(CStr(key)) = CStr(locations(key))
     Next key
+    Set mInputValues = values ' Каталог завершил заполнение словаря до передачи профилю.
 End Sub
+
+' Возвращает адрес настройки просмотра, прочитанный вместе с профилем Config.
+Friend Function VisualizationStateLocation() As String
+    If mInputLocations Is Nothing Then Exit Function
+    If mInputLocations.Exists("Visualization.State") Then VisualizationStateLocation = mInputLocations("Visualization.State")
+End Function
 
 ' Добавляет к нарушенному условию профиль и сохранённые адреса связанных полей.
 ' Допустимость профиля определяется выше; пояснение не участвует в выборе расчётных ветвей.
 Private Function ValidationMessage(ByVal keys As String, ByVal reason As String) As String
-    Dim key As Variant
+    Dim key As Variant, addresses As String, values As String
     ValidationMessage = "Профиль " & mProfileId & ": " & reason
     If mInputLocations Is Nothing Then
         ValidationMessage = ValidationMessage & " Параметры: " & keys & "."
@@ -41793,11 +41838,18 @@ Private Function ValidationMessage(ByVal keys As String, ByVal reason As String)
     End If
     For Each key In split(keys, ";")
         If mInputLocations.Exists(CStr(key)) Then
-            ValidationMessage = ValidationMessage & " " & CStr(key) & ": " & mInputLocations(key) & "."
+            If Len(addresses) > 0 Then addresses = addresses & "; "
+            addresses = addresses & CStr(key) & ": " & mInputLocations(key)
+            If Not mInputValues Is Nothing Then
+                If Len(values) > 0 Then values = values & vbCrLf
+                values = values & InputDiagnosticValueLine(mInputValues(key), CStr(key))
+            End If
         Else
             ValidationMessage = ValidationMessage & " Параметр " & CStr(key) & ": восстановите его строку в таблице профилей."
         End If
     Next key
+    If Len(values) > 0 Then values = "Введённые значения:" & vbCrLf & values
+    If Len(addresses) > 0 Then ValidationMessage = SectionRecipeErrorText(ValidationMessage, addresses, , values)
 End Function
 
 ' Стабильный ID столбца профиля, например PR1.
@@ -41946,7 +41998,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationProfileCatalog
 TYPE: 2
-LINES: 351
+LINES: 363
 ====================================================================================================
 Option Explicit
 
@@ -42007,7 +42059,7 @@ Public Sub LoadFromRange(ByVal source As Object, Optional ByVal includeVisualiza
     Dim profileColumns() As Long
     Dim profileIds() As String
     Dim profileCount As Long
-    CollectProfileColumns data, headerRow, profileColumns, profileIds, profileCount
+    CollectProfileColumns data, source, headerRow, profileColumns, profileIds, profileCount
     If profileCount = 0 Then Err.Raise vbObjectError + 3983, "CCalculationProfileCatalog", "В rngCalculationProfiles нет столбцов PR*."
 
     ReDim mProfiles(1 To profileCount)
@@ -42069,7 +42121,7 @@ NextProfileValue:
         YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileID, locations)
     End If
 
-    profile.SetInputLocations locations
+    profile.SetInputLocations locations, values
     Dim spec As CMaterialModelSpec
     If Not visualizationOnly Then
     Set spec = SpecFromValues(values, locations, profileID, "MaterialModel.Strength")
@@ -42107,7 +42159,7 @@ invalidValue:
     Dim errorNumber As Long, description As String
     errorNumber = Err.number: description = Err.description
     If Len(activeKey) = 0 Then Err.Raise errorNumber, "CCalculationProfileCatalog", description
-    RaiseProfileInputError errorNumber, description, activeKey, profileID, locations
+    RaiseProfileInputError errorNumber, description, activeKey, profileID, locations, ProfileValue(values, activeKey)
 End Function
 
 ' Готовит параметры модели материалов по тем же правилам чтения вариантов,
@@ -42146,7 +42198,7 @@ Private Function SpecFromValues(ByVal values As Object, ByVal locations As Objec
     Set SpecFromValues = spec
     Exit Function
 invalidValue:
-    RaiseProfileInputError Err.number, Err.description, activeKey, profileID, locations
+    RaiseProfileInputError Err.number, Err.description, activeKey, profileID, locations, ProfileValue(values, activeKey)
 End Function
 
 ' До преобразования в текст различает строку, пустую ячейку и ошибку формулы Excel.
@@ -42156,7 +42208,7 @@ Private Function ProfileCellText(ByVal value As Variant, ByVal key As String, _
     Dim errorNumber As Long
     errorNumber = vbObjectError + 3989
     If left$(key, 12) = "Calculation." Then errorNumber = vbObjectError + 3988
-    If IsError(value) Then RaiseProfileInputError errorNumber, "Ячейка содержит ошибку формулы Excel.", key, profileID, locations
+    If IsError(value) Then RaiseProfileInputError errorNumber, "Ячейка содержит ошибку формулы Excel.", key, profileID, locations, value
     If IsNull(value) Then RaiseProfileInputError errorNumber, "Значение ячейки не определено.", key, profileID, locations
     ProfileCellText = Trim$(CStr(value))
 End Function
@@ -42171,14 +42223,14 @@ End Sub
 ' Добавляет адрес исходной ячейки к причине ошибки ввода, сохраняя её код.
 ' Сам текст сообщения не определяет статус результата.
 Private Sub RaiseProfileInputError(ByVal errorNumber As Long, ByVal description As String, _
-        ByVal key As String, ByVal profileID As String, ByVal locations As Object)
+        ByVal key As String, ByVal profileID As String, ByVal locations As Object, Optional ByVal value As Variant = "")
     Dim location As String
     location = "лист Config, таблица rngCalculationProfiles"
     If Not locations Is Nothing Then
         If locations.Exists(key) Then location = CStr(locations(key))
     End If
-    Err.Raise errorNumber, "CCalculationProfileCatalog", SectionRecipeErrorText(description, location, _
-        "Профиль " & profileID & ": параметр " & key) & vbCrLf & vbCrLf & _
+    Err.Raise errorNumber, "CCalculationProfileCatalog", InputDiagnosticText(description, location, _
+        "Профиль " & profileID & ": параметр " & key, value) & vbCrLf & vbCrLf & _
         "Проверьте указанную ячейку или восстановите строку параметра в таблице профилей."
 End Sub
 
@@ -42192,22 +42244,35 @@ Private Function FindProfileHeaderRow(ByRef data As Variant) As Long
     Dim rowIndex As Long
     Dim colIndex As Long
     For rowIndex = 1 To UBound(data, 1)
+        If VarType(data(rowIndex, 2)) = vbString Then
+            If StrComp(Trim$(CStr(data(rowIndex, 2))), "Key", vbTextCompare) = 0 Then
+                FindProfileHeaderRow = rowIndex
+                Exit Function
+            End If
+        End If
+    Next rowIndex
+    For rowIndex = 1 To UBound(data, 1)
         For colIndex = 3 To UBound(data, 2)
+            If IsError(data(rowIndex, colIndex)) Then GoTo NextColumn
             If IsProfileIdText(CStr(data(rowIndex, colIndex))) Then
                 FindProfileHeaderRow = rowIndex
                 Exit Function
             End If
+NextColumn:
         Next colIndex
     Next rowIndex
 End Function
 
 ' Собирает все столбцы с именами PR*, чтобы количество профилей
 ' не ограничивалось заранее четырьмя столбцами.
-Private Sub CollectProfileColumns(ByRef data As Variant, ByVal headerRow As Long, _
+Private Sub CollectProfileColumns(ByRef data As Variant, ByVal source As Object, ByVal headerRow As Long, _
         ByRef profileColumns() As Long, ByRef profileIds() As String, ByRef profileCount As Long)
     Dim colIndex As Long
     For colIndex = 3 To UBound(data, 2)
         Dim profileID As String
+        If IsError(data(headerRow, colIndex)) Then Err.Raise vbObjectError + 3983, "CCalculationProfileCatalog", _
+            InputDiagnosticText("Идентификатор профиля содержит ошибку Excel. Введите допустимый ID вида PR1.", _
+                source.Worksheet.name & "!" & source.cells(headerRow, colIndex).address(False, False), "Заголовок профиля", data(headerRow, colIndex))
         profileID = Trim$(CStr(data(headerRow, colIndex)))
         If IsProfileIdText(profileID) Then
             profileCount = profileCount + 1
@@ -42230,13 +42295,12 @@ End Function
 ' а не отключает проверку незаметно для пользователя.
 Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileID As String, _
         ByVal locations As Object) As Boolean
-    value = UCase$(Trim$(value))
-    Select Case value
+    Select Case UCase$(Trim$(value))
         Case "YES", "TRUE", "1", "ДА": YesNo = True
         Case "NO", "FALSE", "0", "НЕТ": YesNo = False
         Case Else
             RaiseProfileInputError vbObjectError + 3988, _
-                "Выберите Yes или No; прочитано: """ & value & """.", key, profileID, locations
+                "Значение переключателя не распознано. Выберите Yes или No.", key, profileID, locations, value
     End Select
 End Function
 
@@ -45627,7 +45691,7 @@ Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCa
     Dim i As Long
     For i = 1 To batch.count
         stage = "PutCombination " & CStr(i)
-        PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section
+        PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section, Workbook
     Next i
     If batch.WorstCombinationIndex > 0 Then PutPointLoads data, WORST_HEADER_ROW, batch, batch.WorstCombinationIndex, units
 
@@ -46045,7 +46109,7 @@ End Sub
 ' обозначения статусов, а численные коэффициенты берутся из подробных
 ' результатов того же сочетания, показанных в таблицах ниже.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
-        ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
+        ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal Workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
@@ -46053,7 +46117,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, SUM_COL_ID) = batch.combinationID(index)
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
-    data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta)
+    data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta, Workbook)
     data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.ResultAt(index).OverallMeta)
     PutPointLoads data, rowIndex, batch, index, units
 
@@ -47351,7 +47415,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationSnapshotStore
 TYPE: 2
-LINES: 563
+LINES: 564
 ====================================================================================================
 Option Explicit
 
@@ -47506,10 +47570,11 @@ Public Function LoadFile(ByVal Workbook As Object) As CCalculationSnapshot
         Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
         settings.LoadFromRange Workbook.names.item("rngSystemSettings").RefersToRange
         Err.Raise vbObjectError + 4956, "CCalculationSnapshotStore", _
-            "Файл снимка «" & CreateObject("Scripting.FileSystemObject").GetFileName(path) & "» не найден." & vbCrLf & vbCrLf & _
-            "Проверьте имя Results.SnapshotName и поместите файл в папку книги." & vbCrLf & _
+            settings.InputErrorMessage("Results.SnapshotName", _
+            "Файл снимка «" & CreateObject("Scripting.FileSystemObject").GetFileName(path) & "» не найден.", _
+            "Проверьте имя Results.SnapshotName и поместите файл в папку книги.") & vbCrLf & _
             "Если снимка ещё нет, нажмите «Сформировать сечение»." & vbCrLf & vbCrLf & _
-            "Настройка: " & settings.InputLocation("Results.SnapshotName") & vbCrLf & "Ожидаемый файл:" & vbCrLf & path
+            "Ожидаемый файл:" & vbCrLf & path
     End If
     Dim snapshot As CCalculationSnapshot: Set snapshot = ReadBinary(path)
     snapshot.Validate
@@ -48410,9 +48475,9 @@ Private Sub WriteData(ByVal Target As Object, ByVal batch As CBatchSectionCalcul
     Dim data() As Variant
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
-    Dim i As Long
+    Dim i As Long, Workbook As Object: Set Workbook = Target.Worksheet.parent
     For i = 1 To batch.count
-        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, Workbook
     Next i
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "Cracks.Data", data
@@ -48423,12 +48488,12 @@ End Sub
 
 ' Заполняет одну строку сочетания фактически рассчитанными величинами трещин.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
-        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem, ByVal Workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.combinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta, Workbook)
     data(rowIndex, COL_STATUS) = batch.ResultAt(index).CrackSummaryStatus
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
@@ -50575,7 +50640,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CLoadCombinationReader
 TYPE: 2
-LINES: 212
+LINES: 213
 ====================================================================================================
 Option Explicit
 
@@ -50697,7 +50762,7 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     Dim pathDescriptor As CLoadPathDescriptor
     Set pathDescriptor = New CLoadPathDescriptor
     If Len(pathDescriptor.NormalizeKey(loadPathText)) = 0 Then _
-        AppendError errorText, hasError, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
+        AppendError errorText, hasError, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy. " & InputDiagnosticValueLine(loadPathText)
 
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, hasError, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
     If Len(profileID) = 0 Then AppendError errorText, hasError, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
@@ -50705,7 +50770,8 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If hasError Then
         batch.AddInvalidCombination combinationID, profileID, comment, errorText, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     Else
-        batch.AddCombination combinationID, nValue, mxValue, myValue, profileID, comment, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
+        batch.AddCombination combinationID, nValue, mxValue, myValue, profileID, comment, loadPathText, rowIndex - 1, _
+            RowLocation(source, rowIndex), source.Worksheet.name & "!" & source.cells(rowIndex, 5).address(False, False)
     End If
 End Sub
 
@@ -50714,13 +50780,13 @@ End Sub
 Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String, ByRef hasError As Boolean) As Double
     Dim parsed As Double
     If IsError(value) Then
-        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel"
+        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel. " & InputDiagnosticValueLine(value)
     ElseIf IsNull(value) Then
         AppendError errorText, hasError, fieldName & " содержит недопустимое значение Null"
     ElseIf IsBlankCell(value) Then
         Exit Function
     ElseIf Not TryReadStrictDouble(value, parsed) Then
-        AppendError errorText, hasError, fieldName & " должен быть числом без разделителей разрядов"
+        AppendError errorText, hasError, fieldName & " должен быть числом без разделителей разрядов. " & InputDiagnosticValueLine(value)
     Else
         On Error GoTo ConversionFailed
         ReadOptionalLoadDouble = parsed
@@ -50744,7 +50810,7 @@ End Function
 ' Null недопустим, тогда как пустой optional-комментарий разрешен.
 Private Function ReadCellText(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String, ByRef hasError As Boolean) As String
     If IsError(value) Then
-        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel"
+        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel. " & InputDiagnosticValueLine(value)
     ElseIf IsNull(value) Then
         AppendError errorText, hasError, fieldName & " содержит недопустимое значение Null"
     Else
@@ -53937,7 +54003,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
 TYPE: 2
-LINES: 1473
+LINES: 1478
 ====================================================================================================
 Option Explicit
 
@@ -53959,6 +54025,7 @@ Private mProfileCrackWidthEnabled As Boolean ' Показывает, запра�
 Private mGeometryOnly As Boolean ' True для схемы без расчетных Stress/Strain.
 Private mGeometryOnlyTitle As String ' Заголовок схемы без НДС, например для import-preview.
 Private mGeometryOnlyNote As String ' Пояснение под схемой, если НДС намеренно отсутствует.
+Private mStateInputLocation As String ' Адрес настройки профиля для диагностики отсутствующего НДС.
 Private mGeometryReferenceItemsEnabled As Boolean ' Можно ли показывать оси/точку нагрузки без НДС.
 Private mResultUnit As String ' Единица выбранной величины из сохраненных Results.
 Private mResultCaption As String ' Название выбранной величины для легенды.
@@ -54048,7 +54115,7 @@ Public Sub LoadFromWorkbook(ByVal Workbook As Object, ByVal settings As CSystemS
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ReadOutputCombinationID(Workbook, settings)
     mLoadCaseComment = ReadBatchSummaryComment(Workbook, mLoadCase)
-    ApplyVisualizationProfile Workbook
+    ApplyVisualizationProfile Workbook, settings
 
     Dim stateFields As Object
     Set stateFields = ReadSectionProperties(Workbook)
@@ -54118,12 +54185,13 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal Workbook As Object, _
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ReadOutputCombinationID(Workbook, settings)
     mLoadCaseComment = ReadBatchSummaryComment(Workbook, mLoadCase)
-    ApplyVisualizationProfile Workbook
+    ApplyVisualizationProfile Workbook, settings
 
     mGeometryOnly = True
     mGeometryOnlyTitle = "Геометрия расчетного сечения: " & mLoadCase
     mGeometryOnlyNote = Trim$(noteText)
     If Len(mGeometryOnlyNote) = 0 Then mGeometryOnlyNote = MissingStateMessage(mLoadCase, mStateType)
+    mGeometryOnlyNote = WorkbookDialogText(mGeometryOnlyNote, Workbook)
     mGeometryReferenceItemsEnabled = True
 
     ReadSectionProperties Workbook
@@ -54143,10 +54211,10 @@ End Sub
 ' Применяет оформление профиля выбранного сочетания. ProfileId берёт
 ' из сохранённых Results, чтобы показывать фактически рассчитанный запуск
 ' независимо от последующих правок таблицы нагрузок.
-Private Sub ApplyVisualizationProfile(ByVal Workbook As Object)
+Private Sub ApplyVisualizationProfile(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader)
     mProfileId = ReadProfileIdForLoadCase(Workbook, mLoadCase)
     If Len(mProfileId) = 0 Then Err.Raise vbObjectError + 4710, "CSectionPlotDataReader", _
-        "В Results не найден ProfileId для сочетания: " & mLoadCase
+        MissingOutputCombinationMessage(settings, mLoadCase)
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
@@ -54165,6 +54233,7 @@ Private Sub ApplyVisualizationProfile(ByVal Workbook As Object)
         mProfileCrackWidthEnabled = savedProfile.CrackWidthEnabled ' Это сведения о выполненном расчёте; текущий Config управляет только видом схемы.
     End If
     mStateType = profile.VisualizationStateText
+    mStateInputLocation = profile.VisualizationStateLocation
     mVisualizationQuantity = VisualizationQuantityToText(profile.VisualizationQuantity)
     mResultPrecision = profile.VisualizationPrecisionForQuantity(profile.VisualizationQuantity)
 End Sub
@@ -54933,6 +55002,7 @@ Private Sub ResetReaderState()
     mGeometryOnly = False
     mGeometryOnlyTitle = vbNullString
     mGeometryOnlyNote = vbNullString
+    mStateInputLocation = vbNullString
     mGeometryReferenceItemsEnabled = False
     mVisualizationQuantity = vbNullString
     mLoadCase = vbNullString
@@ -55042,6 +55112,7 @@ Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType A
                 " Для запрашиваемого сочетания расчет трещин был включен, но пороговое состояние образования трещины не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."
         End If
     End If
+    MissingStateMessage = VisualizationStateInputMessage(mStateInputLocation, mProfileId, stateType, MissingStateMessage)
 End Function
 
 ' Проверяет, относится ли выбранный вид НДС к трещинам,
@@ -58317,9 +58388,9 @@ Private Sub WriteData(ByVal Target As Object, ByVal batch As CBatchSectionCalcul
     If dataRows < 1 Then dataRows = 1
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
-    Dim i As Long
+    Dim i As Long, Workbook As Object: Set Workbook = Target.Worksheet.parent
     For i = 1 To batch.count
-        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, Workbook
     Next i
 
     If Not mCapturedSnapshot Is Nothing Then
@@ -58352,14 +58423,14 @@ End Function
 ' Подробные числовые поля доступны только завершенной проверке; активная ветвь
 ' СП 35/СП 63 выбирается по сохраненному результату, без повторения формул.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
-        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
+        ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem, ByVal Workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     Dim statusText As String
     statusText = StabilityStatusText(batch, index, policy)
     data(rowIndex, 1) = batch.combinationID(index)
-    data(rowIndex, 2) = CalculationResultMessage(batch, index, batch.ResultAt(index).stabilityMeta)
+    data(rowIndex, 2) = CalculationResultMessage(batch, index, batch.ResultAt(index).stabilityMeta, Workbook)
     data(rowIndex, 3) = statusText
     PutDefaultStatusCells data, rowIndex, policy.NotApplicable
     If Not policy.IsMetaFinished(batch.ResultAt(index).stabilityMeta) Then Exit Sub
@@ -59362,9 +59433,9 @@ Private Sub WriteData(ByVal Target As Object, ByVal batch As CBatchSectionCalcul
     Dim data() As Variant
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
-    Dim i As Long
+    Dim i As Long, Workbook As Object: Set Workbook = Target.Worksheet.parent
     For i = 1 To batch.count
-        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section, Workbook
     Next i
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "Strength.Data", data
@@ -59376,12 +59447,12 @@ End Sub
 ' Заполняет одну строку подробного блока прочности.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal section As CSectionModel)
+        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal Workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.combinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta, Workbook)
     data(rowIndex, COL_STATUS) = policy.ExternalStatus(batch.ResultAt(index).StrengthMeta)
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
@@ -60066,7 +60137,7 @@ Private Function ConfigCellText(ByVal cellValue As Variant, ByVal columnName As 
         Err.Raise vbObjectError + 4309, "CSystemSettingsReader", _
             "Настройка " & keyValue & " (" & InputCellLocation(rowIndex, columnIndex) & _
             ") содержит ошибку Excel в колонке """ & columnName & _
-            """. Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+            """. " & InputDiagnosticValueLine(cellValue) & " Исправьте формулу или введите допустимое значение вместо ошибки Excel."
     End If
     ConfigCellText = Trim$(CStr(cellValue))
 End Function
@@ -60299,7 +60370,7 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
     Dim value As String, valueError As String, valueHasError As Boolean
     If IsError(data(rowIndex, columnIndex)) Then
         valueHasError = True
-        valueError = DeferredInputError(key, InputCellLocation(rowIndex, columnIndex))
+        valueError = DeferredInputError(key, InputCellLocation(rowIndex, columnIndex), data(rowIndex, columnIndex))
     Else
         value = ConfigCellText(data(rowIndex, columnIndex), "значение", rowIndex, key, False, columnIndex)
     End If
@@ -60307,9 +60378,9 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
 End Sub
 
 ' Возвращает сообщение о формуле с ошибкой по фактическому адресу настройки.
-Private Function DeferredInputError(ByVal key As String, ByVal location As String) As String
+Private Function DeferredInputError(ByVal key As String, ByVal location As String, ByVal value As Variant) As String
     DeferredInputError = "Настройка " & key & " (" & location & _
-        ") содержит ошибку Excel в колонке ""значение"". " & _
+        ") содержит ошибку Excel в колонке ""значение"". " & InputDiagnosticValueLine(value) & " " & _
         "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
 End Function
 
@@ -60338,7 +60409,7 @@ Public Sub RefreshNamedFormulaValue(ByVal Workbook As Object, ByVal key As Strin
     mValues(index) = vbNullString
     mValueHasError(index) = IsError(value)
     If mValueHasError(index) Then
-        mValueErrors(index) = DeferredInputError(key, location)
+        mValueErrors(index) = DeferredInputError(key, location, value)
     Else
         mValues(index) = Trim$(CStr(value))
         mValueErrors(index) = vbNullString
@@ -60401,7 +60472,7 @@ Public Function InputErrorMessage(ByVal key As String, ByVal reason As String, B
     InputErrorMessage = "Настройка " & key & " (" & location & "): " & reason
     If index > 0 Then
         If Len(mValues(index)) > 0 Then
-            InputErrorMessage = InputErrorMessage & " Введённое значение: """ & mValues(index) & """."
+            InputErrorMessage = InputErrorMessage & " " & InputDiagnosticValueLine(mValues(index))
         Else
             InputErrorMessage = InputErrorMessage & " Ячейка значения не заполнена."
         End If
@@ -61208,7 +61279,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 2326
+LINES: 2329
 ====================================================================================================
 Option Explicit
 
@@ -61463,9 +61534,7 @@ Private Sub ReadResultsExportState(ByVal Workbook As Object, ByVal settings As C
     combinationID = ReadOutputCombinationID(Workbook, settings)
     profileID = ReadProfileIdForLoadCase(Workbook, combinationID)
     If Len(profileID) = 0 Then Err.Raise vbObjectError + 4366, "ReadResultsExportState", _
-        settings.InputErrorMessage("Output.CombinationID", _
-            "В сохраненных Results не найдено сочетание " & combinationID & " с расчетным профилем.", _
-            "Выберите Output.CombinationMode = Worst либо User и ID сохранённого сочетания; для новых нагрузок сначала выполните расчёт.")
+        MissingOutputCombinationMessage(settings, combinationID)
     Set section = ReadSectionGeometryFromResults(Workbook, "Results")
 
     Dim profiles As CCalculationProfileCatalog
@@ -61495,6 +61564,11 @@ Private Sub ReadResultsExportState(ByVal Workbook As Object, ByVal settings As C
 Failed:
     Dim errorNumber As Long, errorSource As String, errorText As String
     errorNumber = Err.number: errorSource = Err.source: errorText = Err.description
+    If Not profile Is Nothing Then
+        If errorNumber = vbObjectError + 4354 Or errorNumber = vbObjectError + 4361 And _
+                InStr(1, errorText, "Запрашиваемое состояние", vbBinaryCompare) = 1 Then _
+            errorText = VisualizationStateInputMessage(profile.VisualizationStateLocation, profileID, stateType, errorText)
+    End If
     EndSectionSnapshotRead
     Err.Raise errorNumber, errorSource, errorText
 End Sub
@@ -61567,8 +61641,8 @@ Private Sub ReadElementResultsForCombination(ByVal Workbook As Object, ByVal res
 
     Dim data As Variant
     data = ReadElementResultTable(Workbook, combinationID, stateType)
-    If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4352, "ReadElementResultsForCombination", _
-        "На листе Results нет таблицы результатов НДМ. Сначала выполните расчет."
+    If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4354, "ReadElementResultsForCombination", _
+        MissingExportStateMessage(combinationID, stateType)
 
     Dim colCombination As Long: colCombination = ResultColumn(data, "LoadCase")
     Dim colStateType As Long: colStateType = ResultColumn(data, "StateType")
@@ -63801,7 +63875,7 @@ Private Function TryUpdateCalculatedSnapshotPlot(ByVal Workbook As Object, ByVal
     Exit Function
 Failed:
     plotHasWarning = True
-    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & _
+    TryUpdateCalculatedSnapshotPlot = "Предупреждение:" & vbCrLf & "Схема не обновлена. Расчётные результаты сохранены." & vbCrLf & vbCrLf & _
         Err.description & vbCrLf & "Исправьте настройки оформления и нажмите «Обновить схему и результаты». Повторный расчёт не требуется."
 End Function
 
@@ -64342,7 +64416,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modSectionIllustrations
 TYPE: 1
-LINES: 294
+LINES: 306
 ====================================================================================================
 Option Explicit
 
@@ -64378,13 +64452,13 @@ Public Sub SwitchSectionPicture()
     Set selector = SectionIllustrationSelector()
     value = selector.value2
     If IsError(value) Then Err.Raise vbObjectError + 2801, , _
-        "В ячейке " & IllustrationAddress(selector) & " ошибка Excel. Выберите имя рисунка из списка."
+        IllustrationInputMessage(selector, value, "Ячейка содержит ошибку Excel.")
     pictureName = CStr(value)
     If Len(Trim$(pictureName)) = 0 Then Err.Raise vbObjectError + 2801, , _
-        "Выберите имя рисунка из списка в ячейке " & IllustrationAddress(selector) & "."
+        IllustrationInputMessage(selector, pictureName, "Имя рисунка не задано.")
 
     action = "проверка исходного рисунка"
-    Set original = FindIllustration(ThisWorkbook.Worksheets(SOURCE_SHEET), pictureName)
+    Set original = FindIllustration(ThisWorkbook.Worksheets(SOURCE_SHEET), pictureName, selector)
     action = "проверка рамки CurrentSection"
     Set sheet = ThisWorkbook.Worksheets(TARGET_SHEET)
     Set frame = FindIllustration(sheet, TARGET_PICTURE)
@@ -64526,6 +64600,12 @@ RestoreState:
     If number <> 0 Then Err.Raise number, "SwitchSectionPicture", description
 End Sub
 
+' Поясняет ошибку выбора рисунка и указывает ячейку именованного селектора.
+Private Function IllustrationInputMessage(ByVal selector As range, ByVal value As Variant, ByVal reason As String) As String
+    IllustrationInputMessage = InputDiagnosticText(reason & " Выберите имя рисунка из списка.", _
+        IllustrationAddress(selector), "Выбор иллюстрации сечения", value)
+End Function
+
 ' Адрес ячейки нужен для диагностики. При недоступной ячейке возвращается имя диапазона.
 Private Function IllustrationAddress(ByVal selector As range) As String
     IllustrationAddress = SELECTOR_NAME
@@ -64542,15 +64622,21 @@ Private Function ActiveIllustrationWindow() As Long
 End Function
 
 ' Находит обычный рисунок по имени на заданном листе и объясняет, как восстановить отсутствующий объект.
-Private Function FindIllustration(ByVal sheet As Worksheet, ByVal pictureName As String) As shape
+Private Function FindIllustration(ByVal sheet As Worksheet, ByVal pictureName As String, Optional ByVal selector As range = Nothing) As shape
     Dim item As shape
     On Error Resume Next
     Set item = sheet.shapes(pictureName)
     On Error GoTo 0
-    If item Is Nothing Then Err.Raise vbObjectError + 2801, , _
-        "Рисунок «" & pictureName & "» на листе «" & sheet.name & "» отсутствует. Вставьте рисунок и присвойте ему это имя."
-    If item.Type <> msoPicture Then Err.Raise vbObjectError + 2801, , _
-        "Объект «" & pictureName & "» на листе «" & sheet.name & "» должен быть обычным рисунком Excel."
+    Dim reason As String
+    If item Is Nothing Then
+        reason = "Рисунок «" & pictureName & "» на листе «" & sheet.name & "» отсутствует. Вставьте рисунок и присвойте ему это имя."
+    ElseIf item.Type <> msoPicture Then
+        reason = "Объект «" & pictureName & "» на листе «" & sheet.name & "» должен быть обычным рисунком Excel."
+    End If
+    If Len(reason) > 0 Then
+        If Not selector Is Nothing Then reason = IllustrationInputMessage(selector, pictureName, reason)
+        Err.Raise vbObjectError + 2801, , reason
+    End If
     Set FindIllustration = item
 End Function
 
@@ -64860,7 +64946,7 @@ End Function
 ====================================================================================================
 COMPONENT: modSectionSnapshot
 TYPE: 1
-LINES: 1373
+LINES: 1389
 ====================================================================================================
 Option Explicit
 Private mTestBoundaryFullReads As Long, mTestBoundaryHashReads As Long ' ДЛЯ ТЕСТОВ: число полных и подтверждённых хешем элементов.
@@ -65035,6 +65121,22 @@ Public Function ReadOutputCombinationID(ByVal Workbook As Object, ByVal settings
         settings.InputErrorMessage("Output.CombinationMode", _
             "В сохранённом снимке нет определяющего или другого рассчитанного сочетания для режима Worst.", _
             "Выполните расчёт либо выберите User и ID сочетания, уже сохранённого в текущем снимке.")
+End Function
+
+' Называет действующий селектор сочетания. В Worst поле ручного ID не читается.
+Public Function MissingOutputCombinationMessage(ByVal settings As CSystemSettingsReader, ByVal combinationID As String) As String
+    Dim key As String: key = "Output.CombinationID"
+    If settings.GetRequiredChoice("Output.CombinationMode", Array("Worst", "User")) = "Worst" Then key = "General.WorstCombinationCriterion"
+    MissingOutputCombinationMessage = settings.InputErrorMessage(key, _
+        "В сохранённых результатах не найдено сочетание «" & combinationID & "» с расчётным профилем.", _
+        "Выберите сохранённое сочетание. Для новых нагрузок выполните расчёт.")
+End Function
+
+' Указывает настройку вывода состояния, когда требуемое НДС отсутствует в снимке.
+Public Function VisualizationStateInputMessage(ByVal location As String, ByVal profileID As String, _
+        ByVal stateType As String, ByVal reason As String) As String
+    If Len(location) = 0 Then VisualizationStateInputMessage = reason: Exit Function
+    VisualizationStateInputMessage = InputDiagnosticText(reason, location, "Профиль " & profileID & ": параметр Visualization.State", stateType)
 End Function
 
 ' Возвращает первое сохранённое сочетание, если верхняя сводка не содержит Worst.
@@ -66492,7 +66594,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1384
+LINES: 1391
 ====================================================================================================
 Option Explicit
 
@@ -66612,9 +66714,13 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal Workbook As Object, Optional ByVal
                 ClearSectionPlotForNoData Workbook, _
                     "Схема не обновлена: в Results нет выбранного состояния НДС.", containerNotice
                 If raiseIfNoData Then
+                    If plotLoadErrorNumber = vbObjectError + 4710 Then _
+                        Err.Raise plotLoadErrorNumber, "UpdateSectionPlotForWorkbook", plotLoadErrorDescription
                     Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
                         WorkbookMessageParagraph("В Results нет выбранного состояния для схемы. Выполните расчет или проверьте ProfileId и Visualization.State.", containerNotice)
                 End If
+                If plotLoadErrorNumber = vbObjectError + 4710 Then _
+                    containerNotice = WorkbookMessageParagraph(containerNotice, plotLoadErrorDescription)
                 Exit Sub
             End If
 
@@ -66716,6 +66822,7 @@ Public Function FormSectionForWorkbook(ByVal Workbook As Object, Optional ByVal 
     Dim completed As Boolean, message As String
     message = FormSectionCore(Workbook, startedAt, informationEnabled, requiresAttention, completed)
     If completed Then message = FinishWorkbookAction(Workbook, message, startedAt, "Время формирования сечения", requiresAttention)
+    If requiresAttention Then message = WorkbookDialogText(message, Workbook)
     FormSectionForWorkbook = message
 End Function
 
@@ -66846,6 +66953,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
         message = FinishWorkbookAction(Workbook, message, startedAt, "Время расчёта", requiresAttention, True, savedRunID)
         message = WorkbookMessageParagraph(message, "Данные сохранены " & destination & ".")
     End If
+    If requiresAttention Then message = WorkbookDialogText(message, Workbook)
     RunSectionCalculationForWorkbook = message
 End Function
 
@@ -67583,9 +67691,9 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal Workbook As Object, _
     For rowIndex = 2 To UBound(values, 1)
         If IsError(values(rowIndex, 1)) Or IsNull(values(rowIndex, 1)) Then
             RecordDurationTableError batch, activeIDs, _
-                "В таблице rngStabilityDurationLoads ссылка на сочетание (" & _
-                range.Worksheet.name & "!" & range.cells(rowIndex, 1).address(False, False) & _
-                ") содержит ошибку. Исправьте формулу или Combination ID; без этой ссылки нельзя сопоставить дополнительные нагрузки."
+                InputDiagnosticText("Ссылка на сочетание содержит ошибку. Исправьте формулу или Combination ID; без этой ссылки нельзя сопоставить дополнительные нагрузки.", _
+                    range.Worksheet.name & "!" & range.cells(rowIndex, 1).address(False, False), "Дополнительные нагрузки устойчивости", _
+                    values(rowIndex, 1))
             Exit Sub
         End If
         Dim combinationID As String
@@ -67639,14 +67747,14 @@ End Sub
 Private Function TryReadDurationLoad(ByVal value As Variant, ByVal component As Long, _
         ByVal units As CUnitSystem, ByRef internalValue As Double, ByRef reason As String) As Boolean
     internalValue = 0#: reason = vbNullString
-    If IsError(value) Then reason = "ячейка содержит ошибку формулы Excel.": Exit Function
+    If IsError(value) Then reason = "ячейка содержит ошибку формулы Excel. " & InputDiagnosticValueLine(value): Exit Function
     If IsNull(value) Then reason = "значение не определено.": Exit Function
     If IsEmpty(value) Then TryReadDurationLoad = True: Exit Function
     If VarType(value) = vbString Then
         If Len(Trim$(CStr(value))) = 0 Then TryReadDurationLoad = True: Exit Function
     End If
     Dim parsed As Double
-    If Not TryReadStrictDouble(value, parsed) Then reason = "вместо числа задан текст, разделители разрядов или другой недопустимый тип значения.": Exit Function
+    If Not TryReadStrictDouble(value, parsed) Then reason = "вместо числа задан текст, разделители разрядов или другой недопустимый тип значения. " & InputDiagnosticValueLine(value): Exit Function
     On Error GoTo invalidNumber
     Select Case component
         Case 2: internalValue = units.InputForceToInternal(parsed)
@@ -67711,6 +67819,7 @@ Public Function ReadSP35Table721FromWorkbook(ByVal Workbook As Object, ByRef inp
             address = address & range.address(False, False)
         End If
         inputError = "Таблица 7.21 СП 35, " & address & ": " & reason
+        If row > 0 And column > 0 Then inputError = inputError & " " & InputDiagnosticValueLine(data(row, column))
     End If
     ReadSP35Table721FromWorkbook = data
     Exit Function
@@ -67882,7 +67991,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
-LINES: 534
+LINES: 544
 ====================================================================================================
 Option Explicit
 
@@ -68142,7 +68251,7 @@ End Function
 ' Дополняет готовое пояснение проверки номером сочетания и сохранённым адресом ввода.
 ' Статус и физическую причину определяют расчётные классы; здесь меняется только текст.
 Public Function CalculationResultMessage(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal meta As CResultMeta) As String
+        ByVal meta As CResultMeta, Optional ByVal Workbook As Object = Nothing) As String
     If meta Is Nothing Then Exit Function
     Dim reason As String, reference As String, parameterReferences As String
     reason = Trim$(meta.resultComment)
@@ -68154,6 +68263,10 @@ Public Function CalculationResultMessage(ByVal batch As CBatchSectionCalculator,
     If Len(parameterReferences) > 0 Then CalculationResultMessage = CalculationResultMessage & " " & parameterReferences
     reference = batch.sourceReference(index)
     If Len(reference) > 0 Then CalculationResultMessage = CalculationResultMessage & " Исходная строка сочетания: " & reference & "."
+    If Not Workbook Is Nothing Then
+        If meta.InternalStatus = rsInvalidInput Or meta.InternalStatus = rsInvalidConfiguration Then _
+            CalculationResultMessage = ErrorInputAddresses(Workbook, CalculationResultMessage)
+    End If
 End Function
 
 ' Распознаёт только общее системное описание Excel, которое само по себе не называет причину.
@@ -68219,22 +68332,28 @@ Private Function ErrorInputAddresses(ByVal Workbook As Object, ByVal reason As S
     direct.IgnoreCase = True
     direct.pattern = "^=(?:('(?:[^']|'')+'|[\w.\u0080-\uFFFF]+)!)?(" & INPUT_CELL_A1 & ")$"
 
-    Dim blocks As Variant, i As Long, lineBreak As Long, text As String, heading As String
+    Dim blocks As Variant, i As Long, lineBreak As Long, text As String, heading As Variant, headingAt As Long
     blocks = split(reason, paragraph)
     For i = LBound(blocks) To UBound(blocks)
         text = CStr(blocks(i))
-        lineBreak = InStr(1, text, vbCrLf, vbBinaryCompare)
-        If lineBreak > 0 Then
-            heading = left$(text, lineBreak - 1)
-            Select Case heading
-                Case "Адреса ячеек:", "Подробности и адреса полей:"
-                    blocks(i) = left$(text, lineBreak + 1) & ResolvedInputAddressBlock(Workbook, mid$(text, lineBreak + 2), locations, direct)
-            End Select
-        End If
+        For Each heading In Array("Адреса ячеек:", "Подробности и адреса полей:")
+            headingAt = InStr(1, vbCrLf & text, vbCrLf & CStr(heading) & vbCrLf, vbBinaryCompare)
+            If headingAt > 0 Then
+                lineBreak = headingAt + Len(CStr(heading)) - 1
+                text = left$(text, lineBreak + 2) & ResolvedInputAddressBlock(Workbook, mid$(text, lineBreak + 3), locations, direct)
+            End If
+        Next heading
+        blocks(i) = text
     Next i
     text = Join(blocks, paragraph)
     ' Ошибки отдельных сочетаний содержат поле и ячейку в самой строке пояснения.
-    locations.pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My|ProfileId|CombinationID|LoadPath|Комментарий), )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=[ :;,.])(?![ \t]*\u27F6)"
+    locations.pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My|ProfileId|CombinationID|LoadPath|Комментарий)(?: \(rngLoadCombinations\))?, )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=$|[ ;,.\r\n]|: )(?![ \t]*\u27F6)"
+    text = ResolvedInputAddressBlock(Workbook, text, locations, direct)
+    locations.pattern = "(^|[ \t\n])(Таблица 7\.21 СП 35, )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=: )"
+    text = ResolvedInputAddressBlock(Workbook, text, locations, direct)
+    locations.pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My) \()('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=\))"
+    text = ResolvedInputAddressBlock(Workbook, text, locations, direct)
+    locations.pattern = "(^|[ \t\n])((?:Настройка [\w.]+ \()|(?:Таблица [^\r\n()]+ \())лист ('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?), ячейка (" & INPUT_CELL_A1 & ")(?=\))"
     text = ResolvedInputAddressBlock(Workbook, text, locations, direct)
     locations.pattern = "(^|[ \t\n])([A-Za-z][\w.]*: )лист ('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?), ячейка (" & INPUT_CELL_A1 & ")(?=\.)"
     ErrorInputAddresses = ResolvedInputAddressBlock(Workbook, text, locations, direct)
@@ -70311,7 +70430,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestAudit02Api
 TYPE: 1
-LINES: 2086
+LINES: 2108
 ====================================================================================================
 Option Explicit
 
@@ -70420,6 +70539,19 @@ Private Sub TestInputChainsInDialogs()
     TestCheck "presentation.chains.loadIdempotent", WorkbookDialogText(text, fixture) = text
     text = WorkbookDialogText("Адреса ячеек:" & vbCrLf & "Config!B31", fixture)
     TestCheck "presentation.chains.multipleSources", right$(text, Len("Config!B31" & arrow & "Расчет!L23")) = "Config!B31" & arrow & "Расчет!L23"
+    text = WorkbookDialogText("Предупреждение:" & vbCrLf & "Схема не обновлена." & vbCrLf & _
+        SectionRecipeErrorText("Обязательное значение не задано.", "Config!B109", "Профиль PR1: параметр Visualization.State"), fixture)
+    TestCheck "presentation.chains.nestedPlotWarning", InStr(text, "Адреса ячеек:" & vbCrLf & "Config!B109" & arrow & "Расчет!L20" & arrow & "Расчет!L22") > 0
+    TestCheck "presentation.chains.nestedPlotWarningStable", WorkbookDialogText(text, fixture) = text
+    text = WorkbookDialogText(VisualizationStateInputMessage("Config!B29", "PR1", "CrackedState", "Запрашиваемое состояние не найдено в Results."), fixture)
+    TestCheck "presentation.chains.missingState", InStr(text, "Config!B29" & arrow & "Расчет!L21") > 0 And InStr(text, "Введённое значение: «CrackedState».") > 0
+    TestCheck "presentation.chains.formulaErrorValue", InputDiagnosticValueLine(CVErr(2007)) = "Введённое значение: «#DIV/0!»."
+    text = WorkbookDialogText("Дополнительные нагрузки: N (Config!B29): неверное значение." & vbCrLf & _
+        "Таблица 7.21 СП 35, Config!B31: неверное значение.", fixture)
+    TestCheck "presentation.chains.durationLoad", InStr(text, "N (Config!B29" & arrow & "Расчет!L21)") > 0
+    TestCheck "presentation.chains.sp35Table", InStr(text, "Таблица 7.21 СП 35, Config!B31" & arrow & "Расчет!L23:") > 0
+    text = CalculationResultMessageForTest(fixture)
+    TestCheck "presentation.chains.resultComment", InStr(text, "Config!B29" & arrow & "Расчет!L21") > 0
     fixture.Close False
     Exit Sub
 Failed:
@@ -70429,6 +70561,15 @@ Failed:
     On Error GoTo 0
     Err.Raise number, "TestInputChainsInDialogs", reason
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет адресную диагностику прямо в ResultComment, до оформления окна.
+Private Function CalculationResultMessageForTest(ByVal Workbook As Object) As String
+    Dim batch As New CBatchSectionCalculator, meta As New CResultMeta
+    batch.AddCombination "TEST", 1#, 0#, 0#, "PR1", vbNullString
+    meta.SetResult rsInvalidInput, rcInvalidInput, rkGeneric, "Настройка Mesh.MinElementArea (лист Config, ячейка B29): неверное значение."
+    CalculationResultMessageForTest = CalculationResultMessage(batch, 1, meta, Workbook)
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Общий отказ Excel не считается ошибкой геометрии; подтверждённая защита и технический текст показаны отдельно.
@@ -132673,7 +132814,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 9808
+LINES: 9831
 ====================================================================================================
 Option Explicit
 
@@ -139521,6 +139662,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
     Dim keys As Variant, entry As Variant, invalid As Variant, key As String, row As Long, i As Long
     Dim numericValue As Boolean, oldValue As Variant, description As String, code As Long, prefix As String
     Dim result As Double, text As String, concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
+    Dim coupledCell As Object, coupledFormula As Variant, arrow As String, formatted As String
     On Error GoTo Failed
     Set systemRange = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
     Set concreteRange = ThisWorkbook.names.item("rngConcreteMaterialParameters").RefersToRange
@@ -139598,8 +139740,29 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
         Next row
         If cell Is Nothing Then Err.Raise 5, , "Не найдена материальная строка " & CStr(entry(1))
         oldValue = cell.formula
+        Set coupledCell = Nothing
+        If CLng(entry(2)) = 3 Then
+            Set coupledCell = cell.offset(0, -1)
+            If StrComp(Replace$(CStr(coupledCell.formula), "$", ""), "=" & cell.address(False, False), vbTextCompare) <> 0 Then Set coupledCell = Nothing
+        End If
+        If Not coupledCell Is Nothing Then coupledFormula = coupledCell.formula
         For Each invalid In Array("", "TODO", "abc", 0#, CVErr(xlErrValue))
             cell.value2 = invalid
+            If Not coupledCell Is Nothing Then
+                If IsError(invalid) Then
+                    arrow = " " & ChrW$(&H27F6) & " "
+                    On Error Resume Next
+                    Err.clear
+                    Set settings = New CSystemSettingsReader: settings.LoadFromRange Target
+                    code = Err.number: description = Err.description
+                    On Error GoTo Failed
+                    formatted = WorkbookDialogText(description, ThisWorkbook)
+                    TestAssertTrue stats, "audit03.settingMessage.material.dependent." & key, code <> 0 And _
+                        InStr(1, formatted, "Config!" & coupledCell.address(False, False) & arrow & "Config!" & cell.address(False, False), vbBinaryCompare) > 0 And _
+                        InStr(1, formatted, "#VALUE!", vbBinaryCompare) > 0
+                End If
+                coupledCell.value2 = 1# ' Изолируем диагностический контракт второй стороны от прямой ссылки первой.
+            End If
             On Error Resume Next
             Err.clear
             Set settings = New CSystemSettingsReader: settings.LoadFromRange Target
@@ -139618,6 +139781,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
             If IsError(invalid) Then text = CStr(entry(1)) Else text = key
             TestAudit03AssertSettingMessage stats, prefix, description, text, cell
             cell.formula = oldValue
+            If Not coupledCell Is Nothing Then coupledCell.formula = coupledFormula
         Next invalid
     Next entry
 

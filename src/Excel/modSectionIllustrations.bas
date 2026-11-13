@@ -33,13 +33,13 @@ Public Sub SwitchSectionPicture()
     Set selector = SectionIllustrationSelector()
     value = selector.Value2
     If IsError(value) Then Err.Raise vbObjectError + 2801, , _
-        "В ячейке " & IllustrationAddress(selector) & " ошибка Excel. Выберите имя рисунка из списка."
+        IllustrationInputMessage(selector, value, "Ячейка содержит ошибку Excel.")
     pictureName = CStr(value)
     If Len(Trim$(pictureName)) = 0 Then Err.Raise vbObjectError + 2801, , _
-        "Выберите имя рисунка из списка в ячейке " & IllustrationAddress(selector) & "."
+        IllustrationInputMessage(selector, pictureName, "Имя рисунка не задано.")
 
     action = "проверка исходного рисунка"
-    Set original = FindIllustration(ThisWorkbook.Worksheets(SOURCE_SHEET), pictureName)
+    Set original = FindIllustration(ThisWorkbook.Worksheets(SOURCE_SHEET), pictureName, selector)
     action = "проверка рамки CurrentSection"
     Set sheet = ThisWorkbook.Worksheets(TARGET_SHEET)
     Set frame = FindIllustration(sheet, TARGET_PICTURE)
@@ -181,6 +181,12 @@ RestoreState:
     If number <> 0 Then Err.Raise number, "SwitchSectionPicture", description
 End Sub
 
+' Поясняет ошибку выбора рисунка и указывает ячейку именованного селектора.
+Private Function IllustrationInputMessage(ByVal selector As Range, ByVal value As Variant, ByVal reason As String) As String
+    IllustrationInputMessage = InputDiagnosticText(reason & " Выберите имя рисунка из списка.", _
+        IllustrationAddress(selector), "Выбор иллюстрации сечения", value)
+End Function
+
 ' Адрес ячейки нужен для диагностики. При недоступной ячейке возвращается имя диапазона.
 Private Function IllustrationAddress(ByVal selector As Range) As String
     IllustrationAddress = SELECTOR_NAME
@@ -197,15 +203,21 @@ Private Function ActiveIllustrationWindow() As Long
 End Function
 
 ' Находит обычный рисунок по имени на заданном листе и объясняет, как восстановить отсутствующий объект.
-Private Function FindIllustration(ByVal sheet As Worksheet, ByVal pictureName As String) As Shape
+Private Function FindIllustration(ByVal sheet As Worksheet, ByVal pictureName As String, Optional ByVal selector As Range = Nothing) As Shape
     Dim item As Shape
     On Error Resume Next
     Set item = sheet.Shapes(pictureName)
     On Error GoTo 0
-    If item Is Nothing Then Err.Raise vbObjectError + 2801, , _
-        "Рисунок «" & pictureName & "» на листе «" & sheet.Name & "» отсутствует. Вставьте рисунок и присвойте ему это имя."
-    If item.Type <> msoPicture Then Err.Raise vbObjectError + 2801, , _
-        "Объект «" & pictureName & "» на листе «" & sheet.Name & "» должен быть обычным рисунком Excel."
+    Dim reason As String
+    If item Is Nothing Then
+        reason = "Рисунок «" & pictureName & "» на листе «" & sheet.Name & "» отсутствует. Вставьте рисунок и присвойте ему это имя."
+    ElseIf item.Type <> msoPicture Then
+        reason = "Объект «" & pictureName & "» на листе «" & sheet.Name & "» должен быть обычным рисунком Excel."
+    End If
+    If Len(reason) > 0 Then
+        If Not selector Is Nothing Then reason = IllustrationInputMessage(selector, pictureName, reason)
+        Err.Raise vbObjectError + 2801, , reason
+    End If
     Set FindIllustration = item
 End Function
 

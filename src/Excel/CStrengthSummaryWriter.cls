@@ -426,9 +426,9 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     Dim data() As Variant
     ReDim data(1 To dataRows, 1 To TOTAL_COLUMNS)
 
-    Dim i As Long
+    Dim i As Long, workbook As Object: Set workbook = target.Worksheet.Parent
     For i = 1 To batch.Count
-        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section
+        PutCombination data, OutputDataOffset(batch, i, dataRows), batch, i, units, section, workbook
     Next i
     If Not mCapturedSnapshot Is Nothing Then
         mCapturedSnapshot.AddTable "Strength.Data", data
@@ -440,12 +440,12 @@ End Sub
 ' Заполняет одну строку подробного блока прочности.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
-        ByVal units As CUnitSystem, ByVal section As CSectionModel)
+        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta, workbook)
     data(rowIndex, COL_STATUS) = policy.ExternalStatus(batch.ResultAt(index).StrengthMeta)
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable

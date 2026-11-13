@@ -29,6 +29,7 @@ Private Type TCombinationInput
     CombinationID As String ' Номер сочетания из входной таблицы.
     SourceDataOffset As Long ' Смещение строки сочетания от начала входной таблицы.
     SourceReference As String ' Фактический адрес исходной строки, переданный ридером без зависимости расчёта от Excel.
+    ProfileReference As String ' Адрес ячейки ProfileId для отсутствующего профиля.
     N As Double ' Продольная сила во внутренних единицах, Н.
     Mx As Double ' Момент Mx во внутренних единицах, Н*мм.
     My As Double ' Момент My во внутренних единицах, Н*мм.
@@ -494,8 +495,9 @@ End Sub
 Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
         Optional ByVal loadPathText As String = vbNullString, Optional ByVal sourceDataOffset As Long = 0, _
-        Optional ByVal sourceReference As String = vbNullString)
+        Optional ByVal sourceReference As String = vbNullString, Optional ByVal profileReference As String = vbNullString)
     AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, loadPathText, sourceDataOffset, sourceReference
+    mInputs(mCount).ProfileReference = profileReference
 End Sub
 
 ' Сохраняет сочетание с ошибкой ввода для вывода причины в отчёте.
@@ -814,8 +816,12 @@ Private Sub RunCombination(ByVal index As Long)
 
     Dim profile As CCalculationProfile
     If Not mProfiles.HasProfile(mInputs(index).ProfileId) Then
-        MarkInvalid index, "Расчетный профиль " & mInputs(index).ProfileId & _
+        Dim missingProfile As String
+        missingProfile = "Расчетный профиль " & mInputs(index).ProfileId & _
             " не найден. Выберите ProfileId из таблицы расчетных профилей на листе Config."
+        If Len(mInputs(index).ProfileReference) > 0 Then missingProfile = InputDiagnosticText(missingProfile, _
+            mInputs(index).ProfileReference, "Параметр ProfileId", mInputs(index).ProfileId)
+        MarkInvalid index, missingProfile
         Exit Sub
     End If
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)

@@ -252,9 +252,7 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     combinationID = ReadOutputCombinationID(workbook, settings)
     profileId = ReadProfileIdForLoadCase(workbook, combinationID)
     If Len(profileId) = 0 Then Err.Raise vbObjectError + 4366, "ReadResultsExportState", _
-        settings.InputErrorMessage("Output.CombinationID", _
-            "В сохраненных Results не найдено сочетание " & combinationID & " с расчетным профилем.", _
-            "Выберите Output.CombinationMode = Worst либо User и ID сохранённого сочетания; для новых нагрузок сначала выполните расчёт.")
+        MissingOutputCombinationMessage(settings, combinationID)
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     Dim profiles As CCalculationProfileCatalog
@@ -284,6 +282,11 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
 Failed:
     Dim errorNumber As Long, errorSource As String, errorText As String
     errorNumber = Err.Number: errorSource = Err.Source: errorText = Err.Description
+    If Not profile Is Nothing Then
+        If errorNumber = vbObjectError + 4354 Or errorNumber = vbObjectError + 4361 And _
+                InStr(1, errorText, "Запрашиваемое состояние", vbBinaryCompare) = 1 Then _
+            errorText = VisualizationStateInputMessage(profile.VisualizationStateLocation, profileId, stateType, errorText)
+    End If
     EndSectionSnapshotRead
     Err.Raise errorNumber, errorSource, errorText
 End Sub
@@ -356,8 +359,8 @@ Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal res
 
     Dim data As Variant
     data = ReadElementResultTable(workbook, combinationID, stateType)
-    If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4352, "ReadElementResultsForCombination", _
-        "На листе Results нет таблицы результатов НДМ. Сначала выполните расчет."
+    If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4354, "ReadElementResultsForCombination", _
+        MissingExportStateMessage(combinationID, stateType)
 
     Dim colCombination As Long: colCombination = ResultColumn(data, "LoadCase")
     Dim colStateType As Long: colStateType = ResultColumn(data, "StateType")

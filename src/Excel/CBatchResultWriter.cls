@@ -164,7 +164,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     Dim i As Long
     For i = 1 To batch.Count
         stage = "PutCombination " & CStr(i)
-        PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section
+        PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section, workbook
     Next i
     If batch.WorstCombinationIndex > 0 Then PutPointLoads data, WORST_HEADER_ROW, batch, batch.WorstCombinationIndex, units
 
@@ -582,7 +582,7 @@ End Sub
 ' обозначения статусов, а численные коэффициенты берутся из подробных
 ' результатов того же сочетания, показанных в таблицах ниже.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
-        ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
+        ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal workbook As Object)
     Dim policy As CResultStatusPolicy
     Set policy = StatusPolicy()
 
@@ -590,7 +590,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, SUM_COL_ID) = batch.CombinationID(index)
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
-    data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta)
+    data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta, workbook)
     data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.ResultAt(index).OverallMeta)
     PutPointLoads data, rowIndex, batch, index, units
 

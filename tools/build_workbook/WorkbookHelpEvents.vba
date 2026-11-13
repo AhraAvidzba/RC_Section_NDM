@@ -19,7 +19,7 @@ Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
     modSectionIllustrations.SwitchSectionPicture
     Exit Sub
 Failed:
-    MsgBox "Иллюстрация не обновлена." & vbCrLf & vbCrLf & Err.Description, vbExclamation, "Выбор сечения"
+    ShowWorkbookMessage "Иллюстрация не обновлена." & vbCrLf & vbCrLf & Err.Description, vbExclamation, "Выбор сечения"
 End Sub
 
 ' После Save As переносит файл того же снимка рядом с новой книгой.

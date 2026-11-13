@@ -106,6 +106,19 @@ Private Sub TestInputChainsInDialogs()
     TestCheck "presentation.chains.loadIdempotent", WorkbookDialogText(text, fixture) = text
     text = WorkbookDialogText("Адреса ячеек:" & vbCrLf & "Config!B31", fixture)
     TestCheck "presentation.chains.multipleSources", Right$(text, Len("Config!B31" & arrow & "Расчет!L23")) = "Config!B31" & arrow & "Расчет!L23"
+    text = WorkbookDialogText("Предупреждение:" & vbCrLf & "Схема не обновлена." & vbCrLf & _
+        SectionRecipeErrorText("Обязательное значение не задано.", "Config!B109", "Профиль PR1: параметр Visualization.State"), fixture)
+    TestCheck "presentation.chains.nestedPlotWarning", InStr(text, "Адреса ячеек:" & vbCrLf & "Config!B109" & arrow & "Расчет!L20" & arrow & "Расчет!L22") > 0
+    TestCheck "presentation.chains.nestedPlotWarningStable", WorkbookDialogText(text, fixture) = text
+    text = WorkbookDialogText(VisualizationStateInputMessage("Config!B29", "PR1", "CrackedState", "Запрашиваемое состояние не найдено в Results."), fixture)
+    TestCheck "presentation.chains.missingState", InStr(text, "Config!B29" & arrow & "Расчет!L21") > 0 And InStr(text, "Введённое значение: «CrackedState».") > 0
+    TestCheck "presentation.chains.formulaErrorValue", InputDiagnosticValueLine(CVErr(2007)) = "Введённое значение: «#DIV/0!»."
+    text = WorkbookDialogText("Дополнительные нагрузки: N (Config!B29): неверное значение." & vbCrLf & _
+        "Таблица 7.21 СП 35, Config!B31: неверное значение.", fixture)
+    TestCheck "presentation.chains.durationLoad", InStr(text, "N (Config!B29" & arrow & "Расчет!L21)") > 0
+    TestCheck "presentation.chains.sp35Table", InStr(text, "Таблица 7.21 СП 35, Config!B31" & arrow & "Расчет!L23:") > 0
+    text = CalculationResultMessageForTest(fixture)
+    TestCheck "presentation.chains.resultComment", InStr(text, "Config!B29" & arrow & "Расчет!L21") > 0
     fixture.Close False
     Exit Sub
 Failed:
@@ -115,6 +128,15 @@ Failed:
     On Error GoTo 0
     Err.Raise number, "TestInputChainsInDialogs", reason
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет адресную диагностику прямо в ResultComment, до оформления окна.
+Private Function CalculationResultMessageForTest(ByVal workbook As Object) As String
+    Dim batch As New CBatchSectionCalculator, meta As New CResultMeta
+    batch.AddCombination "TEST", 1#, 0#, 0#, "PR1", vbNullString
+    meta.SetResult rsInvalidInput, rcInvalidInput, rkGeneric, "Настройка Mesh.MinElementArea (лист Config, ячейка B29): неверное значение."
+    CalculationResultMessageForTest = CalculationResultMessage(batch, 1, meta, workbook)
+End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Общий отказ Excel не считается ошибкой геометрии; подтверждённая защита и технический текст показаны отдельно.

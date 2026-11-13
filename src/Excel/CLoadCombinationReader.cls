@@ -127,7 +127,7 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     Dim pathDescriptor As CLoadPathDescriptor
     Set pathDescriptor = New CLoadPathDescriptor
     If Len(pathDescriptor.NormalizeKey(loadPathText)) = 0 Then _
-        AppendError errorText, hasError, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
+        AppendError errorText, hasError, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy. " & InputDiagnosticValueLine(loadPathText)
 
     If Len(Trim$(combinationID)) = 0 Then AppendError errorText, hasError, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
     If Len(profileId) = 0 Then AppendError errorText, hasError, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
@@ -135,7 +135,8 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If hasError Then
         batch.AddInvalidCombination combinationID, profileId, comment, errorText, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     Else
-        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
+        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1, _
+            RowLocation(source, rowIndex), source.Worksheet.Name & "!" & source.Cells(rowIndex, 5).Address(False, False)
     End If
 End Sub
 
@@ -144,13 +145,13 @@ End Sub
 Private Function ReadOptionalLoadDouble(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String, ByRef hasError As Boolean) As Double
     Dim parsed As Double
     If IsError(value) Then
-        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel"
+        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel. " & InputDiagnosticValueLine(value)
     ElseIf IsNull(value) Then
         AppendError errorText, hasError, fieldName & " содержит недопустимое значение Null"
     ElseIf IsBlankCell(value) Then
         Exit Function
     ElseIf Not TryReadStrictDouble(value, parsed) Then
-        AppendError errorText, hasError, fieldName & " должен быть числом без разделителей разрядов"
+        AppendError errorText, hasError, fieldName & " должен быть числом без разделителей разрядов. " & InputDiagnosticValueLine(value)
     Else
         On Error GoTo ConversionFailed
         ReadOptionalLoadDouble = parsed
@@ -174,7 +175,7 @@ End Function
 ' Null недопустим, тогда как пустой optional-комментарий разрешен.
 Private Function ReadCellText(ByVal value As Variant, ByVal fieldName As String, ByRef errorText As String, ByRef hasError As Boolean) As String
     If IsError(value) Then
-        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel"
+        AppendError errorText, hasError, fieldName & " содержит ошибку формулы Excel. " & InputDiagnosticValueLine(value)
     ElseIf IsNull(value) Then
         AppendError errorText, hasError, fieldName & " содержит недопустимое значение Null"
     Else
