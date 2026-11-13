@@ -34,7 +34,7 @@ End Type
 
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
-Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения."
+Private Const GEOMETRY_ONLY_EXPORT_WARNING As String = "В AutoCAD передана только геометрия сечения." & vbCrLf & vbCrLf & "Сохранённые результаты расчёта сечения отсутствуют."
 Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
 Private Const SECTION_CONTOUR_COLOR_INDEX As Long = 30 ' Наружная граница бетона: оранжевый ACI 30.
 Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отверстий: голубой ACI 4.
@@ -64,7 +64,7 @@ Public Sub ExportSectionStressToAutoCAD()
         Set acad = ConnectToRunningAutoCAD(): Set exportDocument = ActiveAutoCADDocument(acad)
         destinationMessage = AutoCADExportDestinationMessage(exportDocument)
         DrawFormedGeometryExport ThisWorkbook, section, exportSettings, contourExportCount, exportDocument
-        ShowWorkbookMessage WorkbookMessageAfterOutcome(GEOMETRY_ONLY_EXPORT_WARNING, _
+        ShowWorkbookMessage WorkbookMessageParagraph(GEOMETRY_ONLY_EXPORT_WARNING, _
             SnapshotActionDataOrigin(ThisWorkbook, "Export", True)) & vbCrLf & vbCrLf & destinationMessage, vbExclamation, "RC Section NDM"
         Exit Sub
     End If
@@ -1457,7 +1457,7 @@ Public Sub ReadAutoCADCommonMaterialLayers(ByVal settings As CSystemSettingsRead
     concreteLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.ConcreteLayer")
     rebarLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.RebarLayer")
     If StrComp(concreteLayer, rebarLayer, vbTextCompare) = 0 Then Err.Raise vbObjectError + 4405, "ReadAutoCADCommonMaterialLayers", _
-        settings.InputErrorMessage("AutoCAD.Common.RebarLayer", "Слои бетона и арматуры совпадают; тип Region нельзя определить однозначно.", _
+        settings.InputErrorMessage("AutoCAD.Common.RebarLayer", "Слои бетона и арматуры совпадают; материал элемента нельзя определить однозначно.", _
             "Введите разные имена AutoCAD.Common.ConcreteLayer и AutoCAD.Common.RebarLayer.")
 End Sub
 

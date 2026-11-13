@@ -421,6 +421,29 @@ def copy_objects(parts, template, metadata, base_path, types):
         parts[relationship_path(destination)] = serialize(relationships)
 
 
+def refresh_section_picture(parts, sheet_path):
+    """Берёт стартовый PNG из свежих иллюстраций, сохраняя оформленную рамку CurrentSection."""
+    def picture_media(owner, name):
+        relationships = xml(parts, relationship_path(owner))
+        drawing, = [relation for relation in relationships if relation.get('Type').endswith('/drawing')]
+        drawing_path = target_part(owner, drawing.get('Target'))
+        anchors = xml(parts, drawing_path)
+        picture, = [node for node in anchors.iter() if ET.QName(node).localname == 'pic' and
+                    any(child.get('name') == name for child in node.iter())]
+        properties = next(node for node in picture.iter() if ET.QName(node).localname == 'cNvPr')
+        blip = next(node for node in picture.iter() if ET.QName(node).localname == 'blip')
+        relationship, = [node for node in xml(parts, relationship_path(drawing_path))
+                         if node.get('Id') == blip.get(R + 'embed') and node.get('Type').endswith('/image')]
+        return properties, target_part(drawing_path, relationship.get('Target'))
+
+    picture, target = picture_media(sheet_path, 'CurrentSection')
+    require(bool(picture.get('descr')), 'Для стартовой иллюстрации не указан тип сечения')
+    source_sheet = sheet_parts(parts)['Сечения'][1]
+    _, source = picture_media(source_sheet, picture.get('descr'))
+    require(source.endswith('.png') and target.endswith('.png'), 'Стартовая иллюстрация должна быть PNG')
+    parts[target] = parts[source]
+
+
 def write_zip(destination, parts):
     """Записывает пакет с устойчивым порядком и временем записей."""
     with ZipFile(destination, 'w', ZIP_DEFLATED) as archive:
@@ -523,6 +546,7 @@ def apply(source, template_path, destination):
     parts['xl/workbook.xml'] = serialize(workbook)
     types, _, _ = content_types(parts)
     copy_objects(parts, template, metadata, calc_path, types)
+    refresh_section_picture(parts, calc_path)
     rel_name = 'xl/_rels/workbook.xml.rels'
     rels = xml(parts, rel_name)
     for relation in list(rels):

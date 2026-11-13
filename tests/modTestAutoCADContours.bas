@@ -60,6 +60,7 @@ Public Function RunAutoCADContourTests() As String
     TestCheckWorldCoordinateGuard
     TestCheckExactComponentAreaFilter
     TestCheckGeometryOnlyExportSource
+    TestConcreteLayerWithPolyline
     GoTo Finish
 Failed:
     TestCheck "contour.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -67,6 +68,40 @@ Finish:
     mReport = mReport & "TOTAL_AUTOCAD_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunAutoCADContourTests = mReport
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет оба материальных слоя, инерции бетона и отбрасывание физического разрыва.
+Private Sub TestConcreteLayerWithPolyline()
+    Dim importer As CAutoCADSectionModelImporter: Set importer = New CAutoCADSectionModelImporter
+    Dim space As Collection: Set space = New Collection
+    Dim source As CTestFakeAcadContour, bar As CTestFakeAcadContour
+    Set source = New CTestFakeAcadContour: Set bar = New CTestFakeAcadContour
+    source.TestInitializeLoop "AcDbPolyline", "CONCRETE", "60996", TestRectangleEdges(0#, 0#, 100#, 100#), False
+    bar.TestInitializeLoop "AcDb2dPolyline", "REBAR", "BAR", TestRectangleEdges(8#, 8#, 4#, 6#), False
+    space.Add source: space.Add bar
+    Dim model As CSectionModel, number As Long, reason As String
+    Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "A400", 0#)
+    TestCheck "materialPolyline.counts", model.ConcreteCount = 1 And model.RebarCount = 1 And model.ConcreteHasBoundary(1)
+    TestCheckArea "materialPolyline.concreteArea", model.ConcreteArea(1), 10000#
+    TestCheckArea "materialPolyline.concreteIx", model.ConcreteLocalIx(1), 100# ^ 4 / 12#
+    TestCheckArea "materialPolyline.rebarArea", model.RebarArea(1), 24#
+    TestCheckArea "materialPolyline.rebarDiameter", model.RebarDiameter(1), Sqr(96# / GEOM_PI)
+    TestCheckArea "materialPolyline.rebarX", model.RebarX(1), 10#
+    TestCheckArea "materialPolyline.rebarY", model.RebarY(1), 11#
+    TestCheck "materialPolyline.sourcesKept", Not source.TestDeleted And Not bar.TestDeleted And source.TestLastCopy.TestDeleted And bar.TestLastCopy.TestDeleted
+    Dim edges As Collection: Set edges = TestRectangleEdges(0#, 0#, 100#, 100#)
+    edges.Remove 1
+    source.TestInitializeLoop "AcDbPolyline", "CONCRETE", "60996", edges, False
+    Set model = Nothing
+    On Error Resume Next
+    Set model = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "A400", 0#)
+    number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    TestCheck "concretePolyline.rejected", number <> 0 And model Is Nothing
+    TestCheck "concretePolyline.actualCause", InStr(reason, "60996") > 0 And InStr(reason, "не замкнут") > 0
+    TestCheck "concretePolyline.noAreaHint", InStr(reason, "Mesh.MinElementArea") = 0
+    TestCheck "concretePolyline.sourceKept", Not source.TestDeleted
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' проверяет формат контуров после сохранения и открытия отдельной
@@ -307,7 +342,7 @@ Private Sub TestCheckGeometryOnlyExportSource()
         For Each key In names: savedTables.Add CStr(key), ReadPhysicalResultTable(ThisWorkbook, CStr(key)): Next key
         status = Audit02ReadExportSnapshotForTests(ThisWorkbook)
         TestCheck "geometryOnly.mode." & CStr(mode), Left$(status, 13) = "GeometryOnly|"
-        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения.") > 0
+        TestCheck "geometryOnly.warning." & CStr(mode), InStr(status, "В AutoCAD передана только геометрия сечения." & vbCrLf & vbCrLf & "Сохранённые результаты расчёта сечения отсутствуют.") > 0
         TestCheck "geometryOnly.counts." & CStr(mode), Right$(status, 4) = "|1|1"
         For Each key In names
             actual = ReadPhysicalResultTable(ThisWorkbook, CStr(key))
@@ -2628,7 +2663,7 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
             added = Audit03ExportAutoCADDocumentForTests(document, warning, destination)
             Set owned = New Collection
             For index = before To document.ModelSpace.Count - 1: owned.Add document.ModelSpace.Item(index): Next index
-            TestCheck prefix & ".warningAlways", warning = "Сохранённые результаты расчёта сечения отсутствуют." & vbCrLf & vbCrLf & "В AutoCAD передана только геометрия сечения."
+            TestCheck prefix & ".warningAlways", warning = "В AutoCAD передана только геометрия сечения." & vbCrLf & vbCrLf & "Сохранённые результаты расчёта сечения отсутствуют."
             TestCheck prefix & ".destination", destination = "Сечение выгружено в чертёж «" & CStr(document.Name) & "» — в модель."
             TestCheck prefix & ".objectCount", added = 2 + contourMode And owned.Count = added
             concreteCount = 0: rebarCount = 0: contourCount = 0

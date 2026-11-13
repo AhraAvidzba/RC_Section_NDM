@@ -42,7 +42,7 @@ Public Function ShowWorkbookMessage(ByVal message As String, _
         message = WorkbookMessageParagraph(message, drawingWarning)
         If style = vbInformation Then style = vbExclamation
     End If
-    displayText = WorkbookDialogText(message)
+    displayText = WorkbookDialogText(message, ThisWorkbook)
 #If VBA7 Then
     response = MessageBoxUnicode(CLngPtr(Application.hWnd), StrPtr(displayText), StrPtr(title), CLng(style))
 #Else
@@ -56,7 +56,7 @@ End Function
 ' Разделяет готовый текст окна на смысловые блоки, сохраняя причины, числа,
 ' идентификаторы и фактические адреса. Пояснения ячеек Results здесь не меняются.
 ' Повторное оформление не добавляет пустые строки; точки в числах и путях не разбиваются.
-Public Function WorkbookDialogText(ByVal message As String) As String
+Public Function WorkbookDialogText(ByVal message As String, Optional ByVal workbook As Object = Nothing) As String
     Dim text As String, caption As Variant, action As Variant, lines As Variant, i As Long
     text = message
     For Each caption In Array("Прочность:", "Устойчивость:", "Трещинообразование:", _
@@ -93,6 +93,7 @@ Public Function WorkbookDialogText(ByVal message As String) As String
     text = ReplaceWorkbookMessageFragment(text, vbCrLf & "По настройке Mesh.MinElementArea ", _
         vbCrLf & vbCrLf & "По настройке Mesh.MinElementArea ")
     WorkbookDialogText = TrimWorkbookMessage(text)
+    If Not workbook Is Nothing Then WorkbookDialogText = ErrorInputAddresses(workbook, WorkbookDialogText)
 End Function
 
 ' Разделяет только пояснения программы: фразы внутри кавычек остаются точными
@@ -308,38 +309,58 @@ Public Function WorkbookErrorMessage(ByVal operation As String, ByVal number As 
     If IsUnexplainedExcelError(reason) Then reason = WorkbookOperationFailureText("выполнить действие в Excel", reason)
     WorkbookErrorMessage = operation & ":" & vbCrLf & vbCrLf
     If Len(Trim$(reason)) > 0 Then
-        reason = ErrorReasonParagraphs(reason)
-        If Not workbook Is Nothing Then reason = ErrorInputAddresses(workbook, reason)
         WorkbookErrorMessage = WorkbookErrorMessage & reason
     Else
         WorkbookErrorMessage = WorkbookErrorMessage & "Программа остановилась без описания причины."
     End If
     If Len(source) > 0 Then WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & vbCrLf & "Источник ошибки: " & source & "."
     WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Код ошибки: " & CStr(number) & "."
-    WorkbookErrorMessage = WorkbookDialogText(WorkbookErrorMessage)
+    WorkbookErrorMessage = WorkbookDialogText(WorkbookErrorMessage, workbook)
 End Function
 
-' Уточняет только адресный абзац готовой ошибки. Обычное чтение входов и расчёт сюда не заходят.
+' Уточняет все адресные абзацы готового сообщения, в том числе после имени чертежа или другого контекста.
+' Обычное чтение входов и запись Results сюда не заходят.
 Private Function ErrorInputAddresses(ByVal workbook As Object, ByVal reason As String) As String
-    Const caption As String = "Адреса ячеек:" & vbCrLf
+    Const paragraph As String = vbCrLf & vbCrLf
     ErrorInputAddresses = reason
-    If Left$(reason, Len(caption)) <> caption Then Exit Function
-    Dim ending As Long, addresses As String
-    ending = InStr(Len(caption) + 1, reason, vbCrLf & vbCrLf, vbBinaryCompare)
-    If ending = 0 Then ending = Len(reason) + 1
-    addresses = Mid$(reason, Len(caption) + 1, ending - Len(caption) - 1)
+    If InStr(1, reason, "!", vbBinaryCompare) = 0 And InStr(1, reason, ", ячейка ", vbBinaryCompare) = 0 Then Exit Function
 
     On Error GoTo KeepOriginal
-    Dim locations As Object, direct As Object, matches As Object, item As Object
+    Dim locations As Object, direct As Object
     Set locations = CreateObject("VBScript.RegExp")
     locations.Global = True: locations.IgnoreCase = True
-    locations.Pattern = "(^|[\r\n;:,])([ \t]*)('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+)!(" & INPUT_CELL_A1 & ")(?=$|[ \t(;\r\n,])"
-    Set matches = locations.Execute(addresses)
-    If matches.Count = 0 Then Exit Function
+    locations.Pattern = "(^|[\r\n;:,])([ \t]*)(?:лист )?('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)(?:!|, ячейка )(" & INPUT_CELL_A1 & ")(?=$|[ \t(;\r\n,])(?![ \t]*\u27F6)" ' Поддерживает адреса из рецепта и места ввода Config; готовая цепочка не раскрывается повторно.
     Set direct = CreateObject("VBScript.RegExp")
     direct.IgnoreCase = True
     direct.Pattern = "^=(?:('(?:[^']|'')+'|[\w.\u0080-\uFFFF]+)!)?(" & INPUT_CELL_A1 & ")$"
 
+    Dim blocks As Variant, i As Long, lineBreak As Long, text As String, heading As String
+    blocks = Split(reason, paragraph)
+    For i = LBound(blocks) To UBound(blocks)
+        text = CStr(blocks(i))
+        lineBreak = InStr(1, text, vbCrLf, vbBinaryCompare)
+        If lineBreak > 0 Then
+            heading = Left$(text, lineBreak - 1)
+            Select Case heading
+                Case "Адреса ячеек:", "Подробности и адреса полей:"
+                    blocks(i) = Left$(text, lineBreak + 1) & ResolvedInputAddressBlock(workbook, Mid$(text, lineBreak + 2), locations, direct)
+            End Select
+        End If
+    Next i
+    text = Join(blocks, paragraph)
+    ' Ошибки отдельных сочетаний содержат поле и ячейку в самой строке пояснения.
+    locations.Pattern = "(^|[;:][ \t]*|\r\n)((?:N|Mx|My|ProfileId|CombinationID|LoadPath|Комментарий), )('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?)!(" & INPUT_CELL_A1 & ")(?=[ :;,.])(?![ \t]*\u27F6)"
+    text = ResolvedInputAddressBlock(workbook, text, locations, direct)
+    locations.Pattern = "(^|[ \t\n])([A-Za-z][\w.]*: )лист ('(?:[^']|'')+'|[^'!\[\]\r\n:;,()]+?), ячейка (" & INPUT_CELL_A1 & ")(?=\.)"
+    ErrorInputAddresses = ResolvedInputAddressBlock(workbook, text, locations, direct)
+KeepOriginal:
+End Function
+
+' Раскрывает отдельные ячейки из адресного блока, сохраняя подписи полей и разделители списка.
+Private Function ResolvedInputAddressBlock(ByVal workbook As Object, ByVal addresses As String, _
+        ByVal locations As Object, ByVal direct As Object) As String
+    Dim matches As Object, item As Object
+    Set matches = locations.Execute(addresses)
     Dim index As Long, offset As Long, inputChain As String
     For index = matches.Count - 1 To 0 Step -1 ' Замены справа налево сохраняют позиции остальных адресов.
         Set item = matches.Item(index)
@@ -349,8 +370,7 @@ Private Function ErrorInputAddresses(ByVal workbook As Object, ByVal reason As S
             addresses = Left$(addresses, offset) & inputChain & Mid$(addresses, item.FirstIndex + item.Length + 1)
         End If
     Next index
-    ErrorInputAddresses = caption & addresses & Mid$(reason, ending)
-KeepOriginal:
+    ResolvedInputAddressBlock = addresses
 End Function
 
 ' Возвращает подтверждённые прямые A1-ссылки до ячейки ввода или до формулы без единственного прямого адреса.
@@ -358,23 +378,28 @@ Private Function DirectInputChain(ByVal workbook As Object, ByVal sheetName As S
         ByVal address As String, ByVal direct As Object) As String
     On Error GoTo Unresolved
     Dim sheet As Object, cell As Object, matches As Object, hop As Long, nextSheet As String
+    Dim visited As Object, cellKey As String
     Dim path As String, cellAddress As String, arrow As String
     arrow = " " & ChrW$(&H27F6) & " " ' Длинная Unicode-стрелка передаётся в MessageBoxW без преобразования в ANSI.
     Set sheet = workbook.Worksheets.Item(InputSheetName(sheetName))
     For hop = 1 To 32 ' Ограничивает обход циклических и аномально длинных ссылок только в диагностике.
         Set cell = sheet.Range(address)
         cellAddress = cell.Address(False, False)
-        If StrComp(cellAddress, Replace$(address, "$", vbNullString), vbTextCompare) <> 0 Then Exit Function
+        If StrComp(cellAddress, Replace$(address, "$", vbNullString), vbTextCompare) <> 0 Then GoTo Unresolved
+        If hop > 1 Then
+            cellKey = CStr(sheet.Name) & "!" & cellAddress
+            If visited.Exists(cellKey) Then GoTo Unresolved
+            visited.Add cellKey, True
+        End If
         If hop > 1 Then path = path & arrow
         path = path & sheetName & "!" & cellAddress ' Кавычки в ссылке сохраняют точное имя листа с пробелами или апострофом.
-        If Not cell.HasFormula Then
-            If hop > 1 Then DirectInputChain = path
-            Exit Function
-        End If
+        If Not cell.HasFormula Then GoTo Unresolved
         Set matches = direct.Execute(Trim$(CStr(cell.Formula)))
-        If matches.Count <> 1 Then
-            If hop > 1 Then DirectInputChain = path ' Текущая ячейка подтверждена предыдущей прямой ссылкой.
-            Exit Function
+        If matches.Count <> 1 Then GoTo Unresolved
+        If hop = 1 Then
+            Set visited = CreateObject("Scripting.Dictionary")
+            visited.CompareMode = vbTextCompare
+            visited.Add CStr(sheet.Name) & "!" & cellAddress, True
         End If
         nextSheet = CStr(matches.Item(0).SubMatches(0))
         If Len(nextSheet) > 0 Then
@@ -384,6 +409,7 @@ Private Function DirectInputChain(ByVal workbook As Object, ByVal sheetName As S
         address = CStr(matches.Item(0).SubMatches(1))
     Next hop
 Unresolved:
+    If InStr(1, path, arrow, vbBinaryCompare) > 0 Then DirectInputChain = path ' Оставляем подтверждённый префикс при цикле или недоступном продолжении.
 End Function
 
 ' Снимает кавычки Excel и восстанавливает одинарный апостроф внутри имени листа.

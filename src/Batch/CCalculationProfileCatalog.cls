@@ -236,9 +236,9 @@ Private Sub RaiseProfileInputError(ByVal errorNumber As Long, ByVal description 
     If Not locations Is Nothing Then
         If locations.Exists(key) Then location = CStr(locations(key))
     End If
-    Err.Raise errorNumber, "CCalculationProfileCatalog", "Профиль " & profileId & _
-        ": параметр " & key & " (" & location & "). " & description & _
-        " Проверьте указанную ячейку или восстановите строку параметра в таблице профилей."
+    Err.Raise errorNumber, "CCalculationProfileCatalog", SectionRecipeErrorText(description, location, _
+        "Профиль " & profileId & ": параметр " & key) & vbCrLf & vbCrLf & _
+        "Проверьте указанную ячейку или восстановите строку параметра в таблице профилей."
 End Sub
 
 ' Возвращает строковое значение параметра профиля по ключу, если такая строка есть в таблице.

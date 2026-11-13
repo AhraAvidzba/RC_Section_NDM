@@ -63,6 +63,7 @@ Public Function RunProgramMessagePresentationTests() As String
     TestCheck "presentation.quoted.layer", InStr(WorkbookDialogText(text), "«Устойчивость: 3. Проверьте имя»") > 0
     TestUnexplainedExcelMessages
     TestGeometryWarningParagraphs
+    TestInputChainsInDialogs
     GoTo Finish
 Failed:
     TestCheck "presentation.runtime", False
@@ -70,6 +71,50 @@ Failed:
 Finish:
     RunProgramMessagePresentationTests = mReport & "TOTAL MESSAGE PRESENTATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет прямые ссылки в одиночных, вложенных и повторно оформленных ошибках.
+Private Sub TestInputChainsInDialogs()
+    Dim fixture As Object, inputSheet As Object, config As Object
+    Dim number As Long, reason As String, text As String, arrow As String
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167)
+    Set config = fixture.Worksheets(1): config.Name = "Config"
+    Set inputSheet = fixture.Worksheets.Add: inputSheet.Name = "Расчет"
+    config.Range("B109").Formula = "=Расчет!L20"
+    config.Range("B29").Formula = "=Расчет!$L$21"
+    config.Range("B30").Formula = "=SUM(Расчет!L21:L22)"
+    config.Range("B31").Formula = "=Расчет!L23"
+    inputSheet.Range("L23").Formula = "=L24+L25"
+    inputSheet.Range("L20").Formula = "=L22"
+    inputSheet.Range("L22").Formula = "=1/0"
+    arrow = " " & ChrW$(&H27F6) & " "
+    reason = "Чертёж AutoCAD «рис.dwg»." & vbCrLf & vbCrLf & _
+        "Настройка AutoCAD.Common.ConcreteLayer (лист Config, ячейка B109): Не найден Region. " & _
+        "Настройка Mesh.MinElementArea (лист Config, ячейка B29): Неверное значение."
+    text = WorkbookErrorMessage("Сечение не сформировано", 5, "Import", reason, fixture)
+    TestCheck "presentation.chains.nested.first", InStr(text, "Config!B109" & arrow & "Расчет!L20" & arrow & "Расчет!L22") > 0
+    TestCheck "presentation.chains.nested.second", InStr(text, "Config!B29" & arrow & "Расчет!L21") > 0
+    TestCheck "presentation.chains.nested.idempotent", WorkbookDialogText(text, fixture) = text
+    reason = "Адреса ячеек:" & vbCrLf & "Mesh.MinElementArea: лист Config, ячейка B29; Config!B30; Config!B109" & vbCrLf & vbCrLf & "Причина."
+    text = WorkbookDialogText(reason, fixture)
+    TestCheck "presentation.chains.fields", InStr(text, "Mesh.MinElementArea: Config!B29" & arrow & "Расчет!L21; Config!B30; Config!B109" & arrow) > 0
+    TestCheck "presentation.chains.range", WorkbookDialogText("Адреса ячеек:" & vbCrLf & "Config!B29:B30", fixture) = "Адреса ячеек:" & vbCrLf & "Config!B29:B30"
+    text = WorkbookDialogText("Сочетание 1: N, Config!B29 содержит ошибку; Mx, Config!B109 должен быть числом. Mesh.MinElementArea: лист Config, ячейка B29.", fixture)
+    TestCheck "presentation.chains.loadFields", InStr(text, "N, Config!B29" & arrow & "Расчет!L21") > 0 And InStr(text, "Mx, Config!B109" & arrow & "Расчет!L20") > 0
+    TestCheck "presentation.chains.savedSetting", InStr(text, "Mesh.MinElementArea: Config!B29" & arrow & "Расчет!L21.") > 0
+    TestCheck "presentation.chains.loadIdempotent", WorkbookDialogText(text, fixture) = text
+    text = WorkbookDialogText("Адреса ячеек:" & vbCrLf & "Config!B31", fixture)
+    TestCheck "presentation.chains.multipleSources", Right$(text, Len("Config!B31" & arrow & "Расчет!L23")) = "Config!B31" & arrow & "Расчет!L23"
+    fixture.Close False
+    Exit Sub
+Failed:
+    number = Err.Number: reason = Err.Description
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    Err.Raise number, "TestInputChainsInDialogs", reason
+End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Общий отказ Excel не считается ошибкой геометрии; подтверждённая защита и технический текст показаны отдельно.
