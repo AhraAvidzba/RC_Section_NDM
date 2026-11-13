@@ -726,7 +726,7 @@ Public Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinati
     For row = 2 To UBound(properties, 1)
         If SafeText(properties(row, colCase)) = "ALL" And SafeText(properties(row, colParameter)) = "Geometry.Revision" Then
             revision = properties(row, colValue)
-            If CStr(properties(row, colPropertyRun)) <> CStr(runID) Then Exit Function
+            If Not CrackRegionRunIDsMatch(properties(row, colPropertyRun), runID) Then Exit Function
             Exit For
         End If
     Next row
@@ -737,7 +737,7 @@ Public Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinati
     For row = firstRow To UBound(data, 1)
         If Left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
                 StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
-            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Дата запуска и ревизия исключают смешение с другим сечением.
+            If Not CrackRegionRunIDsMatch(data(row, colRun), runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then ' Номер запуска и ревизия исключают смешение с другим сечением.
                 selected.RemoveAll: Exit Function
             End If
             rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor) ' Одна область должна принадлежать единому нормативному варианту и опорной группе.
@@ -749,6 +749,18 @@ Public Function CurrentCrackRegionRows(ByVal workbook As Object, ByVal combinati
             selected.Add CStr(row), True
         End If
     Next row
+End Function
+
+' Сравнивает RunID точно: подготовленный снимок может содержать Date, а лист
+' и файл хранят его числовой эквивалент. Текстовые идентификаторы сравниваются как текст.
+Private Function CrackRegionRunIDsMatch(ByVal leftID As Variant, ByVal rightID As Variant) As Boolean
+    If IsError(leftID) Or IsError(rightID) Or IsNull(leftID) Or IsNull(rightID) Then Exit Function
+    If IsEmpty(leftID) Or IsEmpty(rightID) Then Exit Function
+    If (VarType(leftID) = vbDate Or IsNumeric(leftID)) And (VarType(rightID) = vbDate Or IsNumeric(rightID)) Then
+        CrackRegionRunIDsMatch = (CDbl(leftID) = CDbl(rightID))
+    Else
+        CrackRegionRunIDsMatch = (CStr(leftID) = CStr(rightID))
+    End If
 End Function
 
 ' Читает геометрию отобранной зоны для схемы. Использует единицы каждой записи
