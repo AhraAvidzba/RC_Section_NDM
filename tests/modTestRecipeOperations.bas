@@ -555,7 +555,11 @@ Public Function RunSavedOffsetCalculationTests() As String
     On Error GoTo Failed
     Dim area As Object, config As Object, inputCell As Object, saved As Variant, value As Variant, message As String
     Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String, formation As String
+    Dim duration As Range, savedDuration As Variant
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
+    Set duration = ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersToRange.Cells(2, 2).Resize(1, 3)
+    savedDuration = duration.Formula
+    duration.Value2 = 0# ' Сочетание LC_SAVED_OFFSETS не содержит длительной части; формула его ID остаётся действующей.
     TestPrepareSavedOffsetCase
     TestPrepareSavedOffsetCalculationLoad
     Set area = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
@@ -582,6 +586,7 @@ Public Function RunSavedOffsetCalculationTests() As String
 Failed:
     TestCheck "saved.calculation.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
+    If IsArray(savedDuration) Then duration.Formula = savedDuration
     If Not config Is Nothing And Not IsEmpty(saved) Then TestFixtureRestoreInputs config, saved
     RunSavedOffsetCalculationTests = mReport & "TOTAL_SAVED_OFFSET_CALCULATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function

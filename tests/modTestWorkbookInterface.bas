@@ -354,8 +354,8 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет наличие пяти кнопок, привязанные OnAction-макросы и размещение
-' вне области печати; надписи должны быть центрированы в самих shapes.
+' Проверяет наличие пяти кнопок, привязанные OnAction-макросы, порядок
+' и выравнивание текста внутри фигур.
 Private Sub TestButtons(ByRef stats As TUiTestStats)
     Dim calc As Object
     Set calc = ThisWorkbook.Worksheets.Item("Расчет")
@@ -384,7 +384,7 @@ Private Sub TestButtons(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.buttons.clear.macro", InStr(1, clearButton.OnAction, "ClearAutoCADDrawing", vbTextCompare) > 0
     TestAssertTrue stats, "ui.buttons.autocad.macro", InStr(1, acadButton.OnAction, "ExportSectionStressToAutoCAD", vbTextCompare) > 0
     TestAssertTrue stats, "ui.buttons.plot.macro", InStr(1, plotButton.OnAction, "UpdateSectionPlot", vbTextCompare) > 0
-    TestAssertTrue stats, "ui.buttons.outsidePrint", runButton.Left > calc.Range("AJ1").Left And importButton.Left > calc.Range("AJ1").Left And clearButton.Left > calc.Range("AJ1").Left And acadButton.Left > calc.Range("AJ1").Left And plotButton.Left > calc.Range("AJ1").Left
+    ' Excel проверяет исключение кнопок из печати отдельным экспортом в PDF.
     TestAssertTrue stats, "ui.buttons.textCentered", TestButtonTextIsCentered(runButton) And TestButtonTextIsCentered(importButton) And _
         TestButtonTextIsCentered(clearButton) And TestButtonTextIsCentered(acadButton) And TestButtonTextIsCentered(plotButton)
 End Sub
@@ -1951,6 +1951,13 @@ End Sub
 ' Это важно, потому что знак N и единицы tf здесь проходят ровно тем же путем,
 ' что и при нажатии кнопки "Расчет" в книге.
 Private Sub TestRectanglesAxialTensionExtensionFromWorkbookSettings(ByRef stats As TUiTestStats)
+    Dim concrete As Range, steel As Range, savedConcrete As Variant, savedSteel As Variant
+    Dim number As Long, source As String, description As String
+    On Error GoTo Failed
+    Set concrete = ThisWorkbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
+    Set steel = ThisWorkbook.Names.Item("rngSteelMaterialParameters").RefersToRange
+    savedConcrete = concrete.Formula: savedSteel = steel.Formula
+    TestSetAxialTensionMaterialFixture concrete, steel
     TestPrepareUserRectanglesAxialTensionInput
 
     Dim reportPath As String
@@ -2018,6 +2025,37 @@ Private Sub TestRectanglesAxialTensionExtensionFromWorkbookSettings(ByRef stats 
     TestAssertTrue stats, "ui.rectangles.axial900.reportCreated", TestFileExists(reportPath)
 
     TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+RestoreMaterials:
+    On Error GoTo 0
+    If IsArray(savedConcrete) Then concrete.Formula = savedConcrete
+    If IsArray(savedSteel) Then steel.Formula = savedSteel
+    If number <> 0 Then Err.Raise number, source, description
+    Exit Sub
+Failed:
+    number = Err.Number: source = Err.Source: description = Err.Description
+    Resume RestoreMaterials
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Фиксирует сопротивления и модули контрольных диаграмм в МПа.
+' Нагрузки 795 и 900 тс проверяют границу физического диапазона одного набора материалов.
+Private Sub TestSetAxialTensionMaterialFixture(ByVal concrete As Range, ByVal steel As Range)
+    Dim row As Long
+    For row = 2 To concrete.Rows.Count
+        Select Case CStr(concrete.Cells(row, 1).Value2)
+            Case "Concrete.R.ULS(I)": concrete.Cells(row, 2).Value2 = 15.5: concrete.Cells(row, 3).Value2 = 1.1
+            Case "Concrete.R.SLS(II)": concrete.Cells(row, 2).Value2 = 22#: concrete.Cells(row, 3).Value2 = 1.8
+            Case "Concrete.Rb.mc2": concrete.Cells(row, 2).Value2 = 14.6
+            Case "Concrete.E": concrete.Cells(row, 2).Value2 = 32500#: concrete.Cells(row, 3).Value2 = 32500#
+        End Select
+    Next row
+    For row = 2 To steel.Rows.Count
+        Select Case CStr(steel.Cells(row, 1).Value2)
+            Case "Steel.R.ULS(I)": steel.Cells(row, 2).Value2 = 350#: steel.Cells(row, 3).Value2 = 350#
+            Case "Steel.R.SLS(II)": steel.Cells(row, 2).Value2 = 390#: steel.Cells(row, 3).Value2 = 390#
+            Case "Steel.E": steel.Cells(row, 2).Value2 = 200000#: steel.Cells(row, 3).Value2 = 200000#
+        End Select
+    Next row
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -2384,9 +2422,15 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         TestPlotAnnotationTextUnitCellIsDynamic("TextHeight")
     TestAssertTrue stats, "ui.validation.plotTextGapUnitDynamic", _
         TestPlotAnnotationTextUnitCellIsDynamic("TextGap")
-    TestAssertClose stats, "ui.validation.plotTextHeight.defaultRebar", TestPlotAnnotationSettingValue("TextHeight", 2), 13#, 0.000000001
-    TestAssertClose stats, "ui.validation.plotTextHeight.defaultDimension", TestPlotAnnotationSettingValue("TextHeight", 3), 13#, 0.000000001
-    TestAssertClose stats, "ui.validation.plotTextGap.defaultRebar", TestPlotAnnotationSettingValue("TextGap", 2), 9#, 0.000000001
+    Dim expectedHeight As Double, expectedRebarGap As Double
+    expectedHeight = 13#: expectedRebarGap = 9#
+    ' Связанный с листом «Расчет» модуль опознаёт оформленный шаблон по имени таблицы.
+    If TestUsesFormattedMaterialInputs() Then
+        expectedHeight = 11#: expectedRebarGap = 6#
+    End If
+    TestAssertClose stats, "ui.validation.plotTextHeight.defaultRebar", TestPlotAnnotationSettingValue("TextHeight", 2), expectedHeight, 0.000000001
+    TestAssertClose stats, "ui.validation.plotTextHeight.defaultDimension", TestPlotAnnotationSettingValue("TextHeight", 3), expectedHeight, 0.000000001
+    TestAssertClose stats, "ui.validation.plotTextGap.defaultRebar", TestPlotAnnotationSettingValue("TextGap", 2), expectedRebarGap, 0.000000001
     TestAssertClose stats, "ui.validation.plotTextGap.defaultDimension", TestPlotAnnotationSettingValue("TextGap", 3), 9#, 0.000000001
     TestAssertTrue stats, "ui.validation.plotRebarLineEnabled", _
         TestPlotAnnotationValidationHasOptions("LineEnabled", 2, Array("Yes", "No"))
@@ -3205,6 +3249,21 @@ Private Function TestSignSettingAddress(ByVal key As String, ByRef rowIndex As L
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Определяет оформленный шаблон по формуле модуля растянутого бетона.
+Private Function TestUsesFormattedMaterialInputs() As Boolean
+    Dim table As Range, row As Long
+    Set table = ThisWorkbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
+    For row = 2 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = "Concrete.E" Then
+            TestUsesFormattedMaterialInputs = InStr(1, CStr(table.Cells(row, 3).Formula), "Расчет!", vbTextCompare) > 0 Or _
+                InStr(1, CStr(table.Cells(row, 3).Formula), "'Расчет'!", vbTextCompare) > 0
+            Exit Function
+        End If
+    Next row
+    Err.Raise 5, "TestUsesFormattedMaterialInputs", "Не найдена строка Concrete.E."
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Читает контрольный параметр из его действующей именованной таблицы.
 Private Function TestGetSystemSetting(ByVal key As String) As String
     Dim geometryCell As Object
@@ -3879,6 +3938,8 @@ Private Sub TestPrepareUserRectanglesAxialTensionInput()
     TestSetUserRectanglesMainRow "H2", 2, 2
     TestSetUserRectanglesMainRow "B2", 5, 5
     TestClearUserRectanglesExtraRows
+    TestSetSystemSetting "Rectangles.R", "0"
+    TestSetSystemSetting "Rectangles.UpperOffsetX", "0"
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -4165,12 +4226,50 @@ Private Sub TestAppendLine(ByRef stats As TUiTestStats, ByVal text As String)
     ' ДЛЯ ТЕСТОВ: этапы и найденные FAIL пишутся сразу вне COM-вызова;
     ' наблюдение видит отказ до возврата длинного UI-макроса.
     If Left$(text, 5) = "RUN: " Or Left$(text, 6) = "FAIL: " Then
-        Dim stream As Object
-        Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile( _
-            ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
-        stream.WriteLine Format$(Now, "yyyy-mm-dd hh:nn:ss") & " " & text
-        stream.Close
+        stats.Report = stats.Report & TestWriteUiProgress(text)
     End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Записывает необязательный промежуточный checkpoint. Ошибка файла попадает
+' в возвращаемый отчёт и не прерывает проверку, даже если журнал занят.
+Public Function TestWriteUiProgress(ByVal text As String) As String
+    Dim stream As Object, failureNumber As Long, failureDescription As String
+    On Error GoTo Failed
+    Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile( _
+        ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
+    stream.WriteLine Format$(Now, "yyyy-mm-dd hh:nn:ss") & " " & text
+    stream.Close
+    Exit Function
+Failed:
+    failureNumber = Err.Number: failureDescription = Err.Description
+    On Error Resume Next
+    If Not stream Is Nothing Then stream.Close
+    TestWriteUiProgress = "TEST_PROGRESS_WARNING: " & CStr(failureNumber) & "; " & failureDescription & vbCrLf
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Блокирует тестовый журнал, проверяет сохранение assertion и штатное возобновление записи.
+Private Sub TestUiProgressFileFailure(ByRef stats As TUiTestStats)
+    Dim locked As Integer, probe As TUiTestStats, path As String, wasPreserved As Boolean
+    path = ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt"
+    On Error GoTo Failed
+    locked = FreeFile
+    Open path For Binary Access Read Write Lock Read Write As #locked
+    TestAppendLine probe, "RUN: ui.progressFile.locked"
+    wasPreserved = InStr(1, probe.Report, "RUN: ui.progressFile.locked", vbBinaryCompare) > 0 And _
+        InStr(1, probe.Report, "TEST_PROGRESS_WARNING:", vbBinaryCompare) > 0
+    Close #locked
+    locked = 0
+    TestAssertTrue stats, "ui.progressFile.failurePreservesPrimaryReport", wasPreserved
+    TestAssertTrue stats, "ui.progressFile.recovers", Len(TestWriteUiProgress("RUN: ui.progressFile.recovered")) = 0
+    Exit Sub
+Failed:
+    Dim failure As String: failure = CStr(Err.Number) & "; " & Err.Description
+    On Error Resume Next
+    If locked <> 0 Then Close #locked
+    On Error GoTo 0
+    TestAssertTrue stats, "ui.progressFile.runtime; " & failure, False
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -6129,6 +6228,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0.001"
     TestSetSystemSetting "Load.ReferenceOffsetX", "10"
     TestSetSystemSetting "Load.ReferenceOffsetY", "-7"
+    TestPrepareInputUnitHollowFixture ' Поля листа «Расчет» относятся к выбранному примеру, а матрица строит четыре формы.
     TestSetSystemSetting "Mesh.StepMode", "User"
     TestSetSystemSetting "Mesh.StepX", "50": TestSetSystemSetting "Mesh.StepY", "50"
     TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
@@ -6237,6 +6337,23 @@ Restore:
     If Not savedSheet Is Nothing Then savedSheet.Activate
     On Error GoTo 0
     TestAssertTrue stats, "audit03.inputUnits.activeSheetRestored", ThisWorkbook.Application.ActiveSheet Is savedSheet
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит контрольный пустотелый прямоугольник для сравнения единиц.
+' Матрица уже установила INPUT Length = mm и восстановит исходные формулы.
+Private Sub TestPrepareInputUnitHollowFixture()
+    Dim table As Object, keys As Variant, lengthsMM As Variant, i As Long
+    Set table = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
+    keys = Array("B", "H", "R", "Bo", "Ho", "Ro", "Xo", "Yo")
+    lengthsMM = Array(500#, 800#, 180#, 200#, 500#, 30#, 0#, 0#)
+    For i = LBound(keys) To UBound(keys)
+        TestFixtureInputCell(table, "General", CStr(keys(i))).Value2 = lengthsMM(i)
+    Next i
+    TestFixtureInputCell(table, "General", "CornerMode").Value2 = "Скругление"
+    TestFixtureResetReinforcement "HollowRectangle"
+    TestFixtureInputCell(table, "Main", "Top", "n").Value2 = 5
+    TestFixtureInputCell(table, "Main", "Bottom", "n").Value2 = 5
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -6521,7 +6638,9 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     systemRange.Cells(minAreaRow, 2).Value2 = 25.002 / 1000000#
     TestAudit03CaptureImportError modelSpace, errorNumber, description
     TestAssertTrue stats, "audit03.inputArea.emptyRebar.rejected", errorNumber <> 0
-    TestAssertTrue stats, "audit03.inputArea.emptyRebar.reason", InStr(1, description, "арматурных", vbBinaryCompare) > 0 And _
+    TestAssertTrue stats, "audit03.inputArea.emptyRebar.reason", _
+        InStr(1, description, "не осталось стержней арматуры", vbBinaryCompare) > 0 And _
+        InStr(1, description, "AutoCAD.Common.RebarLayer", vbBinaryCompare) > 0 And _
         InStr(1, description, "Mesh.MinElementArea", vbBinaryCompare) > 0
     systemRange.Cells(minAreaRow, 2).Value2 = 10001# / 1000000#
     TestAudit03CaptureImportError modelSpace, errorNumber, description
@@ -8428,6 +8547,7 @@ Public Function RunCorrectedUiExpectationsTests() As String
     Dim stats As TUiTestStats, config As Object, saved As Variant
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = TestFixtureSaveInputs(config)
     On Error GoTo Failed
+    TestUiProgressFileFailure stats
     modTestShapeArchitecture.TestConfigureShapeFixture "LSection" ' Готовим геометрию и ряды явно, независимо от сохранённых пользовательских значений.
     modTestShapeArchitecture.TestConfigureShapeFixture "RoundedSimple"
     TestFixtureResetReinforcement "Circle"
@@ -8435,6 +8555,7 @@ Public Function RunCorrectedUiExpectationsTests() As String
     TestCircleWorkbookRunWritesResults stats
     TestRectanglesWorkbookRunWritesResults stats
     TestCapacitySearchMethodValidation stats
+    TestRectanglesAxialTensionExtensionFromWorkbookSettings stats
     TestRebarInputValidationDoesNotUseHiddenDefaults stats
     GoTo Restore
 Failed:

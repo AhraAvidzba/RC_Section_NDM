@@ -980,6 +980,37 @@ Private Sub TestCheckBatchRectanglesN200CapacitySolutionStrategy(ByRef stats As 
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Повторяет сценарии отсечения микромомента и выхода осевых нагрузок за физический предел.
+' Полная приёмка продолжает вызывать эти же проверки в общем наборе.
+Public Function RunBatchFixtureRegressionTests() As String
+    Dim stats As TBatchTestStats, system As Range, profiles As Range
+    Dim savedSystem As Variant, savedProfiles As Variant
+    On Error GoTo Failed
+    Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = system.Formula: savedProfiles = profiles.Formula
+    ' Воспроизводим исходный контекст полного batch-набора.
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
+    TestStabilityZeroMomentFilterUsesZeroMomentSigns stats
+    TestPR1AxialTensionProgressionAfterLimitIsStableFail stats
+    TestPR1AxialCompressionProgressionAfterLimitIsStableFail stats
+    TestPR2AxialTensionBeyondPhysicalLimitUsesExtension stats
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    TestAppendLine stats, "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+    Resume Restore
+Restore:
+    On Error GoTo 0
+    If IsArray(savedSystem) Then system.Formula = savedSystem
+    If IsArray(savedProfiles) Then profiles.Formula = savedProfiles
+    TestAppendLine stats, "TOTAL_BATCH_FIXTURE_REGRESSION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunBatchFixtureRegressionTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' отдельно проверяет осевую классификацию несимметричного сечения.
 Public Function RunRectanglesAxialMethodTests() As String
     Dim stats As TBatchTestStats
@@ -1221,12 +1252,19 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет, что Stability в режиме OnlyMomentPlane считает отфильтрованный
 ' микромомент нулевым и берет направление из ZeroMomentEccentricitySign1/2.
+' Два порога проверяют, когда момент от случайного эксцентриситета
+' сохраняется в сводке и рабочей нагрузке и когда обе пары моментов обнуляются.
 Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
     Dim oldValueSet As String
     Dim oldCode As String
     Dim oldAccMode As String
     Dim oldAccPlanes As String
+    Const thresholdBelowAccidental As Double = 0.00001
+    Const thresholdAboveAccidental As Double = 0.0005
+    Const residualMoment As Double = 2.42E-16
+    Const compression As Double = 120000#
+    Dim oldZeroMoment As String
     Dim oldSign1 As String
     Dim oldSign2 As String
     Dim oldAccUser1 As String
@@ -1236,6 +1274,7 @@ Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBat
     oldCode = TestGetSystemSetting("Stability.Code")
     oldAccMode = TestGetSystemSetting("Stability.AccidentalEccentricityMode")
     oldAccPlanes = TestGetSystemSetting("Stability.AccidentalEccentricityPlanes")
+    oldZeroMoment = TestGetSystemSetting("Calculation.ZeroMomentPerDepth")
     oldSign1 = TestGetSystemSetting("Stability.ZeroMomentEccentricitySign1")
     oldSign2 = TestGetSystemSetting("Stability.ZeroMomentEccentricitySign2")
     oldAccUser1 = TestGetSystemSetting("Stability.AccidentalEccentricityUser1")
@@ -1252,32 +1291,55 @@ Private Sub TestStabilityZeroMomentFilterUsesZeroMomentSigns(ByRef stats As TBat
     TestSetSystemSetting "Stability.AccidentalEccentricityUser1", "1"
     TestSetSystemSetting "Stability.AccidentalEccentricityUser2", "1"
 
-    Dim settings As CSystemSettingsReader
-    Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook ThisWorkbook
+    Dim testCase As Variant, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim batch As CBatchSectionCalculator, result As CCombinationResult, stability As CStabilityResult
+    Dim filterThreshold As Double, accidentalMx As Double, accidentalMy As Double
+    Dim expectedMx As Double, expectedMy As Double, expectedPath As String, label As String
+    For Each testCase In Array(Array("retained", thresholdBelowAccidental, "LambdaMxy"), _
+                              Array("filtered", thresholdAboveAccidental, "LambdaN"))
+        label = "batch.zeroMoment.stability." & CStr(testCase(0)) & "."
+        TestSetSystemSetting "Calculation.ZeroMomentPerDepth", TestFormatNumberInvariant(CDbl(testCase(1)))
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem
+        units.LoadFromSettings settings
+        Set batch = TestBuildBatchCalculator()
+        batch.ApplySettings settings, units
+        batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+        batch.AddCombination "STAB_TINY_M", -compression, residualMoment, 0#, "PR1", "tiny stability moment"
+        batch.Execute
+        Set result = batch.ResultAt(1)
+        Set stability = result.StabilityResult
 
-    Dim units As CUnitSystem
-    Set units = New CUnitSystem
-    units.LoadFromSettings settings
-
-    Dim batch As CBatchSectionCalculator
-    Set batch = TestBuildBatchCalculator()
-    batch.ApplySettings settings, units
-    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
-    batch.AddCombination "STAB_TINY_M", -120000#, 2.42E-16, 0#, "PR1", "tiny stability moment"
-    batch.Execute
-
-    TestAssertTrue stats, "batch.zeroMoment.stability.status", batch.ResultAt(1).StabilityResult.Status = "OK" Or batch.ResultAt(1).StabilityResult.Status = "FAIL"
-    TestAssertTrue stats, "batch.zeroMoment.stability.sign1", batch.ResultAt(1).StabilityResult.AccidentalEcc1 < 0#
-    TestAssertTrue stats, "batch.zeroMoment.stability.sign2", batch.ResultAt(1).StabilityResult.AccidentalEcc2 < 0#
-    TestAssertClose stats, "batch.zeroMoment.stability.finalUserMx", batch.UserMx(1), 0#, 0#
-    TestAssertClose stats, "batch.zeroMoment.stability.finalUserMy", batch.UserMy(1), 0#, 0#
-    TestAssertTrue stats, "batch.zeroMoment.stability.finalSummaryMxIncludesAccidental", _
-        Abs(batch.ResultAt(1).StabilityResult.DesignMx) > 0#
-    TestAssertTrue stats, "batch.zeroMoment.stability.finalSummaryMyIncludesAccidental", _
-        Abs(batch.ResultAt(1).StabilityResult.DesignMy) > 0#
-    TestAssertTrue stats, "batch.zeroMoment.stability.capacityPath", batch.ResultAt(1).StrengthResult.Capacity.PathResolved = "LambdaN"
-    TestAssertTrue stats, "batch.zeroMoment.stability.capacityNotNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
+        TestAssertTrue stats, label & "status", stability.Status = "OK" Or stability.Status = "FAIL"
+        TestAssertClose stats, label & "originalMx", batch.OriginalMx(1), residualMoment, 0#
+        TestAssertClose stats, label & "sign1", stability.AccidentalEcc1, -1#, 0#
+        TestAssertClose stats, label & "sign2", stability.AccidentalEcc2, -1#, 0#
+        TestAssertTrue stats, label & "eta", stability.Eta1 >= 1# And stability.Eta2 >= 1#
+        accidentalMx = -compression * stability.Eta1 ' Для симметричной модели ось 1 совпадает с X, случайный эксцентриситет равен -1 мм.
+        accidentalMy = -compression * stability.Eta2 ' Ось 2 совпадает с Y, центры сечения и точки приложения совпадают.
+        filterThreshold = units.InputMomentPerLengthToInternal(CDbl(testCase(1)))
+        expectedPath = CStr(testCase(2))
+        If expectedPath = "LambdaMxy" Then
+            TestAssertTrue stats, label & "filterSeparatesMoments", _
+                filterThreshold * 200# > residualMoment And _
+                filterThreshold * 300# < Abs(accidentalMx) And filterThreshold * 300# < Abs(accidentalMy)
+            expectedMx = accidentalMx
+            expectedMy = accidentalMy
+        Else
+            TestAssertTrue stats, label & "filterCoversBothMoments", _
+                filterThreshold * 200# > Abs(accidentalMx) And filterThreshold * 200# > Abs(accidentalMy)
+            expectedMx = 0#
+            expectedMy = 0#
+        End If
+        TestAssertClose stats, label & "finalUserMx", batch.UserMx(1), expectedMx, 0.000001
+        TestAssertClose stats, label & "finalUserMy", batch.UserMy(1), expectedMy, 0.000001
+        TestAssertClose stats, label & "finalSummaryMx", stability.DesignMx, expectedMx, 0.000001
+        TestAssertClose stats, label & "finalSummaryMy", stability.DesignMy, expectedMy, 0.000001
+        TestAssertTrue stats, label & "capacityPath." & expectedPath, result.StrengthResult.Capacity.PathResolved = expectedPath
+        TestAssertTrue stats, label & "capacityStatus", _
+            result.StrengthResult.Capacity.Status = "OK" Or result.StrengthResult.Capacity.Status = "FAIL"
+    Next testCase
 
 Restore:
     TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldEnabled
@@ -1285,6 +1347,7 @@ Restore:
     TestSetSystemSetting "Stability.Code", oldCode
     TestSetSystemSetting "Stability.AccidentalEccentricityMode", oldAccMode
     TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", oldAccPlanes
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", oldZeroMoment
     TestSetSystemSetting "Stability.ZeroMomentEccentricitySign1", oldSign1
     TestSetSystemSetting "Stability.ZeroMomentEccentricitySign2", oldSign2
     TestSetSystemSetting "Stability.AccidentalEccentricityUser1", oldAccUser1
@@ -1787,8 +1850,7 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     units.LoadFromSettings settings
 
     Dim provider As CMaterialModelProvider
-    Set provider = New CMaterialModelProvider
-    provider.Initialize settings, units
+    Set provider = TestMaterialProvider(plateauSlopeFactor:=0.001) ' Нагрузки эталона привязаны к фиксированным материалам и наклону плато.
 
     Dim referenceX As Double
     Dim referenceY As Double
@@ -2076,8 +2138,7 @@ Private Sub TestRunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, By
     units.LoadFromSettings settings
 
     Dim provider As CMaterialModelProvider
-    Set provider = New CMaterialModelProvider
-    provider.Initialize settings, units
+    Set provider = TestMaterialProvider(plateauSlopeFactor:=0.001) ' Нагрузки эталона привязаны к фиксированным материалам и наклону плато.
 
     Dim referenceX As Double
     Dim referenceY As Double
@@ -6135,7 +6196,8 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' создает фиксированные ULS/SLS параметры бетона и арматуры.
 ' Extension задается явно, поэтому fixture не зависит от пользовательского Config.
-Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As Boolean = True) As CMaterialModelProvider
+Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As Boolean = True, _
+        Optional ByVal plateauSlopeFactor As Double = 0#) As CMaterialModelProvider
     Dim concreteParameters As CConcreteMaterialParameters
     Set concreteParameters = New CConcreteMaterialParameters
     concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
@@ -6146,7 +6208,7 @@ Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As 
 
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
-    provider.TestInitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=diagramExtensionEnabled
+    provider.TestInitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=diagramExtensionEnabled, plateauSlopeFactor:=plateauSlopeFactor
     Set TestMaterialProvider = provider
 End Function
 
@@ -11003,7 +11065,7 @@ Public Function RunStateDepthGeometryTests(Optional ByRef passed As Long = 0, Op
     planes = Array(Array(-0.001, 0#, 0#), Array(0.001, 0#, 0#), Array(0#, 0#, 0#), _
         Array(-0.001, 0.000001, 0#), Array(0.001, 0.000001, 0#), Array(0#, 0.000001, 0#), _
         Array(0#, 0#, 0.000001), Array(-0.0001, 0.000001, -0.0000005), Array(0.0001, -0.000002, 0.000001), _
-        Array(0#, 1E-16, 0#), Array(0#, 1E-15, 0#), Array(0#, 1.1E-15, -9E-16))
+        Array(0#, 1E-16, 0#), Array(0#, 0.000000000000001, 0#), Array(0#, 1.1E-15, -9E-16))
     For shape = 0 To 3
         Set section = TestBuildDepthShape(shape)
         For Each plane In planes

@@ -127,6 +127,18 @@ End Sub
 ' subdivisions проверяется на кривой границе, где влияет на дискретизацию.
 Private Sub TestCheckGeometryAndMesh(ByRef stats As TGeneralConfigStats, ByVal system As Object)
     Dim shape As Variant, model As CSectionModel, firstArea As Double, prefix As String
+    Dim hollowRange As Object, savedHollow As Variant
+    Dim keys As Variant, values As Variant, i As Long
+    Dim errorNumber As Long, errorSource As String, errorDescription As String
+    On Error GoTo Failed
+    Set hollowRange = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
+    savedHollow = hollowRange.Formula
+    keys = Array("B", "H", "R", "Bo", "Ho", "Ro", "Xo", "Yo")
+    values = Array(500#, 800#, 180#, 200#, 500#, 30#, 0#, 0#)
+    For i = 0 To UBound(keys)
+        TestFixtureInputCell(hollowRange, "General", CStr(keys(i))).Value2 = values(i)
+    Next i
+    TestFixtureResetReinforcement "HollowRectangle"
     For Each shape In Array("Circle", "Rectangles", "PointedSection", "HollowRectangle")
         TestSetValue system, "Geometry.Type", CStr(shape)
         Set model = TestBuildModel(stats)
@@ -169,6 +181,12 @@ Private Sub TestCheckGeometryAndMesh(ByRef stats As TGeneralConfigStats, ByVal s
     TestSetValue system, "Mesh.StepMode", "User"
     TestSetValue system, "Mesh.StepX", 20#: TestSetValue system, "Mesh.StepY", 20#
     TestSetValue system, "Mesh.BoundarySubdivisions", 2
+    hollowRange.Formula = savedHollow
+    Exit Sub
+Failed:
+    errorNumber = Err.Number: errorSource = Err.Source: errorDescription = Err.Description
+    If Not IsEmpty(savedHollow) Then hollowRange.Formula = savedHollow
+    Err.Raise errorNumber, errorSource, errorDescription
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

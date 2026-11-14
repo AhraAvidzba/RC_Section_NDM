@@ -575,18 +575,51 @@ Private Sub TestExplicitEndModes()
         On Error GoTo 0
         TestCheck "endMode.invalid.address." & CStr(VarType(key)) & "." & CStr(Len(reason)), code <> 0 And definition Is Nothing And InStr(reason, "rngRectanglesGeometry[") > 0
     Next key
-    values = TestFixtureRecipeValues("rngHollowRectangleGeometry")
-    TestFixtureSetInput values, "Main", "OpeningTop", "endMode", "IncludeBoth"
-    Set recipe = New CSectionRecipeHollowRectangle: code = 0: reason = "": Set definition = Nothing
-    On Error Resume Next
-    Set definition = TestFixtureRecipeDefinition(recipe, "rngHollowRectangleGeometry", values)
-    code = Err.Number: reason = Err.Description: Err.Clear
-    On Error GoTo 0
-    TestCheck "endMode.projection.ignored", code = 0 And Not definition Is Nothing
+    TestProjectionEndModeIgnored
     TestMainCoincidenceLabels
     TestCircleSingleEndModes
     TestCircleClosedEndModes
     TestUniformRowDirections
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет координаты стержней проекции при прочерке, обычном режиме
+' и ошибке формулы в неприменимом поле OpeningTop.endMode.
+Private Sub TestProjectionEndModeIgnored()
+    Dim values As Variant, keys As Variant, lengthsMM As Variant, key As Variant, i As Long
+    Dim recipe As ISectionRecipe, expected As CRebarLayout, actual As CRebarLayout
+    values = TestFixtureRecipeValues("rngHollowRectangleGeometry")
+    keys = Array("B", "H", "R", "Bo", "Ho", "Ro", "Xo", "Yo")
+    lengthsMM = Array(500#, 800#, 0#, 200#, 500#, 0#, 0#, 0#)
+    For i = LBound(keys) To UBound(keys)
+        TestFixtureSetInput values, "General", CStr(keys(i)), "val", lengthsMM(i)
+    Next i
+    TestFixtureSetInput values, "General", "CornerMode", "val", "Скругление"
+    For Each key In Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
+        TestFixtureSetInput values, "Main", CStr(key), "as", 40#
+        TestFixtureSetInput values, "Main", CStr(key), "d", 20#
+        TestFixtureSetInput values, "Extra", CStr(key), "d2", 0#
+        TestFixtureSetInput values, "Extra", CStr(key), "d3", 0#
+    Next key
+    For Each key In Array("Top", "Bottom", "Left", "Right")
+        TestFixtureSetInput values, "Main", CStr(key), "n", IIf(CStr(key) = "Top" Or CStr(key) = "Bottom", 8, 6)
+        TestFixtureSetInput values, "Main", CStr(key), "endMode", IIf(CStr(key) = "Top" Or CStr(key) = "Bottom", "ExcludeBoth", "IncludeBoth")
+    Next key
+    TestFixtureSetInput values, "Main", "OpeningTop", "endMode", "-"
+    Set recipe = New CSectionRecipeHollowRectangle
+    Set expected = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngHollowRectangleGeometry", values))
+    TestCheck "endMode.projection.baselineActive", TestGroupCount(expected, "Opening.B.Top") > 0
+    For Each key In Array("IncludeBoth", CVErr(xlErrDiv0))
+        TestFixtureSetInput values, "Main", "OpeningTop", "endMode", key
+        Set actual = TestFixtureAnnotatedLayout(TestFixtureRecipeDefinition(recipe, "rngHollowRectangleGeometry", values))
+        TestCheck "endMode.projection.ignored." & CStr(VarType(key)), actual.Count = expected.Count
+        If actual.Count = expected.Count Then
+            For i = 1 To expected.Count
+                TestNear "endMode.projection.x." & CStr(VarType(key)) & "." & CStr(i), actual.X(i), expected.X(i)
+                TestNear "endMode.projection.y." & CStr(VarType(key)) & "." & CStr(i), actual.Y(i), expected.Y(i)
+            Next i
+        End If
+    Next key
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

@@ -314,8 +314,8 @@ Private Sub TestIndependentPlaneForces(ByVal section As CSectionModel, ByVal con
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет пересчет пользовательских tf/tf*m и знака сжатия во внутренние
-' Н/Н*мм, а также обратный вывод и размерность порога малых моментов.
+' Проверяет пересчёт tf/tf*m и знака сжатия по заданной таблице знаков,
+' обратный вывод и размерность порога малых моментов.
 Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     Dim units As CUnitSystem
     Set units = New CUnitSystem
@@ -331,13 +331,20 @@ Private Sub TestUnitSystemConversions(ByRef stats As TSectionSolverTestStats)
     Set configured = New CUnitSystem
     configured.LoadFromSettings settings
 
-    TestAssertClose stats, "units.force.tf.toN.compression", configured.InputForceToInternal(1#), -9806.65, 0.000001
-    TestAssertClose stats, "units.force.N.toUser.compression", configured.InternalForceToOutput(-9806.65), 1#, 0.000001
+    Dim signData As Variant, compressionSign As Double
+    signData = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange.Value2
+    TestAssertTrue stats, "units.force.sign.source", CStr(signData(2, 1)) = "+N" And _
+        (CStr(signData(2, 2)) = "Compression" Or CStr(signData(2, 2)) = "Tension")
+    compressionSign = 1# ' Положительная пользовательская сила означает сжатие при Compression.
+    If CStr(signData(2, 2)) = "Tension" Then compressionSign = -1#
+
+    TestAssertClose stats, "units.force.tf.toN.compression", configured.InputForceToInternal(compressionSign), -9806.65, 0.000001
+    TestAssertClose stats, "units.force.N.toUser.compression", configured.InternalForceToOutput(-9806.65), compressionSign, 0.000001
     TestAssertClose stats, "units.moment.tfm.toNmm", configured.InputMomentMxToInternal(1#), 9806650#, 0.0001
     TestAssertClose stats, "units.moment.Nmm.toUser", configured.InternalMomentMxToOutput(9806650#), 1#, 0.000001
     TestAssertClose stats, "units.momentPerLength.defaultZero", configured.InputMomentPerLengthToInternal(0.0005), 4903.325, 0.000001
 
-    TestAssertClose stats, "units.loadcase.N.example", configured.InputForceToInternal(30#), -294199.5, 0.0001
+    TestAssertClose stats, "units.loadcase.N.example", configured.InputForceToInternal(30# * compressionSign), -294199.5, 0.0001
     TestAssertClose stats, "units.loadcase.Mx.example", configured.InputMomentMxToInternal(150#), 1470997500#, 0.1
 End Sub
 
@@ -366,7 +373,19 @@ Private Sub TestSystemSettingsReader(ByRef stats As TSectionSolverTestStats)
     Set reader = New CSystemSettingsReader
     reader.LoadFromWorkbook ThisWorkbook
 
-    TestAssertClose stats, "settings.concrete.Eb", reader.GetDouble("Concrete.Eb", 0#), 32500#, 0.000000001
+    Dim concreteData As Variant, rowIndex As Long, modulusRow As Long
+    concreteData = ThisWorkbook.Names.Item("rngConcreteMaterialParameters").RefersToRange.Value2
+    For rowIndex = 2 To UBound(concreteData, 1)
+        If CStr(concreteData(rowIndex, 1)) = "Concrete.E" Then
+            modulusRow = rowIndex
+            Exit For
+        End If
+    Next rowIndex
+    TestAssertTrue stats, "settings.concrete.Eb.source", modulusRow > 0
+    If modulusRow > 0 Then
+        TestAssertClose stats, "settings.concrete.Eb", reader.GetRequiredDouble("Concrete.Eb"), _
+            CDbl(concreteData(modulusRow, 2)), 0.000000001 ' Второй столбец задаёт модуль при сжатии.
+    End If
     TestAssertClose stats, "settings.steel.Es", reader.GetDouble("Steel.Es", 0#), 200000#, 0.000000001
     TestAssertTrue stats, "settings.profiles.present", ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange.Rows.Count > 1
 

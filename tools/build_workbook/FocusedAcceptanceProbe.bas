@@ -193,18 +193,48 @@ Public Function TestRunFocusedSingleLoad(ByVal shapeName As String, ByVal loadNa
     TestRunFocusedSingleLoad = TestRunFocusedAcceptanceCases(shapeName, "Generated", loadName)
 End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Выбирает сохранённый импорт либо зарегистрированную форму и задаёт независимый контрольный набор армирования этой формы.
+' Выбирает сохранённую модель либо контрольные размеры и армирование встроенной формы.
 Private Sub TestFocusedSelectGeometry(ByVal shapeName As String)
     Select Case shapeName
         Case "SavedWorkbook": TestSetSystemSetting "Geometry.Source", "AutoCAD"
         Case "Rectangles", "Circle", "PointedSection", "HollowRectangle"
             TestSetSystemSetting "Geometry.Source", "Generated"
             TestSetSystemSetting "Geometry.Type", shapeName
-            ' Общая таблица не хранит четыре независимых набора армирования.
-            ' Перед каждой формой задаём явный контрольный набор прежних исходных данных.
+            TestSetSystemSetting "Mesh.CellGeometry", "Contour"
+            TestSetSystemSetting "Mesh.StepMode", "Auto 0.1"
+            TestFocusedSetGeometryDimensions shapeName
             TestFixtureResetReinforcement shapeName
         Case Else: Err.Raise 5, "FocusedSelectGeometry", "Unknown focused geometry: " & shapeName
     End Select
+End Sub
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт контрольные размеры в мм и записывает их в единицах ввода книги.
+' Все четыре формы используют собственные размеры, независимо от выбранного примера на листе «Расчет».
+Private Sub TestFocusedSetGeometryDimensions(ByVal shapeName As String)
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, table As Object
+    Dim geometryKeys As Variant, lengthsMM As Variant, i As Long, factor As Double
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    factor = units.InputLengthToInternal(1#)
+    Set table = ThisWorkbook.Names.Item("rng" & shapeName & "Geometry").RefersToRange
+    Select Case shapeName
+        Case "Circle"
+            geometryKeys = Array("D")
+            lengthsMM = Array(300#)
+        Case "Rectangles"
+            geometryKeys = Array("H1", "B1", "H2", "B2", "R", "XOffset")
+            lengthsMM = Array(550#, 250#, 250#, 600#, 0#, 0#)
+        Case "PointedSection"
+            geometryKeys = Array("B", "H", "Left.W", "Left.R1", "Left.R2", "Right.W", "Right.R1", "Right.R2")
+            lengthsMM = Array(800#, 250#, 0#, 100#, 0#, 150#, 40#, 50#)
+        Case "HollowRectangle"
+            geometryKeys = Array("B", "H", "R", "Bo", "Ho", "Ro", "Xo", "Yo")
+            lengthsMM = Array(500#, 800#, 180#, 200#, 500#, 30#, 0#, 0#)
+    End Select
+    For i = LBound(geometryKeys) To UBound(geometryKeys)
+        TestFixtureInputCell(table, "General", CStr(geometryKeys(i))).Value2 = CDbl(lengthsMM(i)) / factor
+    Next i
+    If shapeName <> "Circle" Then TestFixtureInputCell(table, "General", "CornerMode").Value2 = "Скругление"
 End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Отбирает нормированные нагрузки по устойчивым именам, отдельно задаёт шесть LoadPath и проверяет полноту группы.

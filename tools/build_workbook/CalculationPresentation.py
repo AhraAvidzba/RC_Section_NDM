@@ -20,6 +20,7 @@ from lxml import etree as ET
 M = '{http://schemas.openxmlformats.org/spreadsheetml/2006/main}'
 R = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
 T = '{http://schemas.openxmlformats.org/package/2006/content-types}'
+XDR = '{http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing}'
 CALC = 'Расчет'
 INPUTS = ('Config', 'Сечения')
 SELECTOR = 'rngSectionIllustrationSelector'
@@ -419,6 +420,17 @@ def copy_objects(parts, template, metadata, base_path, types):
             child = target_part(origin, relation.get('Target'))
             relation.set('Target', posixpath.relpath(destinations[child], posixpath.dirname(destination)))
         parts[relationship_path(destination)] = serialize(relationships)
+
+    # Кнопки остаются на своих местах внутри оформления, но не попадают в печать.
+    relationships = xml(parts, relationship_path(base_path))
+    drawing, = [relation for relation in relationships if relation.get('Type').endswith('/drawing')]
+    drawing_path = target_part(base_path, drawing.get('Target'))
+    drawings = xml(parts, drawing_path)
+    for shape_anchor in drawings:
+        shape = shape_anchor.find(XDR + 'sp')
+        if shape is not None and shape.get('macro'):
+            shape_anchor.find(XDR + 'clientData').set('fPrintsWithSheet', '0')
+    parts[drawing_path] = serialize(drawings)
 
 
 def refresh_section_picture(parts, sheet_path):

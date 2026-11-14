@@ -1341,9 +1341,7 @@ End Sub
 Private Sub TestLogLine(ByRef stats As TProfileStats, ByVal value As String)
     stats.Report = stats.Report & value & vbCrLf
     If Left$(value, 5) = "RUN: " Then
-        Dim stream As Object
-        Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile(ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
-        stream.WriteLine Format$(Now, "yyyy-mm-dd hh:nn:ss") & " " & value: stream.Close
+        stats.Report = stats.Report & modTestWorkbookInterface.TestWriteUiProgress(value)
     End If
 End Sub
 
