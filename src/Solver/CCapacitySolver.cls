@@ -542,10 +542,10 @@ Private Function EvaluateUltimateMomentResidual(ByVal section As CSectionModel, 
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef solver As CSectionSolver, ByRef rN As Double, ByRef rDir As Double, _
         ByRef rLimit As Double, ByRef lambdaValue As Double, ByRef state As String, _
-        Optional ByVal centeredPlane As Boolean = False) As Boolean
+        Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     On Error GoTo Failed
 
-    Set solver = New CSectionSolver
+    If Not reuseTrialSolver Or solver Is Nothing Then Set solver = New CSectionSolver
     If centeredPlane Then
         solver.EvaluatePhysicalCenterPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     Else
@@ -607,10 +607,10 @@ Private Function EvaluateUltimateLoadPathResidual(ByVal section As CSectionModel
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef solver As CSectionSolver, ByRef rPath1 As Double, ByRef rPath2 As Double, _
         ByRef rLimit As Double, ByRef lambdaValue As Double, ByRef state As String, _
-        Optional ByVal centeredPlane As Boolean = False) As Boolean
+        Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     On Error GoTo Failed
 
-    Set solver = New CSectionSolver
+    If Not reuseTrialSolver Or solver Is Nothing Then Set solver = New CSectionSolver
     If centeredPlane Then
         solver.EvaluatePhysicalCenterPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     Else
@@ -979,18 +979,18 @@ Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionMod
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     PrepareUltimateNumericalPath section, loadPath
     If mUltimateMomentOnlyPath Then
         LimitSearchEvaluateUltimateResidual = EvaluateUltimateMomentResidual(section, _
             concreteMaterial, steelMaterial, loadPath.NOffset, loadPath.MxBase, _
             loadPath.MyBase, loadPath.MxOffset, loadPath.MyOffset, eps0, kx, ky, _
-            solver, rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
+            solver, rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane, reuseTrialSolver)
     Else
         LimitSearchEvaluateUltimateResidual = EvaluateUltimateLoadPathResidual(section, _
             concreteMaterial, steelMaterial, loadPath.NOffset, loadPath.NBase, _
             loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, _
-            eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
+            eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane, reuseTrialSolver)
     End If
 End Function
 

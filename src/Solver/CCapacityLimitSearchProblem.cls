@@ -439,10 +439,10 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = mCapacity.LimitSearchEvaluateUltimateResidual( _
         section, concreteMaterial, steelMaterial, loadPath, eps0, kx, ky, solver, _
-        rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
+        rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane, reuseTrialSolver)
 End Function
 
 ' Проверяет три невязки по исходным допускам расчёта несущей способности.

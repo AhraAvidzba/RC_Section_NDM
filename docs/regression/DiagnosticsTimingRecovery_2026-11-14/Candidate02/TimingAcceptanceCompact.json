@@ -1,0 +1,116 @@
+{
+  "PriorCommit": "2a8ad05807dbb73bda19e966492159bc32bebb27",
+  "PriorWorkbookSHA256": "A01A0136E1246AA27223C0CF142A068F5D855F16184730CB99A7CBC452D486C6",
+  "PriorFailure": "SavedWorkbook_Saved_No: overloadMixed1000000; 10.2265625 seconds",
+  "CandidateWorkbookSHA256": "EC49352433C6CFF0D67B6105D1F6F9E2A2506D8388F2EA503C1C01661BD699D7",
+  "CandidateExportSHA256": "F7900AD75411621F39D78E0F1D5F4DDB1BC86AB3D6BC52B67DC34F5643044C76",
+  "ChangedSources": [
+    "src/Crack/CCrackFormationCalculator.cls",
+    "src/Interfaces/ILimitSearchProblem.cls",
+    "src/Solver/CCapacityLimitSearchProblem.cls",
+    "src/Solver/CCapacitySolver.cls",
+    "src/Solver/CCrackLimitSearchProblem.cls",
+    "src/Solver/CUltimateStrainSearch.cls",
+    "tests/CTestLimitSearchProblem.cls"
+  ],
+  "Timing": {
+    "IdenticalNumericalOutputs": true,
+    "IdenticalReportExceptTimingsAndFixturePath": true,
+    "CasesPerRun": 23,
+    "ThresholdSeconds": 10,
+    "Baseline": [
+      {
+        "CaseSeconds": 8.66015625,
+        "BatchSeconds": 7.69921875,
+        "BeforeReportSeconds": 8.23828125,
+        "EquilibriumSolves": 23,
+        "Work": [
+          40,
+          8,
+          291
+        ],
+        "PrimarySHA256": "F40B6460EE6A2C93DC441407C3ED4EEFF316DDE00D2DC941749B6243C4E0D0AC",
+        "ExecutionSHA256": "B1F65094481D46A3C071DB1214746897C11CD892C1246CA7C70C8A20FC3FBA02",
+        "Passed": true
+      },
+      {
+        "CaseSeconds": 8.390625,
+        "BatchSeconds": 7.42578125,
+        "BeforeReportSeconds": 7.9609375,
+        "EquilibriumSolves": 23,
+        "Work": [
+          40,
+          8,
+          291
+        ],
+        "PrimarySHA256": "7CE47C260C0AF0A152B8051C37AB4D72131CBE6E262E4173A0333C3550FBD6F7",
+        "ExecutionSHA256": "2325C10F61799302E2C7BA7C9325D6D30DF70587F02C344AFBDBC68277198598",
+        "Passed": true
+      },
+      {
+        "CaseSeconds": 8.28515625,
+        "BatchSeconds": 7.3046875,
+        "BeforeReportSeconds": 7.86328125,
+        "EquilibriumSolves": 23,
+        "Work": [
+          40,
+          8,
+          291
+        ],
+        "PrimarySHA256": "A355CE7A2AC2492978522BB85235068FB063E2B34320FDBFD27C9D570F14369B",
+        "ExecutionSHA256": "432F1DB2BED987EFEE62F24E79CC90B889271651B71DC367F910AF8E4589EB1D",
+        "Passed": true
+      }
+    ],
+    "Candidate": [
+      {
+        "CaseSeconds": 6.90625,
+        "BatchSeconds": 5.9296875,
+        "BeforeReportSeconds": 6.484375,
+        "EquilibriumSolves": 23,
+        "Work": [
+          40,
+          8,
+          291
+        ],
+        "PrimarySHA256": "E3C6895A5AAE98C672DAC1C8E8208CC6544EB99D34D290587CD61EF8B91359C3",
+        "ExecutionSHA256": "9B2242182F57963598F3F61E4BA106FEBADE640584BDC8E07B2FCD9571EA4F23",
+        "Passed": true
+      },
+      {
+        "CaseSeconds": 7.5234375,
+        "BatchSeconds": 6.48046875,
+        "BeforeReportSeconds": 7.078125,
+        "EquilibriumSolves": 23,
+        "Work": [
+          40,
+          8,
+          291
+        ],
+        "PrimarySHA256": "C1CB4545B09E2559BECA1109824C5FA46F24EE0A6ED0934E0425BB748597F4D1",
+        "ExecutionSHA256": "B65BD23664FC594B2EB8D2BEEEA29C89E52C1B2035D87D45FAE669C0CDBFC112",
+        "Passed": true
+      },
+      {
+        "CaseSeconds": 6.9375,
+        "BatchSeconds": 5.9921875,
+        "BeforeReportSeconds": 6.515625,
+        "EquilibriumSolves": 23,
+        "Work": [
+          40,
+          8,
+          291
+        ],
+        "PrimarySHA256": "649C096D9A133306D1701A513C23A576DB746F464EF417DBBF38F5430EA37BF0",
+        "ExecutionSHA256": "C1CFABFBCFD0168A30FC4538A945CCD21BDEDC656B8B1E460C7E7979023CAE7E",
+        "Passed": true
+      }
+    ],
+    "BaselineMedian": 8.390625,
+    "CandidateMedian": 6.9375,
+    "Speedup": 1.2094594594594594,
+    "Passed": true
+  },
+  "OwnProcessesTerminal": 15,
+  "FullAcceptanceClaim": false
+}

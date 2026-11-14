@@ -206,13 +206,13 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
 End Sub
 
 ' Оценивает две невязки выбранного пути и невязку физического критерия.
-' Здесь допустима оценка плоскости, но не фиктивное подтверждение равновесия.
+' При reuseTrialSolver переданный решатель принадлежит серии проб и может быть изменён.
 Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
 End Function
 
 ' Проверяет, достигнуты ли допуски двух уравнений траектории и физического критерия.

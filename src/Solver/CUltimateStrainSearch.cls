@@ -440,7 +440,7 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
     Dim trialLambda As Double, trialState As String
     If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
             q(1), q(2) / mFrame.LengthScale, q(3) / mFrame.LengthScale, _
-            trial, p1, p2, p3, trialLambda, trialState) Then Exit Function
+            trial, p1, p2, p3, trialLambda, trialState, True) Then Exit Function
     If context.LimitSearchUltimateResidualReached(p1, p2, p3) Then ' Нормальная поправка сама может достигнуть предела на плато. Ее принимают только реальные невязки задачи, не локальная модель шага.
         eps0 = q(1): kx = q(2) / mFrame.LengthScale: ky = q(3) / mFrame.LengthScale
         rPath1 = p1: rPath2 = p2: rLimit = p3
@@ -560,7 +560,7 @@ Private Function TryProjectedTrustRegion(ByVal context As ILimitSearchProblem, B
         Dim trial As CSectionSolver, t1 As Double, t2 As Double, t3 As Double
         Dim trialLambda As Double, trialState As String, rho As Double, actual As Double
         If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
-                trialE, trialX, trialY, trial, t1, t2, t3, trialLambda, trialState) Then Exit Function
+                trialE, trialX, trialY, trial, t1, t2, t3, trialLambda, trialState, True) Then Exit Function
         actual = (b(1) - t1 / matrixMagnitude) * (b(1) + t1 / matrixMagnitude) + _
             (b(2) - t2 / matrixMagnitude) * (b(2) + t2 / matrixMagnitude) ' Фактическое снижение суммы квадратов считаем как (a-b)*(a+b), чтобы не вычитать две огромные близкие нормы.
         rho = actual / predicted
@@ -765,10 +765,10 @@ Private Function BuildUltimateProjectedColumn(ByVal context As ILimitSearchProbl
     Dim n1 As Double, n2 As Double, n3 As Double, trialLambda As Double, trialState As String
     If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
             q(1) + h * v(1, column), (q(2) + h * v(2, column)) / mFrame.LengthScale, _
-            (q(3) + h * v(3, column)) / mFrame.LengthScale, trial, p1, p2, p3, trialLambda, trialState) Then Exit Function
+            (q(3) + h * v(3, column)) / mFrame.LengthScale, trial, p1, p2, p3, trialLambda, trialState, True) Then Exit Function
     If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
             q(1) - h * v(1, column), (q(2) - h * v(2, column)) / mFrame.LengthScale, _
-            (q(3) - h * v(3, column)) / mFrame.LengthScale, trial, n1, n2, n3, trialLambda, trialState) Then Exit Function
+            (q(3) - h * v(3, column)) / mFrame.LengthScale, trial, n1, n2, n3, trialLambda, trialState, True) Then Exit Function
     j1 = (p1 - n1) / 2#: j2 = (p2 - n2) / 2#
     BuildUltimateProjectedColumn = True
 End Function
@@ -805,7 +805,7 @@ Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVa
         Dim trialLambda As Double, trialState As String
         If EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
                 loadPath, trialEps, trialKx, trialKy, _
-                trialSolver, trialR1, trialR2, trialRLimit, trialLambda, trialState) Then
+                trialSolver, trialR1, trialR2, trialRLimit, trialLambda, trialState, True) Then
             ' Уже достигнутые допуски важнее колебания нормы на уровне
             ' round-off. Итоговая приемка следующей итерации дополнительно
             ' подтверждает все усилия и физическую допустимость точки.
@@ -897,7 +897,7 @@ Private Function TryUltimatePlateauBracket(ByVal context As ILimitSearchProblem,
         If alpha <= lower Or alpha >= upper Then Exit Function
         trialE = eps0 + alpha * dEps: trialX = kx + alpha * dKx: trialY = ky + alpha * dKy
         If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
-                trialE, trialX, trialY, trial, r1, r2, r3, trialLambda, trialState) Then Exit Function
+                trialE, trialX, trialY, trial, r1, r2, r3, trialLambda, trialState, True) Then Exit Function
         trialNorm = StepResidualNorm(context, r1, r2, r3)
         If context.LimitSearchUltimateResidualReached(r1, r2, r3) Or _
                 NonlinearStepImproves(baseNorm, trialNorm, alpha) Then
@@ -941,10 +941,10 @@ Private Function EvaluateResidual(ByVal context As ILimitSearchProblem, ByVal se
         ByVal loadPath As CLoadPathVector, ByVal centerStrain As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     EvaluateResidual = context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
         loadPath, centerStrain, kx, ky, _
-        solver, rPath1, rPath2, rLimit, lambdaValue, state, True)
+        solver, rPath1, rPath2, rLimit, lambdaValue, state, True, reuseTrialSolver)
 End Function
 
 ' Переполнение и деление на ноль при вычислении шага — численная неудача,

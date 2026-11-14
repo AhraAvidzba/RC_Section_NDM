@@ -740,10 +740,10 @@ Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionMod
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     LimitSearchEvaluateUltimateResidual = EvaluateCrcLoadPathResidual(section, _
         concreteMaterial, steelMaterial, loadPath, eps0, kx, ky, solver, _
-        rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
+        rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane, reuseTrialSolver)
 End Function
 
 ' Проверяет, что общий UltimateStrain дошел до точки eps_bt,ult.
@@ -1024,11 +1024,11 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef solver As CSectionSolver, ByRef rPath1 As Double, ByRef rPath2 As Double, _
         ByRef rLimit As Double, ByRef lambdaValue As Double, ByRef state As String, _
-        Optional ByVal centeredPlane As Boolean = False) As Boolean
+        Optional ByVal centeredPlane As Boolean = False, Optional ByVal reuseTrialSolver As Boolean = False) As Boolean
     On Error GoTo Failed
     If FormationSearchStoppedTerminally() Then Exit Function
 
-    Set solver = New CSectionSolver
+    If Not reuseTrialSolver Or solver Is Nothing Then Set solver = New CSectionSolver
     mSolverCallCount = mSolverCallCount + 1
     If centeredPlane Then
         solver.EvaluatePhysicalCenterPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
