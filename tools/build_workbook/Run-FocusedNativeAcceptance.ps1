@@ -35,7 +35,7 @@ foreach ($macro in @('RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTe
     $directory=Join-Path $root $relative
     if (Test-Path -LiteralPath $directory) { throw 'Native evidence already exists; choose a new output directory.' }
     New-Item -ItemType Directory -Path $directory | Out-Null
-    $arguments='-NoProfile -ExecutionPolicy Bypass -File "'+(Join-Path $PSScriptRoot 'Run-PostAudit03NativeCAD.ps1')+'" -SourceWorkbook "'+$SourceWorkbook+'" -ReportDirectory "'+$relative+'" -Macro '+$macro+' -DeadlineUTC "'+$nativeDeadline.ToString('o')+'"'
+    $arguments='-NoProfile -ExecutionPolicy Bypass -File "'+(Join-Path $PSScriptRoot 'Run-PostAudit03NativeCAD.ps1')+'" -SourceWorkbook "'+$SourceWorkbook+'" -ReportDirectory "'+$relative+'" -Macro '+$macro+' -LaunchInstalledAutoCAD -UseOwnedDrawing -DeadlineUTC "'+$nativeDeadline.ToString('o')+'"'
     $child=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $root `
         -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $directory 'stdout.log') -RedirectStandardError (Join-Path $directory 'stderr.log')
     $null=$child.Handle
