@@ -1,0 +1,64 @@
+{
+  "Status": "PASS",
+  "Commit": "f0d10aa4816beddc404213e36d2a670e5ac9d6bc",
+  "WorkbookSHA256": "2E259BAEB72E1E3B86070CE713142706AA38E21159311D12ADBA79EEBCFA920A",
+  "Started": "2026-11-14T14:45:45.020822+03:00",
+  "Finished": "2026-11-14T16:09:33.405502+00:00",
+  "Minutes": 263.81,
+  "CoreGroups": 12,
+  "CoreMacros": 182,
+  "FocusedRecords": 26,
+  "FocusedIndividualCases": 122,
+  "RealAutoCADCases": 2,
+  "ReviewedNumFailStates": 7,
+  "PrimaryLogsRead": 40,
+  "IndependentInventory": {
+    "Integrals": 563,
+    "NumFailStates": 7,
+    "ReportCount": 24,
+    "ProofSHA256": "D762685CEBA85DDCF4C92BB6C5796FD15B9FA1F9F5759EF2669D1C02CC4D75D3"
+  },
+  "AutoCADConnections": [
+    {
+      "Macro": "RunRealAutoCADFarOriginTests",
+      "PID": 32588,
+      "StartTicksUTC": "639302693001608321",
+      "FixtureSHA256": "D5C98576F42C3F9DCA2B7604935310DDBDA90CA10D42414A35D6FE72D7102BB5",
+      "ReportSHA256": "EEC58154BE736B8A257F092238FEF18A71074386B705DE53D8F3A036813C2C4F"
+    },
+    {
+      "Macro": "RunRealAutoCADFarCapacityTests",
+      "PID": 12496,
+      "StartTicksUTC": "639302693221771319",
+      "FixtureSHA256": "D5C98576F42C3F9DCA2B7604935310DDBDA90CA10D42414A35D6FE72D7102BB5",
+      "ReportSHA256": "6FDC9801AFD3E20F7FF0733B4127348BE3DE8340F2E1FE52BCB51337A58D0607"
+    }
+  ],
+  "WorkbookButtonPrintFlags": {
+    "btnRunSectionCalculation": "0",
+    "btnImportGeometryFromAutoCAD": "0",
+    "btnClearAutoCADDrawing": "0",
+    "btnExportStressToAutoCAD": "0",
+    "btnUpdateSectionPlot": "0"
+  },
+  "FrozenInputs": 525,
+  "OwnProcessesTerminal": 44,
+  "LaunchLogs": [
+    {
+      "Name": "FullLaunch.stdout.log",
+      "Bytes": 15286,
+      "SHA256": "5270FFF3C5B9D7FED58992E118DEAF73DB3588B24F58AF191686030CC14B418C",
+      "EntireLogRead": true,
+      "Errors": []
+    },
+    {
+      "Name": "FullLaunch.stderr.log",
+      "Bytes": 4016,
+      "SHA256": "53BF72DE804C63D68F64F0BEC09150A9789A19DC5D7A15D8EB5FAE68D6DF18DF",
+      "EntireLogRead": true,
+      "Errors": []
+    }
+  ],
+  "WholeProofSHA256": "B2459F89E6FD92AD9836E74F6487423624ECAF9FFD0A767AF943260DA238DD6B",
+  "PrimaryReviewSHA256": "CB6707C641B5253139EB6D2A2AA08CE06A5D54E843A715F358AA00E0AD459790"
+}
