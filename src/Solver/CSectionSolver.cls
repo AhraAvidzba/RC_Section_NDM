@@ -1388,6 +1388,22 @@ Friend Function TryGetConcreteStrainBounds(ByVal section As CSectionModel, _
     TryGetConcreteStrainBounds = True
 End Function
 
+' Возвращает границы деформаций материалов для последней физической оценки.
+' Для проверки диапазона важны значения, совпадение индексов здесь не требуется.
+Friend Function TryGetMaterialStrainBounds(ByVal section As CSectionModel, _
+        ByRef concreteMin As Double, ByRef concreteMax As Double, _
+        ByRef steelMin As Double, ByRef steelMax As Double) As Boolean
+    If mSnapshotConcrete Is Nothing Or mSnapshotSteel Is Nothing Then Exit Function
+    If Not StrainExtremaContextMatches(section) Then Exit Function
+    If mConcreteMinStrainIndex = 0 Or mConcreteMaxStrainIndex = 0 Then Exit Function
+    If section.RebarCount > 0 Then
+        If mSteelMinStrainIndex = 0 Or mSteelMaxStrainIndex = 0 Then Exit Function
+    End If
+    concreteMin = mMinConcreteStrain: concreteMax = mMaxConcreteStrain
+    steelMin = mMinSteelStrain: steelMax = mMaxSteelStrain
+    TryGetMaterialStrainBounds = True
+End Function
+
 ' Проверяет точное совпадение контекста для повторного использования экстремумов деформаций.
 Private Function StrainExtremaContextMatches(ByVal section As CSectionModel) As Boolean
     If Not mStrainExtremaValid Then Exit Function

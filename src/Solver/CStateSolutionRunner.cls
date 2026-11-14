@@ -448,11 +448,6 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
         ByVal loadSteps As Long, ByVal attemptName As String, ByRef service As CSectionSolver, _
         Optional ByVal retryKind As String = "extensionRetry") As Boolean
-    Dim retry As CSectionSolver
-    Set retry = New CSectionSolver
-    ConfigureSolver retry
-    retry.LoadSteps = loadSteps
-    retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
     Dim attemptKey As Variant, previousFailure As Variant
     If RetryAttemptContextMatches(section, concreteMaterial, steelMaterial) Then
         attemptKey = Array(targetN, targetMx, targetMy, eps0, kx, ky, initialN, initialMx, initialMy, _
@@ -466,6 +461,11 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
             Exit Function
         End If
     End If
+    Dim retry As CSectionSolver
+    Set retry = New CSectionSolver
+    ConfigureSolver retry
+    retry.LoadSteps = loadSteps
+    retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
     mSolverCallCount = mSolverCallCount + 1
     retry.Solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
 
@@ -575,6 +575,21 @@ Public Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver 
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
+    Dim concreteMin As Double, concreteMax As Double, steelMin As Double, steelMax As Double
+    ' Выход за допуск возможен только у минимальной или максимальной деформации материала.
+    If solver.TryGetMaterialStrainBounds(section, concreteMin, concreteMax, steelMin, steelMax) Then
+        If Not concreteDiagram Is Nothing Then
+            If concreteDiagram.IsInExtensionRange(concreteMin) Or concreteDiagram.IsInExtensionRange(concreteMax) Then
+                StateUsesExtension = True
+                Exit Function
+            End If
+        End If
+        If Not steelDiagram Is Nothing And section.RebarCount > 0 Then
+            StateUsesExtension = steelDiagram.IsInExtensionRange(steelMin) Or steelDiagram.IsInExtensionRange(steelMax)
+        End If
+        Exit Function
+    End If
+
     Dim i As Long
     Dim strain As Double
 
@@ -614,6 +629,19 @@ Public Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal s
     Dim steelDiagram As CMaterialDiagram
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
+
+    Dim concreteMin As Double, concreteMax As Double, steelMin As Double, steelMax As Double
+    ' Весь диапазон допустим, если обе крайние деформации входят в физический интервал.
+    If solver.TryGetMaterialStrainBounds(section, concreteMin, concreteMax, steelMin, steelMax) Then
+        If Not concreteDiagram Is Nothing Then
+            If Not concreteDiagram.IsInPhysicalRange(concreteMin) Or Not concreteDiagram.IsInPhysicalRange(concreteMax) Then Exit Function
+        End If
+        If Not steelDiagram Is Nothing And section.RebarCount > 0 Then
+            If Not steelDiagram.IsInPhysicalRange(steelMin) Or Not steelDiagram.IsInPhysicalRange(steelMax) Then Exit Function
+        End If
+        StateWithinPhysicalRange = True
+        Exit Function
+    End If
 
     Dim i As Long
     Dim strain As Double

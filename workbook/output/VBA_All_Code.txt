@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-14 13:16:13
+Date: 2026-11-14 14:44:52
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -27003,7 +27003,7 @@ End Property
 ====================================================================================================
 COMPONENT: CSectionSolver
 TYPE: 2
-LINES: 1746
+LINES: 1762
 ====================================================================================================
 Option Explicit
 
@@ -28386,6 +28386,22 @@ Friend Function TryGetConcreteStrainBounds(ByVal section As CSectionModel, _
     TryGetConcreteStrainBounds = True
 End Function
 
+' Возвращает границы деформаций материалов для последней физической оценки.
+' Для проверки диапазона важны значения, совпадение индексов здесь не требуется.
+Friend Function TryGetMaterialStrainBounds(ByVal section As CSectionModel, _
+        ByRef concreteMin As Double, ByRef concreteMax As Double, _
+        ByRef steelMin As Double, ByRef steelMax As Double) As Boolean
+    If mSnapshotConcrete Is Nothing Or mSnapshotSteel Is Nothing Then Exit Function
+    If Not StrainExtremaContextMatches(section) Then Exit Function
+    If mConcreteMinStrainIndex = 0 Or mConcreteMaxStrainIndex = 0 Then Exit Function
+    If section.rebarCount > 0 Then
+        If mSteelMinStrainIndex = 0 Or mSteelMaxStrainIndex = 0 Then Exit Function
+    End If
+    concreteMin = mMinConcreteStrain: concreteMax = mMaxConcreteStrain
+    steelMin = mMinSteelStrain: steelMax = mMaxSteelStrain
+    TryGetMaterialStrainBounds = True
+End Function
+
 ' Проверяет точное совпадение контекста для повторного использования экстремумов деформаций.
 Private Function StrainExtremaContextMatches(ByVal section As CSectionModel) As Boolean
     If Not mStrainExtremaValid Then Exit Function
@@ -29561,7 +29577,7 @@ End Function
 ====================================================================================================
 COMPONENT: CStateSolutionRunner
 TYPE: 2
-LINES: 798
+LINES: 826
 ====================================================================================================
 Option Explicit
 
@@ -30004,11 +30020,6 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
         ByVal loadSteps As Long, ByVal attemptName As String, ByRef service As CSectionSolver, _
         Optional ByVal retryKind As String = "extensionRetry") As Boolean
-    Dim retry As CSectionSolver
-    Set retry = New CSectionSolver
-    ConfigureSolver retry
-    retry.loadSteps = loadSteps
-    retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
     Dim attemptKey As Variant, previousFailure As Variant
     If RetryAttemptContextMatches(section, concreteMaterial, steelMaterial) Then
         attemptKey = Array(targetN, targetMx, targetMy, eps0, kx, ky, initialN, initialMx, initialMy, _
@@ -30022,6 +30033,11 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
             Exit Function
         End If
     End If
+    Dim retry As CSectionSolver
+    Set retry = New CSectionSolver
+    ConfigureSolver retry
+    retry.loadSteps = loadSteps
+    retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
     mSolverCallCount = mSolverCallCount + 1
     retry.solve section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
 
@@ -30131,6 +30147,21 @@ Public Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver 
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
+    Dim concreteMin As Double, concreteMax As Double, steelMin As Double, steelMax As Double
+    ' Выход за допуск возможен только у минимальной или максимальной деформации материала.
+    If solver.TryGetMaterialStrainBounds(section, concreteMin, concreteMax, steelMin, steelMax) Then
+        If Not concreteDiagram Is Nothing Then
+            If concreteDiagram.IsInExtensionRange(concreteMin) Or concreteDiagram.IsInExtensionRange(concreteMax) Then
+                StateUsesExtension = True
+                Exit Function
+            End If
+        End If
+        If Not steelDiagram Is Nothing And section.rebarCount > 0 Then
+            StateUsesExtension = steelDiagram.IsInExtensionRange(steelMin) Or steelDiagram.IsInExtensionRange(steelMax)
+        End If
+        Exit Function
+    End If
+
     Dim i As Long
     Dim strain As Double
 
@@ -30170,6 +30201,19 @@ Public Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal s
     Dim steelDiagram As CMaterialDiagram
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
+
+    Dim concreteMin As Double, concreteMax As Double, steelMin As Double, steelMax As Double
+    ' Весь диапазон допустим, если обе крайние деформации входят в физический интервал.
+    If solver.TryGetMaterialStrainBounds(section, concreteMin, concreteMax, steelMin, steelMax) Then
+        If Not concreteDiagram Is Nothing Then
+            If Not concreteDiagram.IsInPhysicalRange(concreteMin) Or Not concreteDiagram.IsInPhysicalRange(concreteMax) Then Exit Function
+        End If
+        If Not steelDiagram Is Nothing And section.rebarCount > 0 Then
+            If Not steelDiagram.IsInPhysicalRange(steelMin) Or Not steelDiagram.IsInPhysicalRange(steelMax) Then Exit Function
+        End If
+        StateWithinPhysicalRange = True
+        Exit Function
+    End If
 
     Dim i As Long
     Dim strain As Double

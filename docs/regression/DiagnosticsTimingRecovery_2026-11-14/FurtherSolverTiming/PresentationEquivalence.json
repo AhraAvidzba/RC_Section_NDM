@@ -1,0 +1,16 @@
+{
+  "Passed": true,
+  "AcceptedBookSHA256": "EC49352433C6CFF0D67B6105D1F6F9E2A2506D8388F2EA503C1C01661BD699D7",
+  "WorkbookSHA256": "2E259BAEB72E1E3B86070CE713142706AA38E21159311D12ADBA79EEBCFA920A",
+  "ExportSHA256": "F7900AD75411621F39D78E0F1D5F4DDB1BC86AB3D6BC52B67DC34F5643044C76",
+  "Components": 187,
+  "NamedRanges": 30,
+  "EmbeddedMedia": 86,
+  "CheckedCalculationDrawingObjects": [
+    "CurrentSection",
+    "chtNDMSectionPlot"
+  ],
+  "ChangedModules": [],
+  "ChangedStructure": [],
+  "StyledCellsCompared": 50672
+}
