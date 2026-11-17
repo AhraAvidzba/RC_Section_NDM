@@ -222,7 +222,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
             Else
                 sourceValue = vbNullString
             End If
-            If Left$(keyValue, 5) = "Plot." Or Left$(keyValue, 7) = "Output." Or keyValue = "Mesh.StepX" Or keyValue = "Mesh.StepY" Then ' Preview не выбирает сочетание; Worst не читает ID. Ручные шаги не являются входом Auto. Ошибка выдаётся при запросе активного поля.
+            If Left$(keyValue, 5) = "Plot." Or Left$(keyValue, 7) = "Output." Or Left$(keyValue, 8) = "Torsion." Or keyValue = "Mesh.StepX" Or keyValue = "Mesh.StepY" Then ' Неиспользуемые параметры T, Preview, Worst и Auto не проверяются; ошибка активного поля выдаётся при его запросе.
                 AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
             Else
                 AppendSetting keyValue, _

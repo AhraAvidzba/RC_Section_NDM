@@ -1,0 +1,14 @@
+{
+  "Checks": {
+    "cols": true,
+    "sheetFormatPr": true,
+    "mergeCells": true,
+    "pageMargins": true,
+    "pageSetup": true,
+    "printOptions": true,
+    "PrintNames": true
+  },
+  "RowDifferences": [],
+  "CellStyleDifferences": [],
+  "Equal": true
+}

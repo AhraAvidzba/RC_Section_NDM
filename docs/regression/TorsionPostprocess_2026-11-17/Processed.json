@@ -1,0 +1,165 @@
+{
+  "Status": "DIRECTED_TORSION_ACCEPTANCE_PASS",
+  "ReviewedUTC": "2026-11-18T00:06:10.212431+03:00",
+  "FullOnOffSuiteRun": false,
+  "Base": "1315d2fd28df06465c318d70af822c3a60ac4bda",
+  "BookSHA256": "100849C95428DE15B907FE1109C1A64828816B34363A445EE429F265BFB3FF81",
+  "CodeExportSHA256": "337FC7CA40618972B5023360CCD0601C16474148CADC2FE444D8938B82FF10A8",
+  "NativeMath": 42,
+  "NativeOutput": 81,
+  "NativeGuards": 5,
+  "SourceComponents": 189,
+  "IntegrationChecks": 18,
+  "ActualKeyboardSelections": 8,
+  "ScreenshotsOfDropdownUnavailable": true,
+  "ListDefinitionsUnchangedAfterLabelUpdate": true,
+  "CalculationSheetLayoutEqual": true,
+  "PrimaryFilesRead": 16,
+  "PublicationPending": false,
+  "Manifest": [
+    {
+      "Path": "FinalStatic09.json",
+      "SHA256": "1106EA4E3DCBD6840245DD9FE9F5E5BE82B8D2F2B7597947603B62408715ACAA",
+      "Bytes": 567
+    },
+    {
+      "Path": "CalcLayoutFinal12.json",
+      "SHA256": "3162A210554CF2A90815559DD6A6760583A812AC284B58B23EE27023963F74B0",
+      "Bytes": 271
+    },
+    {
+      "Path": "SavedLabelsFinal12.json",
+      "SHA256": "7BAB194B27BB6CBAFC5319C32E212F76D4B4F82CB75085A2AC62C21B776AB820",
+      "Bytes": 997
+    },
+    {
+      "Path": "FinalPrintPrefix12.json",
+      "SHA256": "B2EF15B8CC4158278A32CA2AE93620238B76F26FF692C30BA60B7CDD10F54A38",
+      "Bytes": 343
+    },
+    {
+      "Path": "FinalCandidate12/Review.json",
+      "SHA256": "998DDA96819F8EA58C5AE2F6C7611AAAA3A68B0C5D37AFD971CC990511BB76CA",
+      "Bytes": 1262
+    },
+    {
+      "Path": "Native14/Review.json",
+      "SHA256": "87C37DEECE569205E6CCA9574C4C339D3AB22CBEC75C32B24BEC223F23512FD6",
+      "Bytes": 12630
+    },
+    {
+      "Path": "Keyboard13/Review.json",
+      "SHA256": "02DF503EC1020DE0AE25831C29459F1C0A087E8B24FD79B19B815CB88EBAD50D",
+      "Bytes": 4226
+    },
+    {
+      "Path": "Integration13/Review.json",
+      "SHA256": "2B0E309375B5A0B60C1A07E6A69705E871F3DA21D3659E8B8868B4EEA64388AB",
+      "Bytes": 10175
+    },
+    {
+      "Path": "Normalizer07.json",
+      "SHA256": "908ACFC15B8A97852FF79A0E219C87F7E5F68D53E48BFE4B849E82BB70AE3927",
+      "Bytes": 657
+    },
+    {
+      "Path": "Native14/GuardPrimary.txt",
+      "SHA256": "BE10ECBF2813543B2CE44F8B9E4EC93F37DAB0D4E1D0AFEED06E351E883C8435",
+      "Bytes": 2268,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Native14/MathPrimary.txt",
+      "SHA256": "20EC1D66BDE17525CF4E39FED9A4AE35975C7AABFC2FEB570BE040E0181C1E1F",
+      "Bytes": 1231,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Native14/OutputPrimary.txt",
+      "SHA256": "6EBF4A66817234B845F7B33ECE8E8A1A1A6795EE9081A97877387754A195CB20",
+      "Bytes": 2421,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Baseline_EmptyT_Primary.txt",
+      "SHA256": "57AEC36D02C7F63413CBBE5C946828BAE434AFC832962A3BA8482D2650FB9639",
+      "Bytes": 386,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_ActiveT_Primary.txt",
+      "SHA256": "F9878528FF1CF25613A509C0C8F77D94CD5C15D7FAE68C32B19E509648FD65C1",
+      "Bytes": 595,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_DuplicateT_Primary.txt",
+      "SHA256": "5491BDB3A5DC5B21CC3FC941ADAEAB9567CE03034BE3803AC8F303C9294CB4C1",
+      "Bytes": 595,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_EmptyT_Primary.txt",
+      "SHA256": "7329341725D67D09556FD93D39069D6A9A1A685E8FB2D96EBDE7B895CB5796B8",
+      "Bytes": 388,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_Excel_Primary.txt",
+      "SHA256": "21C9D9B48685CB0F7E9B1057E8C6DD183E7FE31E597DEFE4EDD94AD28F43B1AE",
+      "Bytes": 627,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_InactiveConcrete_Primary.txt",
+      "SHA256": "C6DD317A2F67AE25DF9B52F44FC69E5886AC3DB5E983032C61806B1A7EEC8A4D",
+      "Bytes": 595,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_InvalidSpacing_Primary.txt",
+      "SHA256": "59068D90F1149426DF2A4CF0C79EB951332135072AC98F9C234C9F3D7582C45A",
+      "Bytes": 595,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_InvalidT_Primary.txt",
+      "SHA256": "DCDAC146E4917A030BFC92969C6601A124276DDA9953C879F27E50E0DF50B417",
+      "Bytes": 595,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_ZeroDuplicate_Primary.txt",
+      "SHA256": "F9878528FF1CF25613A509C0C8F77D94CD5C15D7FAE68C32B19E509648FD65C1",
+      "Bytes": 595,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Baseline_Form.txt",
+      "SHA256": "28E81BB93389F837B49A27DEC1CB2C634A257AB211EC566A5C5F60611D344A09",
+      "Bytes": 360,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_Form.txt",
+      "SHA256": "D1FDF640D672895CFEEC9A7AABBA01919D7D63FE064869868A30054E5A081F15",
+      "Bytes": 361,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Baseline_NM.txt",
+      "SHA256": "C6FA17D874FAAD4FCA691E5AD195CDDC596621616045D9D285093B2E43A2EF5D",
+      "Bytes": 385763,
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "Integration13/Candidate_NM.txt",
+      "SHA256": "C6FA17D874FAAD4FCA691E5AD195CDDC596621616045D9D285093B2E43A2EF5D",
+      "Bytes": 385763,
+      "EntirePrimaryRead": true
+    }
+  ],
+  "Publication": "Publication.json",
+  "VisualReview": "VisualReview.json",
+  "Caption": "T (кручение)"
+}

@@ -279,6 +279,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
         summary.ClearSummary workbook, fullFormatting
         Set geometryPreview = writer.WriteGeometryPreviewForDisplay(workbook, section, snapshot, units, fullFormatting)
     End If
+    Dim torsionClearWarning As String: torsionClearWarning = ClearTorsionPostBodies(workbook)
     Dim savedDestination As String: savedDestination = "на листе Results"
     If storageMode = "File" Then savedDestination = "в файле «" & previewStore.SelectedFileName(workbook) & "»"
     Dim containerNotice As String
@@ -294,6 +295,10 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
             "Сечение сформировано и сохранено " & savedDestination & ". Для расчёта нажмите «Выполнить расчёт»."
     End If
     If Len(section.GeometryWarningText) > 0 Then FormSectionCore = WorkbookMessageParagraph(FormSectionCore, section.GeometryWarningText)
+    If Len(torsionClearWarning) > 0 Then
+        requiresAttention = True
+        FormSectionCore = WorkbookMessageParagraph(FormSectionCore, torsionClearWarning)
+    End If
     If Len(containerNotice) > 0 Then
         requiresAttention = True
         FormSectionCore = WorkbookMessageParagraph(FormSectionCore, containerNotice)
@@ -502,10 +507,16 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     Set ndmWriter.CaptureSnapshot = savedSnapshot
     ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
     savedSnapshot.AddTable "Calculation.Profiles", savedProfileValues
+    Dim torsionWarning As String
+    torsionWarning = CaptureTorsionPostprocess(workbook, section, batch, units, savedSnapshot)
     savedSnapshot.Validate
     report.AddStep "Результаты подготовлены; сохранение в выбранном режиме и вывод из памяти."
     Dim plotWarning As String, plotHasWarning As Boolean
     plotWarning = SaveAndDisplayCalculationSnapshot(workbook, savedSnapshot, plotHasWarning)
+    If Len(torsionWarning) > 0 Then
+        plotWarning = WorkbookMessageParagraph(plotWarning, torsionWarning)
+        plotHasWarning = True
+    End If
     report.AddStep "Подробные таблицы и схема заполнены из готовых данных без повторного решения. Полный файл снимка сохраняется только в режиме File."
 
     Dim totalElapsedSeconds As Double
@@ -1267,6 +1278,7 @@ Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     ndmWriter.ClearResults workbook
+    Dim torsionWarning As String: torsionWarning = ClearTorsionPostBodies(workbook)
 End Sub
 
 ' Читает зарегистрированные таблицы выбранного рецепта и создаёт единое описание сечения.

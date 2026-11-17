@@ -1,0 +1,95 @@
+﻿{
+    "Status":  "ALL_EIGHT_NATIVE_DROPDOWN_KEYBOARD_SELECTIONS_PASS",
+    "SourceSHA256":  "6F152B2EDBA789F01F17425EB1D3DDB254C5F3ACEED106593ECBB20D1CD42D26",
+    "Own":  {
+                "PID":  10508,
+                "UTCticks":  639305444396097882,
+                "QuitRequested":  true,
+                "Absent":  true,
+                "Forced":  true
+            },
+    "Selected":  [
+                     {
+                         "Key":  "Torsion.StateType",
+                         "Index":  0,
+                         "Expected":  "StrengthState",
+                         "Actual":  "StrengthState",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$91"
+                     },
+                     {
+                         "Key":  "Torsion.StateType",
+                         "Index":  1,
+                         "Expected":  "CapacityState",
+                         "Actual":  "CapacityState",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$91"
+                     },
+                     {
+                         "Key":  "Torsion.StateType",
+                         "Index":  2,
+                         "Expected":  "PreCrackState",
+                         "Actual":  "PreCrackState",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$91"
+                     },
+                     {
+                         "Key":  "Torsion.StateType",
+                         "Index":  3,
+                         "Expected":  "PostCrackState",
+                         "Actual":  "PostCrackState",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$91"
+                     },
+                     {
+                         "Key":  "Torsion.StateType",
+                         "Index":  4,
+                         "Expected":  "CrackedState",
+                         "Actual":  "CrackedState",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$91"
+                     },
+                     {
+                         "Key":  "Torsion.ConcreteMethod",
+                         "Index":  0,
+                         "Expected":  "Strut",
+                         "Actual":  "Strut",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$99"
+                     },
+                     {
+                         "Key":  "Torsion.ConcreteMethod",
+                         "Index":  1,
+                         "Expected":  "GorskyRectangle",
+                         "Actual":  "GorskyRectangle",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$99"
+                     },
+                     {
+                         "Key":  "Torsion.ConcreteMethod",
+                         "Index":  2,
+                         "Expected":  "None",
+                         "Actual":  "None",
+                         "ValidationAccepted":  true,
+                         "SeedWasInvalid":  true,
+                         "SelectedByKeyboard":  true,
+                         "AfterActiveCell":  "$AG$99"
+                     }
+                 ],
+    "Current":  null,
+    "ScreenshotUnavailable":  true
+}

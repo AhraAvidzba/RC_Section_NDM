@@ -1,0 +1,311 @@
+﻿{
+    "ReviewedUTC":  "2026-11-17T21:08:01.0552292Z",
+    "AllTerminal":  true,
+    "OwnCount":  38,
+    "Owners":  [
+                   {
+                       "PID":  14328,
+                       "UTCticks":  639305326987314661,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild01\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  27412,
+                       "UTCticks":  639305329868041692,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild02\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  33388,
+                       "UTCticks":  639305337028886300,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild03\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  19720,
+                       "UTCticks":  639305341391563612,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild04\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  35488,
+                       "UTCticks":  639305370068848072,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild05\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  12716,
+                       "UTCticks":  639305394963832656,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild06\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  30764,
+                       "UTCticks":  639305409410613460,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild07\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  17984,
+                       "UTCticks":  639305413982837506,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild08\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  39400,
+                       "UTCticks":  639305419358634766,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild09\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  23832,
+                       "UTCticks":  639305430615426583,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild10\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  9888,
+                       "UTCticks":  639305434841513433,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\TorsionPostBuild11\\BuildOwnership.json"
+                   },
+                   {
+                       "PID":  39560,
+                       "UTCticks":  639305400508333609,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration08\\Review.json"
+                   },
+                   {
+                       "PID":  26692,
+                       "UTCticks":  639305402196688481,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration09\\Review.json"
+                   },
+                   {
+                       "PID":  34060,
+                       "UTCticks":  639305404993200903,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration10\\Review.json"
+                   },
+                   {
+                       "PID":  14636,
+                       "UTCticks":  639305404629954552,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration10\\Review.json"
+                   },
+                   {
+                       "PID":  29640,
+                       "UTCticks":  639305406444965014,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration11\\Review.json"
+                   },
+                   {
+                       "PID":  8056,
+                       "UTCticks":  639305406106996590,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration11\\Review.json"
+                   },
+                   {
+                       "PID":  35784,
+                       "UTCticks":  639305440497982885,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration12\\Review.json"
+                   },
+                   {
+                       "PID":  39212,
+                       "UTCticks":  639305440093588523,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration12\\Review.json"
+                   },
+                   {
+                       "PID":  16212,
+                       "UTCticks":  639305458912561075,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration13\\Review.json"
+                   },
+                   {
+                       "PID":  25712,
+                       "UTCticks":  639305458514615053,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration13\\Review.json"
+                   },
+                   {
+                       "PID":  24628,
+                       "UTCticks":  639305442383289940,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Keyboard12\\Review.json"
+                   },
+                   {
+                       "PID":  10508,
+                       "UTCticks":  639305444396097882,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Keyboard13\\Review.json"
+                   },
+                   {
+                       "PID":  24008,
+                       "UTCticks":  639305348789099072,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native04B\\Review.json"
+                   },
+                   {
+                       "PID":  21368,
+                       "UTCticks":  639305399136186699,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native06\\Review.json"
+                   },
+                   {
+                       "PID":  27372,
+                       "UTCticks":  639305418362122117,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native08\\Review.json"
+                   },
+                   {
+                       "PID":  29000,
+                       "UTCticks":  639305423460918770,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native09\\Review.json"
+                   },
+                   {
+                       "PID":  26820,
+                       "UTCticks":  639305424725304858,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native10\\Review.json"
+                   },
+                   {
+                       "PID":  39808,
+                       "UTCticks":  639305426548783510,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native11\\Review.json"
+                   },
+                   {
+                       "PID":  33700,
+                       "UTCticks":  639305439350168121,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native12\\Review.json"
+                   },
+                   {
+                       "PID":  35180,
+                       "UTCticks":  639305455266586590,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native13\\Review.json"
+                   },
+                   {
+                       "PID":  37164,
+                       "UTCticks":  639305457439041279,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Native14\\Review.json"
+                   },
+                   {
+                       "PID":  5084,
+                       "UTCticks":  639305355442656388,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview04\\Preview.json"
+                   },
+                   {
+                       "PID":  21420,
+                       "UTCticks":  639305361538894014,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview05\\Preview.json"
+                   },
+                   {
+                       "PID":  33812,
+                       "UTCticks":  639305374373931618,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview06\\Preview.json"
+                   },
+                   {
+                       "PID":  14240,
+                       "UTCticks":  639305383958416205,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview07\\Preview.json"
+                   },
+                   {
+                       "PID":  17712,
+                       "UTCticks":  639305448102154294,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview11\\Preview.json"
+                   },
+                   {
+                       "PID":  19996,
+                       "UTCticks":  639305463603560170,
+                       "Status":  "Absent",
+                       "ObservedName":  null,
+                       "ObservedUTCticks":  null,
+                       "Proof":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview12\\Preview.json"
+                   }
+               ]
+}

@@ -113,6 +113,11 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Else
         plotWarning = TryUpdateCalculatedSnapshotPlot(workbook, snapshot, plotHasWarning)
     End If
+    Dim torsionWarning As String: torsionWarning = RestoreTorsionPostTables(workbook, snapshot)
+    If Len(torsionWarning) > 0 Then
+        plotWarning = WorkbookMessageParagraph(plotWarning, torsionWarning)
+        plotHasWarning = True
+    End If
     EndCalculationSnapshotRead
     entered = False
     guard.Restore True
@@ -373,6 +378,11 @@ Private Sub UpdateIndexedResultsForWorkbook(ByVal workbook As Object, ByRef plot
     store.LinkFile workbook
     If preview Then UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning Else UpdateSectionPlotForWorkbook workbook, False, plotWarning
     plotHasWarning = (Len(plotWarning) > 0)
+    Dim torsionWarning As String: torsionWarning = RestoreTorsionPostTables(workbook, source)
+    If Len(torsionWarning) > 0 Then
+        plotWarning = WorkbookMessageParagraph(plotWarning, torsionWarning)
+        plotHasWarning = True
+    End If
     EndCalculationSnapshotRead
     entered = False
     Exit Sub

@@ -1,0 +1,40 @@
+﻿{
+    "Status":  "NATIVE_PREVIEW_EXPORTED_NOT_FULL_ACCEPTANCE",
+    "SourceSHA256":  "100849C95428DE15B907FE1109C1A64828816B34363A445EE429F265BFB3FF81",
+    "Own":  {
+                "PID":  19996,
+                "StartTicksUTC":  639305463603560170,
+                "QuitRequested":  true,
+                "Absent":  true,
+                "Forced":  true
+            },
+    "PDF":  [
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview12\\01_Torques.pdf",
+                    "Sheet":  "Config",
+                    "Range":  "AL89:AM120"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview12\\02_Settings.pdf",
+                    "Sheet":  "Config",
+                    "Range":  "AF89:AJ103"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview12\\03_Results.pdf",
+                    "Sheet":  "Results",
+                    "Range":  "AY45:CT52"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview12\\04_Summary.pdf",
+                    "Sheet":  "Results",
+                    "Range":  "AL6:AM16"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview12\\05_BarForces.pdf",
+                    "Sheet":  "Results",
+                    "Range":  "EB155:ED167"
+                }
+            ],
+    "FormMessage":  "Сечение сформировано и сохранено на листе Results.\r\n\r\nГеометрия сформирована по параметрам Config и листа «Сечения».\r\n\r\nБетонных элементов: 76.\r\nСтержней арматуры: 40.\r\n\r\nВремя формирования сечения: 3.67 с.",
+    "CalculationMessage":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.86 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+}

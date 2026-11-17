@@ -1,0 +1,17 @@
+{
+  "ReviewedUTC": "2026-11-17T21:21:09.7852658Z",
+  "NativeExcelPDF": true,
+  "Images": [
+    "01_Torques.png",
+    "02_Settings.png",
+    "03_Results.png"
+  ],
+  "ReviewedInChat": true,
+  "Font": "Arial 9",
+  "Captions": "T (кручение)",
+  "GreekSymbolsRetained": true,
+  "SmallAreasVisible": true,
+  "MethodBandHeadersReadable": true,
+  "InputCommentsReadable": true,
+  "PhoneDeliveryConfirmed": false
+}

@@ -1,0 +1,15 @@
+﻿{
+    "Status":  "CLEAN_BOOK_AND_ACTUAL_CODE_EXPORT_PUBLISHED",
+    "UTC":  "2026-11-17T21:08:01.6133505Z",
+    "Book":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "BookSHA256":  "100849C95428DE15B907FE1109C1A64828816B34363A445EE429F265BFB3FF81",
+    "Code":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\VBA_All_Code.txt",
+    "CodeSHA256":  "337FC7CA40618972B5023360CCD0601C16474148CADC2FE444D8938B82FF10A8",
+    "Backup":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\BeforeFinalPublication13",
+    "OriginalBookSHA256":  "5786C56088352A0530BDFFEAA7BEB6701A211152896EE13DF85551428D5B10AF",
+    "OriginalCodeSHA256":  "E27CC2072D63C203003CFDC3BFD64E663F687F6D44513C780EC38D7D51F6A069",
+    "UserDataCopied":  false,
+    "MainBranchMerged":  false,
+    "FullOnOffRun":  false,
+    "FreshAllOwnTerminal":  true
+}

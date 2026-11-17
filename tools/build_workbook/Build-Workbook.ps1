@@ -4,7 +4,8 @@ param(
     [string]$OutputPath = "workbook/output/RC_Section_NDM.xlsm",
     [string]$FormulaImageDirectory = "",
     [string]$FormattedOutputPath = "",
-    [switch]$UseFormattedLayout
+    [switch]$UseFormattedLayout,
+    [switch]$ShowExcel
 )
 
 $ErrorActionPreference = "Stop"
@@ -85,6 +86,7 @@ function Import-VbaSourceTree {
         (Join-Path $RootPath "src/Crack"),
         (Join-Path $RootPath "src/Stability"),
         (Join-Path $RootPath "src/Batch"),
+        (Join-Path $RootPath "src/Torsion"),
         (Join-Path $RootPath "src/Excel"),
         (Join-Path $RootPath "tests")
     )
@@ -402,6 +404,7 @@ $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
 . (Join-Path $PSScriptRoot "SectionIllustrations.ps1")
 . (Join-Path $PSScriptRoot "IndexedResultsTable.ps1")
+. (Join-Path $PSScriptRoot "TorsionPostprocess.ps1")
 $script:WorkbookLayout = Read-WorkbookLayout
 . (Join-Path $PSScriptRoot "SectionRecipeGuide.ps1")
 if (-not [string]::IsNullOrWhiteSpace($FormulaImageDirectory)) {
@@ -510,7 +513,7 @@ try {
     if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
         throw 'New Excel process identity could not be verified before workbook creation.'
     }
-    $excel.Visible = $false
+    $excel.Visible = [bool]$ShowExcel # Видимая диагностическая сборка позволяет прочитать нативную ошибку VBA; обычная сборка скрыта.
     $excel.DisplayAlerts = $false
     $excel.ScreenUpdating = $false
     $excel.EnableEvents = $false # Обработчики готовой книги не вызываются во время создания списков и объектов.
@@ -550,6 +553,8 @@ try {
     Add-SettingsInstructions $workbook $system $instructions
     # Руководство по рецептам добавляется после остальных разделов и формульных изображений справки.
     Update-SectionRecipeGuide $workbook ([string]$root) -Install | Out-Null
+    Add-TorsionPostprocessTables $workbook $script:WorkbookLayout
+    Add-TorsionPostprocessGuide $workbook
     # Hyperlink-стиль Excel может сбросить рамку ячейки Подробнее.
     # Финальную обводку делаем после добавления всех ссылок Config.
     Apply-ConfigNamedRangeBorders $workbook
@@ -639,6 +644,7 @@ try {
     Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
     Initialize-SectionIllustrationSelectorName $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    $excel.Run("'" + $workbook.Name + "'!modTorsionPostTables.InitializeTorsionPostOutput")
     Set-ResultsSnapshotTitleBand $workbook
     Set-SectionIllustrationSelector $workbook
     $calc.Activate() # Начальный выбор и обычная справочная картинка сохраняются на целевом листе.

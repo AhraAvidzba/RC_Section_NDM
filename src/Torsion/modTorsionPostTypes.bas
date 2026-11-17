@@ -1,0 +1,43 @@
+Attribute VB_Name = "modTorsionPostTypes"
+Option Explicit
+
+' ==========================================================================
+' Данные отдельной приближённой проверки арматуры и хомута на кручение
+' ==========================================================================
+' Не являются нагрузками решателя НДМ. Размерности: мм, Н, Н*мм, МПа.
+' Проверочная сумма напряжений не задаёт новое равновесное НДС.
+
+Public Const TORSION_POST_COLUMNS As Long = 39
+Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 48 ' Комментарий объединяет несколько ячеек без изменения ширин столбцов NM.
+Public Const TORSION_BAR_COLUMNS As Long = 3
+Public Const TORSION_POST_DATA_KEY As String = "TorsionPost.Data"
+Public Const TORSION_POST_HEADERS_KEY As String = "TorsionPost.Headers"
+Public Const TORSION_BAR_DATA_KEY As String = "TorsionPost.Bars"
+Public Const TORSION_MNT_DATA_KEY As String = "TorsionPost.MNT"
+
+Public Type TTorsionPostParameters
+    StateName As String
+    Cover As Double
+    HoopDiameter As Double
+    HoopSpacing As Double
+    SteelResistance As Double
+    HoopResistance As Double
+    BarBand As Double
+    StrutAngle As Double
+    ConcreteMethod As String
+    WallThickness As Double
+    ConcreteResistance As Double
+    ConcreteEfficiency As Double
+    GorskyCoefficient As Double
+End Type
+
+' Возвращает внешний статус применимой проверки по общей политике проекта.
+Public Function TorsionPostCheckStatus(ByVal reserve As Double) As String
+    Dim meta As New CResultMeta, policy As New CResultStatusPolicy
+    If reserve >= 1# Then
+        meta.SetResult rsSuccess, rcCheckPassed, rkGeneric
+    Else
+        meta.SetResult rsCheckFailed, rcCheckFailed, rkGeneric
+    End If
+    TorsionPostCheckStatus = policy.ExternalStatus(meta)
+End Function

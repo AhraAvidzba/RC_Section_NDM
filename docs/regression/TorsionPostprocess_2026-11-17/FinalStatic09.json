@@ -1,0 +1,18 @@
+{
+  "ReviewedUTC": "2026-11-17T20:40:23.006353+00:00",
+  "Base": "1315d2fd28df06465c318d70af822c3a60ac4bda",
+  "CoreFilesCompared": 79,
+  "CoreContentChanged": [],
+  "OriginalNamesChanged": [],
+  "AddedNames": [
+    "rngTorsionBarForces",
+    "rngTorsionCombinations",
+    "rngTorsionMNTSummary",
+    "rngTorsionPostSummary",
+    "rngTorsionSettings"
+  ],
+  "OtherSheetLayoutsChanged": [],
+  "MainWorkbookGitBlob": "505e09fa74fcc87ccb4e958a8c86d58ed9a01702",
+  "ApprovedWorkbookGitBlob": "505e09fa74fcc87ccb4e958a8c86d58ed9a01702",
+  "Passed": true
+}

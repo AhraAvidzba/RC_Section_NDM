@@ -1,0 +1,8 @@
+{
+  "Source": "Build11 exact print names",
+  "BeforeSHA256": "3B11927403E26AE0E8349D0F35F87C430D690D192FBC10FCEAA60A5DFE2B7FA5",
+  "AfterSHA256": "100849C95428DE15B907FE1109C1A64828816B34363A445EE429F265BFB3FF81",
+  "Areas": 1,
+  "Mechanism": "Existing Restore-WorkbookPrintAreas after native Save",
+  "OnlyWorkbookXmlUpdated": true
+}

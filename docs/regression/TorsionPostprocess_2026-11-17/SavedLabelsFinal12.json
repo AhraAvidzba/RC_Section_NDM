@@ -1,0 +1,47 @@
+{
+  "BookSHA256": "100849c95428de15b907fe1109c1a64828816b34363a445ee429f265bfb3ff81",
+  "Labels": {
+    "BA47": {
+      "Expected": "T (кручение)",
+      "Actual": "T (кручение)",
+      "Passed": true
+    },
+    "BD47": {
+      "Expected": "cot θ",
+      "Actual": "cot θ",
+      "Passed": true
+    },
+    "BJ47": {
+      "Expected": "Δσ_T, max",
+      "Actual": "Δσ_T, max",
+      "Passed": true
+    },
+    "BP47": {
+      "Expected": "σ_sw",
+      "Actual": "σ_sw",
+      "Passed": true
+    },
+    "BV47": {
+      "Expected": "σ_diag",
+      "Actual": "σ_diag",
+      "Passed": true
+    },
+    "CB47": {
+      "Expected": "σ_NM",
+      "Actual": "σ_NM",
+      "Passed": true
+    },
+    "CC47": {
+      "Expected": "Δσ_T",
+      "Actual": "Δσ_T",
+      "Passed": true
+    },
+    "CE47": {
+      "Expected": "σ_NM+T",
+      "Actual": "σ_NM+T",
+      "Passed": true
+    }
+  },
+  "ExternalLinks": [],
+  "Passed": true
+}

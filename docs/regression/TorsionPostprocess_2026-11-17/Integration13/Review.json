@@ -1,0 +1,130 @@
+﻿{
+    "Status":  "DIRECTED_INTEGRATION_PASS_NOT_FULL_SUITE",
+    "Own":  {
+                "PID":  16212,
+                "StartTicksUTC":  639305458912561075,
+                "QuitRequested":  true,
+                "Forced":  true,
+                "Absent":  true
+            },
+    "Checks":  [
+                   {
+                       "Name":  "Empty T NM equals approved main",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Active T NM equals approved main",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Three requested T rows saved",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Missing saved state is addressed",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Independent algebraic sum",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Formatted data survives",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Four optional matrices roundtrip",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "File refresh restores T data",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "File refresh does not write snapshot",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Invalid T NM unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Invalid T clear status and source chain",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Duplicate active IDs both rejected",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Zero T fully disables duplicate row",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Inactive concrete errors not read",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Invalid setting is addressed",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Excel output populated",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Saved reopened Excel output intact",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Form clears only stale torsion results",
+                       "Passed":  true
+                   }
+               ],
+    "Messages":  [
+                     {
+                         "Name":  "Baseline_EmptyT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Baseline.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 2.20 с.\r\n\r\nДанные сохранены в файле «Baseline.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_EmptyT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 2.34 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_ActiveT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.63 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_InvalidT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 2. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.63 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_DuplicateT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 3. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.62 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_ZeroDuplicate",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.63 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_InactiveConcrete",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.67 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_InvalidSpacing",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «Candidate.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 2. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.66 с.\r\n\r\nДанные сохранены в файле «Candidate.ndm»."
+                     },
+                     {
+                         "Name":  "Candidate_Excel",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.55 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+                     }
+                 ],
+    "Baseline":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Integration13\\Baseline.xlsm",
+    "Candidate":  "C:/Users/avidzba/.codex/visualizations/2026/10/12/01a12ece-8192-7141-89b3-f83f1176184c/TorsionPostprocess_2026-11-17/FinalCandidate12/RC_Section_NDM.xlsm",
+    "BaselineOwn":  {
+                        "PID":  25712,
+                        "UTCticks":  639305458514615053,
+                        "QuitRequested":  true,
+                        "Absent":  true
+                    }
+}

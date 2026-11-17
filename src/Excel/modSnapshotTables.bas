@@ -33,6 +33,10 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
         Case "Calculation.Profiles"
             If UBound(values, 2) < 3 Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Повреждены сохранённые профили расчёта."
             Exit Sub
+        Case "TorsionPost.Headers": columns = TORSION_POST_COLUMNS: rows = 4
+        Case "TorsionPost.Data": columns = TORSION_POST_COLUMNS
+        Case "TorsionPost.Bars": columns = TORSION_BAR_COLUMNS
+        Case "TorsionPost.MNT": columns = 2
     End Select
     If UBound(values, 2) <> columns Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Неверная структура таблицы снимка: " & key
     If rows > 0 Then If UBound(values, 1) <> rows Then Err.Raise 5, "CCalculationSnapshot", "Неверная шапка таблицы снимка: " & key

@@ -225,6 +225,46 @@
       "Address": "$K$2",
       "Rows": 1,
       "Columns": 1
+    },
+    {
+      "Name": "rngTorsionCombinations",
+      "RefersTo": "=Config!$AL$90:$AM$120",
+      "Sheet": "Config",
+      "Address": "$AL$90:$AM$120",
+      "Rows": 31,
+      "Columns": 2
+    },
+    {
+      "Name": "rngTorsionSettings",
+      "RefersTo": "=Config!$AF$90:$AJ$103",
+      "Sheet": "Config",
+      "Address": "$AF$90:$AJ$103",
+      "Rows": 14,
+      "Columns": 5
+    },
+    {
+      "Name": "rngTorsionPostSummary",
+      "RefersTo": "=Results!$AY$45:$CT$79",
+      "Sheet": "Results",
+      "Address": "$AY$45:$CT$79",
+      "Rows": 35,
+      "Columns": 48
+    },
+    {
+      "Name": "rngTorsionBarForces",
+      "RefersTo": "=Results!$EB$156:$ED$156",
+      "Sheet": "Results",
+      "Address": "$EB$156:$ED$156",
+      "Rows": 1,
+      "Columns": 3
+    },
+    {
+      "Name": "rngTorsionMNTSummary",
+      "RefersTo": "=Results!$AL$6:$AM$42",
+      "Sheet": "Results",
+      "Address": "$AL$6:$AM$42",
+      "Rows": 37,
+      "Columns": 2
     }
   ],
   "Sheets": [
@@ -295,7 +335,55 @@
           "Hidden": false
         },
         {
+          "First": 32,
+          "Last": 32,
+          "Width": 40,
+          "Hidden": false
+        },
+        {
+          "First": 33,
+          "Last": 33,
+          "Width": 22,
+          "Hidden": false
+        },
+        {
+          "First": 34,
+          "Last": 34,
+          "Width": 12,
+          "Hidden": false
+        },
+        {
           "First": 35,
+          "Last": 35,
+          "Width": 90,
+          "Hidden": false
+        },
+        {
+          "First": 36,
+          "Last": 36,
+          "Width": 14,
+          "Hidden": false
+        },
+        {
+          "First": 37,
+          "Last": 37,
+          "Width": 8.43,
+          "Hidden": false
+        },
+        {
+          "First": 38,
+          "Last": 38,
+          "Width": 14,
+          "Hidden": false
+        },
+        {
+          "First": 39,
+          "Last": 39,
+          "Width": 24,
+          "Hidden": false
+        },
+        {
+          "First": 40,
           "Last": 40,
           "Width": 8.43,
           "Hidden": false

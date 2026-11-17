@@ -1,5 +1,14 @@
 ﻿# Проверки
 
+Для изолированной постпроверки T (кручение) запускать в собственной копии сохранённой книги
+`modTestTorsionPost.RunTorsionPostTests`, `RunTorsionPostOutputTests` и
+`RunTorsionPostGuardTests`. Они проверяют независимые аналитические числа,
+знаковую сумму готовых напряжений, наружный ряд пустотелого сечения,
+сохранность вывода после оформления, адресные цепочки и защиту NM от ошибочного
+положения дополнительного диапазона. Проверка вывода меняет собственные тестовые
+таблицы Results. Интеграционные доказательства и сценарии Excel/File:
+`docs/regression/TorsionPostprocess_2026-11-17`.
+
 После исправлений приёмки 22.10 использовать направленные
 RunAudit03ImportedSnapshotUnitChangeTests, RunAudit03GeometrySnapshotTests,
 modTestPlotConfig.RunAudit03SnapshotMetadataTests, RunPreviewSnapshotContractTests,

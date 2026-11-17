@@ -1,0 +1,16 @@
+﻿{
+    "Passed":  true,
+    "Checks":  {
+                   "CLoadPathActualNativeEqual":  true,
+                   "IdentifierCaseEqual":  true,
+                   "ExponentEqual":  true,
+                   "DifferentNumbersRejected":  true,
+                   "StringCaseRejected":  true,
+                   "CommentCaseRejected":  true,
+                   "InlineCommentAlignmentEqual":  true,
+                   "VbeLongLiteralCanonical":  true,
+                   "DifferentFifteenthDigitRejected":  true,
+                   "FractionDoubleSuffixEqual":  true,
+                   "IntegerDoubleTypeRetained":  true
+               }
+}

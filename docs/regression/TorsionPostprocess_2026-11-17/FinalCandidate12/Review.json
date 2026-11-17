@@ -1,0 +1,27 @@
+﻿{
+    "Status":  "CLEAN_BUILD11_LABEL_UPDATE_COMPILED_SAVED_REOPENED_LISTS_UNCHANGED",
+    "BaseBookSHA256":  "6F152B2EDBA789F01F17425EB1D3DDB254C5F3ACEED106593ECBB20D1CD42D26",
+    "Own":  {
+                "PID":  12708,
+                "UTCticks":  639305454036083894,
+                "QuitRequested":  true,
+                "Absent":  true,
+                "Forced":  true
+            },
+    "Lists":  [
+                  {
+                      "Key":  "Torsion.StateType",
+                      "Address":  "$AG$91",
+                      "Formula1":  "StrengthState;CapacityState;PreCrackState;PostCrackState;CrackedState",
+                      "SavedDefinitionUnchanged":  true
+                  },
+                  {
+                      "Key":  "Torsion.ConcreteMethod",
+                      "Address":  "$AG$99",
+                      "Formula1":  "Strut;GorskyRectangle;None",
+                      "SavedDefinitionUnchanged":  true
+                  }
+              ],
+    "RbComment":  "Сопротивление бетона для T (кручение), \u003e0; в GorskyRectangle применяется как Rи.",
+    "FinalBookSHA256":  "3B11927403E26AE0E8349D0F35F87C430D690D192FBC10FCEAA60A5DFE2B7FA5"
+}
