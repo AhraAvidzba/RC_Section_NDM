@@ -1,0 +1,12 @@
+﻿TorsionPostGuard: Passed=10; Failed=0
+PASS Overlapping clear rejected
+PASS NM data survived bad own range
+PASS Geometric setting error retained
+PASS Wall thickness key retained
+INFO wall diagnostic: Адреса ячеек:; Config!V71; ; Постпроверка T (кручение), ID «Guard01»; ; Введённое значение: «1».; Адреса ячеек:; Config!I113 ⟶ Расчет!ZZ2; ; Настройка Torsion.WallThickness; ; Torsion.WallThickness превышает толщину бетонной полосы вокруг оси хомута.; ; Возможное решение:; Исправьте значение в указанной ячейке.; ; Возможное решение:; Уменьшите толщину или проверьте защитный слой.; Введённое значение: «1000».; ; Проверьте параметры геометрии T.; Адреса ячеек:; Config!I105; ; Настройка Torsion.HoopAxisOffset; ; Связанный параметр геометрии T.; Введённое значение: «29».; ; Возможное решение:; Исправьте значение в указанной ячейке.; Адреса ячеек:; Config!I106; ; Настройка Torsion.HoopDiameter; ; Связанный параметр геометрии T.; Введённое значение: «8».; ; Возможное решение:; Исправьте значение в указанной ячейке.; Адреса ячеек:; Config!I115; ; Настройка Torsion.ConcreteEfficiency; ; Связанный параметр геометрии T.; Введённое значение: «0.5».; ; Возможное решение:; Исправьте значение в указанной ячейке.; Адреса ячеек:; Config!I114; ; Настройка Torsion.Rb; ; Связанный параметр геометрии T.; Введённое значение: «17.5».; ; Возможное решение:; Исправьте значение в указанной ячейке.
+PASS Wall thickness source chain retained
+PASS One clarification in row diagnostic
+PASS One clarification in combined dialog
+PASS Repeated dialog formatting is stable
+PASS Quoted input clarification is preserved
+PASS NM message remains unchanged

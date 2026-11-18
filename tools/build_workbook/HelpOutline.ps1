@@ -5,6 +5,7 @@ $script:HelpMainTitles=@(
     'Поиск предельной несущей способности',
     'Расчет ширины раскрытия нормальных трещин',
     'Расчет продольного изгиба и устойчивости',
+    'Расчет на кручение',
     'Справка по результатам расчета листа Results',
     'Добавление нового типа сечения',
     'Справка по настройкам Config и листа «Сечения»'
@@ -160,7 +161,7 @@ function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
     foreach ($title in $script:HelpMainTitles) {
         if (-not $rows.ContainsKey($title)) {throw ('Missing Help section: '+$title)}
     }
-    foreach ($title in $script:HelpMainTitles[5..6]) {
+    foreach ($title in @('Справка по результатам расчета листа Results','Добавление нового типа сечения')) {
         $rows=Get-HelpMainRows $sheet
         $first=[int]$rows[$title];$destination=[int]$rows[$configTitle]
         if ($first -gt $destination) {
@@ -186,7 +187,7 @@ function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
         $sheet.Rows.Item([int]$rows[$configTitle]).ShowDetail=$true
     }
     $sheet.Range($sheet.Cells.Item(1,1),$sheet.Cells.Item($last,6)).Borders.Item(10).LineStyle=1
-    return [ordered]@{Titles=$script:HelpMainTitles;Rows=$ordered;LastRow=$last;DefaultExpanded=$configTitle;Groups=8;Moves=$script:HelpRowMoves}
+    return [ordered]@{Titles=$script:HelpMainTitles;Rows=$ordered;LastRow=$last;DefaultExpanded=$configTitle;Groups=$script:HelpMainTitles.Count;Moves=$script:HelpRowMoves}
 }
 
 # Узкие прежние обновления дописывали эти настройки после Results.

@@ -13,7 +13,7 @@ Public Function RunTorsionPostTests() As String
     On Error GoTo Failed
     Dim section As CSectionModel: Set section = TestTorsionRectangle()
     Dim p As TTorsionPostParameters
-    p.StateName = "StrengthState": p.Cover = 16#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
+    p.StateName = "StrengthState": p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
     p.SteelResistance = 270#: p.HoopResistance = 170#: p.BarBand = 25#: p.StrutAngle = 45#
     p.ConcreteMethod = "Strut": p.ConcreteResistance = 10#: p.ConcreteEfficiency = 0.5
     Dim calculator As New CTorsionPostCalculator: calculator.Prepare section, p
@@ -30,6 +30,11 @@ Public Function RunTorsionPostTests() As String
     TestTorsionNear "StrutThickness = 2*axisCover", row(1, 23), 40#
     TestTorsionNear "StrutStress = 2*q/t", row(1, 24), 2.34375
     TestTorsionNear "StrutLimit", row(1, 26), 8320000#
+    Dim axisA As New CTorsionHoopGeometry, axisB As New CTorsionHoopGeometry
+    axisA.InitializeAutomatic TestTorsionRectangle(), 20#, 8#
+    axisB.InitializeAutomatic TestTorsionRectangle(), 20#, 12#
+    TestTorsionNear "Axis offset excludes diameter addition", axisA.EnclosedArea, 41600#
+    TestTorsionNear "Same axis offset gives same area with other diameter", axisB.EnclosedArea, axisA.EnclosedArea
     TestTorsionAssert "NoNM -> N/A, T retained", CStr(row(1, 36)) = "N/A" And CStr(row(1, 15)) = "OK"
     TestTorsionAssert "Compact bars three columns", UBound(bars, 2) = 3
     Dim i As Long, total As Double
@@ -128,37 +133,61 @@ Public Function RunTorsionPostOutputTests() As String
     Dim settings As New CSystemSettingsReader, units As New CUnitSystem
     settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
     Dim p As TTorsionPostParameters
-    p.StateName = "StrengthState": p.Cover = 16#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
+    p.StateName = "StrengthState": p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
     p.SteelResistance = 270#: p.HoopResistance = 170#: p.BarBand = 25#: p.StrutAngle = 45#: p.ConcreteMethod = "None"
     Dim calculator As New CTorsionPostCalculator: calculator.Prepare TestTorsionRectangle(), p
     Dim results As New Collection: results.Add calculator.Calculate("Output01", 3900000#, Nothing)
     Dim snapshot As New CCalculationSnapshot, batch As New CBatchSectionCalculator
-    SaveTorsionPostMatrices snapshot, results, batch, units
-    Dim warning As String: warning = RestoreTorsionPostTables(ThisWorkbook, snapshot)
+    Dim torsionWriter As New CTorsionSummaryWriter
+    torsionWriter.CaptureSummary snapshot, results, units
+    Dim warning As String: warning = torsionWriter.RestoreSummary(ThisWorkbook, snapshot)
     TestTorsionAssert "Output has no warning", Len(warning) = 0
     Dim expected As Variant: expected = snapshot.Table(TORSION_POST_DATA_KEY)
-    Dim target As Object: Set target = ThisWorkbook.Names("rngTorsionPostSummary").RefersToRange
-    Dim column As Long
-    For column = 1 To TORSION_POST_COLUMNS
-        TestTorsionAssert "Output cell preserved " & CStr(column), CStr(target.Cells(5, column).Value2) = CStr(expected(1, column))
-        If column < 39 Then TestTorsionAssert "Data cell unmerged " & CStr(column), Not CBool(target.Cells(5, column).MergeCells)
+    Dim target As Object: Set target = ThisWorkbook.Names("rngTorsionSummaryAnchor").RefersToRange.Offset(-4, 0).Resize(4 + ThisWorkbook.Names("rngLoadCombinations").RefersToRange.Rows.Count - 1, TORSION_POST_DISPLAY_COLUMNS)
+    Dim column As Long, map As Variant: map = torsionWriter.DisplayColumns()
+    For column = 1 To TORSION_POST_DISPLAY_COLUMNS
+        If map(column - 1) > 0 Then TestTorsionAssert "Output cell preserved " & CStr(column), CStr(target.Cells(5, column).Value2) = CStr(expected(1, map(column - 1)))
+        TestTorsionAssert "Data cell unmerged " & CStr(column), Not CBool(target.Cells(5, column).MergeCells)
     Next column
-    TestTorsionAssert "Header spans only title row", target.Cells(1, 1).MergeArea.Rows.Count = 1
-    TestTorsionAssert "ID has general format", CStr(target.Cells(5, 1).NumberFormat) = "General"
-    TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.Cells(5, 16).Text), ",", ".")) > 0#
+    TestTorsionAssert "Group title stays in one row", target.Cells(1, 9).MergeArea.Rows.Count = 1
+    TestTorsionAssert "ID has text format", CStr(target.Cells(5, 1).NumberFormat) = "@"
+    TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.Cells(5, 23).Text), ",", ".")) > 0#
     Dim headers As Variant, notesPresent As Boolean, noQuestions As Boolean
-    headers = target.Resize(4, TORSION_POST_COLUMNS).Value2: notesPresent = True: noQuestions = True
-    For column = 1 To TORSION_POST_COLUMNS
+    headers = target.Resize(4, TORSION_POST_DISPLAY_COLUMNS).Value2: notesPresent = True: noQuestions = True
+    For column = 9 To TORSION_POST_DISPLAY_COLUMNS
         If Len(CStr(headers(3, column))) = 0 Then notesPresent = False
         If InStr(1, CStr(headers(3, column)) & CStr(headers(4, column)), "?", vbBinaryCompare) > 0 Then noQuestions = False
     Next column
-    TestTorsionAssert "Russian notes for every column", notesPresent
+    TestTorsionAssert "Russian notes for result columns", notesPresent
     TestTorsionAssert "Header glyphs have no question marks", noQuestions
-    TestTorsionAssert "Moment unit follows short label", CStr(headers(4, 3)) = "T, " & units.OutputMomentUnit
-    TestTorsionAssert "Area unit follows short label", CStr(headers(4, 4)) = "A_o, " & units.OutputAreaUnit
-    TestTorsionAssert "Greek stress and inline unit", CStr(headers(4, 18)) = ChrW$(&H3C3) & "_sw, " & units.OutputStressUnit
-    TestTorsionAssert "Notes use peer alignment", target.Cells(3, 3).HorizontalAlignment = -4131 And Not CBool(target.Cells(3, 3).Font.Bold) And Not CBool(target.Cells(3, 3).WrapText)
-    TestTorsionAssert "Short labels do not wrap", Not CBool(target.Cells(4, 3).WrapText)
+    TestTorsionAssert "Moment unit follows short label", CStr(headers(4, 7)) = "T, " & units.OutputMomentUnit
+    TestTorsionAssert "Area unit follows short label", CStr(headers(4, 11)) = "A_o, " & units.OutputAreaUnit
+    TestTorsionAssert "Greek stress and inline unit", CStr(headers(4, 25)) = ChrW$(&H3C3) & "_sw, " & units.OutputStressUnit
+    TestTorsionAssert "Notes use peer alignment", target.Cells(3, 9).HorizontalAlignment = -4131 And Not CBool(target.Cells(3, 9).Font.Bold) And Not CBool(target.Cells(3, 9).WrapText)
+    TestTorsionAssert "Short labels do not wrap", Not CBool(target.Cells(4, 9).WrapText)
+    TestTorsionAssert "Rebar labels", CStr(headers(4, 18)) = "Rebar" And CStr(headers(4, 36)) = "Rebar"
+    TestTorsionAssert "Band is in longitudinal subgroup", target.Cells(2, 10).MergeArea.Column = target.Cells(2, 9).Column
+    TestTorsionAssert "Detailed name remains one cell", ThisWorkbook.Names("rngTorsionSummaryAnchor").RefersToRange.Cells.CountLarge = 1
+    TestTorsionAssert "Bar name remains one cell", ThisWorkbook.Names("rngTorsionBarForces").RefersToRange.Cells.CountLarge = 1
+    TestTorsionAssert "Bar data has no border", ThisWorkbook.Names("rngTorsionBarForces").RefersToRange.Offset(1, 0).Borders(7).LineStyle = -4142
+    Dim combined(1 To 42, 1 To 40) As Variant
+    combined(13, 1) = "Output01": combined(13, 4) = "NM_KEEP": combined(13, 3) = "NM_REASON_KEEP"
+    torsionWriter.ApplyBatchSummary combined, snapshot
+    TestTorsionAssert "Torsion concrete status in summary", CStr(combined(13, 16)) = CStr(expected(1, 28))
+    TestTorsionAssert "NMT steel status in summary", CStr(combined(13, 17)) = CStr(expected(1, 36))
+    TestTorsionAssert "Hoop status in summary", CStr(combined(13, 18)) = CStr(expected(1, 21))
+    TestTorsionAssert "NM status and reason unchanged", CStr(combined(13, 4)) = "NM_KEEP" And CStr(combined(13, 3)) = "NM_REASON_KEEP"
+    TestTorsionNear "Hoop reserve in summary", combined(13, 32), expected(1, 20)
+    Dim summaryWriter As New CBatchResultWriter, title As Object, originalTitle As Variant
+    Set title = ThisWorkbook.Names("rngStrengthSummaryAnchor").RefersToRange.Offset(-5, 0)
+    originalTitle = title.Formula
+    title.Value2 = "NM_TITLE_KEEP"
+    summaryWriter.RestoreSummaryValues ThisWorkbook, combined, True
+    TestTorsionAssert "Summary restore preserves detailed title", CStr(title.Value2) = "NM_TITLE_KEEP"
+    title.Formula = originalTitle
+    Dim stabilityWriter As New CStabilitySummaryWriter
+    stabilityWriter.ClearSummary ThisWorkbook, True
+    TestTorsionAssert "Stability clear preserves torsion data", CStr(target.Cells(5, 19).Value2) = CStr(expected(1, 12))
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
@@ -206,11 +235,12 @@ Public Function RunTorsionPostGuardTests() As String
     Dim thickness As Object, originalThickness As Variant, originalLinked As Variant
     Dim loadRange As Object, torqueRange As Object, outputName As Object, sheet As Object
     On Error GoTo Failed
-    Set outputName = ThisWorkbook.Names("rngTorsionPostSummary"): originalRef = outputName.RefersTo
+    Set outputName = ThisWorkbook.Names("rngTorsionSummaryAnchor"): originalRef = outputName.RefersTo
     Set sheet = ThisWorkbook.Worksheets("Results"): originalCell = sheet.Range("A49").Formula
     sheet.Range("A49").Value2 = "NM_KEEP"
-    outputName.RefersTo = "=Results!$A$45:$AV$79"
-    Dim warning As String: warning = ClearTorsionPostBodies(ThisWorkbook)
+    outputName.RefersTo = "=Results!$A$49"
+    Dim torsionWriter As New CTorsionSummaryWriter
+    Dim warning As String: warning = torsionWriter.ClearSummary(ThisWorkbook)
     TestTorsionAssert "Overlapping clear rejected", Len(warning) > 0
     TestTorsionAssert "NM data survived bad own range", CStr(sheet.Range("A49").Value2) = "NM_KEEP"
     outputName.RefersTo = originalRef: sheet.Range("A49").Formula = originalCell

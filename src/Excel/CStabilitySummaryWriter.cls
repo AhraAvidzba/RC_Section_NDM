@@ -145,10 +145,18 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     rowsToClear = RequiredRows(1)
 
     On Error GoTo UseDefaultHeight
-    Dim nextAnchor As Object
-    Set nextAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
-    If nextAnchor.Row > topRow Then
-        rowsToClear = nextAnchor.Row - topRow
+    Dim nextAnchor As Object, nextTop As Long
+    On Error Resume Next
+    Set nextAnchor = workbook.Names.Item("rngTorsionSummaryAnchor").RefersToRange
+    On Error GoTo UseDefaultHeight
+    If nextAnchor Is Nothing Then
+        Set nextAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+        nextTop = nextAnchor.Row
+    Else
+        nextTop = nextAnchor.Row - 5 ' Название самостоятельной таблицы кручения не входит в очистку устойчивости.
+    End If
+    If nextTop > topRow Then
+        rowsToClear = nextTop - topRow
         If mMinimalFormatting Then rowsToClear = rowsToClear - 1
     End If
 

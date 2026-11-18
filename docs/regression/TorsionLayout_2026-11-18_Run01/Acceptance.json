@@ -1,0 +1,358 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASS_NOT_FULL_SUITE",
+  "CleanBuildSHA256": "2c09a9c6396ce8519e2725f8b863b235a07e8f29096ebcd301a468217f24c0db",
+  "Class": "CTorsionSummaryWriter",
+  "Native": {
+    "Math": 44,
+    "Output": 105,
+    "Guards": 10,
+    "Failed": 0,
+    "SourceModules": 190,
+    "SourceDifferences": [],
+    "SameOnSavedUserBook": true,
+    "SixDocumentModulesSameIgnoringVBAIdentifierCase": true
+  },
+  "Workflow": {
+    "Checks": [
+      {
+        "Name": "T leaves all NM matrices unchanged",
+        "Passed": true
+      },
+      {
+        "Name": "NMT state available immediately after calculation",
+        "Passed": true
+      },
+      {
+        "Name": "NMT algebraic stress sum",
+        "Passed": true
+      },
+      {
+        "Name": "File detailed output immediate",
+        "Passed": true
+      },
+      {
+        "Name": "File bar header only",
+        "Passed": true
+      },
+      {
+        "Name": "Summary status 16",
+        "Passed": true
+      },
+      {
+        "Name": "Summary status 17",
+        "Passed": true
+      },
+      {
+        "Name": "Summary status 18",
+        "Passed": true
+      },
+      {
+        "Name": "Widths unchanged after calculation",
+        "Passed": true
+      },
+      {
+        "Name": "File refresh restores torsion output",
+        "Passed": true
+      },
+      {
+        "Name": "File refresh leaves snapshot unchanged",
+        "Passed": true
+      },
+      {
+        "Name": "Widths unchanged after file refresh",
+        "Passed": true
+      },
+      {
+        "Name": "Excel detailed output immediate",
+        "Passed": true
+      },
+      {
+        "Name": "Excel bar rows populated",
+        "Passed": true
+      },
+      {
+        "Name": "Widths unchanged after Excel calculation",
+        "Passed": true
+      },
+      {
+        "Name": "Excel refresh preserves torsion output",
+        "Passed": true
+      },
+      {
+        "Name": "Widths unchanged after Excel refresh",
+        "Passed": true
+      }
+    ],
+    "Case": "Circle 800 mm, 24 bars, N=100 tf, Mx=20 tf*m, My=0, T=0/1 tf*m",
+    "NMFullMatricesEqualWithT": true,
+    "FileRefreshDoesNotWriteSnapshot": true
+  },
+  "SavedUserScope": {
+    "CalculationVisual": {
+      "cols": true,
+      "sheetFormatPr": true,
+      "mergeCells": true,
+      "pageMargins": true,
+      "pageSetup": true,
+      "printOptions": true,
+      "PrintNames": true,
+      "Rows": true,
+      "CellStyles": true
+    },
+    "CalculationCellChanges": {},
+    "SectionCellChanges": {},
+    "ConfigInputChanges": {
+      "I105": {
+        "Before": "25",
+        "After": "29"
+      }
+    },
+    "NMDataDifferences": {},
+    "Anchors": {
+      "rngTorsionSummaryAnchor": "Results!$A$158",
+      "rngTorsionBarForces": "Results!$DW$192",
+      "rngTorsionSettings": "Config!$H$103:$L$116",
+      "rngTorsionCombinations": "Config!$U$70:$V$100"
+    },
+    "RemovedNamesAbsent": true
+  },
+  "Help": {
+    "Links": [
+      {
+        "Key": "Torsion.StateType",
+        "Link": "'Справка'!A1881",
+        "Title": "Torsion.StateType — Сохранённое состояние НДМ",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.HoopAxisOffset",
+        "Link": "'Справка'!A1885",
+        "Title": "Torsion.HoopAxisOffset — Расстояние до оси хомута",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.HoopDiameter",
+        "Link": "'Справка'!A1889",
+        "Title": "Torsion.HoopDiameter — Диаметр хомута",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.HoopSpacing",
+        "Link": "'Справка'!A1893",
+        "Title": "Torsion.HoopSpacing — Шаг хомутов",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.Rs",
+        "Link": "'Справка'!A1897",
+        "Title": "Torsion.Rs — Сопротивление продольной арматуры",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.Rsw",
+        "Link": "'Справка'!A1901",
+        "Title": "Torsion.Rsw — Сопротивление хомута",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.BarBand",
+        "Link": "'Справка'!A1904",
+        "Title": "Torsion.BarBand — Ширина полосы отбора продольных стержней",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.StrutAngle",
+        "Link": "'Справка'!A1908",
+        "Title": "Torsion.StrutAngle — Угол бетонных раскосов",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.ConcreteMethod",
+        "Link": "'Справка'!A1912",
+        "Title": "Torsion.ConcreteMethod — Метод проверки бетона",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.WallThickness",
+        "Link": "'Справка'!A1916",
+        "Title": "Torsion.WallThickness — Эффективная толщина бетонной полосы",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.Rb",
+        "Link": "'Справка'!A1920",
+        "Title": "Torsion.Rb — Сопротивление бетона",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.ConcreteEfficiency",
+        "Link": "'Справка'!A1924",
+        "Title": "Torsion.ConcreteEfficiency — Коэффициент сопротивления раскоса",
+        "OwnDescription": true
+      },
+      {
+        "Key": "Torsion.GorskyCoefficient",
+        "Link": "'Справка'!A1928",
+        "Title": "Torsion.GorskyCoefficient — Коэффициент предела сплошного прямоугольника",
+        "OwnDescription": true
+      }
+    ],
+    "Headings": [
+      [
+        "A515",
+        "Расчет продольного изгиба и устойчивости"
+      ],
+      [
+        "A732",
+        "Расчет на кручение"
+      ],
+      [
+        "A879",
+        "Справка по настройкам Config и листа «Сечения»"
+      ]
+    ],
+    "All13OwnLinks": true,
+    "DistinctTargets": true
+  },
+  "Lists": {
+    "NativeReopenedValidation": [
+      {
+        "Key": "Torsion.StateType",
+        "Address": "$I$104",
+        "Formula1": "StrengthState;CapacityState;PreCrackState;PostCrackState;CrackedState",
+        "NativeSeparator": ";",
+        "Accepted": [
+          "StrengthState",
+          "CapacityState",
+          "PreCrackState",
+          "PostCrackState",
+          "CrackedState"
+        ],
+        "InvalidRejected": true,
+        "JoinedRejected": true,
+        "UIItemsObserved": false,
+        "SavedReopenedAccepted": true
+      },
+      {
+        "Key": "Torsion.ConcreteMethod",
+        "Address": "$I$112",
+        "Formula1": "Strut;GorskyRectangle;None",
+        "NativeSeparator": ";",
+        "Accepted": [
+          "Strut",
+          "GorskyRectangle",
+          "None"
+        ],
+        "InvalidRejected": true,
+        "JoinedRejected": true,
+        "UIItemsObserved": false,
+        "SavedReopenedAccepted": true
+      }
+    ],
+    "UnchangedEightKeyboardSelections": [
+      {
+        "Key": "Torsion.StateType",
+        "Index": 0,
+        "Expected": "StrengthState",
+        "Actual": "StrengthState",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$91"
+      },
+      {
+        "Key": "Torsion.StateType",
+        "Index": 1,
+        "Expected": "CapacityState",
+        "Actual": "CapacityState",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$91"
+      },
+      {
+        "Key": "Torsion.StateType",
+        "Index": 2,
+        "Expected": "PreCrackState",
+        "Actual": "PreCrackState",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$91"
+      },
+      {
+        "Key": "Torsion.StateType",
+        "Index": 3,
+        "Expected": "PostCrackState",
+        "Actual": "PostCrackState",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$91"
+      },
+      {
+        "Key": "Torsion.StateType",
+        "Index": 4,
+        "Expected": "CrackedState",
+        "Actual": "CrackedState",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$91"
+      },
+      {
+        "Key": "Torsion.ConcreteMethod",
+        "Index": 0,
+        "Expected": "Strut",
+        "Actual": "Strut",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$99"
+      },
+      {
+        "Key": "Torsion.ConcreteMethod",
+        "Index": 1,
+        "Expected": "GorskyRectangle",
+        "Actual": "GorskyRectangle",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$99"
+      },
+      {
+        "Key": "Torsion.ConcreteMethod",
+        "Index": 2,
+        "Expected": "None",
+        "Actual": "None",
+        "ValidationAccepted": true,
+        "SeedWasInvalid": true,
+        "SelectedByKeyboard": true,
+        "AfterActiveCell": "$AG$99"
+      }
+    ],
+    "ExactRawDefinitionComparison": [
+      {
+        "Current": "I104",
+        "PreviousUI": "AG91",
+        "LiteralFormula": "\"StrengthState,CapacityState,PreCrackState,PostCrackState,CrackedState\"",
+        "ExactDefinitionUnchanged": true
+      },
+      {
+        "Current": "I112",
+        "PreviousUI": "AG99",
+        "LiteralFormula": "\"Strut,GorskyRectangle,None\"",
+        "ExactDefinitionUnchanged": true
+      }
+    ],
+    "CurrentUIRepeated": false
+  },
+  "VisualReview": {
+    "NativePDFs": 6,
+    "InspectedPNGs": 6,
+    "ChangedUserValuesForRendering": false,
+    "ResizedColumnsForRendering": false,
+    "NoMissingGlyphsOrNumericHashes": true
+  },
+  "FullSuitesRun": false
+}

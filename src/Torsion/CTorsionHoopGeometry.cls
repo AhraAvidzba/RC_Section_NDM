@@ -23,25 +23,27 @@ Private mEdges() As TRegionEdge, mEdgeLengths() As Double
 Private mArea As Double, mLength As Double, mMinimumCover As Double
 Private mBoundaryEdges() As TRegionEdge, mBoundaryIsOpening() As Boolean, mHasOpening As Boolean
 
-' Строит ось внутрь единственного наружного контура. Защитный слой
-' измерен до поверхности хомута, все линейные размеры в мм.
-Public Sub InitializeAutomatic(ByVal section As CSectionModel, ByVal clearCover As Double, ByVal diameter As Double)
+' Строит ось внутрь единственного наружного контура по расстоянию от
+' поверхности бетона до оси хомута. Все линейные размеры заданы в мм.
+Public Sub InitializeAutomatic(ByVal section As CSectionModel, ByVal axisOffset As Double, ByVal diameter As Double)
     RequireEmpty
-    ValidateDimensions clearCover, diameter
+    ValidateDimensions 0#, diameter
+    If Not FiniteCoordinate(axisOffset) Or axisOffset < 0.5 * diameter Then _
+        HoopError "Расстояние до оси хомута должно быть конечным и не меньше половины его диаметра."
     Dim query As New CSectionGeometryQuery, domain As CConcreteRegion, outerIndex As Long
     Set domain = ConcreteDomain(section, query, outerIndex)
     Dim boundary As CGeometryPath, axis As CGeometryPath
     Set boundary = PathFromLoop(domain, outerIndex, "Torsion.Outer")
     On Error GoTo OffsetFailed
-    Set axis = query.OffsetPath("Torsion.Hoop", boundary, clearCover + 0.5 * diameter) ' Бетон лежит слева от ориентированного наружного контура.
+    Set axis = query.OffsetPath("Torsion.Hoop", boundary, axisOffset) ' Бетон лежит слева от ориентированного наружного контура.
     On Error GoTo 0
-    StoreCheckedPath query, domain, axis, clearCover, diameter
+    StoreCheckedPath query, domain, axis, axisOffset - 0.5 * diameter, diameter
     Exit Sub
 OffsetFailed:
     If Err.Number = 18 Then Err.Raise Err.Number, Err.Source, Err.Description
     Dim detail As String: detail = Err.Description
-    HoopError "Не удалось построить одну ось хомута по защитному слою. " & detail & _
-        " При наличии готовой оси задайте её явно."
+    HoopError "Не удалось построить одну ось хомута по расстоянию до оси. " & detail & _
+        " Проверьте расстояние до оси и размеры бетонного сечения."
 End Sub
 
 ' Принимает фактическую, уже замкнутую ось. Без заданного защитного

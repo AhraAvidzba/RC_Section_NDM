@@ -307,7 +307,9 @@ function Get-ConfigNamedRangeNames {
         "rngPlotAnnotationSettings",
         "rngLoadCombinations",
         "rngStabilityDurationLoads",
-        "rngSP35Table721"
+        "rngSP35Table721",
+        "rngTorsionCombinations",
+        "rngTorsionSettings"
     )
 }
 
@@ -521,6 +523,7 @@ function Get-SettingsInstructionCatalog {
         foreach ($row in $section.Rows) { $key=[string]$row[0]; if ($key -and -not $key.StartsWith('[')) { $expected += $key } }
     }
     foreach ($row in (Get-PlotAnnotationSettingsCatalog)) { $expected += [string]$row[0] }
+    foreach ($row in (Get-TorsionSettingsCatalog)) { $expected += [string]$row[0] }
     foreach ($row in (Get-ConcreteMaterialParametersCatalog)) { $expected += [string]$row[0] }
     foreach ($row in (Get-SteelMaterialParametersCatalog)) { $expected += [string]$row[0] }
     $items = New-Object System.Collections.Generic.List[object]
@@ -2303,6 +2306,10 @@ function Add-SettingsInstructions {
         param($sheet, $startRow)
         Add-StabilityMethodologyGuide $sheet $startRow
     }
+    $row = Add-CollapsibleGuideSection $InstructionSheet $row "Расчет на кручение" {
+        param($sheet, $startRow)
+        Add-TorsionMethodologyGuide $sheet $startRow
+    }
     $row = Add-GuideTitle $InstructionSheet $row "Справка по настройкам Config и листа «Сечения»" 16
     $configSettingsBodyStartRow = $row
 
@@ -2477,6 +2484,15 @@ function Add-SettingsInstructions {
         if ($anchors.ContainsKey($key)) {
             Add-InstructionHyperlink $ConfigSheet.Cells.Item($r, 5) $InstructionSheet.Name $anchors[$key]
         }
+    }
+    $torsionSettings=$Workbook.Names.Item('rngTorsionSettings').RefersToRange
+    for($i=2;$i -le $torsionSettings.Rows.Count;$i++){
+        $key=[string]$torsionSettings.Cells.Item($i,1).Value2
+        Add-InstructionHyperlink $torsionSettings.Cells.Item($i,5) $InstructionSheet.Name $anchors[$key]
+    }
+    foreach($entry in @(@('rngTorsionCombinations','T (кручение)'),@('rngTorsionSettings','Постпроверка T (кручение) и NMT'))){
+        $cell=$Workbook.Names.Item($entry[0]).RefersToRange.Cells.Item(1,1).Offset(-1,0)
+        Add-HeaderInstructionHyperlink $cell $entry[1] $InstructionSheet.Name $anchors['Torsion.StateType']
     }
     Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngSteelMaterialParameters" 1 6
     Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngConcreteMaterialParameters" 1 6

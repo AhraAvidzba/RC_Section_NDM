@@ -17,10 +17,11 @@ Option Explicit
 ' статусы проверок и минимальные коэффициенты запаса.
 ' Подробные таблицы прочности, трещин и устойчивости заполняются отдельными классами.
 
+Private mTorsionWriter As New CTorsionSummaryWriter ' Готовит колонки кручения по сохранённым результатам без обращения к листам.
 Private mCapturedSnapshot As CCalculationSnapshot ' Приёмник общей и подробных сводок до сохранения снимка.
 Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
 
-Private Const TARGET_COLUMNS As Long = 33 ' Сводка, один пустой столбец и шесть нагрузок в пользовательской точке.
+Private Const TARGET_COLUMNS As Long = 40 ' Сводка, один пустой столбец и шесть нагрузок в пользовательской точке.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
 Private Const SUBGROUP_HEADER_ROW As Long = 7 ' Строка внутренних подзаголовков расчетных блоков.
@@ -44,22 +45,22 @@ Private Const SUM_COL_STATUS_SP35_P2_ETA As Long = 12 ' СП35, плоскост
 Private Const SUM_COL_STATUS_SP35_P2_TABLE As Long = 13 ' СП35, плоскость 2, ветвь ec <= r.
 Private Const SUM_COL_STATUS_SP63_P1 As Long = 14 ' СП63, плоскость 1.
 Private Const SUM_COL_STATUS_SP63_P2 As Long = 15 ' СП63, плоскость 2.
-Private Const SUM_COL_RESERVE_STRAIN As Long = 17 ' Запас по деформациям при проверке прочности.
-Private Const SUM_COL_RESERVE_CAPACITY As Long = 18 ' Запас по предельным усилиям.
-Private Const SUM_COL_RESERVE_CRACK As Long = 19 ' Запас по нормальным трещинам.
-Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 20 ' Запас по продольным трещинам.
-Private Const SUM_COL_RESERVE_SP35_P1_ETA As Long = 21 ' Запас СП35, плоскость 1, ec > r: limit*Ncr/N.
-Private Const SUM_COL_RESERVE_SP35_P1_TABLE As Long = 22 ' Запас СП35, плоскость 1, ec <= r: Nult/N.
-Private Const SUM_COL_RESERVE_SP35_P2_ETA As Long = 23 ' Запас СП35, плоскость 2, ec > r: limit*Ncr/N.
-Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 24 ' Запас СП35, плоскость 2, ec <= r: Nult/N.
-Private Const SUM_COL_RESERVE_SP63_P1 As Long = 25 ' Запас СП63, плоскость 1: Ncr/N.
-Private Const SUM_COL_RESERVE_SP63_P2 As Long = 26 ' Запас СП63, плоскость 2: Ncr/N.
-Private Const SUM_COL_ORIGINAL_N As Long = 28 ' Исходная N до фильтров и продольного изгиба.
-Private Const SUM_COL_ORIGINAL_MX As Long = 29 ' Исходный Mx в пользовательской точке.
-Private Const SUM_COL_ORIGINAL_MY As Long = 30 ' Исходный My в пользовательской точке.
-Private Const SUM_COL_DESIGN_N As Long = 31 ' Рабочая N, не умножаемая на коэффициент eta.
-Private Const SUM_COL_DESIGN_MX As Long = 32 ' Рабочий Mx после продольного изгиба, если он применим.
-Private Const SUM_COL_DESIGN_MY As Long = 33 ' Рабочий My после продольного изгиба, если он применим.
+Private Const SUM_COL_RESERVE_STRAIN As Long = 20 ' Запас по деформациям при проверке прочности.
+Private Const SUM_COL_RESERVE_CAPACITY As Long = 21 ' Запас по предельным усилиям.
+Private Const SUM_COL_RESERVE_CRACK As Long = 22 ' Запас по нормальным трещинам.
+Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 23 ' Запас по продольным трещинам.
+Private Const SUM_COL_RESERVE_SP35_P1_ETA As Long = 24 ' Запас СП35, плоскость 1, ec > r: limit*Ncr/N.
+Private Const SUM_COL_RESERVE_SP35_P1_TABLE As Long = 25 ' Запас СП35, плоскость 1, ec <= r: Nult/N.
+Private Const SUM_COL_RESERVE_SP35_P2_ETA As Long = 26 ' Запас СП35, плоскость 2, ec > r: limit*Ncr/N.
+Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 27 ' Запас СП35, плоскость 2, ec <= r: Nult/N.
+Private Const SUM_COL_RESERVE_SP63_P1 As Long = 28 ' Запас СП63, плоскость 1: Ncr/N.
+Private Const SUM_COL_RESERVE_SP63_P2 As Long = 29 ' Запас СП63, плоскость 2: Ncr/N.
+Private Const SUM_COL_ORIGINAL_N As Long = 35 ' Исходная N до фильтров и продольного изгиба.
+Private Const SUM_COL_ORIGINAL_MX As Long = 36 ' Исходный Mx в пользовательской точке.
+Private Const SUM_COL_ORIGINAL_MY As Long = 37 ' Исходный My в пользовательской точке.
+Private Const SUM_COL_DESIGN_N As Long = 38 ' Рабочая N, не умножаемая на коэффициент eta.
+Private Const SUM_COL_DESIGN_MX As Long = 39 ' Рабочий Mx после продольного изгиба, если он применим.
+Private Const SUM_COL_DESIGN_MY As Long = 40 ' Рабочий My после продольного изгиба, если он применим.
 
 Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между общей сводкой и расшифровкой статусов.
 Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
@@ -156,6 +157,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     PutGroupHeaders data
     stage = "PutSubgroupHeaders"
     PutSubgroupHeaders data
+    mTorsionWriter.PutBatchHeaders data
     stage = "PutColumnHeaders"
     PutColumnHeaders data, units, batch
     stage = "PutWorstRow"
@@ -167,6 +169,8 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
         PutCombination data, FIRST_DATA_ROW + OutputDataOffset(batch, i, summaryRows - FIRST_DATA_ROW + 1) - 1, batch, i, units, section, workbook
     Next i
     If batch.WorstCombinationIndex > 0 Then PutPointLoads data, WORST_HEADER_ROW, batch, batch.WorstCombinationIndex, units
+
+    If Not mCapturedSnapshot Is Nothing Then mTorsionWriter.ApplyBatchSummary data, mCapturedSnapshot
 
     stage = "WriteSummaryBody"
     WriteSummaryBody target, data
@@ -801,7 +805,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Offset(FIRST_DATA_ROW - 1, SUM_COL_RESULT_COMMENT - 1).Resize(dataRows, 1).HorizontalAlignment = -4131
     target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
     target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
-    target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 2).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 1).Interior.ColorIndex = -4142
+    target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 3).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, 2).Interior.ColorIndex = -4142
     stage = "FormatStatusCells"
     FormatStatusCells target, batch, preparedValues
     stage = "WriteStatusLegend"
@@ -812,14 +816,14 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     ApplySummaryBorders target.Offset(0, 6).Resize(3, 7)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, SUM_COL_OVERALL_STATUS)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
-        SUM_COL_STATUS_SP63_P2 - SUM_COL_STATUS_STRAIN + 1)
+        TORSION_BATCH_STATUS_COLUMN + 2 - SUM_COL_STATUS_STRAIN + 1)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
-        SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1)
+        TORSION_BATCH_RESERVE_COLUMN + 2 - SUM_COL_RESERVE_STRAIN + 1)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
         SUM_COL_DESIGN_MY - SUM_COL_ORIGINAL_N + 1)
     stage = "NumberFormat"
     target.Offset(WORST_HEADER_ROW - 1, SUM_COL_RESERVE_STRAIN - 1).Resize(target.Rows.Count - WORST_HEADER_ROW + 1, _
-        SUM_COL_RESERVE_SP63_P2 - SUM_COL_RESERVE_STRAIN + 1).NumberFormat = "0.000"
+        TORSION_BATCH_RESERVE_COLUMN + 2 - SUM_COL_RESERVE_STRAIN + 1).NumberFormat = "0.000"
     target.Offset(WORST_HEADER_ROW - 1, SUM_COL_ORIGINAL_N - 1).Resize(target.Rows.Count - WORST_HEADER_ROW + 1, _
         SUM_COL_DESIGN_MY - SUM_COL_ORIGINAL_N + 1).NumberFormat = "0.000"
     Exit Sub
@@ -894,8 +898,8 @@ Private Function SummaryHeaderBlocks() As Collection
     blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT)
     blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESULT_COMMENT, SUM_COL_RESULT_COMMENT)
     blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS)
-    blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_SP63_P2)
-    blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_SP63_P2)
+    blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, TORSION_BATCH_STATUS_COLUMN + 2)
+    blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, TORSION_BATCH_RESERVE_COLUMN + 2)
     blocks.Add Array(GROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_ORIGINAL_N, SUM_COL_DESIGN_MY)
     blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_ORIGINAL_N, SUM_COL_ORIGINAL_MY)
     blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_DESIGN_N, SUM_COL_DESIGN_MY)
@@ -928,6 +932,12 @@ Private Function SummaryHeaderBlocks() As Collection
     Next column
     For column = SUM_COL_RESERVE_SP63_P1 To SUM_COL_RESERVE_SP63_P2
         blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, column, column)
+    Next column
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, TORSION_BATCH_STATUS_COLUMN, TORSION_BATCH_STATUS_COLUMN + 2)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, TORSION_BATCH_RESERVE_COLUMN, TORSION_BATCH_RESERVE_COLUMN + 2)
+    For column = 0 To 2
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, TORSION_BATCH_STATUS_COLUMN + column, TORSION_BATCH_STATUS_COLUMN + column)
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, TORSION_BATCH_RESERVE_COLUMN + column, TORSION_BATCH_RESERVE_COLUMN + column)
     Next column
     Set SummaryHeaderBlocks = blocks
 End Function
@@ -976,7 +986,7 @@ Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSecti
         SUM_COL_OVERALL_STATUS, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY, _
         SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK, SUM_COL_STATUS_SP35_P1_ETA, _
         SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE, _
-        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2), True, 0, preparedValues
+        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2, TORSION_BATCH_STATUS_COLUMN, TORSION_BATCH_STATUS_COLUMN + 1, TORSION_BATCH_STATUS_COLUMN + 2), True, 0, preparedValues
 End Sub
 
 
@@ -1141,10 +1151,7 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
             End If
         End If
     End If
-    PrepareSummaryTarget SummaryClearRange(workbook), UBound(data, 1)
-    Dim target As Object: Set target = SummaryTargetRange(workbook, UBound(data, 1))
-    WriteSummaryBody target, data
-    FormatSummary workbook, target, Nothing, data
+    RestoreSummaryValues workbook, data, fullFormatting
     Dim strength As CStrengthSummaryWriter: Set strength = New CStrengthSummaryWriter
     Dim cracks As CCrackSummaryWriter: Set cracks = New CCrackSummaryWriter
     Dim stability As CStabilitySummaryWriter: Set stability = New CStabilitySummaryWriter
@@ -1165,27 +1172,60 @@ Private Sub RestoreSummaryTables(ByVal workbook As Object, ByVal snapshot As Obj
     End If
 End Sub
 
+' Восстанавливает готовую общую сводку независимо от подробных блоков.
+' Принимает только текущую матрицу из 40 колонок и не меняет ширины столбцов.
+Public Sub RestoreSummaryValues(ByVal workbook As Object, ByRef data() As Variant, Optional ByVal fullFormatting As Boolean = True)
+    If UBound(data, 2) <> TARGET_COLUMNS Or UBound(data, 1) < WORST_HEADER_ROW Then _
+        Err.Raise 5, "CBatchResultWriter", "Неверная структура подготовленной общей сводки."
+    mMinimalFormatting = Not fullFormatting
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
+    Dim strength As New CStrengthSummaryWriter, nextTitle As Long, clearRows As Long
+    nextTitle = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row - strength.HeaderRowsAboveAnchor - 1
+    If anchor.Row + UBound(data, 1) - 1 >= nextTitle Then _
+        Err.Raise 5, "CBatchResultWriter", "Общая сводка пересекает заголовок таблицы прочности. Исправьте расположение якорей Results."
+    clearRows = nextTitle - anchor.Row
+    PrepareSummaryTarget anchor.Resize(clearRows, RequiredSummaryOutputColumns()), UBound(data, 1)
+    Dim target As Object: Set target = SummaryTargetRange(workbook, UBound(data, 1))
+    WriteSummaryBody target, data
+    FormatSummary workbook, target, Nothing, data
+End Sub
+
 ' Читает поддерживаемые файловые снимки без блока нагрузок, не придумывая исходный ввод.
 ' Это совместимость внешнего формата: текущий Config и содержимое файла не меняются.
 Private Function SummaryForDisplay(ByVal snapshot As Object, ByRef saved() As Variant) As Variant
-    If UBound(saved, 2) = TARGET_COLUMNS Then
-        saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
-        saved(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
-        SummaryForDisplay = saved: Exit Function
-    End If
-    Dim data() As Variant, row As Long, column As Long
+    Dim data() As Variant, row As Long, column As Long, destination As Long
     ReDim data(1 To UBound(saved, 1), 1 To TARGET_COLUMNS)
-    For row = 1 To UBound(saved, 1)
-        For column = 1 To UBound(saved, 2): data(row, column) = saved(row, column): Next column
-    Next row
-    PutPointLoadHeaders data, SavedSummaryUnit(snapshot, "Output.ForceUnit"), SavedSummaryUnit(snapshot, "Output.MomentUnit")
-    For column = SUM_COL_ORIGINAL_N To SUM_COL_ORIGINAL_MY
-        data(COMMENT_HEADER_ROW, column) = "Не сохранено в этом снимке"
-    Next column
-    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_N) = "Не сохранено в этом снимке"
-    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = "Блок нагрузок отсутствует в прежнем снимке"
-    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = "Блок нагрузок отсутствует в прежнем снимке"
+    If UBound(saved, 2) = TARGET_COLUMNS Then
+        data = saved
+    Else
+        For row = 1 To UBound(saved, 1)
+            For column = 1 To UBound(saved, 2)
+                destination = column
+                If column >= 16 And column <= 26 Then destination = column + 3
+                If column = 27 Then destination = 33
+                If column >= 28 Then destination = column + 7
+                data(row, destination) = saved(row, column)
+            Next column
+        Next row
+        If UBound(saved, 2) = 26 Then
+            PutPointLoadHeaders data, SavedSummaryUnit(snapshot, "Output.ForceUnit"), SavedSummaryUnit(snapshot, "Output.MomentUnit")
+            For column = SUM_COL_ORIGINAL_N To SUM_COL_DESIGN_MY
+                data(COMMENT_HEADER_ROW, column) = "Не сохранено в этом снимке"
+            Next column
+        End If
+    End If
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
+    data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    mTorsionWriter.ApplyBatchSummary data, snapshot
     SummaryForDisplay = data
+End Function
+
+' Возвращает одну подготовленную матрицу сводки для независимых выводов;
+' преобразование форматов 26/33/40 колонок не меняет исходный снимок.
+Public Function SummaryValuesForDisplay(ByVal source As Object) As Variant
+    Dim saved() As Variant: saved = source.Table("Summary")
+    SummaryValuesForDisplay = SummaryForDisplay(source, saved)
 End Function
 
 ' Получает сохранённую единицу файлового снимка, независимо от текущих настроек.

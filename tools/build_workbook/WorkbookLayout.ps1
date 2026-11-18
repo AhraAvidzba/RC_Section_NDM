@@ -56,7 +56,7 @@ function Get-WorkbookLayoutSnapshot {
     param([object]$Workbook,[hashtable]$XmlSheets)
     $names=@();$sheets=@()
     foreach($name in $Workbook.Names){
-        if($name.Name -match '(^|!)Print_Area$|_xlnm\.'){continue}
+        if($name.Name -match '(^|!)Print_Area$|_xlnm\.|(^|!)_FilterDatabase$'){continue}
         $range=$null;try{$range=$name.RefersToRange}catch{}
         $record=[ordered]@{Name=[string]$name.Name;RefersTo=[string]$name.RefersTo}
         if($range){$record.Sheet=[string]$range.Worksheet.Name;$record.Address=$range.Address();$record.Rows=[int]$range.Rows.Count;$record.Columns=[int]$range.Columns.Count}

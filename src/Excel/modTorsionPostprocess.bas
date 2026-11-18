@@ -26,6 +26,7 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem, ByVal snapshot As CCalculationSnapshot) As String
     Dim source As Object, settings As CSystemSettingsReader
     Dim dictionary As Object, requested As Object, results As New Collection
+    Dim torsionWriter As New CTorsionSummaryWriter
     Dim data As Variant, main As Variant, identifier As String, row As Long
     Dim result As CTorsionPostResult, calculator As CTorsionPostCalculator, preparationError As String
     On Error GoTo TableFailed
@@ -58,7 +59,7 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
             If Not result Is Nothing Then results.Add result
         End If
     Next row
-    SaveTorsionPostMatrices snapshot, results, batch, units
+    torsionWriter.CaptureSummary snapshot, results, units
     Dim summary As Variant, warnings As Long, policy As New CResultStatusPolicy
     For Each result In results
         summary = result.Summary
@@ -72,7 +73,7 @@ TableFailed:
     Set result = New CTorsionPostResult
     result.InitializeFailure "[T]", WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & reason, workbook)
     results.Add result
-    SaveTorsionPostMatrices snapshot, results, batch, units
+    torsionWriter.CaptureSummary snapshot, results, units
     CaptureTorsionPostCore = "Постпроверка T (кручение) завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены."
 End Function
 
@@ -149,7 +150,7 @@ Private Sub PrepareTorsionPostCalculator(ByVal workbook As Object, ByVal section
     If table Is Nothing Then Err.Raise 5, , "Не найдена таблица rngTorsionSettings. Восстановите таблицу настроек T из сборки."
     Set settings = New CSystemSettingsReader: settings.LoadFromRange table
     p.StateName = settings.GetRequiredChoice("Torsion.StateType", Array("StrengthState", "CapacityState", "PreCrackState", "PostCrackState", "CrackedState"))
-    p.Cover = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.HoopCover", 0#, False))
+    p.AxisOffset = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.HoopAxisOffset", 0#, True))
     p.HoopDiameter = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.HoopDiameter", 0#, True))
     p.HoopSpacing = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.HoopSpacing", 0#, True))
     p.SteelResistance = units.InputStressToInternal(TorsionSettingNumber(settings, "Torsion.Rs", 0#, True))

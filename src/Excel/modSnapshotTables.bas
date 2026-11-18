@@ -20,7 +20,8 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
         Case "rngNDMMaterialDiagrams": columns = 11
         Case "rngNDMSectionAnnotations", "LoadCase.Annotations": columns = 24
         Case "Summary"
-            columns = 33
+            columns = 40
+            If UBound(values, 2) = 33 Then columns = 33
             If UBound(values, 2) = 26 Then columns = 26 ' Формат сводки из 26 колонок не содержит блока исходных нагрузок.
         Case "Strength.Headers": columns = 49: rows = 4
         Case "Strength.Data": columns = 49
@@ -33,7 +34,8 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
         Case "Calculation.Profiles"
             If UBound(values, 2) < 3 Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Повреждены сохранённые профили расчёта."
             Exit Sub
-        Case "TorsionPost.Headers": columns = TORSION_POST_COLUMNS: rows = 4
+        Case "TorsionPost.Headers": columns = TORSION_POST_DISPLAY_COLUMNS: rows = 4
+            If UBound(values, 2) = 39 Then columns = 39
         Case "TorsionPost.Data": columns = TORSION_POST_COLUMNS
         Case "TorsionPost.Bars": columns = TORSION_BAR_COLUMNS
         Case "TorsionPost.MNT": columns = 2

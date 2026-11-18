@@ -550,11 +550,10 @@ try {
     $results.Rows.RowHeight = 15
 
     $systemRanges = Add-SystemSettings $system
+    Add-TorsionPostprocessTables $workbook $script:WorkbookLayout
     Add-SettingsInstructions $workbook $system $instructions
     # Руководство по рецептам добавляется после остальных разделов и формульных изображений справки.
     Update-SectionRecipeGuide $workbook ([string]$root) -Install | Out-Null
-    Add-TorsionPostprocessTables $workbook $script:WorkbookLayout
-    Add-TorsionPostprocessGuide $workbook
     # Hyperlink-стиль Excel может сбросить рамку ячейки Подробнее.
     # Финальную обводку делаем после добавления всех ссылок Config.
     Apply-ConfigNamedRangeBorders $workbook

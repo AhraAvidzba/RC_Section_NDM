@@ -99,6 +99,8 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Else
         summary.RestoreSummary workbook, snapshot, fullFormatting
     End If
+    Dim torsionWriter As New CTorsionSummaryWriter
+    Dim torsionWarning As String: torsionWarning = torsionWriter.RestoreSummary(workbook, snapshot, mode = "Excel")
     If mode = "Excel" Then
         store.ClearReference workbook
     Else
@@ -113,7 +115,6 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
     Else
         plotWarning = TryUpdateCalculatedSnapshotPlot(workbook, snapshot, plotHasWarning)
     End If
-    Dim torsionWarning As String: torsionWarning = RestoreTorsionPostTables(workbook, snapshot)
     If Len(torsionWarning) > 0 Then
         plotWarning = WorkbookMessageParagraph(plotWarning, torsionWarning)
         plotHasWarning = True
@@ -375,10 +376,11 @@ Private Sub UpdateIndexedResultsForWorkbook(ByVal workbook As Object, ByRef plot
     Else
         summary.RestoreIndexedSummary workbook, source, fullFormatting, worstCriterion
     End If
+    Dim torsionWriter As New CTorsionSummaryWriter
+    Dim torsionWarning As String: torsionWarning = torsionWriter.RestoreSummary(workbook, source, False)
     store.LinkFile workbook
     If preview Then UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning Else UpdateSectionPlotForWorkbook workbook, False, plotWarning
     plotHasWarning = (Len(plotWarning) > 0)
-    Dim torsionWarning As String: torsionWarning = RestoreTorsionPostTables(workbook, source)
     If Len(torsionWarning) > 0 Then
         plotWarning = WorkbookMessageParagraph(plotWarning, torsionWarning)
         plotHasWarning = True

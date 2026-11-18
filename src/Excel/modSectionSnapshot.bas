@@ -147,6 +147,7 @@ Public Function ReadSavedWorstCombinationID(ByVal workbook As Object, _
         If writer Is Nothing Then
             ReadSavedWorstCombinationID = Trim$(SafeText(summary(1, 1)))
         Else
+            summary = writer.SummaryValuesForDisplay(snapshot)
             ReadSavedWorstCombinationID = writer.SavedWorstFileID(summary, settings)
         End If
     ElseIf Not writer Is Nothing Then

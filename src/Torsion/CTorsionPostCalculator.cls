@@ -32,16 +32,16 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     If section Is Nothing Then ModelError "Не передана сохранённая геометрия сечения."
     If section.RebarCount < 3 Then ModelError "Для проверки T нужны как минимум три наружных продольных стержня."
     Set mSection = section
-    mP.StateName = parameters.StateName: mP.Cover = parameters.Cover
+    mP.StateName = parameters.StateName: mP.AxisOffset = parameters.AxisOffset
     mP.HoopDiameter = parameters.HoopDiameter: mP.HoopSpacing = parameters.HoopSpacing
     mP.SteelResistance = parameters.SteelResistance: mP.HoopResistance = parameters.HoopResistance
     mP.BarBand = parameters.BarBand: mP.StrutAngle = parameters.StrutAngle
     mP.ConcreteMethod = parameters.ConcreteMethod: mP.WallThickness = parameters.WallThickness
     mP.ConcreteResistance = parameters.ConcreteResistance: mP.ConcreteEfficiency = parameters.ConcreteEfficiency
     mP.GorskyCoefficient = parameters.GorskyCoefficient
-    mFailureSettingKeys = "Torsion.HoopCover,Torsion.HoopDiameter"
+    mFailureSettingKeys = "Torsion.HoopAxisOffset,Torsion.HoopDiameter"
     Set mOuter = New CTorsionHoopGeometry
-    mOuter.InitializeAutomatic section, mP.Cover, mP.HoopDiameter
+    mOuter.InitializeAutomatic section, mP.AxisOffset, mP.HoopDiameter
     Dim query As New CSectionGeometryQuery, domain As CConcreteRegion, holes As Long, i As Long
     Set domain = query.RegionFromContours(section.Contours)
     For i = 1 To domain.LoopCount
@@ -49,7 +49,7 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     Next i
     If holes > 1 Then ModelError "Однокамерная проверка T не применяется к нескольким отверстиям."
     Dim demand As New CTorsionLongitudinalDemand
-    mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopCover,Torsion.HoopDiameter"
+    mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopAxisOffset,Torsion.HoopDiameter"
     demand.Initialize section, mOuter, mP.BarBand
     demand.CopyStressPerUnitForce mCoefficients
     For i = 1 To section.RebarCount
@@ -161,7 +161,7 @@ Private Sub PrepareConcreteLimit(ByVal domain As CConcreteRegion)
         Case "None"
             Exit Sub
         Case "Strut"
-            mFailureSettingKeys = "Torsion.WallThickness,Torsion.HoopCover,Torsion.HoopDiameter,Torsion.ConcreteEfficiency,Torsion.Rb"
+            mFailureSettingKeys = "Torsion.WallThickness,Torsion.HoopAxisOffset,Torsion.HoopDiameter,Torsion.ConcreteEfficiency,Torsion.Rb"
             mThickness = mP.WallThickness
             If mThickness = 0# Then mThickness = 2# * mOuter.MinimumClearCover + mP.HoopDiameter
             If mThickness > 2# * mOuter.MinimumClearCover + mP.HoopDiameter + GEOM_BOUNDARY_TOLERANCE Then _

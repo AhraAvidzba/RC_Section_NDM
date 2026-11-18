@@ -8,16 +8,17 @@ Option Explicit
 ' Проверочная сумма напряжений не задаёт новое равновесное НДС.
 
 Public Const TORSION_POST_COLUMNS As Long = 39
-Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 48 ' Комментарий объединяет несколько ячеек без изменения ширин столбцов NM.
+Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 43 ' Отдельный блок с ResultComment, нагрузками и тремя проверками.
 Public Const TORSION_BAR_COLUMNS As Long = 3
+Public Const TORSION_BATCH_STATUS_COLUMN As Long = 16
+Public Const TORSION_BATCH_RESERVE_COLUMN As Long = 30
 Public Const TORSION_POST_DATA_KEY As String = "TorsionPost.Data"
 Public Const TORSION_POST_HEADERS_KEY As String = "TorsionPost.Headers"
 Public Const TORSION_BAR_DATA_KEY As String = "TorsionPost.Bars"
-Public Const TORSION_MNT_DATA_KEY As String = "TorsionPost.MNT"
 
 Public Type TTorsionPostParameters
     StateName As String
-    Cover As Double
+    AxisOffset As Double
     HoopDiameter As Double
     HoopSpacing As Double
     SteelResistance As Double
