@@ -15,7 +15,7 @@ Public Function RunTorsionPostTests() As String
     Dim p As TTorsionPostParameters
     p.StateName = "StrengthState": p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
     p.SteelResistance = 270#: p.HoopResistance = 170#: p.BarBand = 25#: p.StrutAngle = 45#
-    p.ConcreteMethod = "Strut": p.ConcreteResistance = 10#: p.ConcreteEfficiency = 0.5
+    p.ConcreteMethod = "Strut": p.ConcreteResistance = 10#: p.CharacteristicConcreteStrength = 20#: p.ConcretePartialFactor = 2#: p.LongitudinalAxisOffset = 20#
     Dim calculator As New CTorsionPostCalculator: calculator.Prepare section, p
     Dim result As CTorsionPostResult: Set result = calculator.Calculate("T01", 3900000#, Nothing)
     Dim row As Variant, bars As Variant: row = result.Summary: bars = result.Bars
@@ -27,23 +27,24 @@ Public Function RunTorsionPostTests() As String
     TestTorsionNear "deltaSigma = FT/(4*As)", row(1, 12), 98.4375
     TestTorsionNear "HoopArea = pi*d*d/4", row(1, 16), 16# * 4# * Atn(1#)
     TestTorsionNear "HoopStress = q*s/Asw", row(1, 18), 46.875 * 150# / (16# * 4# * Atn(1#))
-    TestTorsionNear "StrutThickness = 2*axisCover", row(1, 23), 40#
-    TestTorsionNear "StrutStress = 2*q/t", row(1, 24), 2.34375
-    TestTorsionNear "StrutLimit", row(1, 26), 8320000#
+    TestTorsionNear "StrutThickness = max(A/u,2cl)", row(1, 23), 60#
+    TestTorsionNear "StrutStress = T/(Ak*t) at 45 degrees", row(1, 24), 3900000# / (33600# * 60#)
+    TestTorsionNear "StrutLimit = nu*fcd*Ak*t", row(1, 26), 11128320#
     Dim axisA As New CTorsionHoopGeometry, axisB As New CTorsionHoopGeometry
     axisA.InitializeAutomatic TestTorsionRectangle(), 20#, 8#
     axisB.InitializeAutomatic TestTorsionRectangle(), 20#, 12#
     TestTorsionNear "Axis offset excludes diameter addition", axisA.EnclosedArea, 41600#
     TestTorsionNear "Same axis offset gives same area with other diameter", axisB.EnclosedArea, axisA.EnclosedArea
     TestTorsionAssert "NoNM -> N/A, T retained", CStr(row(1, 36)) = "N/A" And CStr(row(1, 15)) = "OK"
-    TestTorsionAssert "Compact bars with length last", UBound(bars, 2) = 4
+    TestTorsionAssert "Compact bars with length last", UBound(bars, 2) = 5
     Dim i As Long, total As Double
     For i = 1 To UBound(bars, 1)
-        total = total + CDbl(bars(i, 3))
-        TestTorsionNear "BarForce" & CStr(i), bars(i, 3), 9843.75
-        TestTorsionNear "Assigned perimeter length" & CStr(i), bars(i, 4), 210#
+        total = total + CDbl(bars(i, 4))
+        TestTorsionNear "BarForce" & CStr(i), bars(i, 4), 9843.75
+        TestTorsionNear "Assigned perimeter length" & CStr(i), bars(i, 5), 210#
     Next i
     TestTorsionNear "Allocated force equilibrium", total, 39375#
+    TestTorsionAssert "T determining bar owns its placement", CStr(row(1, 43)) = section.RebarComment(CLng(Mid$(CStr(row(1, 11)), 2)))
     Set result = calculator.Calculate("Tminus", -3900000#, Nothing): row = result.Summary
     TestTorsionNear "T sign invariance", row(1, 8), total
     p.ConcreteMethod = "GorskyRectangle": p.GorskyCoefficient = 0.07
@@ -58,6 +59,7 @@ Public Function RunTorsionPostTests() As String
     Dim state As CSectionStateResult
     Set state = TestTorsionReadyPlane(section, -0.0005, True)
     Set result = calculator.Calculate("Tcompression", 3900000#, state): row = result.Summary
+    TestTorsionAssert "NMT determining bar owns its placement", CStr(row(1, 44)) = section.RebarComment(CLng(Mid$(CStr(row(1, 29)), 2)))
     TestTorsionNear "NM compression retains sign", row(1, 30), -100#
     TestTorsionNear "Signed sum is negative", row(1, 33), -1.5625
     TestTorsionAssert "Compressive sum has no tensile limit", IsEmpty(row(1, 35)) And CStr(row(1, 36)) = "OK"
@@ -78,7 +80,7 @@ Public Function RunTorsionPostTests() As String
     TestTorsionAssert "Wide band excludes inner row", UBound(bars, 1) = 4
     total = 0#
     For i = 1 To UBound(bars, 1)
-        total = total + CDbl(bars(i, 3))
+        total = total + CDbl(bars(i, 4))
         TestTorsionAssert "Outer bar ID " & CStr(i), Val(Mid$(CStr(bars(i, 2)), 2)) <= 4
     Next i
     TestTorsionNear "Hollow allocates all tie force", total, 39375#
@@ -134,7 +136,7 @@ Public Function RunTorsionPostAvailabilityTests() As String
     Dim p As TTorsionPostParameters
     p.StateName = "StrengthState": p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
     p.SteelResistance = 270#: p.HoopResistance = 170#: p.BarBand = 25#: p.StrutAngle = 45#
-    p.ConcreteMethod = "None": p.ConcreteResistance = 10#: p.ConcreteEfficiency = 0.5
+    p.ConcreteMethod = "None": p.ConcreteResistance = 10#: p.CharacteristicConcreteStrength = 20#: p.ConcretePartialFactor = 2#: p.LongitudinalAxisOffset = 20#
     Dim state As CSectionStateResult: Set state = TestTorsionReadyPlane(section, 0.0005, True)
     Dim calculator As New CTorsionPostCalculator, result As CTorsionPostResult, expected As Variant, actual As Variant
     calculator.Prepare section, p: Set result = calculator.Calculate("Base", 3900000#, state): expected = result.Summary
@@ -211,7 +213,9 @@ Public Function RunTorsionPostUnitTests() As String
     TestTorsionSetTableValue settingsRange, "Torsion.ConcreteMethod", "Strut"
     TestTorsionSetTableValue settingsRange, "Torsion.WallThickness", 0#
     TestTorsionSetTableValue settingsRange, "Torsion.Rb", 17.5
-    TestTorsionSetTableValue settingsRange, "Torsion.ConcreteEfficiency", 0.5
+    TestTorsionSetTableValue settingsRange, "Torsion.Fck", 20#
+    TestTorsionSetTableValue settingsRange, "Torsion.GammaC", 1.5
+    TestTorsionSetTableValue settingsRange, "Torsion.RebarAxisOffset", 50#
     TestTorsionSetTableValue settingsRange, "Torsion.GorskyCoefficient", 0.07
     torqueRange.Offset(1, 0).Resize(torqueRange.Rows.Count - 1, 2).ClearContents
     loads.Cells(2, 1).Value2 = "Units01": torqueRange.Cells(2, 1).Value2 = "Units01": torqueRange.Cells(2, 2).Value2 = 1#
@@ -236,6 +240,8 @@ Public Function RunTorsionPostUnitTests() As String
     TestTorsionSetTableValue settingsRange, "Torsion.Rs", 350000#
     TestTorsionSetTableValue settingsRange, "Torsion.Rsw", 300000#
     TestTorsionSetTableValue settingsRange, "Torsion.Rb", 17500#
+    TestTorsionSetTableValue settingsRange, "Torsion.Fck", 20000#
+    TestTorsionSetTableValue settingsRange, "Torsion.RebarAxisOffset", 0.05
     torqueRange.Cells(2, 2).Value2 = 9.80665
     Application.Calculate
     For row = 2 To settingsRange.Rows.Count
@@ -261,7 +267,11 @@ Failed:
 Finished:
     On Error Resume Next
     If IsArray(originalUnits) Then unitRange.Formula = originalUnits
-    If IsArray(originalSettings) Then settingsRange.Formula = originalSettings
+    If IsArray(originalSettings) Then
+        For row = 2 To settingsRange.Rows.Count
+            If Left$(CStr(originalSettings(row, 1)), 8) = "Torsion." Then settingsRange.Cells(row, 2).Formula = originalSettings(row, 2)
+        Next row
+    End If
     If IsArray(originalTorques) Then torqueRange.Formula = originalTorques
     If IsArray(originalLoads) Then loads.Formula = originalLoads
     Application.Calculate
@@ -282,8 +292,8 @@ End Sub
 ' Выделяет физические категории единиц без привязки к адресам листа.
 Private Function TestTorsionUnitCategory(ByVal key As String) As String
     Select Case key
-        Case "Torsion.HoopAxisOffset", "Torsion.HoopDiameter", "Torsion.HoopSpacing", "Torsion.BarBand", "Torsion.WallThickness": TestTorsionUnitCategory = "Length"
-        Case "Torsion.Rs", "Torsion.Rsw", "Torsion.Rb": TestTorsionUnitCategory = "Stress"
+        Case "Torsion.HoopAxisOffset", "Torsion.HoopDiameter", "Torsion.HoopSpacing", "Torsion.BarBand", "Torsion.WallThickness", "Torsion.RebarAxisOffset": TestTorsionUnitCategory = "Length"
+        Case "Torsion.Rs", "Torsion.Rsw", "Torsion.Rb", "Torsion.Fck": TestTorsionUnitCategory = "Stress"
     End Select
 End Function
 
@@ -316,7 +326,7 @@ Public Function RunTorsionPostOutputTests() As String
     TestTorsionAssert "ID has text format", CStr(target.Cells(5, 1).NumberFormat) = "@"
     TestTorsionAssert "Flow has three significant digits", CStr(target.Cells(5, 14).NumberFormat) = "0.00E+00"
     TestTorsionAssert "Flow fits preserved column width", InStr(1, CStr(target.Cells(5, 14).Text), "#", vbBinaryCompare) = 0
-    TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.Cells(5, 23).Text), ",", ".")) > 0#
+    TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.Cells(5, 24).Text), ",", ".")) > 0#
     Dim headers As Variant, notesPresent As Boolean, noQuestions As Boolean
     headers = target.Resize(4, TORSION_POST_DISPLAY_COLUMNS).Value2: notesPresent = True: noQuestions = True
     For column = 9 To TORSION_POST_DISPLAY_COLUMNS
@@ -327,10 +337,10 @@ Public Function RunTorsionPostOutputTests() As String
     TestTorsionAssert "Header glyphs have no question marks", noQuestions
     TestTorsionAssert "Moment unit follows short label", CStr(headers(4, 7)) = "T, " & units.OutputMomentUnit
     TestTorsionAssert "Area unit follows short label", CStr(headers(4, 11)) = "A_o, " & units.OutputAreaUnit
-    TestTorsionAssert "Greek stress and inline unit", CStr(headers(4, 25)) = ChrW$(&H3C3) & "_sw, " & units.OutputStressUnit
+    TestTorsionAssert "Greek stress and inline unit", CStr(headers(4, 26)) = ChrW$(&H3C3) & "_sw, " & units.OutputStressUnit
     TestTorsionAssert "Notes use peer alignment", target.Cells(3, 9).HorizontalAlignment = -4131 And Not CBool(target.Cells(3, 9).Font.Bold) And Not CBool(target.Cells(3, 9).WrapText)
     TestTorsionAssert "Short labels do not wrap", Not CBool(target.Cells(4, 9).WrapText)
-    TestTorsionAssert "Rebar labels", CStr(headers(4, 18)) = "Rebar" And CStr(headers(4, 36)) = "Rebar"
+    TestTorsionAssert "Rebar labels", CStr(headers(4, 18)) = "Rebar" And CStr(headers(4, 40)) = "Rebar"
     TestTorsionAssert "Band is in longitudinal subgroup", target.Cells(2, 10).MergeArea.Column = target.Cells(2, 9).Column
     TestTorsionAssert "Detailed name remains one cell", ThisWorkbook.Names("rngTorsionSummaryAnchor").RefersToRange.Cells.CountLarge = 1
     TestTorsionAssert "Bar name remains one cell", ThisWorkbook.Names("rngTorsionBarForces").RefersToRange.Cells.CountLarge = 1
@@ -352,7 +362,7 @@ Public Function RunTorsionPostOutputTests() As String
     title.Formula = originalTitle
     Dim stabilityWriter As New CStabilitySummaryWriter
     stabilityWriter.ClearSummary ThisWorkbook, True
-    TestTorsionAssert "Stability clear preserves torsion data", CStr(target.Cells(5, 19).Value2) = CStr(expected(1, 12))
+    TestTorsionAssert "Stability clear preserves torsion data", CStr(target.Cells(5, 20).Value2) = CStr(expected(1, 12))
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
@@ -373,7 +383,7 @@ Public Function RunTorsionBarLengthTests() As String
     Dim pass As Long, snapshot As CCalculationSnapshot, oldSnapshot As CCalculationSnapshot, writer As New CTorsionSummaryWriter
     Dim results As Collection, bars As Variant, data As Variant, headers As Variant, legacy() As Variant, row As Long, column As Long
     Dim anchor As Object: Set anchor = ThisWorkbook.Names("rngTorsionBarForces").RefersToRange
-    Dim width As Double: width = anchor.Offset(0, 3).ColumnWidth
+    Dim width As Double: width = anchor.Offset(0, 4).ColumnWidth
     Dim codec As New CCalculationSnapshotStore, indexed As CIndexedSnapshotFile, path As String, actual As Variant, warning As String
     For pass = 1 To 2
         Set units = New CUnitSystem
@@ -383,28 +393,42 @@ Public Function RunTorsionBarLengthTests() As String
         Set snapshot = New CCalculationSnapshot: writer.CaptureSummary snapshot, results, units
         bars = snapshot.Table(TORSION_BAR_DATA_KEY): data = snapshot.Table(TORSION_POST_DATA_KEY)
         headers = snapshot.Table(TORSION_POST_HEADERS_KEY)
-        TestTorsionAssert "Length unit header " & pass, CStr(bars(1, 4)) = "l_i, " & units.OutputLengthUnit
+        TestTorsionAssert "Face header " & pass, CStr(bars(1, 3)) = "Грань"
+        TestTorsionAssert "Length unit header " & pass, CStr(bars(1, 5)) = "l_i, " & units.OutputLengthUnit
         For row = 2 To UBound(bars, 1)
-            TestTorsionNear "Output length " & pass & ":" & row, bars(row, 4), units.InternalLengthToOutput(210#)
-            TestTorsionNear "Force matches length at 30 degrees " & pass & ":" & row, bars(row, 3), CDbl(data(1, 7)) * CDbl(bars(row, 4)) * CDbl(data(1, 6))
+            TestTorsionAssert "Own placement " & pass & ":" & row, CStr(bars(row, 3)) = "Грань стержня " & CStr(bars(row, 2))
+            TestTorsionNear "Output length " & pass & ":" & row, bars(row, 5), units.InternalLengthToOutput(210#)
+            TestTorsionNear "Force matches length at 30 degrees " & pass & ":" & row, bars(row, 4), CDbl(data(1, 7)) * CDbl(bars(row, 5)) * CDbl(data(1, 6))
         Next row
         warning = writer.RestoreSummary(ThisWorkbook, snapshot)
-        TestTorsionAssert "Four-column restore " & pass, Len(warning) = 0
-        TestTorsionNear "Runtime preserves width " & pass, anchor.Offset(0, 3).ColumnWidth, width
-        TestTorsionNear "Length cell " & pass, anchor.Offset(1, 3).Value2, CDbl(bars(2, 4))
+        TestTorsionAssert "Five-column restore " & pass, Len(warning) = 0
+        TestTorsionNear "Runtime preserves width " & pass, anchor.Offset(0, 4).ColumnWidth, width
+        TestTorsionNear "Length cell " & pass, anchor.Offset(1, 4).Value2, CDbl(bars(2, 5))
         ReDim legacy(1 To UBound(bars, 1), 1 To 3)
-        For row = 1 To UBound(bars, 1): For column = 1 To 3: legacy(row, column) = bars(row, column): Next column: Next row
+        For row = 1 To UBound(bars, 1): For column = 1 To 2: legacy(row, column) = bars(row, column): Next column: legacy(row, 3) = bars(row, 4): Next row
         Set oldSnapshot = New CCalculationSnapshot
         oldSnapshot.AddTable TORSION_POST_HEADERS_KEY, headers
         oldSnapshot.AddTable TORSION_POST_DATA_KEY, data
         oldSnapshot.AddTable TORSION_BAR_DATA_KEY, legacy
         warning = writer.RestoreSummary(ThisWorkbook, oldSnapshot)
         TestTorsionAssert "Three-column restore " & pass, Len(warning) = 0
-        TestTorsionAssert "Legacy saved unit " & pass, CStr(anchor.Offset(0, 3).Value2) = CStr(bars(1, 4))
+        TestTorsionAssert "Legacy saved unit " & pass, CStr(anchor.Offset(0, 4).Value2) = CStr(bars(1, 5))
         For row = 2 To UBound(bars, 1)
-            TestTorsionNear "Legacy reconstructed length " & pass & ":" & row, anchor.Offset(row - 1, 3).Value2, CDbl(bars(row, 4))
-            TestTorsionNear "Legacy force unchanged " & pass & ":" & row, anchor.Offset(row - 1, 2).Value2, CDbl(bars(row, 3))
+            TestTorsionNear "Legacy reconstructed length " & pass & ":" & row, anchor.Offset(row - 1, 4).Value2, CDbl(bars(row, 5))
+            TestTorsionNear "Legacy force unchanged " & pass & ":" & row, anchor.Offset(row - 1, 3).Value2, CDbl(bars(row, 4))
         Next row
+        ReDim legacy(1 To UBound(bars, 1), 1 To 4)
+        For row = 1 To UBound(bars, 1)
+            For column = 1 To 2: legacy(row, column) = bars(row, column): Next column: legacy(row, 3) = bars(row, 4)
+            legacy(row, 4) = bars(row, 5)
+        Next row
+        Set oldSnapshot = New CCalculationSnapshot
+        oldSnapshot.AddTable TORSION_POST_HEADERS_KEY, headers
+        oldSnapshot.AddTable TORSION_POST_DATA_KEY, data
+        oldSnapshot.AddTable TORSION_BAR_DATA_KEY, legacy
+        warning = writer.RestoreSummary(ThisWorkbook, oldSnapshot)
+        TestTorsionAssert "Four-column saved length restored " & pass, Len(warning) = 0
+        TestTorsionNear "Four-column saved length unchanged " & pass, anchor.Offset(1, 4).Value2, CDbl(bars(2, 5))
         Dim elementHeader(1 To 1, 1 To 9) As Variant
         Dim elementLabels As Variant: elementLabels = Array("RunID", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
         For column = 1 To 9: elementHeader(1, column) = elementLabels(column - 1): Next column
@@ -413,16 +437,16 @@ Public Function RunTorsionBarLengthTests() As String
         Set indexed = New CIndexedSnapshotFile: indexed.WriteFile path, snapshot, codec
         TestTorsionAssert "File opened " & pass, indexed.OpenRead(path, codec)
         actual = indexed.Table(TORSION_BAR_DATA_KEY): ValidateSnapshotTableShape TORSION_BAR_DATA_KEY, actual
-        For row = 1 To UBound(bars, 1): For column = 1 To 4
+        For row = 1 To UBound(bars, 1): For column = 1 To 5
             TestTorsionAssert "File exact " & pass & ":" & row & ":" & column, CStr(actual(row, column)) = CStr(bars(row, column))
         Next column: Next row
         warning = writer.RestoreSummary(ThisWorkbook, indexed)
         TestTorsionAssert "File restore " & pass, Len(warning) = 0
         indexed.CloseFile: Kill path: path = vbNullString
         warning = writer.RestoreSummary(ThisWorkbook, snapshot, False)
-        TestTorsionAssert "File sheet omits detail " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 3).Value2)
+        TestTorsionAssert "File sheet omits detail " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 4).Value2)
         warning = writer.ClearSummary(ThisWorkbook)
-        TestTorsionAssert "Clear length data " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 3).Value2)
+        TestTorsionAssert "Clear length data " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 4).Value2)
     Next pass
     GoTo Finished
 Failed:
@@ -443,7 +467,7 @@ Private Function TestTorsionRectangle() As CSectionModel
         For y = -1 To 1 Step 2
             index = index + 1
             section.AddConcreteElement 50# * x, 75# * y, 15000#, index, shapeType:="Rectangle", width:=100#, height:=150#
-            section.AddRebarElement 65# * x, 115# * y, Sqr(400# / (4# * Atn(1#))), 100#, "A400", index
+            section.AddRebarElement 65# * x, 115# * y, Sqr(400# / (4# * Atn(1#))), 100#, "A400", index, comment:="Грань стержня R" & CStr(index)
         Next y
     Next x
     section.Contours.AddContourLine "B", -100#, -150#, 100#, -150#

@@ -1,0 +1,42 @@
+﻿TorsionConcreteWorkbook Excel: Passed=11; Failed=0
+INFO form: Сечение сформировано и сохранено на листе Results.
+
+Геометрия сформирована по параметрам Config и листа «Сечения».
+
+Бетонных элементов: 88.
+Стержней арматуры: 12.
+
+Время формирования сечения: 3.36 с.
+INFO baseline: Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 1.77 с.
+
+Данные сохранены на листе Results текущей книги.
+PASS Excel normal NM produced
+INFO with T: Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 1.41 с.
+
+Данные сохранены на листе Results текущей книги.
+PASS Excel NM row count unchanged
+PASS Excel exact NM strains and stresses unchanged
+PASS Excel normal workflow fcd
+PASS Excel normal workflow nu
+PASS Excel normal workflow Ak
+PASS Excel concrete status available
+PASS Excel NMT saved state available
+PASS Excel T worst own face
+PASS Excel NMT worst own face
+PASS Excel every bar owns its saved geometry face

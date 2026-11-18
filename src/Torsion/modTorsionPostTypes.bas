@@ -7,9 +7,9 @@ Option Explicit
 ' Не являются нагрузками решателя НДМ. Размерности: мм, Н, Н*мм, МПа.
 ' Проверочная сумма напряжений не задаёт новое равновесное НДС.
 
-Public Const TORSION_POST_COLUMNS As Long = 39
-Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 43 ' Отдельный блок с ResultComment, нагрузками и тремя проверками.
-Public Const TORSION_BAR_COLUMNS As Long = 4 ' ID сочетания, стержень, усилие от T и соответствующая длина оси хомута.
+Public Const TORSION_POST_COLUMNS As Long = 44
+Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 48 ' Самостоятельный блок с расчётной площадью, f_cd и коэффициентом nu проверки бетона.
+Public Const TORSION_BAR_COLUMNS As Long = 5 ' ID сочетания, стержень, усилие от T, принадлежность к грани и длина оси хомута.
 Public Const TORSION_BATCH_STATUS_COLUMN As Long = 16
 Public Const TORSION_BATCH_RESERVE_COLUMN As Long = 30
 Public Const TORSION_POST_DATA_KEY As String = "TorsionPost.Data"
@@ -29,7 +29,9 @@ Public Type TTorsionPostParameters
     ConcreteInputInvalid As Boolean ' Ошибка только исходных данных проверки бетона; арматура и хомут рассчитываются независимо.
     WallThickness As Double
     ConcreteResistance As Double
-    ConcreteEfficiency As Double
+    CharacteristicConcreteStrength As Double ' f_ck: характеристическая цилиндрическая прочность, МПа; не класс B и не R_b.
+    ConcretePartialFactor As Double ' gamma_c: коэффициент надёжности для вычисления f_cd.
+    LongitudinalAxisOffset As Double ' c_l: расстояние от бетонной поверхности до центра продольной арматуры, мм.
     GorskyCoefficient As Double
 End Type
 

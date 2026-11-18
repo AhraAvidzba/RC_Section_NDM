@@ -36,8 +36,11 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
             Exit Sub
         Case "TorsionPost.Headers": columns = TORSION_POST_DISPLAY_COLUMNS: rows = 4
             If UBound(values, 2) = 39 Then columns = 39
+            If UBound(values, 2) = 43 Then columns = 43
         Case "TorsionPost.Data": columns = TORSION_POST_COLUMNS
+            If UBound(values, 2) = 39 Then columns = 39
         Case "TorsionPost.Bars": columns = TORSION_BAR_COLUMNS
+            If UBound(values, 2) = 4 Then columns = 4
             If UBound(values, 2) = 3 Then columns = 3 ' Трёхколоночная матрица хранит усилия; длина восстанавливается из сохранённых q и cot theta.
         Case "TorsionPost.MNT": columns = 2
     End Select

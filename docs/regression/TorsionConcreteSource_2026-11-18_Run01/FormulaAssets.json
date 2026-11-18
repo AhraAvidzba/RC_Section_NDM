@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "TotalHelpFormulaImages": 106,
+  "TorsionImages": 26,
+  "ConcreteImages": 15,
+  "ACI_EC2ConcreteImages": 12,
+  "GorskyConcreteImages": 3,
+  "CleanBuildAndWorkingBookGeneratedAssetsIdentical": true
+}

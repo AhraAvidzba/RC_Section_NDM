@@ -127,9 +127,9 @@
     },
     {
       "Name": "rngPlotAnnotationSettings",
-      "RefersTo": "=Config!$H$119:$M$134",
+      "RefersTo": "=Config!$H$125:$M$140",
       "Sheet": "Config",
-      "Address": "$H$119:$M$134",
+      "Address": "$H$125:$M$140",
       "Rows": 16,
       "Columns": 6
     },
@@ -241,10 +241,10 @@
     },
     {
       "Name": "rngTorsionSettings",
-      "RefersTo": "=Config!$H$103:$L$116",
+      "RefersTo": "=Config!$H$103:$L$122",
       "Sheet": "Config",
-      "Address": "$H$103:$L$116",
-      "Rows": 14,
+      "Address": "$H$103:$L$122",
+      "Rows": 20,
       "Columns": 5
     },
     {
@@ -1062,12 +1062,12 @@
         },
         {
           "First": 130,
-          "Last": 130,
+          "Last": 131,
           "Width": 14,
           "Hidden": false
         },
         {
-          "First": 131,
+          "First": 132,
           "Last": 16384,
           "Width": 8.43,
           "Hidden": false

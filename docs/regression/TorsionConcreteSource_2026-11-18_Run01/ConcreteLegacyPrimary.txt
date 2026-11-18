@@ -1,0 +1,10 @@
+﻿TorsionConcreteLegacy: Passed=9; Failed=0
+PASS Legacy table restored
+PASS Legacy stress retained
+PASS Legacy resistance retained
+PASS Legacy area not fabricated
+PASS Legacy fcd not fabricated
+PASS Legacy nu not fabricated
+PASS Legacy model identified
+PASS Legacy stress unit after last comma
+PASS Legacy bar assigned length

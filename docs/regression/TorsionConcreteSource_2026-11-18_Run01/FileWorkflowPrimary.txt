@@ -1,0 +1,46 @@
+﻿TorsionConcreteWorkbook File: Passed=15; Failed=0
+INFO form: Сечение сформировано и сохранено в файле «TestConcreteSource_File.ndm».
+
+Геометрия сформирована по параметрам Config и листа «Сечения».
+
+Бетонных элементов: 88.
+Стержней арматуры: 12.
+
+Время формирования сечения: 0.38 с.
+INFO baseline: Расчет завершен.
+
+Геометрия для расчёта загружена из файла «TestConcreteSource_File.ndm».
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 1.91 с.
+
+Данные сохранены в файле «TestConcreteSource_File.ndm».
+PASS File normal NM produced
+INFO with T: Расчет завершен.
+
+Геометрия для расчёта загружена из файла «TestConcreteSource_File.ndm».
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 1.87 с.
+
+Данные сохранены в файле «TestConcreteSource_File.ndm».
+PASS File NM row count unchanged
+PASS File exact NM strains and stresses unchanged
+PASS File normal workflow fcd
+PASS File normal workflow nu
+PASS File normal workflow Ak
+PASS File concrete status available
+PASS File NMT saved state available
+PASS File T worst own face
+PASS File NMT worst own face
+PASS File every bar owns its saved geometry face
+PASS File stores 44 columns
+PASS File exact fcd
+PASS File exact nu
+PASS File sheet bars header only

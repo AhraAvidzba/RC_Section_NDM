@@ -835,7 +835,7 @@ function Measure-MathText {
 function Split-FormulaReference {
     param([string]$Text)
 
-    $match = [regex]::Match($Text, "^(.*?)(\s{2,}(?:СП|EN|ACI|Горский|По ACI|Модель книги)\s*.*)$")
+    $match = [regex]::Match($Text, "^(.*?)(\s{2,}(?:СП|EN|ACI|Горский|По ACI|По Горскому|Модель книги)\s*.*)$")
     if ($match.Success) {
         return @{
             Formula = $match.Groups[1].Value.TrimEnd()
@@ -2550,12 +2550,9 @@ function Add-SettingsInstructions {
     $torsionSettings=$Workbook.Names.Item('rngTorsionSettings').RefersToRange
     for($i=2;$i -le $torsionSettings.Rows.Count;$i++){
         $key=[string]$torsionSettings.Cells.Item($i,1).Value2
-        Add-InstructionHyperlink $torsionSettings.Cells.Item($i,5) $InstructionSheet.Name $anchors[$key]
+        if($key.StartsWith('Torsion.')){Add-InstructionHyperlink $torsionSettings.Cells.Item($i,5) $InstructionSheet.Name $anchors[$key]}
     }
-    foreach($entry in @(@('rngTorsionCombinations','T (кручение)'),@('rngTorsionSettings','Постпроверка T (кручение) и NMT'))){
-        $cell=$Workbook.Names.Item($entry[0]).RefersToRange.Cells.Item(1,1).Offset(-1,0)
-        Add-HeaderInstructionHyperlink $cell $entry[1] $InstructionSheet.Name $anchors['Torsion.StateType']
-    }
+    Set-TorsionHeaderInstructionLinks $Workbook
     Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngSteelMaterialParameters" 1 6
     Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngConcreteMaterialParameters" 1 6
     Add-NamedRangeInstructionLinks $ConfigSheet $InstructionSheet.Name $anchors "rngPlotAnnotationSettings" 1 6
@@ -2867,7 +2864,10 @@ function Set-InstructionFormatProperties {
             $actual = $propertyTarget.$name
             if ($null -ne $actual -and $actual -isnot [DBNull] -and $actual -eq $Values[$name]) { continue } # Неизменённые грани не переписываем: Excel делит их с соседями; лишние setter-ы также включают apply* для унаследованных значений атрибутов.
         } catch {}
-        $propertyTarget.$name = $Values[$name]
+        $restoredValue = $Values[$name]
+        if ($name -in @('Color','PatternColor','ColorIndex','PatternColorIndex')) { $restoredValue = [int]$restoredValue } # COM возвращает OLE-цвет как Double; setter Excel требует целый тип, значение RGB/индекса сохраняется точно.
+        try { $propertyTarget.$name = $restoredValue }
+        catch { throw ("Не удалось восстановить оформление: " + $name + " = " + [string]$restoredValue + ". " + $_.Exception.Message) }
     }
 }
 
@@ -3029,6 +3029,19 @@ function Add-HeaderInstructionHyperlink {
         $Cell.Characters($linkStart, $linkText.Length).Font.Underline = 2
     } catch {
         # Если Excel не даст частично отформатировать merged-cell, сама ссылка все равно останется рабочей.
+    }
+}
+
+# Общие заголовки таблиц T ведут к началу методики, а не к одному параметру.
+# Именованные диапазоны и заголовок справки определяют фактические адреса.
+function Set-TorsionHeaderInstructionLinks {
+    param([object]$Workbook)
+    $guide=$Workbook.Worksheets.Item('Справка')
+    $target=$guide.Cells.Find('Расчет на кручение',$guide.Cells.Item(1,1),-4163,1)
+    if($null -eq $target){throw 'В справке не найден раздел «Расчет на кручение» для ссылок общих заголовков.'}
+    foreach($entry in @(@('rngTorsionCombinations','T (кручение)'),@('rngTorsionSettings','Постпроверка T (кручение) и NMT'))){
+        $cell=$Workbook.Names.Item($entry[0]).RefersToRange.Cells.Item(1,1).Offset(-1,0)
+        Add-HeaderInstructionHyperlink $cell $entry[1] $guide.Name ([int]$target.Row)
     }
 }
 

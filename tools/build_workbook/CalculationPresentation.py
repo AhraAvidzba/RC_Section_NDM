@@ -26,10 +26,12 @@ INPUTS = ('Config', 'Сечения')
 SELECTOR = 'rngSectionIllustrationSelector'
 STORAGE_DEFAULTS = {'I13', 'B85', *(f'L{row}' for row in range(71, 101))}
 EXAMPLE_INPUTS = {
-    'Config': ('I106', 'I108', 'I111', 'J111', 'I112', 'J113', 'I115', 'J118'),
     'Сечения': tuple(f'{col}{row}' for rows, columns in ((range(37, 45), 'FG'), (range(50, 58), 'FJ'))
                      for row in rows for col in columns),
 }
+ANNOTATION_EXAMPLE_FIELDS = (('Offset', 1), ('LineWeight', 1), ('TextHeight', 1),
+                             ('TextHeight', 2), ('TextGap', 1), ('ArrowType', 2),
+                             ('Color', 1), ('ShowSymbol', 2))
 SAME_SHEET_LINKS = {'I19', 'I20', 'I21', 'I30'}
 CALC_REFERENCE = re.compile(r"(?:'Расчет'|Расчет)!")
 DIRECT_LINK = re.compile(r"('Расчет'|Расчет)!(\$?)([A-Z]+)(\$?)(\d+)$")
@@ -275,6 +277,21 @@ def content_types(parts):
     return types, overrides, defaults
 
 
+def example_addresses(name, cells, strings, names):
+    """Находит параметры подписей по именованной таблице и ключам, без старых адресов Config."""
+    if name != 'Config':
+        return EXAMPLE_INPUTS[name]
+    reference = next(node.text for node in names if node.get('name') == 'rngPlotAnnotationSettings')
+    match = re.fullmatch(r"(?:'Config'|Config)!\$?([A-Z]+)\$?(\d+):\$?([A-Z]+)\$?(\d+)", reference)
+    require(match is not None, 'Не определено положение таблицы подписей схемы')
+    column, first, _, last = match.groups()
+    rows = {example_input(cells[f'{column}{row}'], strings)[1]: row
+            for row in range(int(first) + 1, int(last) + 1)}
+    require(all(key in rows for key, _ in ANNOTATION_EXAMPLE_FIELDS), 'Не найдены параметры подписей примера')
+    return tuple(f'{column_letters(column_number(column) + offset)}{rows[key]}'
+                 for key, offset in ANNOTATION_EXAMPLE_FIELDS)
+
+
 def capture(source, baseline, destination):
     """Создаёт переносимый шаблон из проверенного дооформленного файла."""
     parts = read_package(source)
@@ -318,7 +335,7 @@ def capture(source, baseline, destination):
                         f'Config!{address} должен содержать буквенный выбор')
                 value = ''.join(strings[int(cell.findtext(M + 'v'))].itertext())
                 links[name][address] = ['literal', value]
-        for address in EXAMPLE_INPUTS[name]:
+        for address in example_addresses(name, cells, strings, xml(parts, 'xl/workbook.xml').find(M + 'definedNames')):
             # Отступы и укладка воспроизводят арматуру примера, а параметры подписей — его схему.
             links[name][address] = example_input(cells[address], strings)
     donor_names = xml(parts, 'xl/workbook.xml').find(M + 'definedNames')

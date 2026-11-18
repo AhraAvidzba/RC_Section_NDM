@@ -185,11 +185,13 @@ Private Sub ReadTorsionConcreteParameters(ByVal settings As CSystemSettingsReade
     On Error GoTo Failed
     p.ConcreteMethod = settings.GetRequiredString("Torsion.ConcreteMethod")
     p.ConcreteMethod = settings.GetRequiredChoice("Torsion.ConcreteMethod", Array("Strut", "GorskyRectangle", "None"))
-    If p.ConcreteMethod <> "None" Then p.ConcreteResistance = units.InputStressToInternal(TorsionSettingNumber(settings, "Torsion.Rb", 0#, True))
     If p.ConcreteMethod = "Strut" Then
         p.WallThickness = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.WallThickness", 0#, False))
-        p.ConcreteEfficiency = TorsionSettingNumber(settings, "Torsion.ConcreteEfficiency", 0#, True, 1#)
+        p.CharacteristicConcreteStrength = units.InputStressToInternal(TorsionSettingNumber(settings, "Torsion.Fck", 0#, True))
+        p.ConcretePartialFactor = TorsionSettingNumber(settings, "Torsion.GammaC", 1#, False)
+        p.LongitudinalAxisOffset = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.RebarAxisOffset", 0#, True))
     ElseIf p.ConcreteMethod = "GorskyRectangle" Then
+        p.ConcreteResistance = units.InputStressToInternal(TorsionSettingNumber(settings, "Torsion.Rb", 0#, True))
         p.GorskyCoefficient = TorsionSettingNumber(settings, "Torsion.GorskyCoefficient", 0#, True)
     End If
     Exit Sub

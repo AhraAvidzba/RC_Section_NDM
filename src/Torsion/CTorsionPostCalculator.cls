@@ -21,8 +21,10 @@ Option Explicit
 Private mSection As CSectionModel, mOuter As CTorsionHoopGeometry
 Private mP As TTorsionPostParameters
 Private mCoefficients() As Double
+Private mPlacementNames() As String
 Private mAllocatedLengths() As Double ' Доля периметра каждого физического стержня, мм; готовится один раз независимо от T.
-Private mCotangent As Double, mHoopArea As Double, mConcreteLimit As Double, mThickness As Double
+Private mCotangent As Double, mHoopArea As Double
+Private mConcrete As CTorsionConcreteCheck
 Private mOuterArea As Double
 Private mFailureSettingKeys As String
 Private mConcreteFailureStatus As String, mConcreteFailureReason As String, mConcreteFailureKeys As String ' Отказ бетонной проверки не меняет подготовку продольной арматуры и хомута.
@@ -40,7 +42,10 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     mP.BarBand = parameters.BarBand: mP.StrutAngle = parameters.StrutAngle
     mP.ConcreteMethod = parameters.ConcreteMethod: mP.WallThickness = parameters.WallThickness
     mP.ConcreteInputInvalid = parameters.ConcreteInputInvalid
-    mP.ConcreteResistance = parameters.ConcreteResistance: mP.ConcreteEfficiency = parameters.ConcreteEfficiency
+    mP.ConcreteResistance = parameters.ConcreteResistance
+    mP.CharacteristicConcreteStrength = parameters.CharacteristicConcreteStrength
+    mP.ConcretePartialFactor = parameters.ConcretePartialFactor
+    mP.LongitudinalAxisOffset = parameters.LongitudinalAxisOffset
     mP.GorskyCoefficient = parameters.GorskyCoefficient
     mFailureSettingKeys = "Torsion.HoopAxisOffset,Torsion.HoopDiameter"
     Set mOuter = New CTorsionHoopGeometry
@@ -55,8 +60,9 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopAxisOffset,Torsion.HoopDiameter"
     demand.Initialize section, mOuter, mP.BarBand
     demand.CopyStressPerUnitForce mCoefficients
-    ReDim mAllocatedLengths(1 To section.RebarCount)
+    ReDim mAllocatedLengths(1 To section.RebarCount), mPlacementNames(1 To section.RebarCount)
     For i = 1 To section.RebarCount
+        mPlacementNames(i) = section.RebarComment(i)
         mAllocatedLengths(i) = mCoefficients(i) * section.RebarArea(i) * mOuter.Length
         If mCoefficients(i) > 0# Then mOuterArea = mOuterArea + section.RebarArea(i)
     Next i
@@ -76,7 +82,7 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     q = torque / (2# * mOuter.EnclosedArea)
     force = q * mOuter.Length * mCotangent ' Вся тяга от T распределяется только на наружную продольную арматуру.
     hoopStress = q * mP.HoopSpacing / (mHoopArea * mCotangent)
-    If mThickness > 0# Then concreteStress = q * (mCotangent + 1# / mCotangent) / mThickness
+    If Not mConcrete Is Nothing Then concreteStress = mConcrete.Stress(torque)
     Dim available As Boolean
     If Not state Is Nothing Then available = state.Converged And state.HasMaterialSnapshot
     Dim snapshot As Variant
@@ -94,8 +100,8 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
             outputRow = outputRow + 1
             delta = force * mCoefficients(i)
             bars(outputRow, 1) = identifier: bars(outputRow, 2) = mSection.RebarID(i)
-            bars(outputRow, 3) = delta * mSection.RebarArea(i)
-            bars(outputRow, 4) = mAllocatedLengths(i)
+            bars(outputRow, 3) = mPlacementNames(i)
+            bars(outputRow, 4) = delta * mSection.RebarArea(i): bars(outputRow, 5) = mAllocatedLengths(i)
             If criticalT = 0 Or delta > maxDelta Then criticalT = i: maxDelta = delta
             If available Then
                 normal = CDbl(snapshot(mSection.ConcreteCount + i, 4))
@@ -110,6 +116,7 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     row(1, 1) = identifier: row(1, 2) = mP.StateName: row(1, 3) = torque
     row(1, 4) = mOuter.EnclosedArea: row(1, 5) = mOuter.Length: row(1, 6) = mCotangent
     row(1, 7) = q: row(1, 8) = force: row(1, 9) = mOuterArea
+    row(1, 43) = mPlacementNames(criticalT)
     row(1, 10) = force / mP.SteelResistance: row(1, 11) = mSection.RebarID(criticalT)
     row(1, 12) = maxDelta: row(1, 13) = mP.SteelResistance
     row(1, 14) = mP.SteelResistance / maxDelta: row(1, 15) = TorsionPostCheckStatus(CDbl(row(1, 14)))
@@ -122,14 +129,16 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     ElseIf mP.ConcreteMethod = "None" Then
         row(1, 28) = policy.NotApplicable
     Else
-        row(1, 23) = mThickness
+        row(1, 23) = mConcrete.Thickness
         If mP.ConcreteMethod = "Strut" Then
-            row(1, 24) = concreteStress: row(1, 25) = mP.ConcreteEfficiency * mP.ConcreteResistance
+            row(1, 24) = concreteStress: row(1, 25) = mConcrete.Resistance
+            row(1, 40) = mConcrete.EffectiveArea: row(1, 41) = mConcrete.DesignStrength: row(1, 42) = mConcrete.Efficiency
         End If
-        row(1, 26) = mConcreteLimit: row(1, 27) = mConcreteLimit / torque
+        row(1, 26) = mConcrete.Limit: row(1, 27) = mConcrete.Limit / torque
         row(1, 28) = TorsionPostCheckStatus(CDbl(row(1, 27)))
     End If
     If available Then
+        row(1, 44) = mPlacementNames(criticalCombined)
         row(1, 29) = mSection.RebarID(criticalCombined): row(1, 30) = criticalNM
         row(1, 31) = criticalDelta: row(1, 32) = criticalForce: row(1, 33) = maxCombined
         row(1, 34) = mP.SteelResistance
@@ -182,12 +191,13 @@ Private Sub PrepareConcreteCheck(ByVal domain As CConcreteRegion)
         Exit Sub
     End If
     On Error GoTo Failed
-    PrepareConcreteLimit domain
+    Set mConcrete = New CTorsionConcreteCheck
+    mConcrete.Prepare domain, mP
     Exit Sub
 Failed:
-    mConcreteFailureReason = Err.Description: mConcreteFailureKeys = mFailureSettingKeys
+    mConcreteFailureReason = Err.Description: mConcreteFailureKeys = mConcrete.FailureSettingKeys
     If Err.Number = vbObjectError + 5670 Then mConcreteFailureStatus = policy.InputErr Else mConcreteFailureStatus = policy.CalcErr
-    mThickness = 0#: mConcreteLimit = 0# ' Неподтверждённый предел не попадает в вывод как действительное число.
+    Set mConcrete = Nothing ' Неподтверждённый предел не попадает в вывод как действительное число.
 End Sub
 
 ' Возвращает причину независимого отказа бетонной проверки без адресов Excel.
@@ -199,51 +209,6 @@ End Property
 Public Property Get ConcreteFailureSettingKeys() As String
     ConcreteFailureSettingKeys = mConcreteFailureKeys
 End Property
-
-' Готовит независимый предел бетонных раскосов или эмпирический предел
-' сплошного прямоугольника по Горскому, §3, формула (13), стр.23 книги.
-Private Sub PrepareConcreteLimit(ByVal domain As CConcreteRegion)
-    mFailureSettingKeys = "Torsion.ConcreteMethod"
-    Select Case mP.ConcreteMethod
-        Case "None"
-            Exit Sub
-        Case "Strut"
-            mFailureSettingKeys = "Torsion.WallThickness,Torsion.HoopAxisOffset,Torsion.HoopDiameter,Torsion.ConcreteEfficiency,Torsion.Rb"
-            mThickness = mP.WallThickness
-            If mThickness = 0# Then mThickness = 2# * mOuter.MinimumClearCover + mP.HoopDiameter
-            If mThickness > 2# * mOuter.MinimumClearCover + mP.HoopDiameter + GEOM_BOUNDARY_TOLERANCE Then _
-                ModelError "Torsion.WallThickness превышает толщину располагаемой бетонной полосы вокруг оси хомута. Уменьшите толщину или выберите 0 для автоматического определения. Эта настройка не задаёт полосу отбора арматуры; для неё используется Torsion.BarBand."
-            mConcreteLimit = 2# * mOuter.EnclosedArea * mThickness * mP.ConcreteEfficiency * mP.ConcreteResistance / _
-                (mCotangent + 1# / mCotangent)
-        Case "GorskyRectangle"
-            mFailureSettingKeys = "Torsion.ConcreteMethod,Torsion.GorskyCoefficient,Torsion.Rb"
-            Dim b As Double, h As Double
-            RectangleDimensions domain, b, h
-            mConcreteLimit = mP.GorskyCoefficient * mP.ConcreteResistance * b * b * h
-        Case Else
-            ModelError "Неизвестный метод отдельной проверки бетона на T."
-    End Select
-End Sub
-
-' Допускает формулу b^2*h только для одного сплошного прямоугольника;
-' поворот прямоугольника не меняет длины его сторон.
-Private Sub RectangleDimensions(ByVal domain As CConcreteRegion, ByRef b As Double, ByRef h As Double)
-    Dim edges() As TRegionEdge, count As Long, i As Long, j As Long
-    domain.CopyEdges edges, count
-    If domain.LoopCount <> 1 Or count <> 4 Then ModelError "GorskyRectangle применим только к сплошному прямоугольнику без фасок, дуг и отверстий. Выберите Strut или None."
-    Dim lengths(1 To 4) As Double, dot As Double
-    For i = 1 To 4
-        If Abs(edges(i).Sweep) > GEOM_PARAMETER_TOLERANCE Then ModelError "GorskyRectangle не применяется к скруглённым углам."
-        lengths(i) = EdgeLength(edges(i))
-    Next i
-    For i = 1 To 4
-        j = i Mod 4 + 1
-        dot = (edges(i).X2 - edges(i).X1) * (edges(j).X2 - edges(j).X1) + _
-            (edges(i).Y2 - edges(i).Y1) * (edges(j).Y2 - edges(j).Y1)
-        If Abs(dot) > 1E-8 * lengths(i) * lengths(j) Then ModelError "GorskyRectangle требует прямые углы бетонного контура."
-    Next i
-    b = GeomMin(lengths(1), lengths(2)): h = GeomMax(lengths(1), lengths(2))
-End Sub
 
 ' Возвращает ключи входов текущего геометрического этапа для общего адаптера
 ' адресов; никаких ссылок на Excel или текстовых разборов причины в ядре нет.

@@ -1,0 +1,33 @@
+{
+  "Status": "PASS",
+  "NativeCalculationPageComparison": [
+    {
+      "Page": 1,
+      "Size": [
+        1191,
+        1684
+      ],
+      "IdenticalPixels": true,
+      "DifferenceBounds": null
+    },
+    {
+      "Page": 2,
+      "Size": [
+        1191,
+        1684
+      ],
+      "IdenticalPixels": true,
+      "DifferenceBounds": null
+    },
+    {
+      "Page": 3,
+      "Size": [
+        1191,
+        1684
+      ],
+      "IdenticalPixels": true,
+      "DifferenceBounds": null
+    }
+  ],
+  "All15ConcreteFormulaImagesInspected": true
+}

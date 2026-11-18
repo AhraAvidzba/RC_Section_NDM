@@ -8,12 +8,24 @@ function Get-TorsionSettingsCatalog {
         @('Torsion.Rs','=INDEX(rngSteelMaterialParameters,2,3)','МПа','Допустимое растягивающее напряжение продольной арматуры в отдельной проверке; больше нуля.'),
         @('Torsion.Rsw',300,'МПа','Принятое сопротивление ветви хомута растяжению; больше нуля.'),
         @('Torsion.BarBand',40,'мм','Полоса отбора стержней внутрь от оси наружного хомута, >0; габаритом сечения не ограничена. Арматура у отверстия исключается.'),
-        @('Torsion.StrutAngle',45,'deg','Угол бетонных раскосов к продольной оси, строго между 0 и 90°. Базовая ферма — 45°.'),
+        @('Torsion.StrutAngle',45,'deg','Угол бетонных раскосов к продольной оси, Для Strut: 1 <= cot θ <= 2,5; базовая ферма — 45°.'),
         @('Torsion.ConcreteMethod','Strut','-','Метод бетона: Strut, GorskyRectangle или None. Ошибка выбора блокирует только бетон; арматура и хомут рассчитываются.'),
-        @('Torsion.WallThickness',0,'мм','Толщина бетона для раскосов Strut: 0 — авто, >0 — заданная толщина. Отбор стержней задаёт Torsion.BarBand.'),
-        @('Torsion.Rb','=INDEX(rngConcreteMaterialParameters,2,2)','МПа','Сопротивление бетона для T, >0; в GorskyRectangle применяется как Rи.'),
-        @('Torsion.ConcreteEfficiency',0.5,'-','Для Strut: доля сопротивления бетона, больше 0 и не больше 1. Инженерное допущение.'),
+        @('Torsion.WallThickness',0,'мм','Эффективная стенка Strut: 0 — по A/u и 2c_l, >0 — заданная; ограничена фактической толщиной.'),
+        @('Torsion.Rb','=INDEX(rngConcreteMaterialParameters,2,2)','МПа','Только GorskyRectangle: принятое сопротивление R_и в формуле (13).'),
+        @('Torsion.Fck',20,'МПа','Strut: характеристическая цилиндрическая прочность f_ck; не R_b и не число класса B.'),
+        @('Torsion.GammaC',1.5,'-','Strut: коэффициент надёжности gamma_c >= 1; f_cd = f_ck/gamma_c.'),
+        @('Torsion.RebarAxisOffset',50,'мм','Strut: расстояние c_l от поверхности бетона до центра продольной арматуры.'),
         @('Torsion.GorskyCoefficient',0.07,'-','Для сплошного прямоугольника: коэффициент c >0 в T = c Rи b²h (GorskyRectangle).')
+    )
+}
+
+# Разделы одной именованной таблицы; reader пропускает строки в квадратных скобках.
+function Get-TorsionSettingsGroups {
+    return @(
+        @{Caption='Общие настройки';Keys=@('Torsion.StateType','Torsion.ConcreteMethod','Torsion.StrutAngle')},
+        @{Caption='Продольная арматура и хомут';Keys=@('Torsion.HoopAxisOffset','Torsion.HoopDiameter','Torsion.HoopSpacing','Torsion.Rs','Torsion.Rsw','Torsion.BarBand')},
+        @{Caption='Бетон — Strut (EC2 по ACI 445.1R-12)';Keys=@('Torsion.Fck','Torsion.GammaC','Torsion.RebarAxisOffset','Torsion.WallThickness')},
+        @{Caption='Бетон — Горский';Keys=@('Torsion.Rb','Torsion.GorskyCoefficient')}
     )
 }
 
@@ -42,15 +54,21 @@ function Add-TorsionPostprocessTables {
     $title.Font.Name='Arial';$title.Font.Size=9;$title.Font.Bold=$true;$title.Font.Color=0;$title.Interior.Color=15921906
 
     $settings=$Workbook.Names.Item('rngTorsionSettings').RefersToRange
-    $settings.Font.Name='Arial';$settings.Font.Size=9;$settings.HorizontalAlignment=-4108;$settings.VerticalAlignment=-4108;$settings.WrapText=$false
+    $settings.Font.Name='Arial';$settings.Font.Size=9;$settings.Font.Bold=$false;$settings.Font.Color=0;$settings.Interior.Pattern=-4142
+    $settings.HorizontalAlignment=-4108;$settings.VerticalAlignment=-4108;$settings.WrapText=$false
     $settings.Borders.LineStyle=1;$settings.Borders.Weight=2;$settings.Borders.Color=0
     $headers=@('Параметр','Значение','Ед.','Комментарий','Справка')
     for($column=1;$column -le 5;$column++){$settings.Cells.Item(1,$column).Value2=$headers[$column-1]}
     $settings.Rows.Item(1).Interior.Color=14277081;$settings.Rows.Item(1).Font.Bold=$true
-    $rows=@(Get-TorsionSettingsCatalog)
-    if($settings.Rows.Count -ne $rows.Count+1){throw 'Размер rngTorsionSettings не совпадает с каталогом.'}
-    for($index=0;$index -lt $rows.Count;$index++){
-        $row=$index+2;$entry=$rows[$index]
+    $catalog=@(Get-TorsionSettingsCatalog);$groups=@(Get-TorsionSettingsGroups)
+    if($settings.Rows.Count -ne $catalog.Count+$groups.Count+1){throw 'Размер rngTorsionSettings не совпадает с каталогом и четырьмя разделами.'}
+    $row=1
+    foreach($group in $groups){
+        $row++
+        $heading=$settings.Rows.Item($row);$settings.Cells.Item($row,1).Value2='['+$group.Caption+']'
+        $heading.Font.Bold=$true;$heading.Font.Color=4210752;$heading.Interior.Color=$script:ConfigSubgroupHeaderColor
+        foreach($key in $group.Keys){
+            $row++;$entry=@($catalog|Where-Object {$_[0] -ceq $key})[0]
         $settings.Cells.Item($row,1).Value2=[string]$entry[0]
         $value=$settings.Cells.Item($row,2)
         if($entry[1] -is [string] -and $entry[1].StartsWith('=')){$value.Formula=$entry[1]}
@@ -67,11 +85,12 @@ function Add-TorsionPostprocessTables {
             $value.Validation.ShowError=$true;$value.Validation.InCellDropdown=$true
             $value.Validation.ErrorTitle='Параметр кручения';$value.Validation.ErrorMessage='Выберите один пункт из списка.'
         }
+        }
     }
     $title=$settings.Cells.Item(1,1).Offset(-1,0).Resize(1,5);$title.Merge();$title.Value2='Постпроверка T (кручение) и NMT'
     $title.Font.Name='Arial';$title.Font.Size=9;$title.Font.Bold=$true;$title.Font.Color=0;$title.Interior.Color=15921906
     $bars=$Workbook.Names.Item('rngTorsionBarForces').RefersToRange
-    $title=$bars.Cells.Item(1,1).Offset(-1,0).Resize(1,4);$title.Merge();$title.Value2='Усилия от T (кручение)'
+    $title=$bars.Cells.Item(1,1).Offset(-1,0).Resize(1,5);$title.UnMerge();$title.Merge();$title.Value2='Усилия от T (кручение)'
     $title.Font.Name='Arial';$title.Font.Size=9;$title.Font.Bold=$true;$title.Font.Color=0;$title.Interior.Color=14277081
 }
 
@@ -113,22 +132,39 @@ function Add-TorsionMethodologyGuide {
     $row=Add-GuideFractionFormula $sheet $row 'σ_sw = ' 'q s' 'A_sw cot θ' '≤ R_sw      Модель книги: напряжение хомута'
     $row=Add-GuideParagraph $sheet $row 'Для равномерных продольных стержней на отдельных станциях при угле 45°, равных отношениях площади к соответствующему шагу и одинаковых сопротивлениях напряжения и запасы от T совпадают. Продольный шаг измеряется по периметру хомута, шаг хомутов — вдоль элемента. Сумма NMT дополнительно учитывает сохранённые напряжения от N и M.'
     $row=Add-GuideTitle $sheet $row 'Метод проверки бетона: Strut' 12
-    $row=Add-GuideParagraph $sheet $row 'Strut проверяет сжатие диагональных бетонных раскосов. Torsion.WallThickness задаёт полную эффективную толщину бетонной полосы; отбор арматуры задаётся Torsion.BarBand. При одном потоке большая толщина даёт меньшее напряжение раскоса. Толщина не меняет суммарную продольную тягу или напряжение хомута.'
-    $row=Add-GuideFormula $sheet $row 't_eff,auto = 2 a_min      Модель книги: автоматическая толщина'
-    $row=Add-GuideFormula $sheet $row 'R_diag = ν R_b      Модель книги: сопротивление раскоса'
-    $row=Add-GuideParagraph $sheet $row 'Ноль в Torsion.WallThickness включает автоматическую толщину. Положительное значение задаёт её явно и должно помещаться в располагаемой бетонной полосе вокруг оси. Автоматическая толщина и коэффициент ν по умолчанию 0,5 являются инженерными параметрами модели. В ACI §9.2.2 описана эффективная стенка EC2 со своими условиями; она не подменяет это правило.'
-    $row=Add-GuideFormula $sheet $row 'T_lim = 2 R_diag A_o t_eff sin θ cos θ      По ACI 445.1R-12, (9.2.2b), с.11'
-    $row=Add-GuideFractionFormula $sheet $row 'σ_diag = ' 'q (cot θ + tan θ)' 't_eff' '≤ R_diag      Модель книги: напряжение раскоса'
-    $row=Add-GuideFractionFormula $sheet $row 'k_b = ' 'R_diag' 'σ_diag' '     Модель книги: коэффициент запаса'
-    $row=Add-GuideParagraph $sheet $row 'Предельный момент и запас выражают одно условие сопротивления диагональных раскосов. Нормальные напряжения бетона НДМ к диагональным напряжениям не прибавляются.'
-    $row=Add-GuideSourceReference $sheet $row 'ACI445' 'Пространственная ферма: §9.1; бетонные раскосы: §9.2.2, (9.2.2b), с.9–11' -PdfPage 12
+    $row=Add-GuideParagraph $sheet $row 'Strut проверяет диагональные сжатые бетонные раскосы по EC2-04 в изложении ACI 445.1R-12, §9.2.2. Рассматривается заданное кручение без поперечной силы; в условии (9.2.2a) V = 0. Арматура ненапрягаемая, поэтому α_cw = 1 по (9.2.2e). Продольные напряжения НДМ не прибавляются к диагональному сжатию. Эта проверка не подтверждает взаимодействие с поперечной силой.'
+    $row=Add-GuideParagraph $sheet $row 'В разделе бетона Strut задайте характеристическую цилиндрическую прочность Torsion.Fck, коэффициент надёжности Torsion.GammaC и расстояние Torsion.RebarAxisOffset от бетонной поверхности до центра продольной арматуры. Число класса бетона B и сопротивление R_b по СП автоматически не подставляются вместо f_ck. Ноль в Torsion.WallThickness включает определение стенки по геометрии; положительное значение задаёт её явно с соблюдением ограничений источника.'
+    $row=Add-GuideFormula $sheet $row '|T| ≤ T_lim      ACI 445.1R-12, (9.2.2a), с.11; V = 0'
+    $row=Add-GuideFormula $sheet $row 'T_lim = 2 ν α_cw f_cd A_k t_eff sin θ cos θ      ACI 445.1R-12, (9.2.2b), с.11'
+    $row=Add-GuideFractionFormula $sheet $row 'f_cd = ' 'f_ck' 'γ_c' '     ACI 445.1R-12, определения к (9.2.2b–e), с.11'
+    $row=Add-GuideCompositeFormula $sheet $row @(
+        @{Kind='Text';Text='ν = 0.6 (1 − '},
+        @{Kind='Fraction';Numerator='f_ck';Denominator='250 MPa'},
+        @{Kind='Text';Text=')'}
+    ) 'ACI 445.1R-12, (9.2.2d), с.11' 'ν = 0.6 (1 − f_ck / 250 MPa)'
+    $row=Add-GuideFormula $sheet $row 'α_cw = 1      ACI 445.1R-12, (9.2.2e), с.11; ненапрягаемый бетон'
+    $row=Add-GuideFormula $sheet $row '1 ≤ cot θ ≤ 2.5      ACI 445.1R-12, §9.2.2, шаг 2, с.10'
+    $row=Add-GuideParagraph $sheet $row 'Геометрия бетона определяется отдельно от оси хомута: A — вся площадь внутри наружного контура, включая отверстие, u — длина только наружной границы. c_l — заданное расстояние до центра продольной арматуры. Автоматическое правило соответствует примеру §9.4.3(1). Для полого сечения фактическая толщина стенки является верхним пределом по EC2-04, §6.3.2(1); для единой стенки используется наименьшая фактическая толщина по контурам. Если она меньше 2c_l, пригодной эффективной стенки нет.'
+    $row=Add-GuideCompositeFormula $sheet $row @(
+        @{Kind='Text';Text='t_eff,auto = max('},
+        @{Kind='Fraction';Numerator='A';Denominator='u'},
+        @{Kind='Text';Text='; 2 c_l)'}
+    ) 'ACI 445.1R-12, §9.4.3(1), с.19; формула без номера' 't_eff,auto = max(A/u; 2 c_l)'
+    $row=Add-GuideFormula $sheet $row '2 c_l ≤ t_eff ≤ t_real      EN 1992-1-1:2004, §6.3.2(1), с.95; полое сечение'
+    $row=Add-GuideSourceReference $sheet $row 'EC2_2004' '§6.3.2(1), с.95: фактическая стенка — верхний предел' -PdfPage 99
+    $row=Add-GuideParagraph $sheet $row 'Средняя линия эффективной стенки строится на расстоянии t_eff/2 внутрь от наружной бетонной границы. A_k — площадь внутри этой замкнутой средней линии, включая полость. Она используется только для бетонной проверки Strut. Площадь A_o внутри наружного хомута остаётся величиной арматурного блока. Если одна средняя линия не строится или пересекает отверстие, выводится причина InputErr только для бетона; расчёт арматуры не подменяется другим контуром.'
+    $row=Add-GuideFractionFormula $sheet $row 'q_k = ' '|T|' '2 A_k' '     По ACI 445.1R-12, преобразование (9.2.2b), с.11'
+    $row=Add-GuideFractionFormula $sheet $row 'σ_diag = ' 'q_k (cot θ + tan θ)' 't_eff' '     По ACI 445.1R-12, преобразование (9.2.2b), с.11'
+    $row=Add-GuideFormula $sheet $row 'σ_diag ≤ R_diag = ν α_cw f_cd      По ACI 445.1R-12, преобразование (9.2.2b), с.11'
+    $row=Add-GuideFractionFormula $sheet $row 'k_b = ' 'T_lim' '|T|' '≥ 1     По ACI 445.1R-12, (9.2.2a), с.11; V = 0'
+    $row=Add-GuideSourceReference $sheet $row 'ACI445' 'Бетонные раскосы: (9.2.2a–e), с.10–11; эффективная стенка: §9.4.3(1), с.19' -PdfPage 12
     $row=Add-GuideTitle $sheet $row 'Метод проверки бетона: GorskyRectangle и None' 12
     $row=Add-GuideParagraph $sheet $row 'GorskyRectangle определяет предел бетона одного сплошного прямоугольника с прямыми углами по условию Горского. Поворот прямоугольника допускается; отверстия, фаски, дуги и произвольный контур не соответствуют формуле. В Torsion.Rb задаётся принятое сопротивление R_и, в Torsion.GorskyCoefficient — коэффициент c, по умолчанию 0,07. Соответствие сопротивления условиям источника проверяется отдельно.'
     $row=Add-GuideFormula $sheet $row '|T| ≤ c R_и b² h      Горский, §3, (13), с.23'
-    $row=Add-GuideFormula $sheet $row 'T_lim = c R_и b² h      Модель книги: предел бетона'
-    $row=Add-GuideFractionFormula $sheet $row 'k_b = ' 'T_lim' '|T|' '     Модель книги: коэффициент запаса'
+    $row=Add-GuideFormula $sheet $row 'T_lim = c R_и b² h      По Горскому, §3, преобразование (13), с.23'
+    $row=Add-GuideFractionFormula $sheet $row 'k_b = ' 'T_lim' '|T|' '     По Горскому, §3, преобразование (13), с.23'
     $row=Add-GuideSourceReference $sheet $row 'Gorsky' '§3, формула (13), с.23'
-    $row=Add-GuideParagraph $sheet $row 'GorskyRectangle не читает толщину Torsion.WallThickness и коэффициент Torsion.ConcreteEfficiency. None явно отключает только бетон: статус равен N/A, запас и предельный момент отсутствуют; неиспользуемые поля бетона не читаются. Продольная арматура и хомут рассчитываются общей пространственной фермой.'
+    $row=Add-GuideParagraph $sheet $row 'GorskyRectangle не читает параметры бетона Strut: Torsion.Fck, Torsion.GammaC, Torsion.RebarAxisOffset и Torsion.WallThickness. None явно отключает только бетон: статус равен N/A, запас и предельный момент отсутствуют; неиспользуемые поля бетона не читаются. Продольная арматура и хомут рассчитываются общей пространственной фермой.'
     $row=Add-GuideParagraph $sheet $row 'Неизвестный метод, ошибка его формулы или непригодная для него геометрия дают понятную причину и InputErr только в бетонной проверке. Другие доступные проверки T и сумма NMT выполняются. Общий статус при неподтверждённой из-за ошибки проверке бетона не становится OK.'
     $row=Add-GuideTitle $sheet $row 'Сумма напряжений NMT и вывод' 12
     $row=Add-GuideFormula $sheet $row 'σ_NMT,i = σ_NM,i + Δσ_T,i;  σ_NMT,i ≤ R_s      Модель книги: сумма напряжений'
@@ -136,6 +172,6 @@ function Add-TorsionMethodologyGuide {
     $row=Add-GuideParagraph $sheet $row 'Используется алгебраическая сумма сохранённого напряжения НДМ и растягивающей добавки от T. Она не восстанавливает совместное равновесие и перераспределение НДС и не определяет совместный предельный M или N. Горский на с.24 обсуждает приближённость раздельного расчёта изгиба и кручения с суммированием требуемой арматуры. Ошибка метода бетона не меняет саму сумму напряжений, но оставляет бетонную проверку неподтверждённой.'
     $row=Add-GuideSourceReference $sheet $row 'ACI445' 'Раздельный расчёт арматуры: §9.1, с.9' -PdfPage 10
     $row=Add-GuideSourceReference $sheet $row 'Gorsky' 'Ограничения раздельного суммирования: с.24'
-    $row=Add-GuideParagraph $sheet $row 'На Results после устойчивости выводятся проверки арматуры, хомута и бетона от T, затем сумма NMT. Поэлементная таблица участвующих стержней содержит ID сочетания, Rebar, усилие F_T и назначенную длину l_i в OUTPUT Length. Длина соответствует доле периметра физического стержня, включая общие и множественные проекции; сумма длин равна u_o. Сводка содержит три статуса и запаса: бетон, продольная арматура NMT и хомут. Причины НДМ остаются в его блоках; ошибки T содержат собственные причины и цепочки адресов.'
+    $row=Add-GuideParagraph $sheet $row 'На Results после устойчивости выводятся проверки арматуры, хомута и бетона от T, затем сумма NMT. Поэлементная таблица участвующих стержней содержит ID сочетания, Rebar, сохранённую принадлежность к грани, усилие F_T и назначенную длину l_i в OUTPUT Length. Длина соответствует доле периметра физического стержня, включая общие и множественные проекции; сумма длин равна u_o. Сводка содержит три статуса и запаса: бетон, продольная арматура NMT и хомут. Причины НДМ остаются в его блоках; ошибки T содержат собственные причины и цепочки адресов.'
     return $row
 }

@@ -1,0 +1,67 @@
+﻿TorsionPostUnits: Passed=66; Failed=0
+PASS Baseline concrete calculation available
+PASS Torsion.HoopAxisOffset unit is formula
+PASS Torsion.HoopDiameter unit is formula
+PASS Torsion.HoopSpacing unit is formula
+PASS Torsion.Rs unit is formula
+PASS Torsion.Rsw unit is formula
+PASS Torsion.BarBand unit is formula
+PASS Torsion.Fck unit is formula
+PASS Torsion.RebarAxisOffset unit is formula
+PASS Torsion.WallThickness unit is formula
+PASS Torsion.Rb unit is formula
+PASS Torsion.HoopAxisOffset follows INPUT
+PASS Torsion.HoopDiameter follows INPUT
+PASS Torsion.HoopSpacing follows INPUT
+PASS Torsion.Rs follows INPUT
+PASS Torsion.Rsw follows INPUT
+PASS Torsion.BarBand follows INPUT
+PASS Torsion.Fck follows INPUT
+PASS Torsion.RebarAxisOffset follows INPUT
+PASS Torsion.WallThickness follows INPUT
+PASS Torsion.Rb follows INPUT
+PASS Torque header follows INPUT Moment
+PASS Equivalent INPUT column 1
+PASS Equivalent INPUT column 2
+PASS Equivalent INPUT column 3
+PASS Equivalent INPUT column 4
+PASS Equivalent INPUT column 5
+PASS Equivalent INPUT column 6
+PASS Equivalent INPUT column 7
+PASS Equivalent INPUT column 8
+PASS Equivalent INPUT column 9
+PASS Equivalent INPUT column 10
+PASS Equivalent INPUT column 11
+PASS Equivalent INPUT column 12
+PASS Equivalent INPUT column 13
+PASS Equivalent INPUT column 14
+PASS Equivalent INPUT column 15
+PASS Equivalent INPUT column 16
+PASS Equivalent INPUT column 17
+PASS Equivalent INPUT column 18
+PASS Equivalent INPUT column 19
+PASS Equivalent INPUT column 20
+PASS Equivalent INPUT column 21
+PASS Equivalent INPUT column 22
+PASS Equivalent INPUT column 23
+PASS Equivalent INPUT column 24
+PASS Equivalent INPUT column 25
+PASS Equivalent INPUT column 26
+PASS Equivalent INPUT column 27
+PASS Equivalent INPUT column 28
+PASS Equivalent INPUT column 29
+PASS Equivalent INPUT column 30
+PASS Equivalent INPUT column 31
+PASS Equivalent INPUT column 32
+PASS Equivalent INPUT column 33
+PASS Equivalent INPUT column 34
+PASS Equivalent INPUT column 35
+PASS Equivalent INPUT column 36
+PASS Equivalent INPUT column 37
+PASS Equivalent INPUT column 38
+PASS Equivalent INPUT column 39
+PASS Equivalent INPUT column 40
+PASS Equivalent INPUT column 41
+PASS Equivalent INPUT column 42
+PASS Equivalent INPUT column 43
+PASS Equivalent INPUT column 44

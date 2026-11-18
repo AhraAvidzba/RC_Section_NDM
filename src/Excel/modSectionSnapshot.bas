@@ -35,6 +35,7 @@ End Type
 ' Восстанавливает расчётную модель из обязательных координат, площадей,
 ' инерций и контуров единого источника: выбранного файла либо Results, в мм, мм2 и мм4. При includeOptionalData=True
 ' дополнительно читает JSON происхождения и RecipeTrace; для расчёта они не требуются.
+' Подписи принадлежности арматуры сохраняются также в облегчённой модели для вывода T.
 ' Восстановлением аннотаций управляет вызывающий ReadFormedSectionFromResults.
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results", _
         Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
@@ -58,7 +59,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim colLocalIx As Long: colLocalIx = ResultColumn(data, "LocalIx")
     Dim colLocalIy As Long: colLocalIy = ResultColumn(data, "LocalIy")
     Dim colLocalIxy As Long: colLocalIxy = ResultColumn(data, "LocalIxy")
-    Dim colComment As Long
+    Dim colComment As Long: colComment = ResultColumn(data, "Comment", False)
     Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(data, colX, "mm")
     Dim areaUnit As String: areaUnit = ResultHeaderUnit(data, colArea, "mm2")
     Dim fourthUnit As String: fourthUnit = ResultHeaderUnit(data, colLocalIx, lengthUnit & "4")
@@ -71,7 +72,6 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim comment As String, steelClass As String, materialID As Long, extraColumn As Long
     If includeOptionalData Then
         extraColumn = ResultColumn(data, "ExtraData", False)
-        colComment = ResultColumn(data, "Comment", False)
         Set info = ReadSectionOptionalJson(vbNullString)
     End If
     For row = 2 To UBound(data, 1)
@@ -111,6 +111,10 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
                     OutputFourthPowerLengthToInternalByUnit(localIxy, fourthUnit), True, exactRegion ' Это готовая расчётная граница ячейки. Угол уже определён при формировании; повторное усреднение направлений не требуется.
                 If model.ConcreteID(model.ConcreteCount) <> id Then GoTo InvalidElementID
             ElseIf StrComp(kind, "Rebar", vbTextCompare) = 0 Then
+                If Not includeOptionalData And colComment > 0 Then
+                    If Not IsError(data(row, colComment)) And Not IsNull(data(row, colComment)) Then _
+                        comment = CStr(data(row, colComment)) ' Подпись берётся из уже прочитанной матрицы; нечисловая заметка не влияет на равновесие НДМ.
+                End If
                 model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colDiameter), lengthUnit), _

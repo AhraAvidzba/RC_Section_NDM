@@ -1,0 +1,16 @@
+{
+  "Status": "PASS",
+  "AnnotationRange": "Config!$H$125:$M$140",
+  "MovedInputOverrides": [
+    "I128",
+    "I130",
+    "I133",
+    "I134",
+    "I137",
+    "J133",
+    "J135",
+    "J140"
+  ],
+  "CaptureUsesSemanticKeys": true,
+  "OtherTemplatePartsUnchanged": true
+}

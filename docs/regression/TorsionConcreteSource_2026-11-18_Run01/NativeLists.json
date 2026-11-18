@@ -1,0 +1,10 @@
+{
+  "Status": "NATIVE_VALUES_PASS_GUI_OBSERVATION_PENDING",
+  "Reason": "Пользователь сообщил, что монитор выключен; изображение и активация окна недоступны.",
+  "Controls": 12,
+  "ChoicesPerSaveReopenRound": 32,
+  "IndividualValuesAccepted": true,
+  "InvalidAndJoinedValuesRejected": true,
+  "SavedReopenedVerified": true,
+  "DropdownItemsVisuallyObserved": false
+}

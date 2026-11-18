@@ -1,0 +1,77 @@
+﻿TorsionConcreteSource: Passed=76; Failed=0
+PASS Source thickness rotated 0
+PASS Source area rotated 0
+PASS Source design strength 0
+PASS Source efficiency 0
+PASS Source strut resistance 0
+PASS Source limit unrounded fcd 0
+PASS Source stress 0
+PASS Stress and torque reserves equal 0
+PASS Torque sign 0
+PASS Source thickness rotated 1
+PASS Source area rotated 1
+PASS Source design strength 1
+PASS Source efficiency 1
+PASS Source strut resistance 1
+PASS Source limit unrounded fcd 1
+PASS Source stress 1
+PASS Stress and torque reserves equal 1
+PASS Torque sign 1
+PASS Source thickness rotated 2
+PASS Source area rotated 2
+PASS Source design strength 2
+PASS Source efficiency 2
+PASS Source strut resistance 2
+PASS Source limit unrounded fcd 2
+PASS Source stress 2
+PASS Stress and torque reserves equal 2
+PASS Torque sign 2
+PASS Source thickness rotated 3
+PASS Source area rotated 3
+PASS Source design strength 3
+PASS Source efficiency 3
+PASS Source strut resistance 3
+PASS Source limit unrounded fcd 3
+PASS Source stress 3
+PASS Stress and torque reserves equal 3
+PASS Torque sign 3
+PASS Printed example rounded result 55.2 kNm
+PASS 45-degree limit
+PASS fck30 efficiency
+PASS fck30 fcd
+PASS fck30 resistance
+PASS Minimum admissible angle
+PASS Circle auto A/u
+PASS Circle effective area analytic
+PASS Hollow actual wall upper limit
+PASS Hollow area includes void
+PASS Explicit permitted hollow wall
+PASS Explicit hollow effective area
+PASS Exceeds real wall InputErr
+PASS Exceeds real wall clear reason
+PASS Exceeds real wall addressable setting
+PASS Below twice cl InputErr
+PASS Below twice cl clear reason
+PASS Below twice cl addressable setting
+PASS No feasible hollow wall InputErr
+PASS No feasible hollow wall clear reason
+PASS No feasible hollow wall addressable setting
+PASS Angle above source interval InputErr
+PASS Angle above source interval clear reason
+PASS Angle above source interval addressable setting
+PASS Angle below source interval InputErr
+PASS Angle below source interval clear reason
+PASS Angle below source interval addressable setting
+PASS gamma below one InputErr
+PASS gamma below one clear reason
+PASS gamma below one addressable setting
+PASS Nonpositive nu InputErr
+PASS Nonpositive nu clear reason
+PASS Nonpositive nu addressable setting
+PASS Zero cl InputErr
+PASS Zero cl clear reason
+PASS Zero cl addressable setting
+PASS Gorsky ignores unused Strut fields
+PASS None reads no concrete fields
+PASS L-section effective thickness
+PASS L-section exact inward area

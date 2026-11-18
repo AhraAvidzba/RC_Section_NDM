@@ -29,8 +29,8 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
         If IsArray(values) Then barRows = barRows + UBound(values, 1)
     Next result
     ReDim bars(1 To barRows + 1, 1 To TORSION_BAR_COLUMNS)
-    bars(1, 1) = "LoadCase": bars(1, 2) = "Rebar": bars(1, 3) = "F_T, " & units.OutputForceUnit
-    bars(1, 4) = "l_i, " & units.OutputLengthUnit
+    bars(1, 1) = "LoadCase": bars(1, 2) = "Rebar": bars(1, 3) = "Грань"
+    bars(1, 4) = "F_T, " & units.OutputForceUnit: bars(1, 5) = "l_i, " & units.OutputLengthUnit
     barRow = 1
     For Each result In results
         row = row + 1: summary = result.Summary
@@ -42,8 +42,9 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
             For i = 1 To UBound(values, 1)
                 barRow = barRow + 1
                 bars(barRow, 1) = values(i, 1): bars(barRow, 2) = values(i, 2)
-                bars(barRow, 3) = Abs(units.InternalForceToOutput(CDbl(values(i, 3))))
-                bars(barRow, 4) = units.InternalLengthToOutput(CDbl(values(i, 4)))
+                bars(barRow, 3) = values(i, 3)
+                bars(barRow, 4) = Abs(units.InternalForceToOutput(CDbl(values(i, 4))))
+                bars(barRow, 5) = units.InternalLengthToOutput(CDbl(values(i, 5)))
             Next i
         End If
     Next result
@@ -64,20 +65,20 @@ Private Function TorsionSummaryOutputValue(ByVal value As Variant, ByVal column 
     If Not IsNumeric(value) Then Exit Function
     Select Case column
         Case 3, 26: TorsionSummaryOutputValue = units.InternalMomentMagnitudeToOutput(CDbl(value))
-        Case 4, 9, 10, 16: TorsionSummaryOutputValue = units.InternalAreaToOutput(CDbl(value))
+        Case 4, 9, 10, 16, 40: TorsionSummaryOutputValue = units.InternalAreaToOutput(CDbl(value))
         Case 5, 17, 23, 37: TorsionSummaryOutputValue = units.InternalLengthToOutput(CDbl(value))
         Case 7: TorsionSummaryOutputValue = Abs(units.InternalForceToOutput(CDbl(value))) / units.InternalLengthToOutput(1#)
         Case 8: TorsionSummaryOutputValue = Abs(units.InternalForceToOutput(CDbl(value)))
         Case 32: TorsionSummaryOutputValue = Sgn(CDbl(value)) * Abs(units.InternalForceToOutput(CDbl(value))) ' Положительное усилие блока NMT обозначает растяжение.
-        Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34: TorsionSummaryOutputValue = units.InternalStressToOutput(CDbl(value))
+        Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34, 41: TorsionSummaryOutputValue = units.InternalStressToOutput(CDbl(value))
     End Select
 End Function
 
 ' Возвращает порядок логических колонок в подробной таблице. Нули —
 ' отдельный промежуток и нагрузки из готовой общей сводки, а не новые расчёты.
 Public Function DisplayColumns() As Variant
-    DisplayColumns = Array(1, 39, 38, 0, 0, 0, 3, 0, 2, 37, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, _
-        16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36)
+    DisplayColumns = Array(1, 39, 38, 0, 0, 0, 3, 0, 2, 37, 4, 5, 6, 7, 8, 9, 10, 11, 43, 12, 13, 14, 15, _
+        16, 17, 18, 19, 20, 21, 22, 23, 40, 41, 42, 24, 25, 26, 27, 28, 29, 44, 30, 31, 32, 33, 34, 35, 36)
 End Function
 
 ' Заполняет только самостоятельную таблицу после устойчивости и нижнюю
@@ -96,10 +97,13 @@ Public Function RestoreSummary(ByVal workbook As Object, ByVal source As Object,
     End If
     Dim data As Variant, headers As Variant, bars As Variant, summary As Variant, display() As Variant, map As Variant
     data = source.Table(TORSION_POST_DATA_KEY): bars = source.Table(TORSION_BAR_DATA_KEY)
+    Dim restorePlacement As Boolean: restorePlacement = UBound(data, 2) = 39 Or UBound(bars, 2) < TORSION_BAR_COLUMNS
     headers = TorsionHeadersForSource(source)
     ValidateSnapshotTableShape TORSION_POST_DATA_KEY, data
+    data = TorsionDataForDisplay(data)
     ValidateSnapshotTableShape TORSION_BAR_DATA_KEY, bars
     bars = TorsionBarsWithLengths(bars, data, headers)
+    If restorePlacement Then FillSavedPlacementNames source, data, bars
     If source.HasTable("Summary") Then
         Dim writer As New CBatchResultWriter: summary = writer.SummaryValuesForDisplay(source)
     End If
@@ -179,10 +183,11 @@ Private Function TorsionBarsWithLengths(ByRef bars As Variant, ByRef data As Var
     Dim result() As Variant, row As Long, column As Long, key As String
     ReDim result(1 To UBound(bars, 1), 1 To TORSION_BAR_COLUMNS)
     For row = 1 To UBound(bars, 1)
-        For column = 1 To 3: result(row, column) = bars(row, column): Next column
+        For column = 1 To 2: result(row, column) = bars(row, column): Next column
+        result(row, 4) = bars(row, 3)
     Next row
     Dim label As String: label = CStr(headers(4, 12))
-    result(1, 4) = "l_i, " & Trim$(Mid$(label, InStr(1, label, ",", vbBinaryCompare) + 1))
+    result(1, 3) = "Грань": result(1, 5) = "l_i, " & Trim$(Mid$(label, InStr(1, label, ",", vbBinaryCompare) + 1))
     Dim factors As Object: Set factors = CreateObject("Scripting.Dictionary")
     factors.CompareMode = vbTextCompare
     For row = 1 To UBound(data, 1)
@@ -193,11 +198,61 @@ Private Function TorsionBarsWithLengths(ByRef bars As Variant, ByRef data As Var
     Next row
     For row = 2 To UBound(bars, 1)
         key = CStr(bars(row, 1))
-        If Not factors.Exists(key) Then Err.Raise 5, TypeName(Me), _
-            "Не удалось определить длину участка арматуры: в сохранённом сочетании " & key & " отсутствуют положительные поток q или котангенс угла раскосов."
-        result(row, 4) = CDbl(bars(row, 3)) / CDbl(factors(key))
+        If UBound(bars, 2) = 4 Then
+            result(row, 5) = bars(row, 4)
+        Else
+            If Not factors.Exists(key) Then Err.Raise 5, TypeName(Me), _
+                "Не удалось определить длину участка арматуры: в сохранённом сочетании " & key & " отсутствуют положительные поток q или котангенс угла раскосов."
+            result(row, 5) = CDbl(bars(row, 3)) / CDbl(factors(key))
+        End If
     Next row
     TorsionBarsWithLengths = result
+End Function
+
+' В форматах без сохранённых подписей читает их из общей геометрии по точному ElementID.
+' Для текущих матриц подписи уже принадлежат расчёту, поэтому геометрия повторно не читается.
+Private Sub FillSavedPlacementNames(ByVal source As Object, ByRef data As Variant, ByRef bars As Variant)
+    If Not source.HasTable("rngNDMSectionGeometry") Then Exit Sub
+    Dim geometry As Variant: geometry = source.Table("rngNDMSectionGeometry")
+    Dim column As Long, idColumn As Long, commentColumn As Long, row As Long
+    For column = 1 To UBound(geometry, 2)
+        If CStr(geometry(1, column)) = "ElementID" Then idColumn = column
+        If CStr(geometry(1, column)) = "Comment" Then commentColumn = column
+    Next column
+    If idColumn = 0 Or commentColumn = 0 Then Exit Sub
+    Dim names As Object: Set names = CreateObject("Scripting.Dictionary"): names.CompareMode = vbBinaryCompare
+    For row = 2 To UBound(geometry, 1)
+        names(CStr(geometry(row, idColumn))) = CStr(geometry(row, commentColumn))
+    Next row
+    Dim key As String
+    For row = 1 To UBound(data, 1)
+        key = CStr(data(row, 11)): If names.Exists(key) Then data(row, 43) = names(key)
+        key = CStr(data(row, 29)): If names.Exists(key) Then data(row, 44) = names(key)
+    Next row
+    For row = 2 To UBound(bars, 1)
+        key = CStr(bars(row, 2)): If names.Exists(key) Then bars(row, 3) = names(key)
+    Next row
+End Sub
+
+' Извлекает единицы из сохранённой короткой подписи; текущие единицы Config не участвуют.
+Private Function HeaderUnit(ByVal label As Variant) As String
+    Dim comma As Long: comma = InStrRev(CStr(label), ",", -1, vbBinaryCompare) ' В индексе обозначения также может быть запятая, например sigma_T,max.
+    If comma > 0 Then HeaderUnit = Trim$(Mid$(CStr(label), comma + 1))
+End Function
+
+' Читает конкретный контракт из 39 колонок без выдуманных параметров EC2.
+' Сохранённые усилия и статусы не меняются; происхождение проверки Strut поясняется явно.
+Private Function TorsionDataForDisplay(ByRef data As Variant) As Variant
+    If UBound(data, 2) = TORSION_POST_COLUMNS Then TorsionDataForDisplay = data: Exit Function
+    Dim output() As Variant, row As Long, column As Long
+    ReDim output(1 To UBound(data, 1), 1 To TORSION_POST_COLUMNS)
+    For row = 1 To UBound(data, 1)
+        For column = 1 To UBound(data, 2): output(row, column) = data(row, column): Next column
+        If CStr(output(row, 22)) = "Strut" Then
+            output(row, 39) = CStr(output(row, 39)) & " Снимок TorsionPost.Data из 39 колонок: сопротивление раскоса задано как коэффициент * R_b; A_k, f_cd и nu по EC2 не сохранены. Для проверки по источнику выполните расчёт повторно."
+        End If
+    Next row
+    TorsionDataForDisplay = output
 End Function
 
 ' Требует одноячеечный якорь собственной книги на Results.
@@ -264,21 +319,23 @@ Private Sub FormatTorsionDetailed(ByVal target As Object, ByVal rows As Long)
     target.Cells(1, 2).Resize(4, 1).Merge
     target.Cells(1, 3).Resize(4, 1).Merge
     target.Cells(1, 4).Resize(2, 4).Merge
-    target.Cells(1, 9).Resize(1, 35).Merge
-    target.Cells(2, 9).Resize(1, 14).Merge
-    target.Cells(2, 23).Resize(1, 6).Merge
-    target.Cells(2, 29).Resize(1, 7).Merge
-    target.Cells(2, 36).Resize(1, 8).Merge
-    target.Cells(3, 4).Resize(1, 40).Font.Bold = False
-    target.Cells(3, 4).Resize(1, 40).HorizontalAlignment = -4131
+    target.Cells(1, 9).Resize(1, TORSION_POST_DISPLAY_COLUMNS - 8).Merge
+    target.Cells(2, 9).Resize(1, 15).Merge
+    target.Cells(2, 24).Resize(1, 6).Merge
+    target.Cells(2, 30).Resize(1, 10).Merge
+    target.Cells(2, 40).Resize(1, 9).Merge
+    target.Cells(3, 4).Resize(1, TORSION_POST_DISPLAY_COLUMNS - 3).Font.Bold = False
+    target.Cells(3, 4).Resize(1, TORSION_POST_DISPLAY_COLUMNS - 3).HorizontalAlignment = -4131
     target.Rows(3).WrapText = False: target.Rows(4).WrapText = False
     target.Cells(5, 1).Resize(rows, 3).NumberFormat = "@"
     target.Cells(5, 2).Resize(rows, 1).HorizontalAlignment = -4131
+    target.Cells(5, 19).Resize(rows, 1).HorizontalAlignment = -4131
+    target.Cells(5, 41).Resize(rows, 1).HorizontalAlignment = -4131
     Dim column As Variant, row As Long
-    For Each column In Array(11, 16, 17, 23): target.Cells(5, column).Resize(rows, 1).NumberFormat = "0.000000": Next column
+    For Each column In Array(11, 16, 17, 24, 32): target.Cells(5, column).Resize(rows, 1).NumberFormat = "0.000000": Next column
     target.Cells(5, 14).Resize(rows, 1).NumberFormat = "0.00E+00" ' Три значащие цифры сохраняют порядок малых потоков и помещаются в заданную ширину.
     For row = 5 To rows + 4
-        For Each column In Array(3, 22, 28, 35, 43)
+        For Each column In Array(3, 23, 29, 39, 48)
             If Len(CStr(target.Cells(row, column).Value2)) > 0 Then ApplyStatusFill target.Cells(row, column), CStr(target.Cells(row, column).Value2)
         Next column
     Next row
@@ -310,14 +367,26 @@ Private Sub WriteTorsionBarForces(ByVal anchor As Object, ByRef bars As Variant,
         .HorizontalAlignment = -4108: .WrapText = False
     End With
     anchor.Offset(-2, -2).Resize(1, TORSION_BAR_COLUMNS + 2).Interior.Color = RGB(189, 215, 238)
-    If count > 1 Then anchor.Offset(1, 2).Resize(count - 1, 1).NumberFormat = "0.000000"
-    If count > 1 Then anchor.Offset(1, 3).Resize(count - 1, 1).NumberFormat = "0.000"
+    If count > 1 Then anchor.Offset(1, 3).Resize(count - 1, 1).NumberFormat = "0.000000"
+    If count > 1 Then anchor.Offset(1, 2).Resize(count - 1, 1).HorizontalAlignment = -4131
+    If count > 1 Then anchor.Offset(1, 4).Resize(count - 1, 1).NumberFormat = "0.000"
 End Sub
 
 ' Строит шапку по единицам сохранённого снимка, не по текущему Config.
 Private Function TorsionHeadersForSource(ByVal source As Object) As Variant
     Dim saved As Variant: saved = source.Table(TORSION_POST_HEADERS_KEY)
     If UBound(saved, 2) = TORSION_POST_DISPLAY_COLUMNS Then TorsionHeadersForSource = saved: Exit Function
+    If UBound(saved, 2) = 43 Then
+        Dim logical(1 To 4, 1 To TORSION_POST_COLUMNS) As Variant, oldMap As Variant, c As Long, r As Long
+        oldMap = Array(1, 39, 38, 0, 0, 0, 3, 0, 2, 37, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, _
+            16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36)
+        For c = 9 To 43
+            For r = 3 To 4: logical(r, oldMap(c - 1)) = saved(r, c): Next r
+        Next c
+        TorsionHeadersForSource = ReorderedTorsionHeaders(logical, HeaderUnit(saved(4, 12)), HeaderUnit(saved(4, 11)), _
+            HeaderUnit(saved(4, 4)), HeaderUnit(saved(4, 7)), HeaderUnit(saved(4, 19)))
+        Exit Function
+    End If
     Dim props As Variant: props = source.Table("rngNDMSectionProperties")
     Dim i As Long, key As String, lengthUnit As String, areaUnit As String, forceUnit As String, momentUnit As String, stressUnit As String
     For i = 2 To UBound(props, 1)
@@ -340,25 +409,32 @@ Public Function SummaryHeaders(ByVal units As CUnitSystem) As Variant
     SummaryHeaders = ReorderedTorsionHeaders(logical, units.OutputLengthUnit, units.OutputAreaUnit, units.OutputForceUnit, units.OutputMomentUnit, units.OutputStressUnit)
 End Function
 
-' Преобразует подписи 39-колоночной матрицы в 43 колонки вывода.
+' Размещает логические подписи в самостоятельной подробной таблице вывода.
 Private Function ReorderedTorsionHeaders(ByRef logical As Variant, ByVal lengthUnit As String, ByVal areaUnit As String, _
         ByVal forceUnit As String, ByVal momentUnit As String, ByVal stressUnit As String) As Variant
     Dim output(1 To 4, 1 To TORSION_POST_DISPLAY_COLUMNS) As Variant, map As Variant, column As Long
     map = DisplayColumns()
     For column = 9 To TORSION_POST_DISPLAY_COLUMNS
-        output(3, column) = logical(3, map(column - 1))
-        output(4, column) = logical(4, map(column - 1))
+        If map(column - 1) <= UBound(logical, 2) Then
+            output(3, column) = logical(3, map(column - 1))
+            output(4, column) = logical(4, map(column - 1))
+        End If
     Next column
     output(1, 1) = "Combination ID": output(1, 2) = "ResultComment": output(1, 3) = "общий статус"
     output(1, 4) = "нагрузки в точке приложения"
     output(1, 9) = "Приближённая постпроверка T (кручение) и продольной арматуры NMT"
-    output(2, 9) = "T — продольная арматура": output(2, 23) = "T — хомут": output(2, 29) = "T — бетон"
-    output(2, 36) = "NMT — сумма напряжений продольной арматуры"
+    output(2, 9) = "T — продольная арматура": output(2, 24) = "T — хомут": output(2, 30) = "T — бетон"
+    output(2, 40) = "NMT — сумма напряжений продольной арматуры"
     output(3, 4) = "Исходная продольная сила": output(3, 5) = "Исходный изгибающий момент Mx"
     output(3, 6) = "Исходный изгибающий момент My": output(3, 7) = "Заданный крутящий момент"
     output(4, 4) = "N, " & forceUnit: output(4, 5) = "Mx, " & momentUnit
     output(4, 6) = "My, " & momentUnit: output(4, 7) = "T, " & momentUnit
-    output(4, 18) = "Rebar": output(4, 36) = "Rebar"
+    output(4, 18) = "Rebar": output(4, 40) = "Rebar"
+    output(3, 32) = "Площадь внутри средней линии бетонной стенки": output(4, 32) = "A_k, " & areaUnit
+    output(3, 33) = "Расчётная цилиндрическая прочность бетона": output(4, 33) = "f_cd, " & stressUnit
+    output(3, 34) = "Коэффициент снижения прочности раскоса": output(4, 34) = ChrW$(&H3BD)
+    output(3, 19) = "Сохранённая принадлежность стержня к грани": output(4, 19) = "Грань"
+    output(3, 41) = "Сохранённая принадлежность стержня к грани": output(4, 41) = "Грань"
     ReorderedTorsionHeaders = output
 End Function
 
@@ -428,7 +504,7 @@ Private Function LogicalTorsionHeaders(ByVal units As CUnitSystem) As Variant
     labels = Array("ID", "State", "T", "A_o", "u_o", "cot " & ChrW$(&H3B8), "q", "F_T", "A_s", _
         "A_s,req", "ID", deltaSigma & "_T,max", "R_s", "k", "статус", "A_sw", "s", sigma & "_sw", "R_sw", "k", "статус", _
         "метод", "t_eff", sigma & "_diag", "R_diag", "T_lim", "k", "статус", _
-        "ID", sigma & "_NM", deltaSigma & "_T", "F_NMT", sigma & "_NMT", "R_s", "k", "статус", "b_sel", "статус", "ResultComment")
+        "ID", sigma & "_NM", deltaSigma & "_T", "F_NMT", sigma & "_NMT", "R_s", "k", "статус", "b_sel", "статус", "ResultComment", "A_k", "f_cd", ChrW$(&H3BD), "Грань", "Грань")
     notes = Array("Номер сочетания", "Сохранённое состояние НДМ", "Заданный крутящий момент", _
         "Площадь внутри оси наружного хомута", "Периметр оси наружного хомута", "Котангенс угла бетонных раскосов", _
         "Касательный поток", "Суммарная продольная тяга", "Площадь отобранной продольной арматуры", _
@@ -440,7 +516,8 @@ Private Function LogicalTorsionHeaders(ByVal units As CUnitSystem) As Variant
         "Запас бетона", "Статус проверки бетона", "Определяющий стержень по сумме NMT", "Сохранённое напряжение НДМ", _
         "Растягивающая добавка от T", "Суммарное усилие стержня NMT", "Алгебраическая сумма напряжений NMT", _
         "Сопротивление продольной арматуры", "Запас по сумме напряжений NMT", "Статус проверки суммы NMT", _
-        "Ширина полосы отбора продольных стержней", "Итоговый статус постпроверки", "Причины отказов и предупреждения T и NMT")
+        "Ширина полосы отбора продольных стержней", "Итоговый статус постпроверки", "Причины отказов и предупреждения T и NMT", _
+        "Площадь внутри средней линии бетонной стенки", "Расчётная цилиндрическая прочность бетона", "Коэффициент снижения прочности раскоса", "Сохранённая принадлежность стержня к грани", "Сохранённая принадлежность стержня к грани")
     result(1, 1) = "Приближённая постпроверка T (кручение) и продольной арматуры NMT"
     For column = 1 To TORSION_POST_COLUMNS
         result(3, column) = notes(column - 1)
@@ -456,11 +533,11 @@ Private Function LogicalTorsionHeaders(ByVal units As CUnitSystem) As Variant
         unit = vbNullString
         Select Case column
             Case 3, 26: unit = units.OutputMomentUnit
-            Case 4, 9, 10, 16: unit = units.OutputAreaUnit
+            Case 4, 9, 10, 16, 40: unit = units.OutputAreaUnit
             Case 5, 17, 23, 37: unit = units.OutputLengthUnit
             Case 7: unit = units.OutputForceUnit & "/" & units.OutputLengthUnit
             Case 8, 32: unit = units.OutputForceUnit
-            Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34: unit = units.OutputStressUnit
+            Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34, 41: unit = units.OutputStressUnit
         End Select
         result(4, column) = labels(column - 1)
         If Len(unit) > 0 Then result(4, column) = result(4, column) & ", " & unit

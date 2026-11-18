@@ -30,7 +30,7 @@ function Set-ResultsSnapshotTitleBand {
     if($geometry.Worksheet.Name -ne $index.Worksheet.Name -or $geometry.Row -lt 3){throw 'Некорректное расположение полосы Results'}
     $right=[int]$index.Column+8
     $torsion=$Workbook.Names.Item('rngTorsionBarForces').RefersToRange
-    $right=[Math]::Max($right,[int]$torsion.Column+3)
+    $right=[Math]::Max($right,[int]$torsion.Column+4)
     $band=$geometry.Cells.Item(1,1).Offset(-2,0).Resize(1,$right-[int]$geometry.Column+1)
     $band.Interior.Color=15652797
 }

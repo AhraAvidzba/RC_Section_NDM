@@ -308,7 +308,7 @@ Private Sub TestProjectionCalculatorOutput(ByVal section As CSectionModel)
     Dim bars As Variant, row As Variant, i As Long, total As Double
     bars = result.Bars: row = result.Summary
     TestProjectionAssert "One output per physical bar", UBound(bars, 1) = section.RebarCount
-    For i = 1 To UBound(bars, 1): total = total + bars(i, 3): Next i
+    For i = 1 To UBound(bars, 1): total = total + bars(i, 4): Next i
     TestProjectionNear "Calculator force equilibrium", total, CDbl(row(1, 8))
     TestProjectionAssert "T available without projection error", CStr(row(1, 15)) = "OK" Or CStr(row(1, 15)) = "FAIL"
 End Sub

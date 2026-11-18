@@ -1,0 +1,9 @@
+﻿{
+    "Status":  "FULL_CLEAN_BUILD_FROM_SOURCES_PASS",
+    "CommitFreeGiB":  8.6721611022949219,
+    "RAMFreeGiB":  14.63824462890625,
+    "OwnAbsent":  false,
+    "SHA256":  "11E830117BEA51F5951AB9F724D51DF340CBDA7FB4445733EF06EA4F2DE4AF72",
+    "FormulaImages":  106,
+    "OwnForced":  true
+}

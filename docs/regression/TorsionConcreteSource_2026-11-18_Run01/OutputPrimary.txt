@@ -1,0 +1,118 @@
+﻿TorsionPostOutput: Passed=117; Failed=0
+PASS Output has no warning
+PASS Output cell preserved 1
+PASS Data cell unmerged 1
+PASS Output cell preserved 2
+PASS Data cell unmerged 2
+PASS Output cell preserved 3
+PASS Data cell unmerged 3
+PASS Data cell unmerged 4
+PASS Data cell unmerged 5
+PASS Data cell unmerged 6
+PASS Output cell preserved 7
+PASS Data cell unmerged 7
+PASS Data cell unmerged 8
+PASS Output cell preserved 9
+PASS Data cell unmerged 9
+PASS Output cell preserved 10
+PASS Data cell unmerged 10
+PASS Output cell preserved 11
+PASS Data cell unmerged 11
+PASS Output cell preserved 12
+PASS Data cell unmerged 12
+PASS Output cell preserved 13
+PASS Data cell unmerged 13
+PASS Output cell preserved 14
+PASS Data cell unmerged 14
+PASS Output cell preserved 15
+PASS Data cell unmerged 15
+PASS Output cell preserved 16
+PASS Data cell unmerged 16
+PASS Output cell preserved 17
+PASS Data cell unmerged 17
+PASS Output cell preserved 18
+PASS Data cell unmerged 18
+PASS Output cell preserved 19
+PASS Data cell unmerged 19
+PASS Output cell preserved 20
+PASS Data cell unmerged 20
+PASS Output cell preserved 21
+PASS Data cell unmerged 21
+PASS Output cell preserved 22
+PASS Data cell unmerged 22
+PASS Output cell preserved 23
+PASS Data cell unmerged 23
+PASS Output cell preserved 24
+PASS Data cell unmerged 24
+PASS Output cell preserved 25
+PASS Data cell unmerged 25
+PASS Output cell preserved 26
+PASS Data cell unmerged 26
+PASS Output cell preserved 27
+PASS Data cell unmerged 27
+PASS Output cell preserved 28
+PASS Data cell unmerged 28
+PASS Output cell preserved 29
+PASS Data cell unmerged 29
+PASS Output cell preserved 30
+PASS Data cell unmerged 30
+PASS Output cell preserved 31
+PASS Data cell unmerged 31
+PASS Output cell preserved 32
+PASS Data cell unmerged 32
+PASS Output cell preserved 33
+PASS Data cell unmerged 33
+PASS Output cell preserved 34
+PASS Data cell unmerged 34
+PASS Output cell preserved 35
+PASS Data cell unmerged 35
+PASS Output cell preserved 36
+PASS Data cell unmerged 36
+PASS Output cell preserved 37
+PASS Data cell unmerged 37
+PASS Output cell preserved 38
+PASS Data cell unmerged 38
+PASS Output cell preserved 39
+PASS Data cell unmerged 39
+PASS Output cell preserved 40
+PASS Data cell unmerged 40
+PASS Output cell preserved 41
+PASS Data cell unmerged 41
+PASS Output cell preserved 42
+PASS Data cell unmerged 42
+PASS Output cell preserved 43
+PASS Data cell unmerged 43
+PASS Output cell preserved 44
+PASS Data cell unmerged 44
+PASS Output cell preserved 45
+PASS Data cell unmerged 45
+PASS Output cell preserved 46
+PASS Data cell unmerged 46
+PASS Output cell preserved 47
+PASS Data cell unmerged 47
+PASS Output cell preserved 48
+PASS Data cell unmerged 48
+PASS Group title stays in one row
+PASS ID has text format
+PASS Flow has three significant digits
+PASS Flow fits preserved column width
+PASS Small hoop area is visible
+PASS Russian notes for result columns
+PASS Header glyphs have no question marks
+PASS Moment unit follows short label
+PASS Area unit follows short label
+PASS Greek stress and inline unit
+PASS Notes use peer alignment
+PASS Short labels do not wrap
+PASS Rebar labels
+PASS Band is in longitudinal subgroup
+PASS Detailed name remains one cell
+PASS Bar name remains one cell
+PASS Bar data has no border
+PASS Torsion concrete status in summary
+PASS NMT steel status in summary
+PASS Hoop status in summary
+PASS NM status and reason unchanged
+PASS Hoop reserve in summary
+PASS Summary restore preserves detailed title
+PASS Stability clear preserves torsion data

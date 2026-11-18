@@ -1,0 +1,44 @@
+﻿{
+    "Status":  "HEADER_LINKS_SAVED_REOPENED_PASS",
+    "Own":  {
+                "PID":  14552,
+                "UTCticks":  639306318115946244,
+                "QuitRequested":  true,
+                "Absent":  true,
+                "Forced":  false
+            },
+    "Imported":  [
+
+                 ],
+    "SourceSHA256":  "11E830117BEA51F5951AB9F724D51DF340CBDA7FB4445733EF06EA4F2DE4AF72",
+    "HeaderLinks":  [
+                        {
+                            "Range":  "rngTorsionSettings",
+                            "Address":  "$H$102",
+                            "Target":  "A732",
+                            "Title":  "Расчет на кручение"
+                        },
+                        {
+                            "Range":  "rngTorsionCombinations",
+                            "Address":  "$U$69",
+                            "Target":  "A732",
+                            "Title":  "Расчет на кручение"
+                        }
+                    ],
+    "CollapsedHeaderNavigation":  [
+                                      {
+                                          "Range":  "rngTorsionSettings",
+                                          "Title":  "Расчет на кручение",
+                                          "SectionExpanded":  true,
+                                          "ScrollRow":  732,
+                                          "SavedReopened":  true
+                                      },
+                                      {
+                                          "Range":  "rngTorsionCombinations",
+                                          "Title":  "Расчет на кручение",
+                                          "SectionExpanded":  true,
+                                          "ScrollRow":  732,
+                                          "SavedReopened":  true
+                                      }
+                                  ]
+}

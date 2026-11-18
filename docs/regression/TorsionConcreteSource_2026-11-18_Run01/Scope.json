@@ -1,0 +1,54 @@
+{
+  "Status": "PASS",
+  "SHA256": "4277cf7c41aca81c9b6b5560231cf142e195a46593f26b8d75766bd9bf2cbfad",
+  "InputsPreserved": {
+    "Сечения": true,
+    "Расчет": true
+  },
+  "CalculationVisualAndPrint": {
+    "cols": true,
+    "sheetFormatPr": true,
+    "mergeCells": true,
+    "pageMargins": true,
+    "pageSetup": true,
+    "printOptions": true,
+    "PrintNames": true,
+    "Rows": true,
+    "CellStyles": true
+  },
+  "ExistingTorsionSettingsPreserved": true,
+  "NMResultsPreserved": true,
+  "Changes": {
+    "Config": 186,
+    "Results": 211
+  },
+  "BarOrder": [
+    "LoadCase",
+    "Rebar",
+    "Грань",
+    "F_T",
+    "l_i"
+  ],
+  "FormulaImagesVisuallyChecked": [
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102
+  ],
+  "BarRowsVerified": 37,
+  "DistinctFaceCount": 11,
+  "PlotAnnotationSettingsPreserved": true,
+  "EveryBarUsesItsSavedGeometryFace": true,
+  "OriginalBarForcesAndLengthsPreserved": true
+}
