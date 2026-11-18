@@ -1,0 +1,47 @@
+{
+  "Status": "NATIVE_SOURCE_LINKS_PASS",
+  "Own": {
+    "PID": 13300,
+    "StartTicksUTC": 639306000630687341,
+    "QuitRequested": true,
+    "Absent": true,
+    "Forced": true
+  },
+  "Books": [
+    {
+      "File": "UpdatedUser.xlsm",
+      "PlainReferences": [
+        "A741",
+        "A762",
+        "A796",
+        "A811",
+        "A929",
+        "B1969",
+        "B1990"
+      ],
+      "UnchangedACILinks": 7,
+      "NativeOpen": true,
+      "Arial9BlackNotUnderlined": true
+    },
+    {
+      "File": "UpdatedClean.xlsm",
+      "PlainReferences": [
+        "A741",
+        "A762",
+        "A796",
+        "A811",
+        "A929",
+        "B1969",
+        "B1990"
+      ],
+      "UnchangedACILinks": 7,
+      "NativeOpen": true,
+      "Arial9BlackNotUnderlined": true
+    }
+  ],
+  "Builder": {
+    "GorskyPlain": true,
+    "ACIHyperlink": true,
+    "PublicPageAnchor": true
+  }
+}

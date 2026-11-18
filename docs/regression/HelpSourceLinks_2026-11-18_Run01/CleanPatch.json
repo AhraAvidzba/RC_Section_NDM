@@ -1,0 +1,50 @@
+{
+  "Status": "SOURCE_LINKS_UPDATED",
+  "OriginalSHA256": "69119A1F87BBAD7E591E0887067A2069D18B00A87DD198E1C46FFB1067ECDAF1",
+  "OutputSHA256": "F6EF88B3F2F5E8BB9AAD887021790C108C7EDFA285026FA2DB9C08A229583A0F",
+  "DisabledSources": [
+    "Горский (1961)"
+  ],
+  "RemovedHyperlinks": [
+    {
+      "Cell": "A741",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Источник: Горский (1961). §4, формулы (17)–(19), стр.27; стр.25 предоставленного PDF"
+    },
+    {
+      "Cell": "A762",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Источник: Горский (1961). §4, формулы (17)–(19), стр.27; PDF: стр.25"
+    },
+    {
+      "Cell": "A796",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Источник: Горский (1961). §3, формула (13), стр.23; стр.21 предоставленного PDF"
+    },
+    {
+      "Cell": "A811",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Источник: Горский (1961). Ограничения раздельного суммирования: стр.24; PDF: стр.22"
+    },
+    {
+      "Cell": "A929",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Горский (1961)"
+    },
+    {
+      "Cell": "B1969",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Источник: Горский (1961)"
+    },
+    {
+      "Cell": "B1990",
+      "RemovedURL": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Text": "Источник: Горский (1961)"
+    }
+  ],
+  "ChangedParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/styles.xml"
+  ],
+  "VBAAndOtherPartsByteIdentical": true
+}

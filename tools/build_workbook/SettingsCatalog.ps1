@@ -655,10 +655,11 @@ function Get-HelpMethodSource {
     return $found[0]
 }
 
-# Возвращает публичный адрес источника: справка распространяется в составе
-# одной книги и не зависит от расположения локальных PDF проекта.
+# Возвращает необязательный публичный адрес источника. При отсутствии
+# доступной ссылки справка содержит только библиографическое описание.
 function Get-HelpSourceAddress {
     param([object]$Source)
+    if(-not $Source.PSObject.Properties['url'] -or [string]::IsNullOrWhiteSpace([string]$Source.url)){return ''}
     $address=[string]$Source.url
     if($address -notmatch '^https?://'){throw ('Источник справки требует публичную интернет-ссылку: '+[string]$Source.caption)}
     return $address
@@ -688,7 +689,7 @@ function Add-GuideSourceReference {
         $address+='#page='+$PdfPage
     }
     $next=Add-GuideParagraph $Sheet $Row $caption
-    Set-HelpSourceHyperlink $Sheet.Cells.Item($Row,1) $address
+    if($address){Set-HelpSourceHyperlink $Sheet.Cells.Item($Row,1) $address}
     return $next
 }
 
@@ -2367,7 +2368,8 @@ function Add-SettingsInstructions {
         $row++
         $InstructionSheet.Cells.Item($row, 1).Value2 = [string]$manualSource.caption
         $InstructionSheet.Cells.Item($row, 2).Value2 = [string]$manualSource.description
-        if($manualSource.PSObject.Properties['url']){Set-HelpSourceHyperlink $InstructionSheet.Cells.Item($row,1) (Get-HelpSourceAddress $manualSource)}
+        $sourceAddress=Get-HelpSourceAddress $manualSource
+        if($sourceAddress){Set-HelpSourceHyperlink $InstructionSheet.Cells.Item($row,1) $sourceAddress}
     }
     $row += 2
     $InstructionSheet.Cells.Item($row, 1).Value2 = "Словарь пользовательских статусов"
@@ -2432,8 +2434,11 @@ function Add-SettingsInstructions {
         if ($item.ContainsKey("Sources")) {
             foreach($sourceID in $item.Sources){
                 $source=Get-HelpMethodSource ([string]$sourceID)
-                $InstructionSheet.Cells.Item($row,2).Value2='Источник: '+[string]$source.caption+' — открыть документ'
-                Set-HelpSourceHyperlink $InstructionSheet.Cells.Item($row,2) (Get-HelpSourceAddress $source)
+                $sourceAddress=Get-HelpSourceAddress $source
+                $sourceCaption='Источник: '+[string]$source.caption
+                if($sourceAddress){$sourceCaption+=' — открыть документ'}
+                $InstructionSheet.Cells.Item($row,2).Value2=$sourceCaption
+                if($sourceAddress){Set-HelpSourceHyperlink $InstructionSheet.Cells.Item($row,2) $sourceAddress}
                 $row++
             }
         }
