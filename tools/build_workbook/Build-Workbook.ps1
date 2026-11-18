@@ -643,6 +643,7 @@ try {
     Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
     Initialize-SectionIllustrationSelectorName $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    Set-PlotRebarScaleDefaultFormula $workbook
     $excel.Run("'" + $workbook.Name + "'!modTorsionPostTables.InitializeTorsionPostOutput")
     Set-ResultsSnapshotTitleBand $workbook
     Set-SectionIllustrationSelector $workbook

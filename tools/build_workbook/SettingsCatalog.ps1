@@ -544,6 +544,7 @@ function Get-SettingsInstructionCatalog {
         $item=@{Key=$key;Title=[string]$definition.Title;Lines=$lines}
         if ($definition.PSObject.Properties['RelatedKey']) { $item['RelatedKey']=[string]$definition.RelatedKey }
         if ($definition.PSObject.Properties['Tables']) { $item['Tables']=@($definition.Tables) }
+        if ($definition.PSObject.Properties['Sources']) { $item['Sources']=@($definition.Sources) }
         $items.Add($item) | Out-Null
     }
     foreach ($key in $expected) { if (-not $seen.ContainsKey($key)) { throw "Новая настройка требует описания справки: $key" } }
@@ -643,6 +644,52 @@ function Add-GuideParagraph {
         $currentRow++
     }
     return $currentRow
+}
+
+# Возвращает единственный методический источник из общего каталога справки.
+function Get-HelpMethodSource {
+    param([string]$SourceID)
+    $sources=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'NormativeHelpSources.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $found=@($sources | Where-Object { $_.PSObject.Properties['id'] -and $_.id -ceq $SourceID })
+    if($found.Count -ne 1){throw ('Нет единственного источника справки: '+$SourceID)}
+    return $found[0]
+}
+
+# Возвращает публичный адрес источника: справка распространяется в составе
+# одной книги и не зависит от расположения локальных PDF проекта.
+function Get-HelpSourceAddress {
+    param([object]$Source)
+    $address=[string]$Source.url
+    if($address -notmatch '^https?://'){throw ('Источник справки требует публичную интернет-ссылку: '+[string]$Source.caption)}
+    return $address
+}
+
+# Добавляет внешнюю ссылку тем же шрифтом и с тем же синим подчёркиванием,
+# что и другие ссылки справки; размер строки определяется общим форматированием.
+function Set-HelpSourceHyperlink {
+    param([object]$Cell,[string]$Address)
+    $text=[string]$Cell.Value2
+    $Cell.Hyperlinks.Delete()
+    $area=$Cell.MergeArea
+    if($Address -notmatch '^https?://'){throw 'В справке допускаются только публичные интернет-ссылки источников.'}
+    $area.NumberFormatLocal=[string]$Cell.Worksheet.Application.International(26) # xlGeneralFormatName: формат берётся из локали текущего Excel.
+    $area.Formula='=HYPERLINK("'+$Address.Replace('"','""')+'","'+$text.Replace('"','""')+'")'
+    $area.Font.Name='Arial';$area.Font.Size=9;$area.Font.Color=16711680;$area.Font.Underline=2
+}
+
+# Даёт интернет-ссылку и точное место в источнике; локальные адреса PDF
+# в распространяемую книгу не записываются.
+function Add-GuideSourceReference {
+    param([object]$Sheet,[int]$Row,[string]$SourceID,[string]$Locator,[int]$PdfPage=0)
+    $source=Get-HelpMethodSource $SourceID
+    $address=Get-HelpSourceAddress $source
+    $caption='Источник: '+[string]$source.caption+'. '+$Locator
+    if($PdfPage -gt 0 -and $address -match '^https?://.*\.pdf$'){
+        $address+='#page='+$PdfPage
+    }
+    $next=Add-GuideParagraph $Sheet $Row $caption
+    Set-HelpSourceHyperlink $Sheet.Cells.Item($Row,1) $address
+    return $next
 }
 
 # Удаляет только картинки с префиксом NDMHelpFormula_ перед заполнением справки.
@@ -2313,13 +2360,14 @@ function Add-SettingsInstructions {
     $row = Add-GuideTitle $InstructionSheet $row "Справка по настройкам Config и листа «Сечения»" 16
     $configSettingsBodyStartRow = $row
 
-    $InstructionSheet.Cells.Item($row, 1).Value2 = "Нормативные источники"
+    $InstructionSheet.Cells.Item($row, 1).Value2 = "Нормативные и методические источники"
     $InstructionSheet.Cells.Item($row, 1).Font.Bold = $true
     $normativeSources=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'NormativeHelpSources.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($manualSource in $normativeSources) {
         $row++
         $InstructionSheet.Cells.Item($row, 1).Value2 = [string]$manualSource.caption
         $InstructionSheet.Cells.Item($row, 2).Value2 = [string]$manualSource.description
+        if($manualSource.PSObject.Properties['url']){Set-HelpSourceHyperlink $InstructionSheet.Cells.Item($row,1) (Get-HelpSourceAddress $manualSource)}
     }
     $row += 2
     $InstructionSheet.Cells.Item($row, 1).Value2 = "Словарь пользовательских статусов"
@@ -2380,6 +2428,14 @@ function Add-SettingsInstructions {
             }
             $row++
             $lineNumber++
+        }
+        if ($item.ContainsKey("Sources")) {
+            foreach($sourceID in $item.Sources){
+                $source=Get-HelpMethodSource ([string]$sourceID)
+                $InstructionSheet.Cells.Item($row,2).Value2='Источник: '+[string]$source.caption+' — открыть документ'
+                Set-HelpSourceHyperlink $InstructionSheet.Cells.Item($row,2) (Get-HelpSourceAddress $source)
+                $row++
+            }
         }
         if ($item.ContainsKey("Tables")) {
             foreach ($table in $item.Tables) {
@@ -3810,10 +3866,25 @@ function Apply-SystemSettingsLayout {
     $rebarScaleAddress = '=Config!' + $rebarScaleCell.Address()
     try { $Workbook.Names.Item('rngPlotRebarScale').RefersTo = $rebarScaleAddress }
     catch { $Workbook.Names.Add('rngPlotRebarScale', $rebarScaleAddress) | Out-Null }
-    # Results!V157:W160 хранит четыре границы сечения и единицы сохранённого снимка.
+    # Начальная сетка Results создаётся в строке 156; окончательные адреса
+    # формулы закрепляет Set-PlotRebarScaleDefaultFormula после размещения таблиц.
     $rebarScaleCell.Formula = '=IFERROR(IF(COUNT(Results!$V$157:$V$160)=4,MAX(1,MAX(Results!$V$158-Results!$V$157,Results!$V$160-Results!$V$159)*CHOOSE(MATCH(Results!$W$157,{"mm","cm","m"},0),1,10,1000)/1000),1),1)'
 
     return @{ Settings = $settingsRange }
+}
+
+# Задаёт редактируемую формулу масштаба только при сборке, после размещения
+# таблиц по WorkbookLayout. В рабочем расчёте пользовательская формула не меняется.
+function Set-PlotRebarScaleDefaultFormula {
+    param([object]$Workbook)
+    $anchor=$Workbook.Names.Item('rngNDMSectionProperties').RefersToRange
+    $target=$Workbook.Names.Item('rngPlotRebarScale').RefersToRange
+    $sheet="'"+$anchor.Worksheet.Name.Replace("'","''")+"'!"
+    $bounds=$sheet+$anchor.Offset(1,3).Resize(4,1).Address()
+    $minimumX=$sheet+$anchor.Offset(1,3).Address();$maximumX=$sheet+$anchor.Offset(2,3).Address()
+    $minimumY=$sheet+$anchor.Offset(3,3).Address();$maximumY=$sheet+$anchor.Offset(4,3).Address()
+    $unit=$sheet+$anchor.Offset(1,4).Address()
+    $target.Formula='=IFERROR(IF(COUNT('+$bounds+')=4,MAX(1,MAX('+$maximumX+'-'+$minimumX+','+$maximumY+'-'+$minimumY+')*CHOOSE(MATCH('+$unit+','+'{"mm","cm","m"},0),1,10,1000)/1000),1),1)'
 }
 
 # Назначает списки только применимым полям аннотаций; содержимое служебных ячеек не определяет применимость.

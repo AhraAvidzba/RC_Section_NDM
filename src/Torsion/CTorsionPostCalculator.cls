@@ -24,6 +24,7 @@ Private mCoefficients() As Double
 Private mCotangent As Double, mHoopArea As Double, mConcreteLimit As Double, mThickness As Double
 Private mOuterArea As Double
 Private mFailureSettingKeys As String
+Private mConcreteFailureStatus As String, mConcreteFailureReason As String, mConcreteFailureKeys As String ' Отказ бетонной проверки не меняет подготовку продольной арматуры и хомута.
 
 ' Готовит геометрию один раз для всех сочетаний T. Входы уже приведены к
 ' внутренним единицам и проверены адаптером; геометрическая применимость здесь.
@@ -37,6 +38,7 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     mP.SteelResistance = parameters.SteelResistance: mP.HoopResistance = parameters.HoopResistance
     mP.BarBand = parameters.BarBand: mP.StrutAngle = parameters.StrutAngle
     mP.ConcreteMethod = parameters.ConcreteMethod: mP.WallThickness = parameters.WallThickness
+    mP.ConcreteInputInvalid = parameters.ConcreteInputInvalid
     mP.ConcreteResistance = parameters.ConcreteResistance: mP.ConcreteEfficiency = parameters.ConcreteEfficiency
     mP.GorskyCoefficient = parameters.GorskyCoefficient
     mFailureSettingKeys = "Torsion.HoopAxisOffset,Torsion.HoopDiameter"
@@ -57,7 +59,7 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     Next i
     mCotangent = 1# / Tan(mP.StrutAngle * 4# * Atn(1#) / 180#)
     mHoopArea = 4# * Atn(1#) * mP.HoopDiameter ^ 2 / 4#
-    PrepareConcreteLimit domain
+    PrepareConcreteCheck domain
 End Sub
 
 ' Считает T независимо от физических пределов готового состояния. При
@@ -111,7 +113,9 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     row(1, 18) = hoopStress: row(1, 19) = mP.HoopResistance
     row(1, 20) = mP.HoopResistance / hoopStress: row(1, 21) = TorsionPostCheckStatus(CDbl(row(1, 20)))
     row(1, 22) = mP.ConcreteMethod
-    If mP.ConcreteMethod = "None" Then
+    If Len(mConcreteFailureStatus) > 0 Then
+        row(1, 28) = mConcreteFailureStatus
+    ElseIf mP.ConcreteMethod = "None" Then
         row(1, 28) = policy.NotApplicable
     Else
         row(1, 23) = mThickness
@@ -138,9 +142,14 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
             row(1, 39) = "Сохранённые напряжения выбранного состояния недоступны для сложения с добавкой T."
         End If
     End If
+    Dim stateFailureReason As String: stateFailureReason = CStr(row(1, 39))
+    If Len(mConcreteFailureReason) > 0 Then
+        If Len(CStr(row(1, 39))) > 0 Then row(1, 39) = CStr(row(1, 39)) & vbCrLf
+        row(1, 39) = CStr(row(1, 39)) & mConcreteFailureReason
+    End If
     row(1, 37) = mP.BarBand: row(1, 38) = policy.OK
     ApplyOverallStatus row, policy
-    Dim result As New CTorsionPostResult: result.Initialize row, bars
+    Dim result As New CTorsionPostResult: result.Initialize row, bars, stateFailureReason
     Set Calculate = result
 End Function
 
@@ -148,13 +157,47 @@ End Function
 Private Sub ApplyOverallStatus(ByRef row As Variant, ByVal policy As CResultStatusPolicy)
     Dim column As Variant
     For Each column In Array(21, 28, 36)
+        If CStr(row(1, column)) = policy.CalcErr Then row(1, 38) = policy.CalcErr: Exit Sub
+    Next column
+    For Each column In Array(21, 28, 36)
+        If CStr(row(1, column)) = policy.InputErr Then row(1, 38) = policy.InputErr: Exit Sub
+    Next column
+    For Each column In Array(21, 28, 36)
         If CStr(row(1, column)) = policy.Fail Then row(1, 38) = policy.Fail: Exit Sub
     Next column
     If CStr(row(1, 36)) = policy.NotApplicable Then row(1, 38) = policy.NotApplicable
 End Sub
 
+' Изолирует только подготовку бетонного предела. Общая геометрия, тяга и
+' хомут к этому моменту готовы; неизвестный внутренний сбой сохраняет CalcErr.
+Private Sub PrepareConcreteCheck(ByVal domain As CConcreteRegion)
+    Dim policy As New CResultStatusPolicy
+    If mP.ConcreteInputInvalid Then
+        mConcreteFailureStatus = policy.InputErr
+        mConcreteFailureReason = "Проверка бетона недоступна: исправьте её исходные данные."
+        Exit Sub
+    End If
+    On Error GoTo Failed
+    PrepareConcreteLimit domain
+    Exit Sub
+Failed:
+    mConcreteFailureReason = Err.Description: mConcreteFailureKeys = mFailureSettingKeys
+    If Err.Number = vbObjectError + 5670 Then mConcreteFailureStatus = policy.InputErr Else mConcreteFailureStatus = policy.CalcErr
+    mThickness = 0#: mConcreteLimit = 0# ' Неподтверждённый предел не попадает в вывод как действительное число.
+End Sub
+
+' Возвращает причину независимого отказа бетонной проверки без адресов Excel.
+Public Property Get ConcreteFailureReason() As String
+    ConcreteFailureReason = mConcreteFailureReason
+End Property
+
+' Возвращает ключи параметров только отказавшей бетонной проверки.
+Public Property Get ConcreteFailureSettingKeys() As String
+    ConcreteFailureSettingKeys = mConcreteFailureKeys
+End Property
+
 ' Готовит независимый предел бетонных раскосов или эмпирический предел
-' сплошного прямоугольника по Горскому, §3, формула (13), стр.24 книги.
+' сплошного прямоугольника по Горскому, §3, формула (13), стр.23 книги.
 Private Sub PrepareConcreteLimit(ByVal domain As CConcreteRegion)
     mFailureSettingKeys = "Torsion.ConcreteMethod"
     Select Case mP.ConcreteMethod
@@ -165,7 +208,7 @@ Private Sub PrepareConcreteLimit(ByVal domain As CConcreteRegion)
             mThickness = mP.WallThickness
             If mThickness = 0# Then mThickness = 2# * mOuter.MinimumClearCover + mP.HoopDiameter
             If mThickness > 2# * mOuter.MinimumClearCover + mP.HoopDiameter + GEOM_BOUNDARY_TOLERANCE Then _
-                ModelError "Torsion.WallThickness превышает толщину бетонной полосы вокруг оси хомута. Уменьшите толщину или проверьте защитный слой."
+                ModelError "Torsion.WallThickness превышает толщину располагаемой бетонной полосы вокруг оси хомута. Уменьшите толщину или выберите 0 для автоматического определения. Эта настройка не задаёт полосу отбора арматуры; для неё используется Torsion.BarBand."
             mConcreteLimit = 2# * mOuter.EnclosedArea * mThickness * mP.ConcreteEfficiency * mP.ConcreteResistance / _
                 (mCotangent + 1# / mCotangent)
         Case "GorskyRectangle"

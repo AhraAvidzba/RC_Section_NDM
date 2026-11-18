@@ -26,6 +26,7 @@ Public Type TTorsionPostParameters
     BarBand As Double
     StrutAngle As Double
     ConcreteMethod As String
+    ConcreteInputInvalid As Boolean ' Ошибка только исходных данных проверки бетона; арматура и хомут рассчитываются независимо.
     WallThickness As Double
     ConcreteResistance As Double
     ConcreteEfficiency As Double

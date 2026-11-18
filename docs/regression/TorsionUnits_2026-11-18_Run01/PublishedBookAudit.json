@@ -1,0 +1,268 @@
+{
+  "CandidateSHA256": "e6e5aa4c95121d909f7972f12dabfb3d6ebf4a0bb2bb626f33980636653f46da",
+  "CalculationVisual": {
+    "cols": true,
+    "sheetFormatPr": true,
+    "mergeCells": true,
+    "pageMargins": true,
+    "pageSetup": true,
+    "printOptions": true,
+    "Rows": true,
+    "Styles": true,
+    "PrintNames": true
+  },
+  "SameValuesAndFormulas": {
+    "Расчет": true,
+    "Сечения": true,
+    "Results": true
+  },
+  "ConfigChanges": {
+    "K110": {
+      "Before": "Ширина полосы от оси наружного хомута, >0. Стержни, ближайшие к отверстию, исключаются.",
+      "After": "Полоса отбора стержней внутрь от оси наружного хомута, >0; габаритом сечения не ограничена. Арматура у отверстия исключается."
+    },
+    "J113": {
+      "Before": "mm",
+      "After": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    "J110": {
+      "Before": "mm",
+      "After": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    "J107": {
+      "Before": "mm",
+      "After": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    "J106": {
+      "Before": "mm",
+      "After": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    "J105": {
+      "Before": "mm",
+      "After": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    "K113": {
+      "Before": "Для Strut: толщина полосы; 0 — удвоенный минимальный зазор от оси хомута до бетона; не больше него.",
+      "After": "Толщина бетона для раскосов Strut: 0 — авто, >0 — заданная толщина. Отбор стержней задаёт Torsion.BarBand."
+    },
+    "K112": {
+      "Before": "Strut — раскосы; GorskyRectangle — сплошной прямоугольник; None — без проверки бетона.",
+      "After": "Метод бетона: Strut, GorskyRectangle или None. Ошибка выбора блокирует только бетон; арматура и хомут рассчитываются."
+    }
+  },
+  "UnexpectedConfigChanges": {},
+  "UnitFormulas": [
+    {
+      "Key": "Torsion.HoopAxisOffset",
+      "Cell": "J105",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.HoopDiameter",
+      "Cell": "J106",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.HoopSpacing",
+      "Cell": "J107",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.Rs",
+      "Cell": "J108",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Stress\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.Rsw",
+      "Cell": "J109",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Stress\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.BarBand",
+      "Cell": "J110",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.WallThickness",
+      "Cell": "J113",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.Rb",
+      "Cell": "J114",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Stress\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    }
+  ],
+  "SettingHelpLinks": [
+    {
+      "Key": "Torsion.StateType",
+      "Target": "'Справка'!A1927",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.HoopAxisOffset",
+      "Target": "'Справка'!A1931",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.HoopDiameter",
+      "Target": "'Справка'!A1935",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.HoopSpacing",
+      "Target": "'Справка'!A1939",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.Rs",
+      "Target": "'Справка'!A1943",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.Rsw",
+      "Target": "'Справка'!A1947",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.BarBand",
+      "Target": "'Справка'!A1950",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.StrutAngle",
+      "Target": "'Справка'!A1956",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.ConcreteMethod",
+      "Target": "'Справка'!A1960",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.WallThickness",
+      "Target": "'Справка'!A1971",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.Rb",
+      "Target": "'Справка'!A1979",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.ConcreteEfficiency",
+      "Target": "'Справка'!A1983",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.GorskyCoefficient",
+      "Target": "'Справка'!A1987",
+      "OwnDescription": true
+    }
+  ],
+  "PublicSourceLinks": [
+    {
+      "Cell": "A740",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=10",
+      "Public": true
+    },
+    {
+      "Cell": "A741",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    },
+    {
+      "Cell": "A761",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=10",
+      "Public": true
+    },
+    {
+      "Cell": "A762",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    },
+    {
+      "Cell": "A787",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=11",
+      "Public": true
+    },
+    {
+      "Cell": "A796",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    },
+    {
+      "Cell": "A810",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=10",
+      "Public": true
+    },
+    {
+      "Cell": "A811",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    },
+    {
+      "Cell": "A928",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
+      "Public": true
+    },
+    {
+      "Cell": "A929",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    },
+    {
+      "Cell": "B1968",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
+      "Public": true
+    },
+    {
+      "Cell": "B1969",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    },
+    {
+      "Cell": "B1977",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
+      "Public": true
+    },
+    {
+      "Cell": "B1990",
+      "Address": "https://search.library.nung.edu.ua/DocDescription?doc_id=402325",
+      "Public": true
+    }
+  ],
+  "ProjectPDFCopies": [
+    {
+      "File": "ACI-445.1R-12-Torsion.pdf",
+      "Exists": true,
+      "SHA256": "ae01a31825815b6d7db9e863df81033ef743a2908485fb1550577ce6c1e8ea20"
+    },
+    {
+      "File": "Gorsky-1961-Torsion.pdf",
+      "Exists": true,
+      "SHA256": "475aa2e3c846299d915b4166598b8989c206d3e66882e2fdc3e42d365620c154"
+    }
+  ],
+  "LocalPDFPathsInHelp": [],
+  "ExternalPublisherLinks": [],
+  "HelpCellErrors": [],
+  "ExternalExcelParts": [],
+  "HelpContent": {
+    "WallThicknessExplainsConcrete": true,
+    "BarBandUnbounded": true,
+    "MethodsExplained": true,
+    "PartialFailureExplained": true,
+    "EqualityExplained": true,
+    "ACIReferenced": true,
+    "GorskyReferenced": true
+  }
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "PDF": "01_Settings.pdf",
+    "PNG": "01_Settings.png",
+    "Size": [
+      2187,
+      888
+    ],
+    "SHA256": "f86b06f34d5df0cdbd01b2bccb841430750c178caae802ad18eb1ecf1c13734f",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "02_MethodInputs.pdf",
+    "PNG": "02_MethodInputs.png",
+    "Size": [
+      3272,
+      1441
+    ],
+    "SHA256": "77b215c93aca6397119787e90c7a7c59b54612bb410efcdd18405269170c197a",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "03_Strut.pdf",
+    "PNG": "03_Strut.png",
+    "Size": [
+      3272,
+      762
+    ],
+    "SHA256": "30d3b89d75a343ac516b62dddefe009f14e89da600432e0121c827e888e99948",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "04_Methods.pdf",
+    "PNG": "04_Methods.png",
+    "Size": [
+      3272,
+      1062
+    ],
+    "SHA256": "f1b1d5f29bf3da6f962c28f1be966336f724ec77be3aee43db84a0b387302f74",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "05_WallParameter.pdf",
+    "PNG": "05_WallParameter.png",
+    "Size": [
+      4651,
+      807
+    ],
+    "SHA256": "cf34a7935bf977e1143eaf2cccd09ddf1c77d90c7b8e9835ef247b18a67dacf0",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  }
+]

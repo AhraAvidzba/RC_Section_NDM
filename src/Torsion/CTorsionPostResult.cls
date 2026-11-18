@@ -16,10 +16,12 @@ Option Explicit
 ' адаптер вывода. Ни результат сочетания, ни сохранённое НДС не изменяются.
 
 Private mSummary As Variant, mBars As Variant
+Private mStateFailureReason As String ' Отдельная причина недоступности НДС для адресной диагностики его настройки.
 
 ' Принимает полностью подготовленные матрицы одного сочетания.
-Friend Sub Initialize(ByRef summary As Variant, ByRef bars As Variant)
+Friend Sub Initialize(ByRef summary As Variant, ByRef bars As Variant, Optional ByVal stateFailureReason As String = "")
     mSummary = summary: mBars = bars
+    mStateFailureReason = stateFailureReason
 End Sub
 
 ' Создаёт адресуемую ошибку отдельного T-этапа без изменения метаданных НДМ.
@@ -46,4 +48,9 @@ End Property
 ' Отдаёт копию детализации; Empty означает отсутствие пригодного распределения.
 Public Property Get Bars() As Variant
     Bars = mBars
+End Property
+
+' Возвращает причину отсутствия сохранённого НДС отдельно от ошибки проверки бетона.
+Public Property Get StateFailureReason() As String
+    StateFailureReason = mStateFailureReason
 End Property

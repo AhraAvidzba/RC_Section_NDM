@@ -125,6 +125,168 @@ Private Function TestTorsionHollow() As CSectionModel
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет независимость доступных результатов от отказа только бетонной проверки.
+Public Function RunTorsionPostAvailabilityTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    Dim section As CSectionModel: Set section = TestTorsionRectangle()
+    Dim p As TTorsionPostParameters
+    p.StateName = "StrengthState": p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
+    p.SteelResistance = 270#: p.HoopResistance = 170#: p.BarBand = 25#: p.StrutAngle = 45#
+    p.ConcreteMethod = "None": p.ConcreteResistance = 10#: p.ConcreteEfficiency = 0.5
+    Dim state As CSectionStateResult: Set state = TestTorsionReadyPlane(section, 0.0005, True)
+    Dim calculator As New CTorsionPostCalculator, result As CTorsionPostResult, expected As Variant, actual As Variant
+    calculator.Prepare section, p: Set result = calculator.Calculate("Base", 3900000#, state): expected = result.Summary
+    Dim scenario As Variant, column As Long
+    For Each scenario In Array("UnknownMethod", "ExcessiveThickness", "InvalidConcreteInput")
+        p.ConcreteMethod = "Strut": p.WallThickness = 0#: p.ConcreteInputInvalid = False
+        Select Case CStr(scenario)
+            Case "UnknownMethod": p.ConcreteMethod = "Unknown"
+            Case "ExcessiveThickness": p.WallThickness = 1000#
+            Case "InvalidConcreteInput": p.ConcreteInputInvalid = True
+        End Select
+        Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
+        Set result = calculator.Calculate(CStr(scenario), 3900000#, state): actual = result.Summary
+        TestTorsionAssert CStr(scenario) & " concrete InputErr", CStr(actual(1, 28)) = "InputErr"
+        TestTorsionAssert CStr(scenario) & " overall cannot be OK", CStr(actual(1, 38)) = "InputErr"
+        TestTorsionAssert CStr(scenario) & " no invented concrete limit", IsEmpty(actual(1, 26)) And IsEmpty(actual(1, 27))
+        TestTorsionAssert CStr(scenario) & " reason retained", Len(CStr(actual(1, 39))) > 0
+        For column = 3 To 21
+            TestTorsionAssert CStr(scenario) & " T result " & column, CStr(actual(1, column)) = CStr(expected(1, column))
+        Next column
+        For column = 29 To 37
+            TestTorsionAssert CStr(scenario) & " NMT result " & column, CStr(actual(1, column)) = CStr(expected(1, column))
+        Next column
+    Next scenario
+    p.ConcreteMethod = "None": p.ConcreteInputInvalid = False: p.WallThickness = 0#
+    p.HoopDiameter = Sqr(400# / (4# * Atn(1#))): p.HoopSpacing = 210#: p.HoopResistance = p.SteelResistance
+    Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
+    Set result = calculator.Calculate("EqualSteelDensities45", 3900000#, state): actual = result.Summary
+    TestTorsionNear "Equal density at 45 gives same longitudinal and hoop stress", actual(1, 12), CDbl(actual(1, 18))
+    TestTorsionNear "Equal resistance gives same T reserve", actual(1, 14), CDbl(actual(1, 20))
+    p.BarBand = 1000000#
+    Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
+    Set result = calculator.Calculate("WideBand", 3900000#, state): actual = result.Summary
+    TestTorsionNear "Band wider than maximum dimension keeps eligible area", actual(1, 9), expected(1, 9)
+    TestTorsionNear "Wide band keeps longitudinal force", actual(1, 8), expected(1, 8)
+    TestTorsionAssert "Wide band is not clamped to geometry", CDbl(actual(1, 37)) = 1000000#
+    Set section = TestTorsionHollow(): p.ConcreteMethod = "GorskyRectangle": p.GorskyCoefficient = 0.07
+    Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
+    Set result = calculator.Calculate("WrongShapeForGorsky", 3900000#, Nothing): actual = result.Summary
+    TestTorsionAssert "Gorsky shape error only in concrete", CStr(actual(1, 28)) = "InputErr" And CStr(actual(1, 15)) <> "InputErr" And CStr(actual(1, 21)) <> "InputErr"
+    Dim bars As Variant: bars = result.Bars
+    TestTorsionAssert "Hollow wide band keeps outer row rule", UBound(bars, 1) = 4
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    RunTorsionPostAvailabilityTests = "TorsionPostAvailability: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет живые формулы единиц и одинаковые результаты при физически
+' равном вводе в mm/MPa/tf*m и m/kPa/kN*m. Исходный ввод восстанавливается.
+Public Function RunTorsionPostUnitTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    Dim unitRange As Object, settingsRange As Object, torqueRange As Object, loads As Object
+    Dim originalUnits As Variant, originalSettings As Variant, originalTorques As Variant, originalLoads As Variant
+    On Error GoTo Failed
+    Set unitRange = ThisWorkbook.Names("rngUnitSettings").RefersToRange
+    Set settingsRange = ThisWorkbook.Names("rngTorsionSettings").RefersToRange
+    Set torqueRange = ThisWorkbook.Names("rngTorsionCombinations").RefersToRange
+    Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
+    originalUnits = unitRange.Formula: originalSettings = settingsRange.Formula
+    originalTorques = torqueRange.Formula: originalLoads = loads.Formula
+    TestTorsionSetTableValue unitRange, "Length", "mm": TestTorsionSetTableValue unitRange, "Stress", "MPa"
+    TestTorsionSetTableValue unitRange, "Moment", "tf*m"
+    TestTorsionSetTableValue settingsRange, "Torsion.StateType", "StrengthState"
+    TestTorsionSetTableValue settingsRange, "Torsion.HoopAxisOffset", 29#
+    TestTorsionSetTableValue settingsRange, "Torsion.HoopDiameter", 8#
+    TestTorsionSetTableValue settingsRange, "Torsion.HoopSpacing", 100#
+    TestTorsionSetTableValue settingsRange, "Torsion.Rs", 350#
+    TestTorsionSetTableValue settingsRange, "Torsion.Rsw", 300#
+    TestTorsionSetTableValue settingsRange, "Torsion.BarBand", 40#
+    TestTorsionSetTableValue settingsRange, "Torsion.StrutAngle", 45#
+    TestTorsionSetTableValue settingsRange, "Torsion.ConcreteMethod", "Strut"
+    TestTorsionSetTableValue settingsRange, "Torsion.WallThickness", 0#
+    TestTorsionSetTableValue settingsRange, "Torsion.Rb", 17.5
+    TestTorsionSetTableValue settingsRange, "Torsion.ConcreteEfficiency", 0.5
+    TestTorsionSetTableValue settingsRange, "Torsion.GorskyCoefficient", 0.07
+    torqueRange.Offset(1, 0).Resize(torqueRange.Rows.Count - 1, 2).ClearContents
+    loads.Cells(2, 1).Value2 = "Units01": torqueRange.Cells(2, 1).Value2 = "Units01": torqueRange.Cells(2, 2).Value2 = 1#
+    Application.Calculate
+    Dim reader As New CSystemSettingsReader, units As New CUnitSystem, batch As New CBatchSectionCalculator
+    reader.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings reader
+    Dim baselineSnapshot As New CCalculationSnapshot, convertedSnapshot As New CCalculationSnapshot, warning As String, expected As Variant, actual As Variant
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, baselineSnapshot)
+    expected = baselineSnapshot.Table(TORSION_POST_DATA_KEY)
+    TestTorsionAssert "Baseline concrete calculation available", CStr(expected(1, 28)) = "OK" Or CStr(expected(1, 28)) = "FAIL"
+    Dim row As Long, key As String, unitKind As String
+    For row = 2 To settingsRange.Rows.Count
+        key = CStr(settingsRange.Cells(row, 1).Value2): unitKind = TestTorsionUnitCategory(key)
+        If Len(unitKind) > 0 Then TestTorsionAssert key & " unit is formula", CBool(settingsRange.Cells(row, 3).HasFormula)
+    Next row
+    TestTorsionSetTableValue unitRange, "Length", "m": TestTorsionSetTableValue unitRange, "Stress", "kPa"
+    TestTorsionSetTableValue unitRange, "Moment", "kN*m"
+    TestTorsionSetTableValue settingsRange, "Torsion.HoopAxisOffset", 0.029
+    TestTorsionSetTableValue settingsRange, "Torsion.HoopDiameter", 0.008
+    TestTorsionSetTableValue settingsRange, "Torsion.HoopSpacing", 0.1
+    TestTorsionSetTableValue settingsRange, "Torsion.BarBand", 0.04
+    TestTorsionSetTableValue settingsRange, "Torsion.Rs", 350000#
+    TestTorsionSetTableValue settingsRange, "Torsion.Rsw", 300000#
+    TestTorsionSetTableValue settingsRange, "Torsion.Rb", 17500#
+    torqueRange.Cells(2, 2).Value2 = 9.80665
+    Application.Calculate
+    For row = 2 To settingsRange.Rows.Count
+        key = CStr(settingsRange.Cells(row, 1).Value2): unitKind = TestTorsionUnitCategory(key)
+        If Len(unitKind) > 0 Then TestTorsionAssert key & " follows INPUT", CStr(settingsRange.Cells(row, 3).Value2) = IIf(unitKind = "Length", "m", "kPa")
+    Next row
+    TestTorsionAssert "Torque header follows INPUT Moment", CStr(torqueRange.Cells(1, 2).Value2) = "T, kN*m"
+    Set reader = New CSystemSettingsReader: Set units = New CUnitSystem
+    reader.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings reader
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, convertedSnapshot)
+    actual = convertedSnapshot.Table(TORSION_POST_DATA_KEY)
+    Dim column As Long
+    For column = 1 To TORSION_POST_COLUMNS
+        If IsNumeric(expected(1, column)) And Not IsEmpty(expected(1, column)) Then
+            TestTorsionNear "Equivalent INPUT column " & column, actual(1, column), CDbl(expected(1, column))
+        Else
+            TestTorsionAssert "Equivalent INPUT column " & column, CStr(actual(1, column)) = CStr(expected(1, column))
+        End If
+    Next column
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    On Error Resume Next
+    If IsArray(originalUnits) Then unitRange.Formula = originalUnits
+    If IsArray(originalSettings) Then settingsRange.Formula = originalSettings
+    If IsArray(originalTorques) Then torqueRange.Formula = originalTorques
+    If IsArray(originalLoads) Then loads.Formula = originalLoads
+    Application.Calculate
+    RunTorsionPostUnitTests = "TorsionPostUnits: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет значение по ключу только в отдельной нативной проверочной копии.
+Private Sub TestTorsionSetTableValue(ByVal table As Object, ByVal key As String, ByVal value As Variant)
+    Dim row As Long
+    For row = 2 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = key Then table.Cells(row, 2).Value2 = value: Exit Sub
+    Next row
+    Err.Raise 5, , "Test setting not found: " & key
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выделяет физические категории единиц без привязки к адресам листа.
+Private Function TestTorsionUnitCategory(ByVal key As String) As String
+    Select Case key
+        Case "Torsion.HoopAxisOffset", "Torsion.HoopDiameter", "Torsion.HoopSpacing", "Torsion.BarBand", "Torsion.WallThickness": TestTorsionUnitCategory = "Length"
+        Case "Torsion.Rs", "Torsion.Rsw", "Torsion.Rb": TestTorsionUnitCategory = "Stress"
+    End Select
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет сохранность каждой ячейки после объединения и выравнивания шапок;
 ' запускать только в собственной тестовой копии с корректной структурой Results.
 Public Function RunTorsionPostOutputTests() As String
@@ -232,7 +394,7 @@ End Sub
 Public Function RunTorsionPostGuardTests() As String
     mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
     Dim originalRef As String, originalCell As Variant, originalID As Variant, originalTorque As Variant, originalTorqueID As Variant
-    Dim thickness As Object, originalThickness As Variant, originalLinked As Variant
+    Dim thickness As Object, originalThickness As Variant, originalLinked As Variant, methodCell As Object, originalMethod As Variant
     Dim loadRange As Object, torqueRange As Object, outputName As Object, sheet As Object
     On Error GoTo Failed
     Set outputName = ThisWorkbook.Names("rngTorsionSummaryAnchor"): originalRef = outputName.RefersTo
@@ -250,8 +412,10 @@ Public Function RunTorsionPostGuardTests() As String
     loadRange.Cells(2, 1).Value2 = "Guard01": torqueRange.Cells(2, 1).Value2 = "Guard01": torqueRange.Cells(2, 2).Value2 = 1#
     Dim table As Object, row As Long: Set table = ThisWorkbook.Names("rngTorsionSettings").RefersToRange
     For row = 2 To table.Rows.Count
-        If CStr(table.Cells(row, 1).Value2) = "Torsion.WallThickness" Then Set thickness = table.Cells(row, 2): Exit For
+        If CStr(table.Cells(row, 1).Value2) = "Torsion.WallThickness" Then Set thickness = table.Cells(row, 2)
+        If CStr(table.Cells(row, 1).Value2) = "Torsion.ConcreteMethod" Then Set methodCell = table.Cells(row, 2)
     Next row
+    originalMethod = methodCell.Formula: methodCell.Value2 = "Strut"
     originalThickness = thickness.Formula
     originalLinked = ThisWorkbook.Worksheets("Расчет").Range("ZZ2").Formula
     ThisWorkbook.Worksheets("Расчет").Range("ZZ2").Value2 = 1000#
@@ -265,7 +429,22 @@ Public Function RunTorsionPostGuardTests() As String
     TestTorsionAssert "Wall thickness key retained", InStr(1, CStr(data(1, 39)), "Torsion.WallThickness", vbBinaryCompare) > 0
     mTestLog = mTestLog & vbCrLf & "INFO wall diagnostic: " & CStr(data(1, 39))
     TestTorsionAssert "Wall thickness source chain retained", InStr(1, CStr(data(1, 39)), "ZZ2", vbBinaryCompare) > 0
+    TestTorsionAssert "Bad thickness preserves longitudinal output", IsNumeric(data(1, 8)) And CStr(data(1, 15)) <> "InputErr"
+    TestTorsionAssert "Bad thickness preserves hoop output", IsNumeric(data(1, 18)) And CStr(data(1, 21)) <> "InputErr"
     TestTorsionAssert "One clarification in row diagnostic", UBound(Split(CStr(data(1, 39)), "T (кручение)")) = 1
+    methodCell.Formula = "='Расчет'!ZZ2"
+    Set snapshot = New CCalculationSnapshot
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, snapshot)
+    data = snapshot.Table(TORSION_POST_DATA_KEY)
+    TestTorsionAssert "Unknown method blocks only concrete", CStr(data(1, 28)) = "InputErr" And CStr(data(1, 15)) <> "InputErr" And CStr(data(1, 21)) <> "InputErr"
+    TestTorsionAssert "Unknown method keeps source chain", InStr(1, CStr(data(1, 39)), "Torsion.ConcreteMethod", vbBinaryCompare) > 0 And InStr(1, CStr(data(1, 39)), "ZZ2", vbBinaryCompare) > 0
+    Dim barValues As Variant: barValues = snapshot.Table(TORSION_BAR_DATA_KEY)
+    TestTorsionAssert "Unknown method retains bar forces", UBound(barValues, 1) = 5
+    methodCell.Value2 = "None": thickness.Formula = "=1/0"
+    Set snapshot = New CCalculationSnapshot
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, snapshot)
+    data = snapshot.Table(TORSION_POST_DATA_KEY)
+    TestTorsionAssert "None does not read unused thickness error", CStr(data(1, 28)) = "N/A" And CStr(data(1, 15)) <> "InputErr" And InStr(1, CStr(data(1, 39)), "Torsion.WallThickness", vbBinaryCompare) = 0
     Dim message As String, formatted As String
     message = "Ошибка T (кручение). Причина T (кручение); проверьте T (кручение)."
     formatted = WorkbookDialogText(message)
@@ -280,6 +459,7 @@ Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
 Finished:
     On Error Resume Next
+    If Not methodCell Is Nothing Then methodCell.Formula = originalMethod
     If Len(originalRef) > 0 Then outputName.RefersTo = originalRef: sheet.Range("A49").Formula = originalCell
     If Not thickness Is Nothing Then thickness.Formula = originalThickness: ThisWorkbook.Worksheets("Расчет").Range("ZZ2").Formula = originalLinked
     If Not loadRange Is Nothing Then loadRange.Cells(2, 1).Formula = originalID

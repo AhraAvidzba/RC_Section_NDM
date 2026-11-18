@@ -1,0 +1,227 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASS_NOT_FULL_SUITE",
+  "Native": {
+    "UserCode": {
+      "Tests": {
+        "Math": {
+          "Passed": 44,
+          "Failed": 0,
+          "Primary": "UserCode_MathPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Availability": {
+          "Passed": 105,
+          "Failed": 0,
+          "Primary": "UserCode_AvailabilityPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Units": {
+          "Passed": 57,
+          "Failed": 0,
+          "Primary": "UserCode_UnitsPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Output": {
+          "Passed": 105,
+          "Failed": 0,
+          "Primary": "UserCode_OutputPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Guard": {
+          "Passed": 16,
+          "Failed": 0,
+          "Primary": "UserCode_GuardPrimary.txt",
+          "EntirePrimaryRead": true
+        }
+      },
+      "SourceModules": 190,
+      "SourceDifferences": [],
+      "OwnExcelClosed": true,
+      "TestedArtifactSHA256": "6B44F327BD4FF37530B63C8211497AD3220CB00804CEC557676456DCD760B29A",
+      "Total": 327,
+      "Lists": [
+        {
+          "Key": "Torsion.StateType",
+          "Address": "$I$104",
+          "Formula1": "StrengthState;CapacityState;PreCrackState;PostCrackState;CrackedState",
+          "NativeSeparator": ";",
+          "Accepted": [
+            "StrengthState",
+            "CapacityState",
+            "PreCrackState",
+            "PostCrackState",
+            "CrackedState"
+          ],
+          "InvalidRejected": true,
+          "JoinedRejected": true,
+          "UIItemsObserved": false,
+          "SavedReopenedAccepted": true
+        },
+        {
+          "Key": "Torsion.ConcreteMethod",
+          "Address": "$I$112",
+          "Formula1": "Strut;GorskyRectangle;None",
+          "NativeSeparator": ";",
+          "Accepted": [
+            "Strut",
+            "GorskyRectangle",
+            "None"
+          ],
+          "InvalidRejected": true,
+          "JoinedRejected": true,
+          "UIItemsObserved": false,
+          "SavedReopenedAccepted": true
+        }
+      ]
+    },
+    "CleanBuild": {
+      "Tests": {
+        "Math": {
+          "Passed": 44,
+          "Failed": 0,
+          "Primary": "CleanBuild_MathPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Availability": {
+          "Passed": 105,
+          "Failed": 0,
+          "Primary": "CleanBuild_AvailabilityPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Units": {
+          "Passed": 57,
+          "Failed": 0,
+          "Primary": "CleanBuild_UnitsPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Output": {
+          "Passed": 105,
+          "Failed": 0,
+          "Primary": "CleanBuild_OutputPrimary.txt",
+          "EntirePrimaryRead": true
+        },
+        "Guard": {
+          "Passed": 16,
+          "Failed": 0,
+          "Primary": "CleanBuild_GuardPrimary.txt",
+          "EntirePrimaryRead": true
+        }
+      },
+      "SourceModules": 190,
+      "SourceDifferences": [],
+      "OwnExcelClosed": true,
+      "TestedArtifactSHA256": "6B980304D6284DD41D2891FF49CE63611CF1A9058FA3D9BF24291383B5D1057E",
+      "Total": 327,
+      "Lists": [
+        {
+          "Key": "Torsion.StateType",
+          "Address": "$I$104",
+          "Formula1": "StrengthState;CapacityState;PreCrackState;PostCrackState;CrackedState",
+          "NativeSeparator": ";",
+          "Accepted": [
+            "StrengthState",
+            "CapacityState",
+            "PreCrackState",
+            "PostCrackState",
+            "CrackedState"
+          ],
+          "InvalidRejected": true,
+          "JoinedRejected": true,
+          "UIItemsObserved": false,
+          "SavedReopenedAccepted": true
+        },
+        {
+          "Key": "Torsion.ConcreteMethod",
+          "Address": "$I$112",
+          "Formula1": "Strut;GorskyRectangle;None",
+          "NativeSeparator": ";",
+          "Accepted": [
+            "Strut",
+            "GorskyRectangle",
+            "None"
+          ],
+          "InvalidRejected": true,
+          "JoinedRejected": true,
+          "UIItemsObserved": false,
+          "SavedReopenedAccepted": true
+        }
+      ]
+    }
+  },
+  "Workflow": {
+    "Checks": 40,
+    "Passed": 40,
+    "Primary": "WorkflowPrimary.json"
+  },
+  "UserBook": {
+    "SHA256": "E6E5AA4C95121D909F7972F12DABFB3D6EBF4A0BB2BB626F33980636653F46DA",
+    "ProtectedOriginalSHA256": "5E8D285797361A85F319A6FD5DAF4E21AB5AF120DB762FBBD5FE6B7F9122BBE1",
+    "ValuesFormulasCalcSectionsResultsUnchanged": true,
+    "CalculationAppearanceAndPrintPreserved": true,
+    "ConfigChanges": "5 Length unit formulas and 3 explanatory texts; Stress unit formulas already existed"
+  },
+  "CleanBuild": {
+    "SHA256": "69119A1F87BBAD7E591E0887067A2069D18B00A87DD198E1C46FFB1067ECDAF1",
+    "BuiltFromCurrentSource": true,
+    "SavedAndNativelyReopened": true,
+    "FinalCodeCompared": 190,
+    "BoundsScaleChecks": {
+      "Formula": "=IFERROR(IF(COUNT(Results!$V$193:$V$196)=4,MAX(1,MAX(Results!$V$194-Results!$V$193,Results!$V$196-Results!$V$195)*CHOOSE(MATCH(Results!$W$193,{\"mm\",\"cm\",\"m\"},0),1,10,1000)/1000),1),1)",
+      "FinalBounds": "$V$193:$V$196",
+      "HasFormula": true,
+      "At2000mm": 2,
+      "At2m": 2,
+      "At800mm": 1,
+      "OnlyTemporaryCopyEdited": true
+    }
+  },
+  "FinalUserBookCode": {
+    "ComparedSourceModules": 190,
+    "Differences": 0,
+    "NativeExport": "VBA_All_Code.txt",
+    "OwnExcelClosed": true
+  },
+  "StandaloneHelp": {
+    "PublicSourceLinks": 14,
+    "LocalPDFPaths": 0,
+    "ExternalExcelLinks": 0,
+    "OwnSettingTargets": 13,
+    "OutlineSections": 9
+  },
+  "VisualQA": {
+    "Inspected": [
+      "01_Settings.png",
+      "02_MethodInputs.png",
+      "03_Strut.png",
+      "04_Methods.png",
+      "05_WallParameter.png"
+    ],
+    "ActualNativeExcelExport": true,
+    "ChangedInputWidthsOrHeights": false,
+    "Notes": "Config comments retain fixed widths and no wrap; full explanations are in each own help target. Images were inspected locally, not delivered to user."
+  },
+  "Scope": {
+    "FullOnOffOrHourPlanRun": false,
+    "PerformanceClaim": false,
+    "PushAuthorized": false,
+    "TQModified": false
+  },
+  "PrivateTestDriverCorrections": [
+    "Local-path matcher excludes https URL suffix s:/",
+    "COM test setter uses explicit string/double assignments"
+  ],
+  "Sources": [
+    {
+      "File": "ACI-445.1R-12-Torsion.pdf",
+      "Bytes": 1252234,
+      "SHA256": "AE01A31825815B6D7DB9E863DF81033EF743A2908485FB1550577CE6C1E8EA20",
+      "SourceUnchanged": true
+    },
+    {
+      "File": "Gorsky-1961-Torsion.pdf",
+      "Bytes": 4580877,
+      "SHA256": "475AA2E3C846299D915B4166598B8989C206D3E66882E2FDC3E42D365620C154",
+      "SourceUnchanged": true
+    }
+  ]
+}

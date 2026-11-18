@@ -28,7 +28,7 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
     Dim dictionary As Object, requested As Object, results As New Collection
     Dim torsionWriter As New CTorsionSummaryWriter
     Dim data As Variant, main As Variant, identifier As String, row As Long
-    Dim result As CTorsionPostResult, calculator As CTorsionPostCalculator, preparationError As String
+    Dim result As CTorsionPostResult, calculator As CTorsionPostCalculator, preparationError As String, concreteInputError As String
     On Error GoTo TableFailed
     Set source = OptionalTorsionRange(workbook, "rngTorsionCombinations")
     If source Is Nothing Then Exit Function
@@ -55,7 +55,7 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
     For row = 2 To UBound(data, 1)
         If TorsionRowRequested(data(row, 1), data(row, 2)) Then
             Set result = ReadTorsionPostRow(workbook, section, batch, units, source, data, row, main, dictionary, requested, _
-                calculator, settings, preparationError)
+                calculator, settings, preparationError, concreteInputError)
             If Not result Is Nothing Then results.Add result
         End If
     Next row
@@ -93,7 +93,7 @@ End Function
 Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByVal source As Object, ByRef data As Variant, ByVal row As Long, ByRef main As Variant, _
         ByVal knownIDs As Object, ByVal requested As Object, ByRef calculator As CTorsionPostCalculator, _
-        ByRef settings As CSystemSettingsReader, ByRef preparationError As String) As CTorsionPostResult
+        ByRef settings As CSystemSettingsReader, ByRef preparationError As String, ByRef concreteInputError As String) As CTorsionPostResult
     Dim identifier As String, torque As Double, result As CTorsionPostResult, state As CSectionStateResult
     Dim column As Long: column = 1
     On Error GoTo Failed
@@ -108,7 +108,7 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     If Abs(torque) >= 1E+100 Then Err.Raise 5, , "Модуль T превышает допустимый числовой диапазон."
     If torque = 0# Then Exit Function ' Нулевая строка не читает параметры хомута и не запрашивает НДС.
     torque = Abs(units.InputMomentMxToInternal(torque)) ' Для независимой проверки используется модуль T; знаки изгиба не влияют на результат.
-    If calculator Is Nothing And Len(preparationError) = 0 Then PrepareTorsionPostCalculator workbook, section, units, calculator, settings, preparationError
+    If calculator Is Nothing And Len(preparationError) = 0 Then PrepareTorsionPostCalculator workbook, section, units, calculator, settings, preparationError, concreteInputError
     If Len(preparationError) > 0 Then Err.Raise 5, , preparationError
     Dim i As Long, stateName As String
     stateName = settings.GetRequiredString("Torsion.StateType")
@@ -121,11 +121,20 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     Set result = calculator.Calculate(identifier, torque, state)
     Dim values As Variant, bars As Variant, addressed As CTorsionPostResult
     values = result.Summary
-    If Len(CStr(values(1, 39))) > 0 Then
-        values(1, 39) = WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & settings.InputErrorMessage("Torsion.StateType", CStr(values(1, 39)), _
-            "Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания."), workbook)
+    Dim diagnostic As String, concreteDiagnostic As String
+    If Len(result.StateFailureReason) > 0 Then diagnostic = settings.InputErrorMessage("Torsion.StateType", result.StateFailureReason, _
+        "Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания.")
+    If Len(concreteInputError) > 0 Then
+        concreteDiagnostic = concreteInputError
+    ElseIf Len(calculator.ConcreteFailureReason) > 0 Then
+        concreteDiagnostic = TorsionPreparationDiagnostic(settings, calculator.ConcreteFailureSettingKeys, calculator.ConcreteFailureReason, _
+            "Проверьте параметры выбранного метода бетона. Продольная арматура и хомут рассчитаны независимо.")
+    End If
+    diagnostic = WorkbookMessageParagraph(diagnostic, concreteDiagnostic)
+    If Len(diagnostic) > 0 Then
+        values(1, 39) = WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & diagnostic, workbook)
         bars = result.Bars
-        Set addressed = New CTorsionPostResult: addressed.Initialize values, bars ' Адресная копия не меняет готовое НДС или неизменяемый результат вычислителя.
+        Set addressed = New CTorsionPostResult: addressed.Initialize values, bars, result.StateFailureReason ' Адресная копия не меняет готовое НДС или неизменяемый результат вычислителя.
         Set result = addressed
     End If
     Set ReadTorsionPostRow = result
@@ -143,7 +152,7 @@ End Function
 ' Подготавливает автономный reader и числовые настройки; неиспользуемые
 ' параметры отключённой проверки бетона не запрашиваются.
 Private Sub PrepareTorsionPostCalculator(ByVal workbook As Object, ByVal section As CSectionModel, ByVal units As CUnitSystem, _
-        ByRef calculator As CTorsionPostCalculator, ByRef settings As CSystemSettingsReader, ByRef failure As String)
+        ByRef calculator As CTorsionPostCalculator, ByRef settings As CSystemSettingsReader, ByRef failure As String, ByRef concreteInputError As String)
     Dim table As Object, p As TTorsionPostParameters
     On Error GoTo Failed
     Set table = OptionalTorsionRange(workbook, "rngTorsionSettings")
@@ -157,6 +166,24 @@ Private Sub PrepareTorsionPostCalculator(ByVal workbook As Object, ByVal section
     p.HoopResistance = units.InputStressToInternal(TorsionSettingNumber(settings, "Torsion.Rsw", 0#, True))
     p.BarBand = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.BarBand", 0#, True))
     p.StrutAngle = TorsionSettingNumber(settings, "Torsion.StrutAngle", 0#, True, 90#, True)
+    ReadTorsionConcreteParameters settings, units, p, concreteInputError
+    Set calculator = New CTorsionPostCalculator
+    calculator.Prepare section, p
+    Exit Sub
+Failed:
+    failure = Err.Description
+    If Not settings Is Nothing And Not calculator Is Nothing Then
+        failure = TorsionPreparationDiagnostic(settings, calculator.FailureSettingKeys, failure, "Проверьте параметры геометрии T.")
+    End If
+    Set calculator = Nothing
+End Sub
+
+' Читает только входы выбранной бетонной проверки из готового кэша reader.
+' Ошибка метода или его параметров блокирует только бетон; None не читает их.
+Private Sub ReadTorsionConcreteParameters(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByRef p As TTorsionPostParameters, ByRef failure As String)
+    On Error GoTo Failed
+    p.ConcreteMethod = settings.GetRequiredString("Torsion.ConcreteMethod")
     p.ConcreteMethod = settings.GetRequiredChoice("Torsion.ConcreteMethod", Array("Strut", "GorskyRectangle", "None"))
     If p.ConcreteMethod <> "None" Then p.ConcreteResistance = units.InputStressToInternal(TorsionSettingNumber(settings, "Torsion.Rb", 0#, True))
     If p.ConcreteMethod = "Strut" Then
@@ -165,26 +192,29 @@ Private Sub PrepareTorsionPostCalculator(ByVal workbook As Object, ByVal section
     ElseIf p.ConcreteMethod = "GorskyRectangle" Then
         p.GorskyCoefficient = TorsionSettingNumber(settings, "Torsion.GorskyCoefficient", 0#, True)
     End If
-    Set calculator = New CTorsionPostCalculator
-    calculator.Prepare section, p
     Exit Sub
 Failed:
-    failure = Err.Description
-    If Not settings Is Nothing And Not calculator Is Nothing Then
-        Dim key As Variant, primary As Boolean: primary = True
-        For Each key In Split(calculator.FailureSettingKeys, ",")
-            If Len(CStr(key)) > 0 Then
-                If primary Then
-                    failure = settings.InputErrorMessage(CStr(key), failure, "Проверьте параметры геометрии T.")
-                    primary = False
-                Else
-                    failure = failure & vbCrLf & settings.InputErrorMessage(CStr(key), "Связанный параметр геометрии T.", vbNullString)
-                End If
-            End If
-        Next key
-    End If
-    Set calculator = Nothing
+    failure = Err.Description: p.ConcreteInputInvalid = True
 End Sub
+
+' Привязывает ключи подготовки к фактическим адресам через общий reader;
+' строка причины не разбирается и адреса листов не зашиваются в алгоритм.
+Private Function TorsionPreparationDiagnostic(ByVal settings As CSystemSettingsReader, ByVal keys As String, _
+        ByVal reason As String, ByVal correction As String) As String
+    Dim key As Variant, primary As Boolean: primary = True
+    TorsionPreparationDiagnostic = reason
+    For Each key In Split(keys, ",")
+        If Len(CStr(key)) > 0 Then
+            If primary Then
+                TorsionPreparationDiagnostic = settings.InputErrorMessage(CStr(key), reason, correction)
+                primary = False
+            Else
+                TorsionPreparationDiagnostic = TorsionPreparationDiagnostic & vbCrLf & settings.InputErrorMessage(CStr(key), _
+                    "Связанный параметр выбранной проверки T.", vbNullString)
+            End If
+        End If
+    Next key
+End Function
 
 ' Проверяет конечное число и границы с адресной диагностикой общего reader.
 Private Function TorsionSettingNumber(ByVal settings As CSystemSettingsReader, ByVal key As String, ByVal minimum As Double, _
