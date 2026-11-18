@@ -30,6 +30,7 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
     Next result
     ReDim bars(1 To barRows + 1, 1 To TORSION_BAR_COLUMNS)
     bars(1, 1) = "LoadCase": bars(1, 2) = "Rebar": bars(1, 3) = "F_T, " & units.OutputForceUnit
+    bars(1, 4) = "l_i, " & units.OutputLengthUnit
     barRow = 1
     For Each result In results
         row = row + 1: summary = result.Summary
@@ -42,6 +43,7 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
                 barRow = barRow + 1
                 bars(barRow, 1) = values(i, 1): bars(barRow, 2) = values(i, 2)
                 bars(barRow, 3) = Abs(units.InternalForceToOutput(CDbl(values(i, 3))))
+                bars(barRow, 4) = units.InternalLengthToOutput(CDbl(values(i, 4)))
             Next i
         End If
     Next result
@@ -97,6 +99,7 @@ Public Function RestoreSummary(ByVal workbook As Object, ByVal source As Object,
     headers = TorsionHeadersForSource(source)
     ValidateSnapshotTableShape TORSION_POST_DATA_KEY, data
     ValidateSnapshotTableShape TORSION_BAR_DATA_KEY, bars
+    bars = TorsionBarsWithLengths(bars, data, headers)
     If source.HasTable("Summary") Then
         Dim writer As New CBatchResultWriter: summary = writer.SummaryValuesForDisplay(source)
     End If
@@ -122,8 +125,8 @@ Public Function RestoreSummary(ByVal workbook As Object, ByVal source As Object,
     Dim barAnchor As Object: Set barAnchor = TorsionAnchor(workbook, "rngTorsionBarForces")
     If barAnchor Is Nothing Then Err.Raise 5, , "Не найден якорь rngTorsionBarForces."
     Dim barCount As Long: barCount = UBound(bars, 1): If Not includeBarRows Then barCount = 1
-    ValidateTorsionTarget workbook, barAnchor.Resize(barCount, 3)
-    If Not workbook.Application.Intersect(target, barAnchor.Resize(barCount, 3)) Is Nothing Then _
+    ValidateTorsionTarget workbook, barAnchor.Resize(barCount, TORSION_BAR_COLUMNS)
+    If Not workbook.Application.Intersect(target, barAnchor.Resize(barCount, TORSION_BAR_COLUMNS)) Is Nothing Then _
         Err.Raise 5, , "Якоря подробной и поэлементной таблиц T пересекаются."
     target.UnMerge: target.ClearContents
     target.Resize(4, TORSION_POST_DISPLAY_COLUMNS).Value2 = headers
@@ -159,13 +162,42 @@ Public Function ClearSummary(ByVal workbook As Object) As String
     If Not anchor Is Nothing Then
         count = anchor.Worksheet.Cells(anchor.Worksheet.Rows.Count, anchor.Column).End(-4162).Row - anchor.Row
         If count > 0 Then
-            Set target = anchor.Offset(1, 0).Resize(count, 3)
+            Set target = anchor.Offset(1, 0).Resize(count, TORSION_BAR_COLUMNS)
             ValidateTorsionTarget workbook, target: target.ClearContents: target.Borders.LineStyle = -4142
         End If
     End If
     Exit Function
 Failed:
     ClearSummary = WorkbookDialogText("Данные T (кручение) не очищены: " & Err.Description, workbook)
+End Function
+
+' Дополняет трёхколоночную матрицу длиной по её собственным сохранённым
+' усилиям, потоку и углу. Числа находятся в одних OUTPUT-единицах, поэтому
+' F/(q*cot theta) сразу даёт OUTPUT Length без чтения листов или геометрии.
+Private Function TorsionBarsWithLengths(ByRef bars As Variant, ByRef data As Variant, ByRef headers As Variant) As Variant
+    If UBound(bars, 2) = TORSION_BAR_COLUMNS Then TorsionBarsWithLengths = bars: Exit Function
+    Dim result() As Variant, row As Long, column As Long, key As String
+    ReDim result(1 To UBound(bars, 1), 1 To TORSION_BAR_COLUMNS)
+    For row = 1 To UBound(bars, 1)
+        For column = 1 To 3: result(row, column) = bars(row, column): Next column
+    Next row
+    Dim label As String: label = CStr(headers(4, 12))
+    result(1, 4) = "l_i, " & Trim$(Mid$(label, InStr(1, label, ",", vbBinaryCompare) + 1))
+    Dim factors As Object: Set factors = CreateObject("Scripting.Dictionary")
+    factors.CompareMode = vbTextCompare
+    For row = 1 To UBound(data, 1)
+        key = CStr(data(row, 1))
+        If Len(key) > 0 And IsNumeric(data(row, 7)) And IsNumeric(data(row, 6)) Then
+            If CDbl(data(row, 7)) > 0# And CDbl(data(row, 6)) > 0# Then factors(key) = CDbl(data(row, 7)) * CDbl(data(row, 6))
+        End If
+    Next row
+    For row = 2 To UBound(bars, 1)
+        key = CStr(bars(row, 1))
+        If Not factors.Exists(key) Then Err.Raise 5, TypeName(Me), _
+            "Не удалось определить длину участка арматуры: в сохранённом сочетании " & key & " отсутствуют положительные поток q или котангенс угла раскосов."
+        result(row, 4) = CDbl(bars(row, 3)) / CDbl(factors(key))
+    Next row
+    TorsionBarsWithLengths = result
 End Function
 
 ' Требует одноячеечный якорь собственной книги на Results.
@@ -257,28 +289,29 @@ End Sub
 Private Sub WriteTorsionBarForces(ByVal anchor As Object, ByRef bars As Variant, ByVal count As Long)
     Dim last As Long: last = anchor.Worksheet.Cells(anchor.Worksheet.Rows.Count, anchor.Column).End(-4162).Row
     If last < anchor.Row + count - 1 Then last = anchor.Row + count - 1
-    With anchor.Resize(last - anchor.Row + 1, 3)
+    With anchor.Resize(last - anchor.Row + 1, TORSION_BAR_COLUMNS)
         .ClearContents: .Borders.LineStyle = -4142: .Font.Name = "Arial": .Font.Size = 9: .Font.Bold = False
         .Font.Color = 0: .Interior.Pattern = -4142: .HorizontalAlignment = -4108: .VerticalAlignment = -4108: .WrapText = False
         .NumberFormat = "General"
     End With
-    Dim values() As Variant, row As Long, column As Long: ReDim values(1 To count, 1 To 3)
-    For row = 1 To count: For column = 1 To 3: values(row, column) = bars(row, column): Next column: Next row
-    anchor.Resize(count, 3).Value2 = values
-    With anchor.Resize(1, 3)
+    Dim values() As Variant, row As Long, column As Long: ReDim values(1 To count, 1 To TORSION_BAR_COLUMNS)
+    For row = 1 To count: For column = 1 To TORSION_BAR_COLUMNS: values(row, column) = bars(row, column): Next column: Next row
+    anchor.Resize(count, TORSION_BAR_COLUMNS).Value2 = values
+    With anchor.Resize(1, TORSION_BAR_COLUMNS)
         .Font.Bold = True: .Interior.Color = RGB(217, 217, 217)
         .HorizontalAlignment = -4131
         .Borders.LineStyle = 1: .Borders.Weight = 2: .Borders.Color = RGB(200, 200, 200)
     End With
-    With anchor.Offset(-1, 0).Resize(1, 3)
+    With anchor.Offset(-1, 0).Resize(1, TORSION_BAR_COLUMNS)
         .UnMerge: .Merge: .Value2 = "Усилия от T (кручение)"
         .Font.Name = "Arial": .Font.Size = 9: .Font.Bold = True: .Font.Color = 0
         .Interior.Color = RGB(217, 217, 217): .Borders.LineStyle = -4142
         .Borders(9).LineStyle = 1: .Borders(9).Weight = 2: .Borders(9).Color = RGB(200, 200, 200)
         .HorizontalAlignment = -4108: .WrapText = False
     End With
-    anchor.Offset(-2, -2).Resize(1, 5).Interior.Color = RGB(189, 215, 238)
+    anchor.Offset(-2, -2).Resize(1, TORSION_BAR_COLUMNS + 2).Interior.Color = RGB(189, 215, 238)
     If count > 1 Then anchor.Offset(1, 2).Resize(count - 1, 1).NumberFormat = "0.000000"
+    If count > 1 Then anchor.Offset(1, 3).Resize(count - 1, 1).NumberFormat = "0.000"
 End Sub
 
 ' Строит шапку по единицам сохранённого снимка, не по текущему Config.

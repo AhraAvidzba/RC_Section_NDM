@@ -36,11 +36,12 @@ Public Function RunTorsionPostTests() As String
     TestTorsionNear "Axis offset excludes diameter addition", axisA.EnclosedArea, 41600#
     TestTorsionNear "Same axis offset gives same area with other diameter", axisB.EnclosedArea, axisA.EnclosedArea
     TestTorsionAssert "NoNM -> N/A, T retained", CStr(row(1, 36)) = "N/A" And CStr(row(1, 15)) = "OK"
-    TestTorsionAssert "Compact bars three columns", UBound(bars, 2) = 3
+    TestTorsionAssert "Compact bars with length last", UBound(bars, 2) = 4
     Dim i As Long, total As Double
     For i = 1 To UBound(bars, 1)
         total = total + CDbl(bars(i, 3))
         TestTorsionNear "BarForce" & CStr(i), bars(i, 3), 9843.75
+        TestTorsionNear "Assigned perimeter length" & CStr(i), bars(i, 4), 210#
     Next i
     TestTorsionNear "Allocated force equilibrium", total, 39375#
     Set result = calculator.Calculate("Tminus", -3900000#, Nothing): row = result.Summary
@@ -357,6 +358,81 @@ Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
 Finished:
     RunTorsionPostOutputTests = "TorsionPostOutput: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет длины в OUTPUT mm/m, точность двоичного файла и чтение трёхколоночных матриц.
+' Только собственная проверочная книга: меняет таблицу T и создаёт временный файл рядом.
+Public Function RunTorsionBarLengthTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    Dim p As TTorsionPostParameters, calculator As CTorsionPostCalculator, units As CUnitSystem
+    Dim settings As New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#: p.BarBand = 25#
+    p.SteelResistance = 270#: p.HoopResistance = 170#: p.StrutAngle = 30#: p.ConcreteMethod = "None"
+    Dim pass As Long, snapshot As CCalculationSnapshot, oldSnapshot As CCalculationSnapshot, writer As New CTorsionSummaryWriter
+    Dim results As Collection, bars As Variant, data As Variant, headers As Variant, legacy() As Variant, row As Long, column As Long
+    Dim anchor As Object: Set anchor = ThisWorkbook.Names("rngTorsionBarForces").RefersToRange
+    Dim width As Double: width = anchor.Offset(0, 3).ColumnWidth
+    Dim codec As New CCalculationSnapshotStore, indexed As CIndexedSnapshotFile, path As String, actual As Variant, warning As String
+    For pass = 1 To 2
+        Set units = New CUnitSystem
+        If pass = 1 Then units.LoadFromSettings settings Else units.InitializeDefaults ' Штатная книга выводит mm; стандарт ядра для OUTPUT Length — m.
+        Set calculator = New CTorsionPostCalculator: calculator.Prepare TestTorsionRectangle(), p
+        Set results = New Collection: results.Add calculator.Calculate("Length01", 3900000#, Nothing)
+        Set snapshot = New CCalculationSnapshot: writer.CaptureSummary snapshot, results, units
+        bars = snapshot.Table(TORSION_BAR_DATA_KEY): data = snapshot.Table(TORSION_POST_DATA_KEY)
+        headers = snapshot.Table(TORSION_POST_HEADERS_KEY)
+        TestTorsionAssert "Length unit header " & pass, CStr(bars(1, 4)) = "l_i, " & units.OutputLengthUnit
+        For row = 2 To UBound(bars, 1)
+            TestTorsionNear "Output length " & pass & ":" & row, bars(row, 4), units.InternalLengthToOutput(210#)
+            TestTorsionNear "Force matches length at 30 degrees " & pass & ":" & row, bars(row, 3), CDbl(data(1, 7)) * CDbl(bars(row, 4)) * CDbl(data(1, 6))
+        Next row
+        warning = writer.RestoreSummary(ThisWorkbook, snapshot)
+        TestTorsionAssert "Four-column restore " & pass, Len(warning) = 0
+        TestTorsionNear "Runtime preserves width " & pass, anchor.Offset(0, 3).ColumnWidth, width
+        TestTorsionNear "Length cell " & pass, anchor.Offset(1, 3).Value2, CDbl(bars(2, 4))
+        ReDim legacy(1 To UBound(bars, 1), 1 To 3)
+        For row = 1 To UBound(bars, 1): For column = 1 To 3: legacy(row, column) = bars(row, column): Next column: Next row
+        Set oldSnapshot = New CCalculationSnapshot
+        oldSnapshot.AddTable TORSION_POST_HEADERS_KEY, headers
+        oldSnapshot.AddTable TORSION_POST_DATA_KEY, data
+        oldSnapshot.AddTable TORSION_BAR_DATA_KEY, legacy
+        warning = writer.RestoreSummary(ThisWorkbook, oldSnapshot)
+        TestTorsionAssert "Three-column restore " & pass, Len(warning) = 0
+        TestTorsionAssert "Legacy saved unit " & pass, CStr(anchor.Offset(0, 3).Value2) = CStr(bars(1, 4))
+        For row = 2 To UBound(bars, 1)
+            TestTorsionNear "Legacy reconstructed length " & pass & ":" & row, anchor.Offset(row - 1, 3).Value2, CDbl(bars(row, 4))
+            TestTorsionNear "Legacy force unchanged " & pass & ":" & row, anchor.Offset(row - 1, 2).Value2, CDbl(bars(row, 3))
+        Next row
+        Dim elementHeader(1 To 1, 1 To 9) As Variant
+        Dim elementLabels As Variant: elementLabels = Array("RunID", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
+        For column = 1 To 9: elementHeader(1, column) = elementLabels(column - 1): Next column
+        snapshot.AddTable "rngNDMElementResults", elementHeader ' Контейнер v6 требует шапку и каталог элементов даже при проверке отдельной таблицы.
+        path = ThisWorkbook.Path & Application.PathSeparator & "TestTorsionBarLength_" & CStr(pass) & ".ndm"
+        Set indexed = New CIndexedSnapshotFile: indexed.WriteFile path, snapshot, codec
+        TestTorsionAssert "File opened " & pass, indexed.OpenRead(path, codec)
+        actual = indexed.Table(TORSION_BAR_DATA_KEY): ValidateSnapshotTableShape TORSION_BAR_DATA_KEY, actual
+        For row = 1 To UBound(bars, 1): For column = 1 To 4
+            TestTorsionAssert "File exact " & pass & ":" & row & ":" & column, CStr(actual(row, column)) = CStr(bars(row, column))
+        Next column: Next row
+        warning = writer.RestoreSummary(ThisWorkbook, indexed)
+        TestTorsionAssert "File restore " & pass, Len(warning) = 0
+        indexed.CloseFile: Kill path: path = vbNullString
+        warning = writer.RestoreSummary(ThisWorkbook, snapshot, False)
+        TestTorsionAssert "File sheet omits detail " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 3).Value2)
+        warning = writer.ClearSummary(ThisWorkbook)
+        TestTorsionAssert "Clear length data " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 3).Value2)
+    Next pass
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    On Error Resume Next
+    If Not indexed Is Nothing Then indexed.CloseFile
+    If Len(path) > 0 Then Kill path
+    On Error GoTo 0
+    RunTorsionBarLengthTests = "TorsionBarLength: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

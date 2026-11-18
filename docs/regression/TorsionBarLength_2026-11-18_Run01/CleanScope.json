@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "SHA256": "ae24f9094ca48305907a26698eb29f60af36cba0b3fd603bdf9514430b35c063",
+  "SameInputValuesAndFormulas": {
+    "Config": true,
+    "Сечения": true,
+    "Расчет": true
+  },
+  "CalculationVisualAndPrint": {
+    "fields": true,
+    "rows": true,
+    "styles": true,
+    "printNames": true
+  },
+  "OnlyResultsColumnDZChanged": true,
+  "AddedCells": 1,
+  "AnchorUnchanged": true,
+  "SavedLengths": [],
+  "HelpDescribesLength": true
+}

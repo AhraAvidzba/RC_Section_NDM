@@ -1,0 +1,83 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASS_NOT_FULL_SUITE",
+  "Primary": [
+    {
+      "Suite": "Projections",
+      "Passed": 257,
+      "File": "ProjectionPrimary.txt",
+      "SHA256": "E0B5E53FD070AACE27974054986B9558D5BC98C6DF72DF171C52E881021B1785"
+    },
+    {
+      "Suite": "Math",
+      "Passed": 48,
+      "File": "MathPrimary.txt",
+      "SHA256": "CA2D4EF68FF98CD549085897D7E5E8BD8DD9E6B063849B0AAE70B00FEBD085F7"
+    },
+    {
+      "Suite": "Availability",
+      "Passed": 105,
+      "File": "AvailabilityPrimary.txt",
+      "SHA256": "5C13D3C4D732043DF7E81181ACF311FD3B9BB57DD774CE55BC1EBC469E0F60E5"
+    },
+    {
+      "Suite": "Units",
+      "Passed": 57,
+      "File": "UnitsPrimary.txt",
+      "SHA256": "417F23F5809EB890A99CD640507E3B378CC1C2C43125EE3A39FF7A12DF0EBCD0"
+    },
+    {
+      "Suite": "Output",
+      "Passed": 107,
+      "File": "OutputPrimary.txt",
+      "SHA256": "C6F5253E314BFA62D4F9791407324EDF251AFAF32741C4CA9C59A33346873AE8"
+    },
+    {
+      "Suite": "Guards",
+      "Passed": 16,
+      "File": "GuardPrimary.txt",
+      "SHA256": "18A777992A67E089EC5FAC4CE9FE47ADE90DEB33D8727ADB55B458ECD64A58BB"
+    },
+    {
+      "Suite": "CornerLengths",
+      "Passed": 325,
+      "File": "CornerPrimary.txt",
+      "SHA256": "E62036B4AF551589476B0AED2F8D4D33D8DC280B2667A40BC97279ED3BD4C630"
+    },
+    {
+      "Suite": "BarLengths",
+      "Passed": 92,
+      "File": "LengthPrimary.txt",
+      "SHA256": "28B77052ADD8A0440742E8ECE22261718C8D09B5DB381CC639720685D3A9E7E3"
+    }
+  ],
+  "Total": 1007,
+  "Books": [
+    {
+      "Kind": "User",
+      "SHA256": "D9F1E193228ADAB42AEAD274D695BD1739EB5E3ED7B8A98922BD053F82FC2334",
+      "OriginalSHA256": "FFB8C579FD98A0CCDBB7362CA76E8BB1B88C6C57F3B01FA9AD567EE5F89425B8",
+      "LengthRows": 37,
+      "InputPreserved": true,
+      "CalcFormattingPreserved": true,
+      "SourceModules": 192,
+      "SourceDifferences": []
+    },
+    {
+      "Kind": "Clean",
+      "SHA256": "AE24F9094CA48305907A26698EB29F60AF36CBA0B3FD603BDF9514430B35C063",
+      "OriginalSHA256": "2A4AEA5A10989EE3FBC2BF9BCE7FDCA07E889E7E9500D6B8C0A4AA8D616557E1",
+      "LengthRows": 0,
+      "InputPreserved": true,
+      "CalcFormattingPreserved": true,
+      "SourceModules": 192,
+      "SourceDifferences": []
+    }
+  ],
+  "NativeSourceModules": 192,
+  "NativeSourceDifferences": [],
+  "UserTestBookUpdated": false,
+  "NoPush": true,
+  "FullSuiteRun": false,
+  "NoNormativeOrDistributionRuleChange": true,
+  "ExportSHA256": "7E22F50E1D9F6BEE5C742E6534A17E664D39820C82917F521E503FEFCE421938"
+}

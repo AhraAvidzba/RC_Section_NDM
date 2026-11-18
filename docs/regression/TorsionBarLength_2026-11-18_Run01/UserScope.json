@@ -1,0 +1,206 @@
+{
+  "Status": "PASS",
+  "SHA256": "d9f1e193228adab42aead274d695bd1739eb5e3ed7b8a98922bd053f82fc2334",
+  "SameInputValuesAndFormulas": {
+    "Config": true,
+    "Сечения": true,
+    "Расчет": true
+  },
+  "CalculationVisualAndPrint": {
+    "fields": true,
+    "rows": true,
+    "styles": true,
+    "printNames": true
+  },
+  "OnlyResultsColumnDZChanged": true,
+  "AddedCells": 38,
+  "AnchorUnchanged": true,
+  "SavedLengths": [
+    {
+      "LoadCase": "1",
+      "Rebar": "R1",
+      "Length": 162.5
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R2",
+      "Length": 162.5
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R3",
+      "Length": 162.5
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R4",
+      "Length": 202.25
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R5",
+      "Length": 206.24999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R6",
+      "Length": 162.5
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R7",
+      "Length": 162.5
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R8",
+      "Length": 162.5
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R9",
+      "Length": 202.25
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R10",
+      "Length": 145.74999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R11",
+      "Length": 170.99999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R12",
+      "Length": 170.99999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R13",
+      "Length": 140.49999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R14",
+      "Length": 49.999999999999986
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R15",
+      "Length": 49.99999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R16",
+      "Length": 121.0
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R17",
+      "Length": 120.99999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R18",
+      "Length": 49.999999999999986
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R19",
+      "Length": 49.99999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R20",
+      "Length": 105.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R21",
+      "Length": 79.99999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R22",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R24",
+      "Length": 128.99999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R25",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R26",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R29",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R30",
+      "Length": 121.0
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R31",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R32",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R33",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R34",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R35",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R36",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R37",
+      "Length": 120.99999999999997
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R38",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R39",
+      "Length": 87.49999999999999
+    },
+    {
+      "LoadCase": "1",
+      "Rebar": "R40",
+      "Length": 105.49999999999999
+    }
+  ],
+  "HelpDescribesLength": true
+}

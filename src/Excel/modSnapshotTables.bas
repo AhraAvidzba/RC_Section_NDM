@@ -38,6 +38,7 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
             If UBound(values, 2) = 39 Then columns = 39
         Case "TorsionPost.Data": columns = TORSION_POST_COLUMNS
         Case "TorsionPost.Bars": columns = TORSION_BAR_COLUMNS
+            If UBound(values, 2) = 3 Then columns = 3 ' Трёхколоночная матрица хранит усилия; длина восстанавливается из сохранённых q и cot theta.
         Case "TorsionPost.MNT": columns = 2
     End Select
     If UBound(values, 2) <> columns Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Неверная структура таблицы снимка: " & key

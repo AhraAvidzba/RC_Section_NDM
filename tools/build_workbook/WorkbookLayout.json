@@ -1062,6 +1062,12 @@
         },
         {
           "First": 130,
+          "Last": 130,
+          "Width": 14,
+          "Hidden": false
+        },
+        {
+          "First": 131,
           "Last": 16384,
           "Width": 8.43,
           "Hidden": false

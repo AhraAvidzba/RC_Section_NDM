@@ -9,7 +9,7 @@ Option Explicit
 
 Public Const TORSION_POST_COLUMNS As Long = 39
 Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 43 ' Отдельный блок с ResultComment, нагрузками и тремя проверками.
-Public Const TORSION_BAR_COLUMNS As Long = 3
+Public Const TORSION_BAR_COLUMNS As Long = 4 ' ID сочетания, стержень, усилие от T и соответствующая длина оси хомута.
 Public Const TORSION_BATCH_STATUS_COLUMN As Long = 16
 Public Const TORSION_BATCH_RESERVE_COLUMN As Long = 30
 Public Const TORSION_POST_DATA_KEY As String = "TorsionPost.Data"

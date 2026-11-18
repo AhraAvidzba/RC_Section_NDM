@@ -71,7 +71,7 @@ function Add-TorsionPostprocessTables {
     $title=$settings.Cells.Item(1,1).Offset(-1,0).Resize(1,5);$title.Merge();$title.Value2='Постпроверка T (кручение) и NMT'
     $title.Font.Name='Arial';$title.Font.Size=9;$title.Font.Bold=$true;$title.Font.Color=0;$title.Interior.Color=15921906
     $bars=$Workbook.Names.Item('rngTorsionBarForces').RefersToRange
-    $title=$bars.Cells.Item(1,1).Offset(-1,0).Resize(1,3);$title.Merge();$title.Value2='Усилия от T (кручение)'
+    $title=$bars.Cells.Item(1,1).Offset(-1,0).Resize(1,4);$title.Merge();$title.Value2='Усилия от T (кручение)'
     $title.Font.Name='Arial';$title.Font.Size=9;$title.Font.Bold=$true;$title.Font.Color=0;$title.Interior.Color=14277081
 }
 
@@ -136,6 +136,6 @@ function Add-TorsionMethodologyGuide {
     $row=Add-GuideParagraph $sheet $row 'Используется алгебраическая сумма сохранённого напряжения НДМ и растягивающей добавки от T. Она не восстанавливает совместное равновесие и перераспределение НДС и не определяет совместный предельный M или N. Горский на с.24 обсуждает приближённость раздельного расчёта изгиба и кручения с суммированием требуемой арматуры. Ошибка метода бетона не меняет саму сумму напряжений, но оставляет бетонную проверку неподтверждённой.'
     $row=Add-GuideSourceReference $sheet $row 'ACI445' 'Раздельный расчёт арматуры: §9.1, с.9' -PdfPage 10
     $row=Add-GuideSourceReference $sheet $row 'Gorsky' 'Ограничения раздельного суммирования: с.24'
-    $row=Add-GuideParagraph $sheet $row 'На Results после устойчивости выводятся проверки T: отбор продольной арматуры, хомут и бетон, затем сумма NMT для определяющего стержня. В нижней поэлементной таблице сохраняются ID сочетания, Rebar и дополнительное усилие от T. Сводка содержит три независимых статуса и запаса: бетон, продольная арматура NMT и хомут. Причины НДМ остаются в его блоках; ошибки T имеют собственные причины и цепочки адресов.'
+    $row=Add-GuideParagraph $sheet $row 'На Results после устойчивости выводятся проверки арматуры, хомута и бетона от T, затем сумма NMT. Поэлементная таблица участвующих стержней содержит ID сочетания, Rebar, усилие F_T и назначенную длину l_i в OUTPUT Length. Длина соответствует доле периметра физического стержня, включая общие и множественные проекции; сумма длин равна u_o. Сводка содержит три статуса и запаса: бетон, продольная арматура NMT и хомут. Причины НДМ остаются в его блоках; ошибки T содержат собственные причины и цепочки адресов.'
     return $row
 }

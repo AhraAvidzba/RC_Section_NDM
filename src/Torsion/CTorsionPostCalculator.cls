@@ -21,6 +21,7 @@ Option Explicit
 Private mSection As CSectionModel, mOuter As CTorsionHoopGeometry
 Private mP As TTorsionPostParameters
 Private mCoefficients() As Double
+Private mAllocatedLengths() As Double ' Доля периметра каждого физического стержня, мм; готовится один раз независимо от T.
 Private mCotangent As Double, mHoopArea As Double, mConcreteLimit As Double, mThickness As Double
 Private mOuterArea As Double
 Private mFailureSettingKeys As String
@@ -54,7 +55,9 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopAxisOffset,Torsion.HoopDiameter"
     demand.Initialize section, mOuter, mP.BarBand
     demand.CopyStressPerUnitForce mCoefficients
+    ReDim mAllocatedLengths(1 To section.RebarCount)
     For i = 1 To section.RebarCount
+        mAllocatedLengths(i) = mCoefficients(i) * section.RebarArea(i) * mOuter.Length
         If mCoefficients(i) > 0# Then mOuterArea = mOuterArea + section.RebarArea(i)
     Next i
     mCotangent = 1# / Tan(mP.StrutAngle * 4# * Atn(1#) / 180#)
@@ -92,6 +95,7 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
             delta = force * mCoefficients(i)
             bars(outputRow, 1) = identifier: bars(outputRow, 2) = mSection.RebarID(i)
             bars(outputRow, 3) = delta * mSection.RebarArea(i)
+            bars(outputRow, 4) = mAllocatedLengths(i)
             If criticalT = 0 Or delta > maxDelta Then criticalT = i: maxDelta = delta
             If available Then
                 normal = CDbl(snapshot(mSection.ConcreteCount + i, 4))

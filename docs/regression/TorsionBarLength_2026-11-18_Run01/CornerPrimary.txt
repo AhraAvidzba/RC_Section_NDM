@@ -1,0 +1,326 @@
+﻿TorsionCornerLengths: Passed=325; Failed=0
+PASS L contour 0 full perimeter
+PASS L contour 0 tributary length 1
+PASS L contour 0 tributary length 2
+PASS L contour 0 tributary length 3
+PASS L contour 0 tributary length 4
+PASS L contour 0 tributary length 5
+PASS L contour 0 tributary length 6
+PASS L contour 0 tributary length 7
+PASS L contour 0 tributary length 8
+PASS L contour 0 tributary length 9
+PASS L contour 0 tributary length 10
+PASS L contour 0 no lost or duplicated perimeter
+PASS L contour 1 full perimeter
+PASS L contour 1 tributary length 1
+PASS L contour 1 tributary length 2
+PASS L contour 1 tributary length 3
+PASS L contour 1 tributary length 4
+PASS L contour 1 tributary length 5
+PASS L contour 1 tributary length 6
+PASS L contour 1 tributary length 7
+PASS L contour 1 tributary length 8
+PASS L contour 1 tributary length 9
+PASS L contour 1 tributary length 10
+PASS L contour 1 no lost or duplicated perimeter
+PASS L contour 2 full perimeter
+PASS L contour 2 tributary length 1
+PASS L contour 2 tributary length 2
+PASS L contour 2 tributary length 3
+PASS L contour 2 tributary length 4
+PASS L contour 2 tributary length 5
+PASS L contour 2 tributary length 6
+PASS L contour 2 tributary length 7
+PASS L contour 2 tributary length 8
+PASS L contour 2 tributary length 9
+PASS L contour 2 tributary length 10
+PASS L contour 2 no lost or duplicated perimeter
+PASS L contour 3 full perimeter
+PASS L contour 3 tributary length 1
+PASS L contour 3 tributary length 2
+PASS L contour 3 tributary length 3
+PASS L contour 3 tributary length 4
+PASS L contour 3 tributary length 5
+PASS L contour 3 tributary length 6
+PASS L contour 3 tributary length 7
+PASS L contour 3 tributary length 8
+PASS L contour 3 tributary length 9
+PASS L contour 3 tributary length 10
+PASS L contour 3 no lost or duplicated perimeter
+PASS L contour 4 full perimeter
+PASS L contour 4 tributary length 1
+PASS L contour 4 tributary length 2
+PASS L contour 4 tributary length 3
+PASS L contour 4 tributary length 4
+PASS L contour 4 tributary length 5
+PASS L contour 4 tributary length 6
+PASS L contour 4 tributary length 7
+PASS L contour 4 tributary length 8
+PASS L contour 4 tributary length 9
+PASS L contour 4 tributary length 10
+PASS L contour 4 no lost or duplicated perimeter
+PASS L contour 5 full perimeter
+PASS L contour 5 tributary length 1
+PASS L contour 5 tributary length 2
+PASS L contour 5 tributary length 3
+PASS L contour 5 tributary length 4
+PASS L contour 5 tributary length 5
+PASS L contour 5 tributary length 6
+PASS L contour 5 tributary length 7
+PASS L contour 5 tributary length 8
+PASS L contour 5 tributary length 9
+PASS L contour 5 tributary length 10
+PASS L contour 5 no lost or duplicated perimeter
+PASS L contour 6 full perimeter
+PASS L contour 6 tributary length 1
+PASS L contour 6 tributary length 2
+PASS L contour 6 tributary length 3
+PASS L contour 6 tributary length 4
+PASS L contour 6 tributary length 5
+PASS L contour 6 tributary length 6
+PASS L contour 6 tributary length 7
+PASS L contour 6 tributary length 8
+PASS L contour 6 tributary length 9
+PASS L contour 6 tributary length 10
+PASS L contour 6 no lost or duplicated perimeter
+PASS L contour 7 full perimeter
+PASS L contour 7 tributary length 1
+PASS L contour 7 tributary length 2
+PASS L contour 7 tributary length 3
+PASS L contour 7 tributary length 4
+PASS L contour 7 tributary length 5
+PASS L contour 7 tributary length 6
+PASS L contour 7 tributary length 7
+PASS L contour 7 tributary length 8
+PASS L contour 7 tributary length 9
+PASS L contour 7 tributary length 10
+PASS L contour 7 no lost or duplicated perimeter
+PASS L contour 8 full perimeter
+PASS L contour 8 tributary length 1
+PASS L contour 8 tributary length 2
+PASS L contour 8 tributary length 3
+PASS L contour 8 tributary length 4
+PASS L contour 8 tributary length 5
+PASS L contour 8 tributary length 6
+PASS L contour 8 tributary length 7
+PASS L contour 8 tributary length 8
+PASS L contour 8 tributary length 9
+PASS L contour 8 tributary length 10
+PASS L contour 8 no lost or duplicated perimeter
+PASS L contour 9 full perimeter
+PASS L contour 9 tributary length 1
+PASS L contour 9 tributary length 2
+PASS L contour 9 tributary length 3
+PASS L contour 9 tributary length 4
+PASS L contour 9 tributary length 5
+PASS L contour 9 tributary length 6
+PASS L contour 9 tributary length 7
+PASS L contour 9 tributary length 8
+PASS L contour 9 tributary length 9
+PASS L contour 9 tributary length 10
+PASS L contour 9 no lost or duplicated perimeter
+PASS L contour 10 full perimeter
+PASS L contour 10 tributary length 1
+PASS L contour 10 tributary length 2
+PASS L contour 10 tributary length 3
+PASS L contour 10 tributary length 4
+PASS L contour 10 tributary length 5
+PASS L contour 10 tributary length 6
+PASS L contour 10 tributary length 7
+PASS L contour 10 tributary length 8
+PASS L contour 10 tributary length 9
+PASS L contour 10 tributary length 10
+PASS L contour 10 no lost or duplicated perimeter
+PASS L contour 11 full perimeter
+PASS L contour 11 tributary length 1
+PASS L contour 11 tributary length 2
+PASS L contour 11 tributary length 3
+PASS L contour 11 tributary length 4
+PASS L contour 11 tributary length 5
+PASS L contour 11 tributary length 6
+PASS L contour 11 tributary length 7
+PASS L contour 11 tributary length 8
+PASS L contour 11 tributary length 9
+PASS L contour 11 tributary length 10
+PASS L contour 11 no lost or duplicated perimeter
+PASS L contour 12 full perimeter
+PASS L contour 12 tributary length 1
+PASS L contour 12 tributary length 2
+PASS L contour 12 tributary length 3
+PASS L contour 12 tributary length 4
+PASS L contour 12 tributary length 5
+PASS L contour 12 tributary length 6
+PASS L contour 12 tributary length 7
+PASS L contour 12 tributary length 8
+PASS L contour 12 tributary length 9
+PASS L contour 12 tributary length 10
+PASS L contour 12 no lost or duplicated perimeter
+PASS L contour 13 full perimeter
+PASS L contour 13 tributary length 1
+PASS L contour 13 tributary length 2
+PASS L contour 13 tributary length 3
+PASS L contour 13 tributary length 4
+PASS L contour 13 tributary length 5
+PASS L contour 13 tributary length 6
+PASS L contour 13 tributary length 7
+PASS L contour 13 tributary length 8
+PASS L contour 13 tributary length 9
+PASS L contour 13 tributary length 10
+PASS L contour 13 no lost or duplicated perimeter
+PASS L contour 14 full perimeter
+PASS L contour 14 tributary length 1
+PASS L contour 14 tributary length 2
+PASS L contour 14 tributary length 3
+PASS L contour 14 tributary length 4
+PASS L contour 14 tributary length 5
+PASS L contour 14 tributary length 6
+PASS L contour 14 tributary length 7
+PASS L contour 14 tributary length 8
+PASS L contour 14 tributary length 9
+PASS L contour 14 tributary length 10
+PASS L contour 14 no lost or duplicated perimeter
+PASS L contour 15 full perimeter
+PASS L contour 15 tributary length 1
+PASS L contour 15 tributary length 2
+PASS L contour 15 tributary length 3
+PASS L contour 15 tributary length 4
+PASS L contour 15 tributary length 5
+PASS L contour 15 tributary length 6
+PASS L contour 15 tributary length 7
+PASS L contour 15 tributary length 8
+PASS L contour 15 tributary length 9
+PASS L contour 15 tributary length 10
+PASS L contour 15 no lost or duplicated perimeter
+PASS L contour 16 full perimeter
+PASS L contour 16 tributary length 1
+PASS L contour 16 tributary length 2
+PASS L contour 16 tributary length 3
+PASS L contour 16 tributary length 4
+PASS L contour 16 tributary length 5
+PASS L contour 16 tributary length 6
+PASS L contour 16 tributary length 7
+PASS L contour 16 tributary length 8
+PASS L contour 16 tributary length 9
+PASS L contour 16 tributary length 10
+PASS L contour 16 no lost or duplicated perimeter
+PASS L contour 17 full perimeter
+PASS L contour 17 tributary length 1
+PASS L contour 17 tributary length 2
+PASS L contour 17 tributary length 3
+PASS L contour 17 tributary length 4
+PASS L contour 17 tributary length 5
+PASS L contour 17 tributary length 6
+PASS L contour 17 tributary length 7
+PASS L contour 17 tributary length 8
+PASS L contour 17 tributary length 9
+PASS L contour 17 tributary length 10
+PASS L contour 17 no lost or duplicated perimeter
+PASS L contour 18 full perimeter
+PASS L contour 18 tributary length 1
+PASS L contour 18 tributary length 2
+PASS L contour 18 tributary length 3
+PASS L contour 18 tributary length 4
+PASS L contour 18 tributary length 5
+PASS L contour 18 tributary length 6
+PASS L contour 18 tributary length 7
+PASS L contour 18 tributary length 8
+PASS L contour 18 tributary length 9
+PASS L contour 18 tributary length 10
+PASS L contour 18 no lost or duplicated perimeter
+PASS L contour 19 full perimeter
+PASS L contour 19 tributary length 1
+PASS L contour 19 tributary length 2
+PASS L contour 19 tributary length 3
+PASS L contour 19 tributary length 4
+PASS L contour 19 tributary length 5
+PASS L contour 19 tributary length 6
+PASS L contour 19 tributary length 7
+PASS L contour 19 tributary length 8
+PASS L contour 19 tributary length 9
+PASS L contour 19 tributary length 10
+PASS L contour 19 no lost or duplicated perimeter
+PASS L contour 20 full perimeter
+PASS L contour 20 tributary length 1
+PASS L contour 20 tributary length 2
+PASS L contour 20 tributary length 3
+PASS L contour 20 tributary length 4
+PASS L contour 20 tributary length 5
+PASS L contour 20 tributary length 6
+PASS L contour 20 tributary length 7
+PASS L contour 20 tributary length 8
+PASS L contour 20 tributary length 9
+PASS L contour 20 tributary length 10
+PASS L contour 20 no lost or duplicated perimeter
+PASS L contour 21 full perimeter
+PASS L contour 21 tributary length 1
+PASS L contour 21 tributary length 2
+PASS L contour 21 tributary length 3
+PASS L contour 21 tributary length 4
+PASS L contour 21 tributary length 5
+PASS L contour 21 tributary length 6
+PASS L contour 21 tributary length 7
+PASS L contour 21 tributary length 8
+PASS L contour 21 tributary length 9
+PASS L contour 21 tributary length 10
+PASS L contour 21 no lost or duplicated perimeter
+PASS L contour 22 full perimeter
+PASS L contour 22 tributary length 1
+PASS L contour 22 tributary length 2
+PASS L contour 22 tributary length 3
+PASS L contour 22 tributary length 4
+PASS L contour 22 tributary length 5
+PASS L contour 22 tributary length 6
+PASS L contour 22 tributary length 7
+PASS L contour 22 tributary length 8
+PASS L contour 22 tributary length 9
+PASS L contour 22 tributary length 10
+PASS L contour 22 no lost or duplicated perimeter
+PASS L contour 23 full perimeter
+PASS L contour 23 tributary length 1
+PASS L contour 23 tributary length 2
+PASS L contour 23 tributary length 3
+PASS L contour 23 tributary length 4
+PASS L contour 23 tributary length 5
+PASS L contour 23 tributary length 6
+PASS L contour 23 tributary length 7
+PASS L contour 23 tributary length 8
+PASS L contour 23 tributary length 9
+PASS L contour 23 tributary length 10
+PASS L contour 23 no lost or duplicated perimeter
+PASS No convex corner bar full perimeter
+PASS No convex corner bar tributary length 1
+PASS No convex corner bar tributary length 2
+PASS No convex corner bar tributary length 3
+PASS No convex corner bar tributary length 4
+PASS No convex corner bar tributary length 5
+PASS No convex corner bar tributary length 6
+PASS No convex corner bar tributary length 7
+PASS No convex corner bar tributary length 8
+PASS No convex corner bar tributary length 9
+PASS No convex corner bar no lost or duplicated perimeter
+PASS No reentrant corner bar full perimeter
+PASS No reentrant corner bar tributary length 1
+PASS No reentrant corner bar tributary length 2
+PASS No reentrant corner bar tributary length 3
+PASS No reentrant corner bar tributary length 4
+PASS No reentrant corner bar tributary length 5
+PASS No reentrant corner bar tributary length 6
+PASS No reentrant corner bar tributary length 7
+PASS No reentrant corner bar tributary length 8
+PASS No reentrant corner bar tributary length 9
+PASS No reentrant corner bar no lost or duplicated perimeter
+PASS Automatic L offset full perimeter
+PASS Automatic L offset tributary length 1
+PASS Automatic L offset tributary length 2
+PASS Automatic L offset tributary length 3
+PASS Automatic L offset tributary length 4
+PASS Automatic L offset tributary length 5
+PASS Automatic L offset tributary length 6
+PASS Automatic L offset tributary length 7
+PASS Automatic L offset tributary length 8
+PASS Automatic L offset tributary length 9
+PASS Automatic L offset tributary length 10
+PASS Automatic L offset no lost or duplicated perimeter
+PASS One output per physical bar
+PASS Calculator force equilibrium
+PASS T available without projection error

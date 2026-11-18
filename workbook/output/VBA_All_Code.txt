@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-18 20:12:34
+Date: 2026-11-18 20:50:26
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -44965,7 +44965,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTorsionPostCalculator
 TYPE: 2
-LINES: 246
+LINES: 250
 ====================================================================================================
 Option Explicit
 
@@ -44981,6 +44981,7 @@ Option Explicit
 Private mSection As CSectionModel, mOuter As CTorsionHoopGeometry
 Private mP As TTorsionPostParameters
 Private mCoefficients() As Double
+Private mAllocatedLengths() As Double ' Доля периметра каждого физического стержня, мм; готовится один раз независимо от T.
 Private mCotangent As Double, mHoopArea As Double, mConcreteLimit As Double, mThickness As Double
 Private mOuterArea As Double
 Private mFailureSettingKeys As String
@@ -45014,7 +45015,9 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopAxisOffset,Torsion.HoopDiameter"
     demand.Initialize section, mOuter, mP.BarBand
     demand.CopyStressPerUnitForce mCoefficients
+    ReDim mAllocatedLengths(1 To section.rebarCount)
     For i = 1 To section.rebarCount
+        mAllocatedLengths(i) = mCoefficients(i) * section.rebarArea(i) * mOuter.length
         If mCoefficients(i) > 0# Then mOuterArea = mOuterArea + section.rebarArea(i)
     Next i
     mCotangent = 1# / Tan(mP.StrutAngle * 4# * Atn(1#) / 180#)
@@ -45052,6 +45055,7 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
             delta = force * mCoefficients(i)
             bars(outputRow, 1) = identifier: bars(outputRow, 2) = mSection.RebarID(i)
             bars(outputRow, 3) = delta * mSection.rebarArea(i)
+            bars(outputRow, 4) = mAllocatedLengths(i)
             If criticalT = 0 Or delta > maxDelta Then criticalT = i: maxDelta = delta
             If available Then
                 normal = CDbl(snapshot(mSection.concreteCount + i, 4))
@@ -45283,7 +45287,7 @@ Option Explicit
 
 Public Const TORSION_POST_COLUMNS As Long = 39
 Public Const TORSION_POST_DISPLAY_COLUMNS As Long = 43 ' Отдельный блок с ResultComment, нагрузками и тремя проверками.
-Public Const TORSION_BAR_COLUMNS As Long = 3
+Public Const TORSION_BAR_COLUMNS As Long = 4 ' ID сочетания, стержень, усилие от T и соответствующая длина оси хомута.
 Public Const TORSION_BATCH_STATUS_COLUMN As Long = 16
 Public Const TORSION_BATCH_RESERVE_COLUMN As Long = 30
 Public Const TORSION_POST_DATA_KEY As String = "TorsionPost.Data"
@@ -51659,8 +51663,8 @@ Public Function TableRowCount(ByVal key As String) As Long
 End Function
 
 ' Исходная шапка результатов хранится отдельным общим блоком.
-Public Function ElementHeader() As Variant
-    ElementHeader = mIndex.header
+Public Function elementHeader() As Variant
+    elementHeader = mIndex.header
 End Function
 
 ' RunID относится к проверенному заголовку и каталогу текущего открытого дескриптора.
@@ -54986,7 +54990,7 @@ End Function
 ' Возвращает шапку элементов из отдельного блока; остальные шапки берёт из общих таблиц.
 Public Function TableHeader(ByVal key As String) As Variant
     If Not mPrepared Is Nothing Then TableHeader = mPrepared.TableHeader(key): Exit Function
-    If key = "rngNDMElementResults" Then TableHeader = mIndexed.ElementHeader: Exit Function
+    If key = "rngNDMElementResults" Then TableHeader = mIndexed.elementHeader: Exit Function
     Dim values As Variant, header() As Variant, column As Long: values = table(key)
     ReDim header(1 To 1, 1 To UBound(values, 2))
     For column = 1 To UBound(values, 2): header(1, column) = values(1, column): Next column
@@ -67486,7 +67490,7 @@ End Function
 ====================================================================================================
 COMPONENT: modSnapshotTables
 TYPE: 1
-LINES: 127
+LINES: 128
 ====================================================================================================
 Option Explicit
 ' ==========================================================================
@@ -67527,6 +67531,7 @@ Public Sub ValidateSnapshotTableShape(ByVal key As String, ByRef values As Varia
             If UBound(values, 2) = 39 Then columns = 39
         Case "TorsionPost.Data": columns = TORSION_POST_COLUMNS
         Case "TorsionPost.Bars": columns = TORSION_BAR_COLUMNS
+            If UBound(values, 2) = 3 Then columns = 3 ' Трёхколоночная матрица хранит усилия; длина восстанавливается из сохранённых q и cot theta.
         Case "TorsionPost.MNT": columns = 2
     End Select
     If UBound(values, 2) <> columns Or UBound(values, 1) < 1 Then Err.Raise 5, "CCalculationSnapshot", "Неверная структура таблицы снимка: " & key
@@ -134454,7 +134459,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestTorsionPost
 TYPE: 1
-LINES: 471
+LINES: 547
 ====================================================================================================
 Option Explicit
 
@@ -134493,11 +134498,12 @@ Public Function RunTorsionPostTests() As String
     TestTorsionNear "Axis offset excludes diameter addition", axisA.EnclosedArea, 41600#
     TestTorsionNear "Same axis offset gives same area with other diameter", axisB.EnclosedArea, axisA.EnclosedArea
     TestTorsionAssert "NoNM -> N/A, T retained", CStr(row(1, 36)) = "N/A" And CStr(row(1, 15)) = "OK"
-    TestTorsionAssert "Compact bars three columns", UBound(bars, 2) = 3
+    TestTorsionAssert "Compact bars with length last", UBound(bars, 2) = 4
     Dim i As Long, total As Double
     For i = 1 To UBound(bars, 1)
         total = total + CDbl(bars(i, 3))
         TestTorsionNear "BarForce" & CStr(i), bars(i, 3), 9843.75
+        TestTorsionNear "Assigned perimeter length" & CStr(i), bars(i, 4), 210#
     Next i
     TestTorsionNear "Allocated force equilibrium", total, 39375#
     Set result = calculator.Calculate("Tminus", -3900000#, Nothing): row = result.summary
@@ -134814,6 +134820,81 @@ Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.description
 Finished:
     RunTorsionPostOutputTests = "TorsionPostOutput: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет длины в OUTPUT mm/m, точность двоичного файла и чтение трёхколоночных матриц.
+' Только собственная проверочная книга: меняет таблицу T и создаёт временный файл рядом.
+Public Function RunTorsionBarLengthTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    Dim p As TTorsionPostParameters, calculator As CTorsionPostCalculator, units As CUnitSystem
+    Dim settings As New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#: p.BarBand = 25#
+    p.SteelResistance = 270#: p.HoopResistance = 170#: p.StrutAngle = 30#: p.ConcreteMethod = "None"
+    Dim pass As Long, snapshot As CCalculationSnapshot, oldSnapshot As CCalculationSnapshot, writer As New CTorsionSummaryWriter
+    Dim results As Collection, bars As Variant, data As Variant, headers As Variant, legacy() As Variant, row As Long, column As Long
+    Dim anchor As Object: Set anchor = ThisWorkbook.names("rngTorsionBarForces").RefersToRange
+    Dim width As Double: width = anchor.offset(0, 3).ColumnWidth
+    Dim codec As New CCalculationSnapshotStore, indexed As CIndexedSnapshotFile, path As String, actual As Variant, warning As String
+    For pass = 1 To 2
+        Set units = New CUnitSystem
+        If pass = 1 Then units.LoadFromSettings settings Else units.InitializeDefaults ' Штатная книга выводит mm; стандарт ядра для OUTPUT Length — m.
+        Set calculator = New CTorsionPostCalculator: calculator.Prepare TestTorsionRectangle(), p
+        Set results = New Collection: results.Add calculator.Calculate("Length01", 3900000#, Nothing)
+        Set snapshot = New CCalculationSnapshot: writer.CaptureSummary snapshot, results, units
+        bars = snapshot.table(TORSION_BAR_DATA_KEY): data = snapshot.table(TORSION_POST_DATA_KEY)
+        headers = snapshot.table(TORSION_POST_HEADERS_KEY)
+        TestTorsionAssert "Length unit header " & pass, CStr(bars(1, 4)) = "l_i, " & units.OutputLengthUnit
+        For row = 2 To UBound(bars, 1)
+            TestTorsionNear "Output length " & pass & ":" & row, bars(row, 4), units.InternalLengthToOutput(210#)
+            TestTorsionNear "Force matches length at 30 degrees " & pass & ":" & row, bars(row, 3), CDbl(data(1, 7)) * CDbl(bars(row, 4)) * CDbl(data(1, 6))
+        Next row
+        warning = writer.RestoreSummary(ThisWorkbook, snapshot)
+        TestTorsionAssert "Four-column restore " & pass, Len(warning) = 0
+        TestTorsionNear "Runtime preserves width " & pass, anchor.offset(0, 3).ColumnWidth, width
+        TestTorsionNear "Length cell " & pass, anchor.offset(1, 3).value2, CDbl(bars(2, 4))
+        ReDim legacy(1 To UBound(bars, 1), 1 To 3)
+        For row = 1 To UBound(bars, 1): For column = 1 To 3: legacy(row, column) = bars(row, column): Next column: Next row
+        Set oldSnapshot = New CCalculationSnapshot
+        oldSnapshot.AddTable TORSION_POST_HEADERS_KEY, headers
+        oldSnapshot.AddTable TORSION_POST_DATA_KEY, data
+        oldSnapshot.AddTable TORSION_BAR_DATA_KEY, legacy
+        warning = writer.RestoreSummary(ThisWorkbook, oldSnapshot)
+        TestTorsionAssert "Three-column restore " & pass, Len(warning) = 0
+        TestTorsionAssert "Legacy saved unit " & pass, CStr(anchor.offset(0, 3).value2) = CStr(bars(1, 4))
+        For row = 2 To UBound(bars, 1)
+            TestTorsionNear "Legacy reconstructed length " & pass & ":" & row, anchor.offset(row - 1, 3).value2, CDbl(bars(row, 4))
+            TestTorsionNear "Legacy force unchanged " & pass & ":" & row, anchor.offset(row - 1, 2).value2, CDbl(bars(row, 3))
+        Next row
+        Dim elementHeader(1 To 1, 1 To 9) As Variant
+        Dim elementLabels As Variant: elementLabels = Array("RunID", "LoadCase", "ProfileId", "StateType", "ElementID", "MaterialType", "Strain", "Stress", "PhysicalState")
+        For column = 1 To 9: elementHeader(1, column) = elementLabels(column - 1): Next column
+        snapshot.AddTable "rngNDMElementResults", elementHeader ' Контейнер v6 требует шапку и каталог элементов даже при проверке отдельной таблицы.
+        path = ThisWorkbook.path & Application.PathSeparator & "TestTorsionBarLength_" & CStr(pass) & ".ndm"
+        Set indexed = New CIndexedSnapshotFile: indexed.WriteFile path, snapshot, codec
+        TestTorsionAssert "File opened " & pass, indexed.OpenRead(path, codec)
+        actual = indexed.table(TORSION_BAR_DATA_KEY): ValidateSnapshotTableShape TORSION_BAR_DATA_KEY, actual
+        For row = 1 To UBound(bars, 1): For column = 1 To 4
+            TestTorsionAssert "File exact " & pass & ":" & row & ":" & column, CStr(actual(row, column)) = CStr(bars(row, column))
+        Next column: Next row
+        warning = writer.RestoreSummary(ThisWorkbook, indexed)
+        TestTorsionAssert "File restore " & pass, Len(warning) = 0
+        indexed.CloseFile: Kill path: path = vbNullString
+        warning = writer.RestoreSummary(ThisWorkbook, snapshot, False)
+        TestTorsionAssert "File sheet omits detail " & pass, Len(warning) = 0 And IsEmpty(anchor.offset(1, 3).value2)
+        warning = writer.ClearSummary(ThisWorkbook)
+        TestTorsionAssert "Clear length data " & pass, Len(warning) = 0 And IsEmpty(anchor.offset(1, 3).value2)
+    Next pass
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.description
+Finished:
+    On Error Resume Next
+    If Not indexed Is Nothing Then indexed.CloseFile
+    If Len(path) > 0 Then Kill path
+    On Error GoTo 0
+    RunTorsionBarLengthTests = "TorsionBarLength: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -144988,7 +145069,7 @@ End Function
 ====================================================================================================
 COMPONENT: CTorsionSummaryWriter
 TYPE: 2
-LINES: 429
+LINES: 462
 ====================================================================================================
 Option Explicit
 
@@ -145013,6 +145094,7 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
     Next result
     ReDim bars(1 To barRows + 1, 1 To TORSION_BAR_COLUMNS)
     bars(1, 1) = "LoadCase": bars(1, 2) = "Rebar": bars(1, 3) = "F_T, " & units.OutputForceUnit
+    bars(1, 4) = "l_i, " & units.OutputLengthUnit
     barRow = 1
     For Each result In results
         row = row + 1: summary = result.summary
@@ -145025,6 +145107,7 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
                 barRow = barRow + 1
                 bars(barRow, 1) = values(i, 1): bars(barRow, 2) = values(i, 2)
                 bars(barRow, 3) = Abs(units.InternalForceToOutput(CDbl(values(i, 3))))
+                bars(barRow, 4) = units.InternalLengthToOutput(CDbl(values(i, 4)))
             Next i
         End If
     Next result
@@ -145080,6 +145163,7 @@ Public Function RestoreSummary(ByVal Workbook As Object, ByVal source As Object,
     headers = TorsionHeadersForSource(source)
     ValidateSnapshotTableShape TORSION_POST_DATA_KEY, data
     ValidateSnapshotTableShape TORSION_BAR_DATA_KEY, bars
+    bars = TorsionBarsWithLengths(bars, data, headers)
     If source.HasTable("Summary") Then
         Dim writer As New CBatchResultWriter: summary = writer.SummaryValuesForDisplay(source)
     End If
@@ -145105,8 +145189,8 @@ Public Function RestoreSummary(ByVal Workbook As Object, ByVal source As Object,
     Dim barAnchor As Object: Set barAnchor = TorsionAnchor(Workbook, "rngTorsionBarForces")
     If barAnchor Is Nothing Then Err.Raise 5, , "Не найден якорь rngTorsionBarForces."
     Dim barCount As Long: barCount = UBound(bars, 1): If Not includeBarRows Then barCount = 1
-    ValidateTorsionTarget Workbook, barAnchor.Resize(barCount, 3)
-    If Not Workbook.Application.Intersect(target, barAnchor.Resize(barCount, 3)) Is Nothing Then _
+    ValidateTorsionTarget Workbook, barAnchor.Resize(barCount, TORSION_BAR_COLUMNS)
+    If Not Workbook.Application.Intersect(target, barAnchor.Resize(barCount, TORSION_BAR_COLUMNS)) Is Nothing Then _
         Err.Raise 5, , "Якоря подробной и поэлементной таблиц T пересекаются."
     target.UnMerge: target.ClearContents
     target.Resize(4, TORSION_POST_DISPLAY_COLUMNS).value2 = headers
@@ -145142,13 +145226,42 @@ Public Function ClearSummary(ByVal Workbook As Object) As String
     If Not anchor Is Nothing Then
         count = anchor.Worksheet.cells(anchor.Worksheet.rows.count, anchor.column).End(-4162).row - anchor.row
         If count > 0 Then
-            Set target = anchor.offset(1, 0).Resize(count, 3)
+            Set target = anchor.offset(1, 0).Resize(count, TORSION_BAR_COLUMNS)
             ValidateTorsionTarget Workbook, target: target.ClearContents: target.Borders.LineStyle = -4142
         End If
     End If
     Exit Function
 Failed:
     ClearSummary = WorkbookDialogText("Данные T (кручение) не очищены: " & Err.description, Workbook)
+End Function
+
+' Дополняет трёхколоночную матрицу длиной по её собственным сохранённым
+' усилиям, потоку и углу. Числа находятся в одних OUTPUT-единицах, поэтому
+' F/(q*cot theta) сразу даёт OUTPUT Length без чтения листов или геометрии.
+Private Function TorsionBarsWithLengths(ByRef bars As Variant, ByRef data As Variant, ByRef headers As Variant) As Variant
+    If UBound(bars, 2) = TORSION_BAR_COLUMNS Then TorsionBarsWithLengths = bars: Exit Function
+    Dim result() As Variant, row As Long, column As Long, key As String
+    ReDim result(1 To UBound(bars, 1), 1 To TORSION_BAR_COLUMNS)
+    For row = 1 To UBound(bars, 1)
+        For column = 1 To 3: result(row, column) = bars(row, column): Next column
+    Next row
+    Dim label As String: label = CStr(headers(4, 12))
+    result(1, 4) = "l_i, " & Trim$(mid$(label, InStr(1, label, ",", vbBinaryCompare) + 1))
+    Dim factors As Object: Set factors = CreateObject("Scripting.Dictionary")
+    factors.CompareMode = vbTextCompare
+    For row = 1 To UBound(data, 1)
+        key = CStr(data(row, 1))
+        If Len(key) > 0 And IsNumeric(data(row, 7)) And IsNumeric(data(row, 6)) Then
+            If CDbl(data(row, 7)) > 0# And CDbl(data(row, 6)) > 0# Then factors(key) = CDbl(data(row, 7)) * CDbl(data(row, 6))
+        End If
+    Next row
+    For row = 2 To UBound(bars, 1)
+        key = CStr(bars(row, 1))
+        If Not factors.Exists(key) Then Err.Raise 5, TypeName(Me), _
+            "Не удалось определить длину участка арматуры: в сохранённом сочетании " & key & " отсутствуют положительные поток q или котангенс угла раскосов."
+        result(row, 4) = CDbl(bars(row, 3)) / CDbl(factors(key))
+    Next row
+    TorsionBarsWithLengths = result
 End Function
 
 ' Требует одноячеечный якорь собственной книги на Results.
@@ -145240,28 +145353,29 @@ End Sub
 Private Sub WriteTorsionBarForces(ByVal anchor As Object, ByRef bars As Variant, ByVal count As Long)
     Dim last As Long: last = anchor.Worksheet.cells(anchor.Worksheet.rows.count, anchor.column).End(-4162).row
     If last < anchor.row + count - 1 Then last = anchor.row + count - 1
-    With anchor.Resize(last - anchor.row + 1, 3)
+    With anchor.Resize(last - anchor.row + 1, TORSION_BAR_COLUMNS)
         .ClearContents: .Borders.LineStyle = -4142: .font.name = "Arial": .font.size = 9: .font.Bold = False
         .font.color = 0: .Interior.pattern = -4142: .HorizontalAlignment = -4108: .VerticalAlignment = -4108: .WrapText = False
         .NumberFormat = "General"
     End With
-    Dim values() As Variant, row As Long, column As Long: ReDim values(1 To count, 1 To 3)
-    For row = 1 To count: For column = 1 To 3: values(row, column) = bars(row, column): Next column: Next row
-    anchor.Resize(count, 3).value2 = values
-    With anchor.Resize(1, 3)
+    Dim values() As Variant, row As Long, column As Long: ReDim values(1 To count, 1 To TORSION_BAR_COLUMNS)
+    For row = 1 To count: For column = 1 To TORSION_BAR_COLUMNS: values(row, column) = bars(row, column): Next column: Next row
+    anchor.Resize(count, TORSION_BAR_COLUMNS).value2 = values
+    With anchor.Resize(1, TORSION_BAR_COLUMNS)
         .font.Bold = True: .Interior.color = RGB(217, 217, 217)
         .HorizontalAlignment = -4131
         .Borders.LineStyle = 1: .Borders.weight = 2: .Borders.color = RGB(200, 200, 200)
     End With
-    With anchor.offset(-1, 0).Resize(1, 3)
+    With anchor.offset(-1, 0).Resize(1, TORSION_BAR_COLUMNS)
         .UnMerge: .Merge: .value2 = "Усилия от T (кручение)"
         .font.name = "Arial": .font.size = 9: .font.Bold = True: .font.color = 0
         .Interior.color = RGB(217, 217, 217): .Borders.LineStyle = -4142
         .Borders(9).LineStyle = 1: .Borders(9).weight = 2: .Borders(9).color = RGB(200, 200, 200)
         .HorizontalAlignment = -4108: .WrapText = False
     End With
-    anchor.offset(-2, -2).Resize(1, 5).Interior.color = RGB(189, 215, 238)
+    anchor.offset(-2, -2).Resize(1, TORSION_BAR_COLUMNS + 2).Interior.color = RGB(189, 215, 238)
     If count > 1 Then anchor.offset(1, 2).Resize(count - 1, 1).NumberFormat = "0.000000"
+    If count > 1 Then anchor.offset(1, 3).Resize(count - 1, 1).NumberFormat = "0.000"
 End Sub
 
 ' Строит шапку по единицам сохранённого снимка, не по текущему Config.
