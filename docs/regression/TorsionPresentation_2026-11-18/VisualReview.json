@@ -1,0 +1,15 @@
+{
+  "NativePDF": true,
+  "ReviewedImages": [
+    "01_Torques.png",
+    "02_Settings.png",
+    "03_Results.png"
+  ],
+  "RussianNotesAboveShortLabels": true,
+  "UnitsInlineWithSymbols": true,
+  "Arial9": true,
+  "NoQuestionMarkGlyphs": true,
+  "PeerAlignment": true,
+  "WidthsUnchanged": true,
+  "PhoneDeliveryConfirmed": false
+}

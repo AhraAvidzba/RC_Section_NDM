@@ -1,0 +1,40 @@
+﻿{
+    "Status":  "NATIVE_PREVIEW_EXPORTED_NOT_FULL_ACCEPTANCE",
+    "SourceSHA256":  "016D7B263A04C45B47F36012E114A31FEFCCD6F1D6C25C6217957219F67E316B",
+    "Own":  {
+                "PID":  17632,
+                "StartTicksUTC":  639305776281204048,
+                "QuitRequested":  true,
+                "Absent":  true,
+                "Forced":  true
+            },
+    "PDF":  [
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview19\\01_Torques.pdf",
+                    "Sheet":  "Config",
+                    "Range":  "AL89:AM120"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview19\\02_Settings.pdf",
+                    "Sheet":  "Config",
+                    "Range":  "AF89:AJ103"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview19\\03_Results.pdf",
+                    "Sheet":  "Results",
+                    "Range":  "AY45:CT52"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview19\\04_Summary.pdf",
+                    "Sheet":  "Results",
+                    "Range":  "AL6:AM16"
+                },
+                {
+                    "Path":  "C:\\Users\\avidzba\\.codex\\visualizations\\2026\\10\\12\\01a12ece-8192-7141-89b3-f83f1176184c\\TorsionPostprocess_2026-11-17\\Preview19\\05_BarForces.pdf",
+                    "Sheet":  "Results",
+                    "Range":  "EB155:ED167"
+                }
+            ],
+    "FormMessage":  null,
+    "CalculationMessage":  null
+}

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-17 23:56:08
+Date: 2026-11-18 08:45:04
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -44781,7 +44781,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTorsionPostCalculator
 TYPE: 2
-LINES: 202
+LINES: 203
 ====================================================================================================
 Option Explicit
 
@@ -44804,9 +44804,9 @@ Private mFailureSettingKeys As String
 ' Готовит геометрию один раз для всех сочетаний T. Входы уже приведены к
 ' внутренним единицам и проверены адаптером; геометрическая применимость здесь.
 Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionPostParameters)
-    If Not mSection Is Nothing Then ModelError "Геометрия этапа T (кручение) уже подготовлена."
+    If Not mSection Is Nothing Then ModelError "Геометрия этапа T уже подготовлена."
     If section Is Nothing Then ModelError "Не передана сохранённая геометрия сечения."
-    If section.rebarCount < 3 Then ModelError "Для проверки T (кручение) нужны как минимум три наружных продольных стержня."
+    If section.rebarCount < 3 Then ModelError "Для проверки T нужны как минимум три наружных продольных стержня."
     Set mSection = section
     mP.stateName = parameters.stateName: mP.cover = parameters.cover
     mP.HoopDiameter = parameters.HoopDiameter: mP.HoopSpacing = parameters.HoopSpacing
@@ -44823,7 +44823,7 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     For i = 1 To domain.loopCount
         If domain.LoopIsOpening(i) Then holes = holes + 1
     Next i
-    If holes > 1 Then ModelError "Однокамерная проверка T (кручение) не применяется к нескольким отверстиям."
+    If holes > 1 Then ModelError "Однокамерная проверка T не применяется к нескольким отверстиям."
     Dim demand As New CTorsionLongitudinalDemand
     mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopCover,Torsion.HoopDiameter"
     demand.Initialize section, mOuter, mP.BarBand
@@ -44839,10 +44839,10 @@ End Sub
 ' Считает T независимо от физических пределов готового состояния. При
 ' отсутствии сохранённых напряжений только сумма T+NM получает N/A.
 Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, ByVal state As CSectionStateResult) As CTorsionPostResult
-    If mSection Is Nothing Then ModelError "Геометрия отдельного этапа T (кручение) не подготовлена."
+    If mSection Is Nothing Then ModelError "Геометрия отдельного этапа T не подготовлена."
     Dim row(1 To 1, 1 To TORSION_POST_COLUMNS) As Variant, bars() As Variant
     torque = Abs(torque)
-    If torque = 0# Then ModelError "Нулевая строка T (кручение) не требует расчёта."
+    If torque = 0# Then ModelError "Нулевая строка T не требует расчёта."
     Dim q As Double, force As Double, hoopStress As Double, concreteStress As Double
     q = torque / (2# * mOuter.EnclosedArea)
     force = q * mOuter.length * mCotangent ' Вся тяга от T распределяется только на наружную продольную арматуру.
@@ -44909,9 +44909,9 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     Else
         row(1, 36) = policy.NotApplicable
         If state Is Nothing Then
-            row(1, 39) = "Сохранённое состояние " & mP.stateName & " не найдено; T (кручение) рассчитан, сумма NMT недоступна. Включите получение этого состояния в расчётном профиле."
+            row(1, 39) = "Сохранённое состояние " & mP.stateName & " не найдено; T рассчитан, сумма NMT недоступна. Включите получение этого состояния в расчётном профиле."
         Else
-            row(1, 39) = "Сохранённые напряжения выбранного состояния недоступны для сложения с добавкой T (кручение)."
+            row(1, 39) = "Сохранённые напряжения выбранного состояния недоступны для сложения с добавкой T."
         End If
     End If
     row(1, 37) = mP.BarBand: row(1, 38) = policy.OK
@@ -44950,7 +44950,7 @@ Private Sub PrepareConcreteLimit(ByVal domain As CConcreteRegion)
             RectangleDimensions domain, b, h
             mConcreteLimit = mP.GorskyCoefficient * mP.ConcreteResistance * b * b * h
         Case Else
-            ModelError "Неизвестный метод отдельной проверки бетона на T (кручение)."
+            ModelError "Неизвестный метод отдельной проверки бетона на T."
     End Select
 End Sub
 
@@ -44984,6 +44984,7 @@ End Property
 Private Sub ModelError(ByVal reason As String)
     Err.Raise vbObjectError + 5670, TypeName(Me), reason
 End Sub
+
 
 
 ====================================================================================================
@@ -67418,7 +67419,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTorsionPostprocess
 TYPE: 1
-LINES: 218
+LINES: 219
 ====================================================================================================
 Option Explicit
 
@@ -67453,7 +67454,7 @@ Private Function CaptureTorsionPostCore(ByVal Workbook As Object, ByVal section 
     Set source = OptionalTorsionRange(Workbook, "rngTorsionCombinations")
     If source Is Nothing Then Exit Function
     If source.areas.count <> 1 Or source.columns.count <> 2 Or source.rows.count < 2 Then _
-        Err.Raise 5, , "rngTorsionCombinations должен ссылаться на одну таблицу ID, T (кручение) с заголовком и строками данных."
+        Err.Raise 5, , "rngTorsionCombinations должен ссылаться на одну таблицу ID, T с заголовком и строками данных."
     data = source.value2
     Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbTextCompare
     Set requested = CreateObject("Scripting.Dictionary"): requested.CompareMode = vbTextCompare
@@ -67491,7 +67492,7 @@ TableFailed:
     Dim reason As String: reason = Err.description
     If Not source Is Nothing Then reason = reason & vbCrLf & source.Worksheet.name & "!" & source.address(False, False)
     Set result = New CTorsionPostResult
-    result.InitializeFailure "[T]", WorkbookDialogText(reason, Workbook)
+    result.InitializeFailure "[T]", WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & reason, Workbook)
     results.Add result
     SaveTorsionPostMatrices snapshot, results, batch, units
     CaptureTorsionPostCore = "Постпроверка T (кручение) завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены."
@@ -67520,12 +67521,12 @@ Private Function ReadTorsionPostRow(ByVal Workbook As Object, ByVal section As C
     If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then Err.Raise 5, , "ID сочетания возвращает ошибку Excel."
     identifier = Trim$(CStr(data(row, 1)))
     If Not knownIDs.Exists(identifier) Then Err.Raise 5, , "ID не найден в rngLoadCombinations. Выберите ID существующего сочетания."
-    If CLng(requested(identifier)) = -1 Then Err.Raise 5, , "Для одного ID задано несколько строк T (кручение). Оставьте одну строку с итоговым моментом."
+    If CLng(requested(identifier)) = -1 Then Err.Raise 5, , "Для одного ID задано несколько строк T. Оставьте одну строку с итоговым моментом."
     column = 2
-    If IsError(data(row, 2)) Or IsNull(data(row, 2)) Then Err.Raise 5, , "Момент T (кручение) возвращает ошибку Excel."
-    If Not IsNumeric(data(row, 2)) Then Err.Raise 5, , "Момент T (кручение) должен быть числом."
+    If IsError(data(row, 2)) Or IsNull(data(row, 2)) Then Err.Raise 5, , "Момент T возвращает ошибку Excel."
+    If Not IsNumeric(data(row, 2)) Then Err.Raise 5, , "Момент T должен быть числом."
     torque = CDbl(data(row, 2))
-    If Abs(torque) >= 1E+100 Then Err.Raise 5, , "Модуль T (кручение) превышает допустимый числовой диапазон."
+    If Abs(torque) >= 1E+100 Then Err.Raise 5, , "Модуль T превышает допустимый числовой диапазон."
     If torque = 0# Then Exit Function ' Нулевая строка не читает параметры хомута и не запрашивает НДС.
     torque = Abs(units.InputMomentMxToInternal(torque)) ' Для независимой проверки используется модуль T; знаки изгиба не влияют на результат.
     If calculator Is Nothing And Len(preparationError) = 0 Then PrepareTorsionPostCalculator Workbook, section, units, calculator, settings, preparationError
@@ -67542,7 +67543,7 @@ Private Function ReadTorsionPostRow(ByVal Workbook As Object, ByVal section As C
     Dim values As Variant, bars As Variant, addressed As CTorsionPostResult
     values = result.summary
     If Len(CStr(values(1, 39))) > 0 Then
-        values(1, 39) = WorkbookDialogText(settings.InputErrorMessage("Torsion.StateType", CStr(values(1, 39)), _
+        values(1, 39) = WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & settings.InputErrorMessage("Torsion.StateType", CStr(values(1, 39)), _
             "Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания."), Workbook)
         bars = result.bars
         Set addressed = New CTorsionPostResult: addressed.Initialize values, bars ' Адресная копия не меняет готовое НДС или неизменяемый результат вычислителя.
@@ -67567,7 +67568,7 @@ Private Sub PrepareTorsionPostCalculator(ByVal Workbook As Object, ByVal section
     Dim table As Object, p As TTorsionPostParameters
     On Error GoTo Failed
     Set table = OptionalTorsionRange(Workbook, "rngTorsionSettings")
-    If table Is Nothing Then Err.Raise 5, , "Не найдена таблица rngTorsionSettings. Восстановите таблицу настроек T (кручение) из сборки."
+    If table Is Nothing Then Err.Raise 5, , "Не найдена таблица rngTorsionSettings. Восстановите таблицу настроек T из сборки."
     Set settings = New CSystemSettingsReader: settings.LoadFromRange table
     p.stateName = settings.GetRequiredChoice("Torsion.StateType", Array("StrengthState", "CapacityState", "PreCrackState", "PostCrackState", "CrackedState"))
     p.cover = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.HoopCover", 0#, False))
@@ -67595,10 +67596,10 @@ Failed:
         For Each key In split(calculator.FailureSettingKeys, ",")
             If Len(CStr(key)) > 0 Then
                 If primary Then
-                    failure = settings.InputErrorMessage(CStr(key), failure, "Проверьте параметры геометрии T (кручение).")
+                    failure = settings.InputErrorMessage(CStr(key), failure, "Проверьте параметры геометрии T.")
                     primary = False
                 Else
-                    failure = failure & vbCrLf & settings.InputErrorMessage(CStr(key), "Связанный параметр геометрии T (кручение).", vbNullString)
+                    failure = failure & vbCrLf & settings.InputErrorMessage(CStr(key), "Связанный параметр геометрии T.", vbNullString)
                 End If
             End If
         Next key
@@ -67639,10 +67640,11 @@ Private Function TorsionValueBlank(ByVal value As Variant) As Boolean
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTorsionPostTables
 TYPE: 1
-LINES: 334
+LINES: 354
 ====================================================================================================
 Option Explicit
 
@@ -67781,7 +67783,7 @@ Public Function ClearTorsionPostBodies(ByVal Workbook As Object) As String
     Next name
     Exit Function
 Failed:
-    ClearTorsionPostBodies = "Дополнительный вывод T (кручение) / NMT не очищен: " & Err.description
+    ClearTorsionPostBodies = WorkbookDialogText("Дополнительный вывод T (кручение) / NMT не очищен: " & Err.description, Workbook)
 End Function
 
 ' Проверяет размеры и отсутствие пересечения с любыми существующими
@@ -67849,7 +67851,7 @@ Private Sub FormatTorsionPostTables(ByVal Workbook As Object, ByVal dataRows As 
         target.HorizontalAlignment = -4108: target.VerticalAlignment = -4108
         target.WrapText = False: target.NumberFormat = "0.000"
         target.Interior.pattern = -4142
-        target.Borders.LineStyle = 1: target.Borders.color = 13158600
+        target.Borders.LineStyle = 1: target.Borders.weight = 2: target.Borders.color = 0
         Dim headerRows As Long
         Select Case CStr(name)
             Case "rngTorsionPostSummary": headerRows = 4
@@ -67874,6 +67876,10 @@ Private Sub FormatTorsionPostTables(ByVal Workbook As Object, ByVal dataRows As 
                     .HorizontalAlignment = -4131 ' Выравнивается вся объединённая область; часть столбца пересекает соседние объединения Excel.
                 End With
             Next row
+            target.rows(3).font.Bold = False
+            target.rows(3).HorizontalAlignment = -4131
+            target.rows(3).WrapText = False
+            target.rows(4).WrapText = False
             For row = 5 To dataRows + 4
                 For Each column In Array(15, 21, 28, 36, 38)
                     If Len(CStr(target.cells(row, column).value2)) > 0 Then ApplyStatusFill target.cells(row, column), CStr(target.cells(row, column).value2)
@@ -67899,35 +67905,51 @@ Private Function OptionalPostOutputRange(ByVal Workbook As Object, ByVal name As
     On Error GoTo 0
 End Function
 
-' Даёт четыре строки шапки: название, группы, обозначения и размерности.
+' Даёт четыре яруса шапки: название, группы, русские пояснения и короткие
+' обозначения с единицами. Размеры диапазона и порядок данных сохраняются.
 Public Function TorsionPostHeaders(ByVal units As CUnitSystem) As Variant
-    Dim result(1 To 4, 1 To TORSION_POST_COLUMNS) As Variant, labels As Variant, column As Long
-    Dim sigma As String, deltaSigma As String
-    sigma = ChrW$(&H3C3): deltaSigma = ChrW$(&H394) & sigma ' VBE сохраняет код в системной кодировке; греческие обозначения создаются из кодов Unicode.
-    labels = Array("ID", "НДС", "T (кручение)", "A_o", "u_o", "cot " & ChrW$(&H3B8), "q", "F_T", "A_s", _
-        "A_s,T, req", "Стержень", deltaSigma & "_T, max", "R_s", "Запас", "Статус", "A_sw", "s", sigma & "_sw", "R_sw", "Запас", "Статус", _
-        "Метод", "t_eff", sigma & "_diag", "R_diag", "T_lim, бетон", "Запас", "Статус", _
-        "Стержень", sigma & "_NM", deltaSigma & "_T", "F_NM+T", sigma & "_NM+T", "R_s", "Запас", "Статус", "Полоса", "Итог", "Комментарий T (кручение) / NMT")
+    Dim result(1 To 4, 1 To TORSION_POST_COLUMNS) As Variant, labels As Variant, notes As Variant, column As Long
+    Dim sigma As String, deltaSigma As String, unit As String
+    sigma = ChrW$(&H3C3): deltaSigma = ChrW$(&H394) & sigma ' Греческие знаки не зависят от ANSI-кодировки сохранённого проекта VBA.
+    labels = Array("ID", "State", "T", "A_o", "u_o", "cot " & ChrW$(&H3B8), "q", "F_T", "A_s", _
+        "A_s,req", "ID", deltaSigma & "_T,max", "R_s", "k", "статус", "A_sw", "s", sigma & "_sw", "R_sw", "k", "статус", _
+        "метод", "t_eff", sigma & "_diag", "R_diag", "T_lim", "k", "статус", _
+        "ID", sigma & "_NM", deltaSigma & "_T", "F_NMT", sigma & "_NMT", "R_s", "k", "статус", "b_sel", "статус", "ResultComment")
+    notes = Array("Номер сочетания", "Сохранённое состояние НДМ", "Заданный крутящий момент", _
+        "Площадь внутри оси наружного хомута", "Периметр оси наружного хомута", "Котангенс угла бетонных раскосов", _
+        "Касательный поток", "Суммарная продольная тяга", "Площадь отобранной продольной арматуры", _
+        "Требуемая площадь продольной арматуры", "Стержень с наибольшей добавкой напряжения", "Максимальная растягивающая добавка от T", _
+        "Сопротивление продольной арматуры", "Запас продольной арматуры от T", "Статус проверки продольной арматуры", _
+        "Площадь одной ветви хомута", "Шаг замкнутых хомутов", "Напряжение ветви хомута", "Сопротивление ветви хомута", _
+        "Запас поперечной арматуры", "Статус проверки хомута", "Метод проверки бетона", "Эффективная толщина бетонной полосы", _
+        "Напряжение бетонного раскоса", "Допустимое напряжение бетонного раскоса", "Предельный крутящий момент по бетону", _
+        "Запас бетона", "Статус проверки бетона", "Определяющий стержень по сумме NMT", "Сохранённое напряжение НДМ", _
+        "Растягивающая добавка от T", "Суммарное усилие стержня NMT", "Алгебраическая сумма напряжений NMT", _
+        "Сопротивление продольной арматуры", "Запас по сумме напряжений NMT", "Статус проверки суммы NMT", _
+        "Ширина полосы отбора продольных стержней", "Итоговый статус постпроверки", "Причины отказов и предупреждения T и NMT")
     result(1, 1) = "Приближённая постпроверка T (кручение) и продольной арматуры NMT"
     For column = 1 To TORSION_POST_COLUMNS
-        result(3, column) = labels(column - 1)
+        result(3, column) = notes(column - 1)
         Select Case column
             Case 1: result(2, column) = "Сочетание"
-            Case 3: result(2, column) = "T (кручение) — продольная арматура"
-            Case 16: result(2, column) = "T (кручение) — хомут"
-            Case 22: result(2, column) = "T (кручение) — бетон"
+            Case 3: result(2, column) = "T — продольная арматура"
+            Case 16: result(2, column) = "T — хомут"
+            Case 22: result(2, column) = "T — бетон"
             Case 29: result(2, column) = "NMT — сумма напряжений продольной арматуры"
             Case 37: result(2, column) = "Отбор"
             Case 38: result(2, column) = "Постпроверка"
         End Select
+        unit = vbNullString
         Select Case column
-            Case 3, 26: result(4, column) = units.OutputMomentUnit
-            Case 4, 9, 10, 16: result(4, column) = units.OutputAreaUnit
-            Case 5, 17, 23, 37: result(4, column) = units.OutputLengthUnit
-            Case 7: result(4, column) = units.OutputForceUnit & "/" & units.OutputLengthUnit
-            Case 8, 32: result(4, column) = units.OutputForceUnit
-            Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34: result(4, column) = units.OutputStressUnit
+            Case 3, 26: unit = units.OutputMomentUnit
+            Case 4, 9, 10, 16: unit = units.OutputAreaUnit
+            Case 5, 17, 23, 37: unit = units.OutputLengthUnit
+            Case 7: unit = units.OutputForceUnit & "/" & units.OutputLengthUnit
+            Case 8, 32: unit = units.OutputForceUnit
+            Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34: unit = units.OutputStressUnit
         End Select
+        result(4, column) = labels(column - 1)
+        If Len(unit) > 0 Then result(4, column) = result(4, column) & ", " & unit
     Next column
     TorsionPostHeaders = result
 End Function
@@ -67938,9 +67960,9 @@ Private Function TorsionMNTSummary(ByVal results As Collection, ByVal batch As C
     Dim count As Long: count = batch.count
     If count < 30 Then count = 30
     Dim output() As Variant: ReDim output(1 To count + 7, 1 To 2)
-    output(1, 1) = "MNT": output(2, 1) = "T (кручение) + NM"
+    output(1, 1) = "MNT": output(2, 1) = "T + NM"
     output(3, 1) = "Коэффициент запаса": output(3, 2) = "Статус"
-    output(6, 1) = "min запаса": output(6, 2) = "T (кручение) + NM"
+    output(6, 1) = "min запаса": output(6, 2) = "T + NM"
     Dim byID As Object: Set byID = CreateObject("Scripting.Dictionary"): byID.CompareMode = vbTextCompare
     Dim result As CTorsionPostResult, row As Variant, policy As New CResultStatusPolicy
     Dim headerStatus As String, missingSum As Boolean
@@ -69391,7 +69413,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
-LINES: 544
+LINES: 553
 ====================================================================================================
 Option Explicit
 
@@ -69488,13 +69510,16 @@ Public Function WorkbookDialogText(ByVal message As String, Optional ByVal Workb
         vbCrLf & vbCrLf & "По настройке Mesh.MinElementArea ")
     WorkbookDialogText = TrimWorkbookMessage(text)
     If Not Workbook Is Nothing Then WorkbookDialogText = ErrorInputAddresses(Workbook, WorkbookDialogText)
+    WorkbookDialogText = ReplaceWorkbookMessageFragment(WorkbookDialogText, "T (кручение)", "T", True) ' Уточнение остаётся один раз в готовом сообщении, в том числе после объединения предупреждений.
 End Function
 
 ' Разделяет только пояснения программы: фразы внутри кавычек остаются точными
 ' пользовательскими значениями, именами слоёв или цитатами, а не командами.
-Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal fragment As String, ByVal replacement As String) As String
+Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal fragment As String, ByVal replacement As String, _
+        Optional ByVal keepFirst As Boolean = False) As String
     If InStr(1, text, fragment, vbBinaryCompare) = 0 Then ReplaceWorkbookMessageFragment = text: Exit Function
     Dim position As Long, start As Long, quoted As Boolean, brackets As Long, character As String, result As String
+    Dim foundFirst As Boolean ' При keepFirst первая фраза вне пользовательских кавычек сохраняется полностью.
     position = 1: start = 1
     Do While position <= Len(text)
         character = mid$(text, position, 1)
@@ -69504,7 +69529,12 @@ Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal frag
             If character = "»" And brackets > 0 Then brackets = brackets - 1
         End If
         If Not quoted And brackets = 0 And mid$(text, position, Len(fragment)) = fragment Then
-            result = result & mid$(text, start, position - start) & replacement
+            If keepFirst And Not foundFirst Then
+                result = result & mid$(text, start, position - start) & fragment
+            Else
+                result = result & mid$(text, start, position - start) & replacement
+            End If
+            foundFirst = True
             position = position + Len(fragment): start = position
         Else
             position = position + 1
@@ -69936,6 +69966,7 @@ Public Function TestWorkbookDrawingPending(ByVal Workbook As Object) As Boolean
         If pending Is Workbook Then TestWorkbookDrawingPending = True: Exit Function
     Next pending
 End Function
+
 
 
 ====================================================================================================
@@ -134345,7 +134376,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestTorsionPost
 TYPE: 1
-LINES: 235
+LINES: 259
 ====================================================================================================
 Option Explicit
 
@@ -134494,6 +134525,19 @@ Public Function RunTorsionPostOutputTests() As String
     TestTorsionAssert "Header spans only title row", target.cells(1, 1).MergeArea.rows.count = 1
     TestTorsionAssert "ID has general format", CStr(target.cells(5, 1).NumberFormat) = "General"
     TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.cells(5, 16).text), ",", ".")) > 0#
+    Dim headers As Variant, notesPresent As Boolean, noQuestions As Boolean
+    headers = target.Resize(4, TORSION_POST_COLUMNS).value2: notesPresent = True: noQuestions = True
+    For column = 1 To TORSION_POST_COLUMNS
+        If Len(CStr(headers(3, column))) = 0 Then notesPresent = False
+        If InStr(1, CStr(headers(3, column)) & CStr(headers(4, column)), "?", vbBinaryCompare) > 0 Then noQuestions = False
+    Next column
+    TestTorsionAssert "Russian notes for every column", notesPresent
+    TestTorsionAssert "Header glyphs have no question marks", noQuestions
+    TestTorsionAssert "Moment unit follows short label", CStr(headers(4, 3)) = "T, " & units.OutputMomentUnit
+    TestTorsionAssert "Area unit follows short label", CStr(headers(4, 4)) = "A_o, " & units.OutputAreaUnit
+    TestTorsionAssert "Greek stress and inline unit", CStr(headers(4, 18)) = ChrW$(&H3C3) & "_sw, " & units.OutputStressUnit
+    TestTorsionAssert "Notes use peer alignment", target.cells(3, 3).HorizontalAlignment = -4131 And Not CBool(target.cells(3, 3).font.Bold) And Not CBool(target.cells(3, 3).WrapText)
+    TestTorsionAssert "Short labels do not wrap", Not CBool(target.cells(4, 3).WrapText)
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.description
@@ -134570,6 +134614,16 @@ Public Function RunTorsionPostGuardTests() As String
     TestTorsionAssert "Wall thickness key retained", InStr(1, CStr(data(1, 39)), "Torsion.WallThickness", vbBinaryCompare) > 0
     mTestLog = mTestLog & vbCrLf & "INFO wall diagnostic: " & CStr(data(1, 39))
     TestTorsionAssert "Wall thickness source chain retained", InStr(1, CStr(data(1, 39)), "ZZ2", vbBinaryCompare) > 0
+    TestTorsionAssert "One clarification in row diagnostic", UBound(split(CStr(data(1, 39)), "T (кручение)")) = 1
+    Dim message As String, formatted As String
+    message = "Ошибка T (кручение). Причина T (кручение); проверьте T (кручение)."
+    formatted = WorkbookDialogText(message)
+    TestTorsionAssert "One clarification in combined dialog", UBound(split(formatted, "T (кручение)")) = 1
+    TestTorsionAssert "Repeated dialog formatting is stable", WorkbookDialogText(formatted) = formatted
+    message = "Значение «T (кручение)». Ошибка T (кручение); причина T (кручение)."
+    formatted = WorkbookDialogText(message)
+    TestTorsionAssert "Quoted input clarification is preserved", InStr(1, formatted, "«T (кручение)»", vbBinaryCompare) > 0 And UBound(split(formatted, "T (кручение)")) = 2
+    TestTorsionAssert "NM message remains unchanged", WorkbookDialogText("Расчёт НДМ завершён.") = "Расчёт НДМ завершён."
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.description
@@ -134582,6 +134636,7 @@ Finished:
     On Error GoTo 0
     RunTorsionPostGuardTests = "TorsionPostGuard: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface

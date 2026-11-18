@@ -1,0 +1,57 @@
+[
+  {
+    "PDF": "01_Torques.pdf",
+    "PNG": "01_Torques.png",
+    "Size": [
+      912,
+      1877
+    ],
+    "SHA256": "16f8a5a48c93ef4ee40c1d5b5f61cf3d2e738d53727089e20c9afd7a2d5fb0d9",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "02_Settings.pdf",
+    "PNG": "02_Settings.png",
+    "Size": [
+      4120,
+      889
+    ],
+    "SHA256": "41a44de86f82c61bde38c248386348346bfb9b1f075371aea6d3836f7e5ab331",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "03_Results.pdf",
+    "PNG": "03_Results.png",
+    "Size": [
+      4589,
+      203
+    ],
+    "SHA256": "afc413e1b32c407dae162171b72430ff01eef0dd169449aeba29c248e1b6abcf",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "04_Summary.pdf",
+    "PNG": "04_Summary.png",
+    "Size": [
+      505,
+      661
+    ],
+    "SHA256": "ac26712e763feb8791daaeaacb773b3c0e7cc46a9f7e620ffc1fac9364db3d2f",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  },
+  {
+    "PDF": "05_BarForces.pdf",
+    "PNG": "05_BarForces.png",
+    "Size": [
+      641,
+      134
+    ],
+    "SHA256": "7119f300f309f60fbc302656172df662aa29995ce3094a9bc6c259b02708ae84",
+    "PixelsAltered": false,
+    "WhiteMarginsCropped": true
+  }
+]

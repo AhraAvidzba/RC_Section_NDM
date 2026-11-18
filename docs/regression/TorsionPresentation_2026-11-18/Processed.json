@@ -1,0 +1,55 @@
+{
+  "Status": "DIRECTED_PRESENTATION_AND_DIAGNOSTICS_PASS",
+  "BookSHA256": "016D7B263A04C45B47F36012E114A31FEFCCD6F1D6C25C6217957219F67E316B",
+  "CodeExportSHA256": "C0AA2F2FBF0A4D615F307D6BB97BCB240C3020B08C40EB4A680DC4A1D55E2810",
+  "NativeMath": 42,
+  "NativeOutput": 88,
+  "NativeGuards": 10,
+  "SourceModules": 189,
+  "SourceDifferences": [],
+  "TorsionCalculatorStatementsUnchanged": true,
+  "FullOnOffSuiteRun": false,
+  "NativeListsUnchangedAndAccepted": true,
+  "OriginalEightKeyboardSelections": "../TorsionPostprocess_2026-11-17/Keyboard13/Review.json",
+  "AllOwnTerminal": true,
+  "OwnCount": 42,
+  "PublishedLocally": true,
+  "GitHubPushPerformed": false,
+  "Manifest": [
+    {
+      "Path": "NativeReview.json",
+      "SHA256": "2D600B4CD1DD8E1B85D0DE7F254C521BD474FBEF5B07F5CF2031EFFA15570740"
+    },
+    {
+      "Path": "CaptionUpdate.json",
+      "SHA256": "1D3B8119ACCFAEBA3A1899EEAF0CBE648668761CF2198DA93AB38751D2C8AED7"
+    },
+    {
+      "Path": "Scope.json",
+      "SHA256": "2910E33B95E237850A7DFFB0820D705BF34E1A64C97E2537C9B3F6562F0927B4"
+    },
+    {
+      "Path": "Preview.json",
+      "SHA256": "C180823AE3B5109C178AAA4B33A29100BCD845F51038B35463D5BC1C23EA326F"
+    },
+    {
+      "Path": "Rendered.json",
+      "SHA256": "AE7A7CBCC346F8246E4C9958193B08A1DD64EA0F7529908057DD75B09C1BCA24"
+    },
+    {
+      "Path": "ReviewedPrimary.zip/MathPrimary.txt",
+      "SHA256": "20EC1D66BDE17525CF4E39FED9A4AE35975C7AABFC2FEB570BE040E0181C1E1F",
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "ReviewedPrimary.zip/OutputPrimary.txt",
+      "SHA256": "BA0A7BAB46B57736D9091D754214C27BB8182F666B3B63A383495F5A334C19CE",
+      "EntirePrimaryRead": true
+    },
+    {
+      "Path": "ReviewedPrimary.zip/GuardPrimary.txt",
+      "SHA256": "4E51BC4C333757A1BB97E273CF3E13D9C5058660BFE62AC7B00BB4595740E4D6",
+      "EntirePrimaryRead": true
+    }
+  ]
+}

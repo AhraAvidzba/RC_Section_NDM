@@ -146,6 +146,19 @@ Public Function RunTorsionPostOutputTests() As String
     TestTorsionAssert "Header spans only title row", target.Cells(1, 1).MergeArea.Rows.Count = 1
     TestTorsionAssert "ID has general format", CStr(target.Cells(5, 1).NumberFormat) = "General"
     TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.Cells(5, 16).Text), ",", ".")) > 0#
+    Dim headers As Variant, notesPresent As Boolean, noQuestions As Boolean
+    headers = target.Resize(4, TORSION_POST_COLUMNS).Value2: notesPresent = True: noQuestions = True
+    For column = 1 To TORSION_POST_COLUMNS
+        If Len(CStr(headers(3, column))) = 0 Then notesPresent = False
+        If InStr(1, CStr(headers(3, column)) & CStr(headers(4, column)), "?", vbBinaryCompare) > 0 Then noQuestions = False
+    Next column
+    TestTorsionAssert "Russian notes for every column", notesPresent
+    TestTorsionAssert "Header glyphs have no question marks", noQuestions
+    TestTorsionAssert "Moment unit follows short label", CStr(headers(4, 3)) = "T, " & units.OutputMomentUnit
+    TestTorsionAssert "Area unit follows short label", CStr(headers(4, 4)) = "A_o, " & units.OutputAreaUnit
+    TestTorsionAssert "Greek stress and inline unit", CStr(headers(4, 18)) = ChrW$(&H3C3) & "_sw, " & units.OutputStressUnit
+    TestTorsionAssert "Notes use peer alignment", target.Cells(3, 3).HorizontalAlignment = -4131 And Not CBool(target.Cells(3, 3).Font.Bold) And Not CBool(target.Cells(3, 3).WrapText)
+    TestTorsionAssert "Short labels do not wrap", Not CBool(target.Cells(4, 3).WrapText)
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
@@ -222,6 +235,16 @@ Public Function RunTorsionPostGuardTests() As String
     TestTorsionAssert "Wall thickness key retained", InStr(1, CStr(data(1, 39)), "Torsion.WallThickness", vbBinaryCompare) > 0
     mTestLog = mTestLog & vbCrLf & "INFO wall diagnostic: " & CStr(data(1, 39))
     TestTorsionAssert "Wall thickness source chain retained", InStr(1, CStr(data(1, 39)), "ZZ2", vbBinaryCompare) > 0
+    TestTorsionAssert "One clarification in row diagnostic", UBound(Split(CStr(data(1, 39)), "T (кручение)")) = 1
+    Dim message As String, formatted As String
+    message = "Ошибка T (кручение). Причина T (кручение); проверьте T (кручение)."
+    formatted = WorkbookDialogText(message)
+    TestTorsionAssert "One clarification in combined dialog", UBound(Split(formatted, "T (кручение)")) = 1
+    TestTorsionAssert "Repeated dialog formatting is stable", WorkbookDialogText(formatted) = formatted
+    message = "Значение «T (кручение)». Ошибка T (кручение); причина T (кручение)."
+    formatted = WorkbookDialogText(message)
+    TestTorsionAssert "Quoted input clarification is preserved", InStr(1, formatted, "«T (кручение)»", vbBinaryCompare) > 0 And UBound(Split(formatted, "T (кручение)")) = 2
+    TestTorsionAssert "NM message remains unchanged", WorkbookDialogText("Расчёт НДМ завершён.") = "Расчёт НДМ завершён."
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description

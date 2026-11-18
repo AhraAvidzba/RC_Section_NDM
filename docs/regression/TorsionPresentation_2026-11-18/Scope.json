@@ -1,0 +1,20 @@
+{
+  "BeforeSHA256": "100849C95428DE15B907FE1109C1A64828816B34363A445EE429F265BFB3FF81",
+  "AfterSHA256": "016D7B263A04C45B47F36012E114A31FEFCCD6F1D6C25C6217957219F67E316B",
+  "UnexpectedCellChanges": [],
+  "CalculationSheetChecks": {
+    "cols": true,
+    "sheetFormatPr": true,
+    "mergeCells": true,
+    "pageMargins": true,
+    "pageSetup": true,
+    "printOptions": true,
+    "PrintNames": true,
+    "Rows": true,
+    "CellStyles": true
+  },
+  "MomentLabel": "T, tf*m",
+  "StressLabel": "σ_sw, MPa",
+  "NoQuestionsInShortLabels": true,
+  "Passed": true
+}

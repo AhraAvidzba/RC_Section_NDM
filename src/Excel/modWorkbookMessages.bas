@@ -94,13 +94,16 @@ Public Function WorkbookDialogText(ByVal message As String, Optional ByVal workb
         vbCrLf & vbCrLf & "По настройке Mesh.MinElementArea ")
     WorkbookDialogText = TrimWorkbookMessage(text)
     If Not workbook Is Nothing Then WorkbookDialogText = ErrorInputAddresses(workbook, WorkbookDialogText)
+    WorkbookDialogText = ReplaceWorkbookMessageFragment(WorkbookDialogText, "T (кручение)", "T", True) ' Уточнение остаётся один раз в готовом сообщении, в том числе после объединения предупреждений.
 End Function
 
 ' Разделяет только пояснения программы: фразы внутри кавычек остаются точными
 ' пользовательскими значениями, именами слоёв или цитатами, а не командами.
-Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal fragment As String, ByVal replacement As String) As String
+Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal fragment As String, ByVal replacement As String, _
+        Optional ByVal keepFirst As Boolean = False) As String
     If InStr(1, text, fragment, vbBinaryCompare) = 0 Then ReplaceWorkbookMessageFragment = text: Exit Function
     Dim position As Long, start As Long, quoted As Boolean, brackets As Long, character As String, result As String
+    Dim foundFirst As Boolean ' При keepFirst первая фраза вне пользовательских кавычек сохраняется полностью.
     position = 1: start = 1
     Do While position <= Len(text)
         character = Mid$(text, position, 1)
@@ -110,7 +113,12 @@ Private Function ReplaceWorkbookMessageFragment(ByVal text As String, ByVal frag
             If character = "»" And brackets > 0 Then brackets = brackets - 1
         End If
         If Not quoted And brackets = 0 And Mid$(text, position, Len(fragment)) = fragment Then
-            result = result & Mid$(text, start, position - start) & replacement
+            If keepFirst And Not foundFirst Then
+                result = result & Mid$(text, start, position - start) & fragment
+            Else
+                result = result & Mid$(text, start, position - start) & replacement
+            End If
+            foundFirst = True
             position = position + Len(fragment): start = position
         Else
             position = position + 1

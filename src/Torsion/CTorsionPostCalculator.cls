@@ -28,9 +28,9 @@ Private mFailureSettingKeys As String
 ' Готовит геометрию один раз для всех сочетаний T. Входы уже приведены к
 ' внутренним единицам и проверены адаптером; геометрическая применимость здесь.
 Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionPostParameters)
-    If Not mSection Is Nothing Then ModelError "Геометрия этапа T (кручение) уже подготовлена."
+    If Not mSection Is Nothing Then ModelError "Геометрия этапа T уже подготовлена."
     If section Is Nothing Then ModelError "Не передана сохранённая геометрия сечения."
-    If section.RebarCount < 3 Then ModelError "Для проверки T (кручение) нужны как минимум три наружных продольных стержня."
+    If section.RebarCount < 3 Then ModelError "Для проверки T нужны как минимум три наружных продольных стержня."
     Set mSection = section
     mP.StateName = parameters.StateName: mP.Cover = parameters.Cover
     mP.HoopDiameter = parameters.HoopDiameter: mP.HoopSpacing = parameters.HoopSpacing
@@ -47,7 +47,7 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
     For i = 1 To domain.LoopCount
         If domain.LoopIsOpening(i) Then holes = holes + 1
     Next i
-    If holes > 1 Then ModelError "Однокамерная проверка T (кручение) не применяется к нескольким отверстиям."
+    If holes > 1 Then ModelError "Однокамерная проверка T не применяется к нескольким отверстиям."
     Dim demand As New CTorsionLongitudinalDemand
     mFailureSettingKeys = "Torsion.BarBand,Torsion.HoopCover,Torsion.HoopDiameter"
     demand.Initialize section, mOuter, mP.BarBand
@@ -63,10 +63,10 @@ End Sub
 ' Считает T независимо от физических пределов готового состояния. При
 ' отсутствии сохранённых напряжений только сумма T+NM получает N/A.
 Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, ByVal state As CSectionStateResult) As CTorsionPostResult
-    If mSection Is Nothing Then ModelError "Геометрия отдельного этапа T (кручение) не подготовлена."
+    If mSection Is Nothing Then ModelError "Геометрия отдельного этапа T не подготовлена."
     Dim row(1 To 1, 1 To TORSION_POST_COLUMNS) As Variant, bars() As Variant
     torque = Abs(torque)
-    If torque = 0# Then ModelError "Нулевая строка T (кручение) не требует расчёта."
+    If torque = 0# Then ModelError "Нулевая строка T не требует расчёта."
     Dim q As Double, force As Double, hoopStress As Double, concreteStress As Double
     q = torque / (2# * mOuter.EnclosedArea)
     force = q * mOuter.Length * mCotangent ' Вся тяга от T распределяется только на наружную продольную арматуру.
@@ -133,9 +133,9 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     Else
         row(1, 36) = policy.NotApplicable
         If state Is Nothing Then
-            row(1, 39) = "Сохранённое состояние " & mP.StateName & " не найдено; T (кручение) рассчитан, сумма NMT недоступна. Включите получение этого состояния в расчётном профиле."
+            row(1, 39) = "Сохранённое состояние " & mP.StateName & " не найдено; T рассчитан, сумма NMT недоступна. Включите получение этого состояния в расчётном профиле."
         Else
-            row(1, 39) = "Сохранённые напряжения выбранного состояния недоступны для сложения с добавкой T (кручение)."
+            row(1, 39) = "Сохранённые напряжения выбранного состояния недоступны для сложения с добавкой T."
         End If
     End If
     row(1, 37) = mP.BarBand: row(1, 38) = policy.OK
@@ -174,7 +174,7 @@ Private Sub PrepareConcreteLimit(ByVal domain As CConcreteRegion)
             RectangleDimensions domain, b, h
             mConcreteLimit = mP.GorskyCoefficient * mP.ConcreteResistance * b * b * h
         Case Else
-            ModelError "Неизвестный метод отдельной проверки бетона на T (кручение)."
+            ModelError "Неизвестный метод отдельной проверки бетона на T."
     End Select
 End Sub
 

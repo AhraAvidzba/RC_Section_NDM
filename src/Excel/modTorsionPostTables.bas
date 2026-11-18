@@ -136,7 +136,7 @@ Public Function ClearTorsionPostBodies(ByVal workbook As Object) As String
     Next name
     Exit Function
 Failed:
-    ClearTorsionPostBodies = "Дополнительный вывод T (кручение) / NMT не очищен: " & Err.Description
+    ClearTorsionPostBodies = WorkbookDialogText("Дополнительный вывод T (кручение) / NMT не очищен: " & Err.Description, workbook)
 End Function
 
 ' Проверяет размеры и отсутствие пересечения с любыми существующими
@@ -204,7 +204,7 @@ Private Sub FormatTorsionPostTables(ByVal workbook As Object, ByVal dataRows As 
         target.HorizontalAlignment = -4108: target.VerticalAlignment = -4108
         target.WrapText = False: target.NumberFormat = "0.000"
         target.Interior.Pattern = -4142
-        target.Borders.LineStyle = 1: target.Borders.Color = 13158600
+        target.Borders.LineStyle = 1: target.Borders.Weight = 2: target.Borders.Color = 0
         Dim headerRows As Long
         Select Case CStr(name)
             Case "rngTorsionPostSummary": headerRows = 4
@@ -229,6 +229,10 @@ Private Sub FormatTorsionPostTables(ByVal workbook As Object, ByVal dataRows As 
                     .HorizontalAlignment = -4131 ' Выравнивается вся объединённая область; часть столбца пересекает соседние объединения Excel.
                 End With
             Next row
+            target.Rows(3).Font.Bold = False
+            target.Rows(3).HorizontalAlignment = -4131
+            target.Rows(3).WrapText = False
+            target.Rows(4).WrapText = False
             For row = 5 To dataRows + 4
                 For Each column In Array(15, 21, 28, 36, 38)
                     If Len(CStr(target.Cells(row, column).Value2)) > 0 Then ApplyStatusFill target.Cells(row, column), CStr(target.Cells(row, column).Value2)
@@ -254,35 +258,51 @@ Private Function OptionalPostOutputRange(ByVal workbook As Object, ByVal name As
     On Error GoTo 0
 End Function
 
-' Даёт четыре строки шапки: название, группы, обозначения и размерности.
+' Даёт четыре яруса шапки: название, группы, русские пояснения и короткие
+' обозначения с единицами. Размеры диапазона и порядок данных сохраняются.
 Public Function TorsionPostHeaders(ByVal units As CUnitSystem) As Variant
-    Dim result(1 To 4, 1 To TORSION_POST_COLUMNS) As Variant, labels As Variant, column As Long
-    Dim sigma As String, deltaSigma As String
-    sigma = ChrW$(&H3C3): deltaSigma = ChrW$(&H394) & sigma ' VBE сохраняет код в системной кодировке; греческие обозначения создаются из кодов Unicode.
-    labels = Array("ID", "НДС", "T (кручение)", "A_o", "u_o", "cot " & ChrW$(&H3B8), "q", "F_T", "A_s", _
-        "A_s,T, req", "Стержень", deltaSigma & "_T, max", "R_s", "Запас", "Статус", "A_sw", "s", sigma & "_sw", "R_sw", "Запас", "Статус", _
-        "Метод", "t_eff", sigma & "_diag", "R_diag", "T_lim, бетон", "Запас", "Статус", _
-        "Стержень", sigma & "_NM", deltaSigma & "_T", "F_NM+T", sigma & "_NM+T", "R_s", "Запас", "Статус", "Полоса", "Итог", "Комментарий T (кручение) / NMT")
+    Dim result(1 To 4, 1 To TORSION_POST_COLUMNS) As Variant, labels As Variant, notes As Variant, column As Long
+    Dim sigma As String, deltaSigma As String, unit As String
+    sigma = ChrW$(&H3C3): deltaSigma = ChrW$(&H394) & sigma ' Греческие знаки не зависят от ANSI-кодировки сохранённого проекта VBA.
+    labels = Array("ID", "State", "T", "A_o", "u_o", "cot " & ChrW$(&H3B8), "q", "F_T", "A_s", _
+        "A_s,req", "ID", deltaSigma & "_T,max", "R_s", "k", "статус", "A_sw", "s", sigma & "_sw", "R_sw", "k", "статус", _
+        "метод", "t_eff", sigma & "_diag", "R_diag", "T_lim", "k", "статус", _
+        "ID", sigma & "_NM", deltaSigma & "_T", "F_NMT", sigma & "_NMT", "R_s", "k", "статус", "b_sel", "статус", "ResultComment")
+    notes = Array("Номер сочетания", "Сохранённое состояние НДМ", "Заданный крутящий момент", _
+        "Площадь внутри оси наружного хомута", "Периметр оси наружного хомута", "Котангенс угла бетонных раскосов", _
+        "Касательный поток", "Суммарная продольная тяга", "Площадь отобранной продольной арматуры", _
+        "Требуемая площадь продольной арматуры", "Стержень с наибольшей добавкой напряжения", "Максимальная растягивающая добавка от T", _
+        "Сопротивление продольной арматуры", "Запас продольной арматуры от T", "Статус проверки продольной арматуры", _
+        "Площадь одной ветви хомута", "Шаг замкнутых хомутов", "Напряжение ветви хомута", "Сопротивление ветви хомута", _
+        "Запас поперечной арматуры", "Статус проверки хомута", "Метод проверки бетона", "Эффективная толщина бетонной полосы", _
+        "Напряжение бетонного раскоса", "Допустимое напряжение бетонного раскоса", "Предельный крутящий момент по бетону", _
+        "Запас бетона", "Статус проверки бетона", "Определяющий стержень по сумме NMT", "Сохранённое напряжение НДМ", _
+        "Растягивающая добавка от T", "Суммарное усилие стержня NMT", "Алгебраическая сумма напряжений NMT", _
+        "Сопротивление продольной арматуры", "Запас по сумме напряжений NMT", "Статус проверки суммы NMT", _
+        "Ширина полосы отбора продольных стержней", "Итоговый статус постпроверки", "Причины отказов и предупреждения T и NMT")
     result(1, 1) = "Приближённая постпроверка T (кручение) и продольной арматуры NMT"
     For column = 1 To TORSION_POST_COLUMNS
-        result(3, column) = labels(column - 1)
+        result(3, column) = notes(column - 1)
         Select Case column
             Case 1: result(2, column) = "Сочетание"
-            Case 3: result(2, column) = "T (кручение) — продольная арматура"
-            Case 16: result(2, column) = "T (кручение) — хомут"
-            Case 22: result(2, column) = "T (кручение) — бетон"
+            Case 3: result(2, column) = "T — продольная арматура"
+            Case 16: result(2, column) = "T — хомут"
+            Case 22: result(2, column) = "T — бетон"
             Case 29: result(2, column) = "NMT — сумма напряжений продольной арматуры"
             Case 37: result(2, column) = "Отбор"
             Case 38: result(2, column) = "Постпроверка"
         End Select
+        unit = vbNullString
         Select Case column
-            Case 3, 26: result(4, column) = units.OutputMomentUnit
-            Case 4, 9, 10, 16: result(4, column) = units.OutputAreaUnit
-            Case 5, 17, 23, 37: result(4, column) = units.OutputLengthUnit
-            Case 7: result(4, column) = units.OutputForceUnit & "/" & units.OutputLengthUnit
-            Case 8, 32: result(4, column) = units.OutputForceUnit
-            Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34: result(4, column) = units.OutputStressUnit
+            Case 3, 26: unit = units.OutputMomentUnit
+            Case 4, 9, 10, 16: unit = units.OutputAreaUnit
+            Case 5, 17, 23, 37: unit = units.OutputLengthUnit
+            Case 7: unit = units.OutputForceUnit & "/" & units.OutputLengthUnit
+            Case 8, 32: unit = units.OutputForceUnit
+            Case 12, 13, 18, 19, 24, 25, 30, 31, 33, 34: unit = units.OutputStressUnit
         End Select
+        result(4, column) = labels(column - 1)
+        If Len(unit) > 0 Then result(4, column) = result(4, column) & ", " & unit
     Next column
     TorsionPostHeaders = result
 End Function
@@ -293,9 +313,9 @@ Private Function TorsionMNTSummary(ByVal results As Collection, ByVal batch As C
     Dim count As Long: count = batch.Count
     If count < 30 Then count = 30
     Dim output() As Variant: ReDim output(1 To count + 7, 1 To 2)
-    output(1, 1) = "MNT": output(2, 1) = "T (кручение) + NM"
+    output(1, 1) = "MNT": output(2, 1) = "T + NM"
     output(3, 1) = "Коэффициент запаса": output(3, 2) = "Статус"
-    output(6, 1) = "min запаса": output(6, 2) = "T (кручение) + NM"
+    output(6, 1) = "min запаса": output(6, 2) = "T + NM"
     Dim byID As Object: Set byID = CreateObject("Scripting.Dictionary"): byID.CompareMode = vbTextCompare
     Dim result As CTorsionPostResult, row As Variant, policy As New CResultStatusPolicy
     Dim headerStatus As String, missingSum As Boolean

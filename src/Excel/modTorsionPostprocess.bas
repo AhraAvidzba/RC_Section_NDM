@@ -32,7 +32,7 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
     Set source = OptionalTorsionRange(workbook, "rngTorsionCombinations")
     If source Is Nothing Then Exit Function
     If source.Areas.Count <> 1 Or source.Columns.Count <> 2 Or source.Rows.Count < 2 Then _
-        Err.Raise 5, , "rngTorsionCombinations должен ссылаться на одну таблицу ID, T (кручение) с заголовком и строками данных."
+        Err.Raise 5, , "rngTorsionCombinations должен ссылаться на одну таблицу ID, T с заголовком и строками данных."
     data = source.Value2
     Set dictionary = CreateObject("Scripting.Dictionary"): dictionary.CompareMode = vbTextCompare
     Set requested = CreateObject("Scripting.Dictionary"): requested.CompareMode = vbTextCompare
@@ -70,7 +70,7 @@ TableFailed:
     Dim reason As String: reason = Err.Description
     If Not source Is Nothing Then reason = reason & vbCrLf & source.Worksheet.Name & "!" & source.Address(False, False)
     Set result = New CTorsionPostResult
-    result.InitializeFailure "[T]", WorkbookDialogText(reason, workbook)
+    result.InitializeFailure "[T]", WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & reason, workbook)
     results.Add result
     SaveTorsionPostMatrices snapshot, results, batch, units
     CaptureTorsionPostCore = "Постпроверка T (кручение) завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены."
@@ -99,12 +99,12 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then Err.Raise 5, , "ID сочетания возвращает ошибку Excel."
     identifier = Trim$(CStr(data(row, 1)))
     If Not knownIDs.Exists(identifier) Then Err.Raise 5, , "ID не найден в rngLoadCombinations. Выберите ID существующего сочетания."
-    If CLng(requested(identifier)) = -1 Then Err.Raise 5, , "Для одного ID задано несколько строк T (кручение). Оставьте одну строку с итоговым моментом."
+    If CLng(requested(identifier)) = -1 Then Err.Raise 5, , "Для одного ID задано несколько строк T. Оставьте одну строку с итоговым моментом."
     column = 2
-    If IsError(data(row, 2)) Or IsNull(data(row, 2)) Then Err.Raise 5, , "Момент T (кручение) возвращает ошибку Excel."
-    If Not IsNumeric(data(row, 2)) Then Err.Raise 5, , "Момент T (кручение) должен быть числом."
+    If IsError(data(row, 2)) Or IsNull(data(row, 2)) Then Err.Raise 5, , "Момент T возвращает ошибку Excel."
+    If Not IsNumeric(data(row, 2)) Then Err.Raise 5, , "Момент T должен быть числом."
     torque = CDbl(data(row, 2))
-    If Abs(torque) >= 1E+100 Then Err.Raise 5, , "Модуль T (кручение) превышает допустимый числовой диапазон."
+    If Abs(torque) >= 1E+100 Then Err.Raise 5, , "Модуль T превышает допустимый числовой диапазон."
     If torque = 0# Then Exit Function ' Нулевая строка не читает параметры хомута и не запрашивает НДС.
     torque = Abs(units.InputMomentMxToInternal(torque)) ' Для независимой проверки используется модуль T; знаки изгиба не влияют на результат.
     If calculator Is Nothing And Len(preparationError) = 0 Then PrepareTorsionPostCalculator workbook, section, units, calculator, settings, preparationError
@@ -121,7 +121,7 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     Dim values As Variant, bars As Variant, addressed As CTorsionPostResult
     values = result.Summary
     If Len(CStr(values(1, 39))) > 0 Then
-        values(1, 39) = WorkbookDialogText(settings.InputErrorMessage("Torsion.StateType", CStr(values(1, 39)), _
+        values(1, 39) = WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & settings.InputErrorMessage("Torsion.StateType", CStr(values(1, 39)), _
             "Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания."), workbook)
         bars = result.Bars
         Set addressed = New CTorsionPostResult: addressed.Initialize values, bars ' Адресная копия не меняет готовое НДС или неизменяемый результат вычислителя.
@@ -146,7 +146,7 @@ Private Sub PrepareTorsionPostCalculator(ByVal workbook As Object, ByVal section
     Dim table As Object, p As TTorsionPostParameters
     On Error GoTo Failed
     Set table = OptionalTorsionRange(workbook, "rngTorsionSettings")
-    If table Is Nothing Then Err.Raise 5, , "Не найдена таблица rngTorsionSettings. Восстановите таблицу настроек T (кручение) из сборки."
+    If table Is Nothing Then Err.Raise 5, , "Не найдена таблица rngTorsionSettings. Восстановите таблицу настроек T из сборки."
     Set settings = New CSystemSettingsReader: settings.LoadFromRange table
     p.StateName = settings.GetRequiredChoice("Torsion.StateType", Array("StrengthState", "CapacityState", "PreCrackState", "PostCrackState", "CrackedState"))
     p.Cover = units.InputLengthToInternal(TorsionSettingNumber(settings, "Torsion.HoopCover", 0#, False))
@@ -174,10 +174,10 @@ Failed:
         For Each key In Split(calculator.FailureSettingKeys, ",")
             If Len(CStr(key)) > 0 Then
                 If primary Then
-                    failure = settings.InputErrorMessage(CStr(key), failure, "Проверьте параметры геометрии T (кручение).")
+                    failure = settings.InputErrorMessage(CStr(key), failure, "Проверьте параметры геометрии T.")
                     primary = False
                 Else
-                    failure = failure & vbCrLf & settings.InputErrorMessage(CStr(key), "Связанный параметр геометрии T (кручение).", vbNullString)
+                    failure = failure & vbCrLf & settings.InputErrorMessage(CStr(key), "Связанный параметр геометрии T.", vbNullString)
                 End If
             End If
         Next key
