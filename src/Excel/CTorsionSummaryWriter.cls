@@ -244,7 +244,7 @@ Private Sub FormatTorsionDetailed(ByVal target As Object, ByVal rows As Long)
     target.Cells(5, 2).Resize(rows, 1).HorizontalAlignment = -4131
     Dim column As Variant, row As Long
     For Each column In Array(11, 16, 17, 23): target.Cells(5, column).Resize(rows, 1).NumberFormat = "0.000000": Next column
-    target.Cells(5, 14).Resize(rows, 1).NumberFormat = "0.000000E+00"
+    target.Cells(5, 14).Resize(rows, 1).NumberFormat = "0.00E+00" ' Три значащие цифры сохраняют порядок малых потоков и помещаются в заданную ширину.
     For row = 5 To rows + 4
         For Each column In Array(3, 22, 28, 35, 43)
             If Len(CStr(target.Cells(row, column).Value2)) > 0 Then ApplyStatusFill target.Cells(row, column), CStr(target.Cells(row, column).Value2)

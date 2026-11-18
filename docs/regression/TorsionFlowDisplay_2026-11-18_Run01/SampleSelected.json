@@ -1,0 +1,80 @@
+{
+  "Status": "SAVED_SAMPLE_ALL_LENGTHS_AND_FORCES_PASS",
+  "SourceSHA256": "d2d5703f90a18a5b12cb9c258313e12e4925c759297a2fc8e92ea21916144a17",
+  "Combination": "1",
+  "Flow_tf_per_mm": 0.008799718409010912,
+  "AxisPerimeter_mm": 5680.0,
+  "SumAssignedLengths_mm": 5680.0,
+  "SelectedBars": 25,
+  "Excluded": [
+    "R20"
+  ],
+  "NoGapsOrOverlaps": true,
+  "ForceEquilibrium": true,
+  "Bars": [
+    {
+      "Rebar": "R11",
+      "Station": 4159.0,
+      "Foot": [
+        141.0,
+        1460.0
+      ],
+      "Point": [
+        141.0,
+        1459.0
+      ],
+      "Previous": "R12",
+      "Next": "R4",
+      "PreviousGap": 118.0,
+      "NextGap": 202.0,
+      "Start": 4100.0,
+      "End": 4260.0,
+      "Length": 160.0,
+      "SavedForce_tf": 1.407954945441746,
+      "SavedForceOverFlow_mm": 160.0
+    },
+    {
+      "Rebar": "R4",
+      "Station": 4361.0,
+      "Foot": [
+        40.0,
+        1359.0
+      ],
+      "Point": [
+        41.00000000000002,
+        1359.0
+      ],
+      "Previous": "R11",
+      "Next": "R2",
+      "PreviousGap": 202.0,
+      "NextGap": 129.5,
+      "Start": 4260.0,
+      "End": 4425.75,
+      "Length": 165.75,
+      "SavedForce_tf": 1.4585533262935588,
+      "SavedForceOverFlow_mm": 165.75000000000003
+    },
+    {
+      "Rebar": "R5",
+      "Station": 4879.0,
+      "Foot": [
+        40.0,
+        841.0
+      ],
+      "Point": [
+        41.0,
+        841.0
+      ],
+      "Previous": "R3",
+      "Next": "R13",
+      "PreviousGap": 129.5,
+      "NextGap": 282.0,
+      "Start": 4814.25,
+      "End": 5020.0,
+      "Length": 205.75,
+      "SavedForce_tf": 1.8105420626539954,
+      "SavedForceOverFlow_mm": 205.75000000000003
+    }
+  ],
+  "UserTestBookNotUpdated": true
+}

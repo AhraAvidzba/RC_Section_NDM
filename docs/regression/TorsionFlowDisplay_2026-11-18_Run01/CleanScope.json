@@ -1,0 +1,202 @@
+{
+  "CandidateSHA256": "2a4aea5a10989ee3fbc2bf9bce7fdca07e889e7e9500d6b8c0a4aa8d616557e1",
+  "CalculationVisual": {
+    "cols": true,
+    "sheetFormatPr": true,
+    "mergeCells": true,
+    "pageMargins": true,
+    "pageSetup": true,
+    "printOptions": true,
+    "Rows": true,
+    "Styles": true,
+    "PrintNames": true
+  },
+  "SameValuesAndFormulas": {
+    "Расчет": false,
+    "Сечения": true,
+    "Results": false
+  },
+  "ConfigChanges": {},
+  "UnitFormulas": [
+    {
+      "Key": "Torsion.HoopAxisOffset",
+      "Cell": "J105",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.HoopDiameter",
+      "Cell": "J106",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.HoopSpacing",
+      "Cell": "J107",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.Rs",
+      "Cell": "J108",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Stress\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.Rsw",
+      "Cell": "J109",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Stress\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.BarBand",
+      "Cell": "J110",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.WallThickness",
+      "Cell": "J113",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    },
+    {
+      "Key": "Torsion.Rb",
+      "Cell": "J114",
+      "Formula": "=INDEX(rngUnitSettings,MATCH(\"Stress\",INDEX(rngUnitSettings,,1),0),2)",
+      "Correct": true
+    }
+  ],
+  "SettingHelpLinks": [
+    {
+      "Key": "Torsion.StateType",
+      "Target": "'Справка'!A1968",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.HoopAxisOffset",
+      "Target": "'Справка'!A1972",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.HoopDiameter",
+      "Target": "'Справка'!A1976",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.HoopSpacing",
+      "Target": "'Справка'!A1980",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.Rs",
+      "Target": "'Справка'!A1984",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.Rsw",
+      "Target": "'Справка'!A1988",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.BarBand",
+      "Target": "'Справка'!A1991",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.StrutAngle",
+      "Target": "'Справка'!A1997",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.ConcreteMethod",
+      "Target": "'Справка'!A2001",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.WallThickness",
+      "Target": "'Справка'!A2012",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.Rb",
+      "Target": "'Справка'!A2020",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.ConcreteEfficiency",
+      "Target": "'Справка'!A2024",
+      "OwnDescription": true
+    },
+    {
+      "Key": "Torsion.GorskyCoefficient",
+      "Target": "'Справка'!A2028",
+      "OwnDescription": true
+    }
+  ],
+  "PublicSourceLinks": [
+    {
+      "Cell": "A742",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=10",
+      "Public": true
+    },
+    {
+      "Cell": "A789",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=12",
+      "Public": true
+    },
+    {
+      "Cell": "A821",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=12",
+      "Public": true
+    },
+    {
+      "Cell": "A851",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf#page=10",
+      "Public": true
+    },
+    {
+      "Cell": "A969",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
+      "Public": true
+    },
+    {
+      "Cell": "B2009",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
+      "Public": true
+    },
+    {
+      "Cell": "B2018",
+      "Address": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
+      "Public": true
+    }
+  ],
+  "ProjectPDFCopies": [
+    {
+      "File": "ACI-445.1R-12-Torsion.pdf",
+      "Exists": true,
+      "SHA256": "ae01a31825815b6d7db9e863df81033ef743a2908485fb1550577ce6c1e8ea20"
+    },
+    {
+      "File": "Gorsky-1961-Torsion.pdf",
+      "Exists": true,
+      "SHA256": "475aa2e3c846299d915b4166598b8989c206d3e66882e2fdc3e42d365620c154"
+    }
+  ],
+  "LocalPDFPathsInHelp": [],
+  "ExternalPublisherLinks": [],
+  "HelpCellErrors": [],
+  "ExternalExcelParts": [],
+  "HelpContent": {
+    "WallThicknessExplainsConcrete": true,
+    "BarBandUnbounded": true,
+    "MethodsExplained": true,
+    "PartialFailureExplained": true,
+    "EqualityExplained": true,
+    "ACIReferenced": true,
+    "GorskyReferenced": true
+  },
+  "CleanDefaultDifferenceCells": [
+    "V71"
+  ]
+}

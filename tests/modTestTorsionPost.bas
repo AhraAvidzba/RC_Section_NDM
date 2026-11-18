@@ -313,6 +313,8 @@ Public Function RunTorsionPostOutputTests() As String
     Next column
     TestTorsionAssert "Group title stays in one row", target.Cells(1, 9).MergeArea.Rows.Count = 1
     TestTorsionAssert "ID has text format", CStr(target.Cells(5, 1).NumberFormat) = "@"
+    TestTorsionAssert "Flow has three significant digits", CStr(target.Cells(5, 14).NumberFormat) = "0.00E+00"
+    TestTorsionAssert "Flow fits preserved column width", InStr(1, CStr(target.Cells(5, 14).Text), "#", vbBinaryCompare) = 0
     TestTorsionAssert "Small hoop area is visible", Val(Replace$(CStr(target.Cells(5, 23).Text), ",", ".")) > 0#
     Dim headers As Variant, notesPresent As Boolean, noQuestions As Boolean
     headers = target.Resize(4, TORSION_POST_DISPLAY_COLUMNS).Value2: notesPresent = True: noQuestions = True

@@ -90,6 +90,102 @@ Finished:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет каждый участок Г-контура с ручными длинами: ось 2440 мм,
+' неравномерные шаги, внешний и входящий углы, в том числе без стержня в углу.
+Public Function RunTorsionCornerLengthTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    Dim section As CSectionModel, hoop As CTorsionHoopGeometry, caseIndex As Long, expected As Variant
+    expected = Array(230#, 280#, 270#, 220#, 200#, 170#, 250#, 220#, 270#, 330#)
+    For caseIndex = 0 To 23
+        Set section = TestCornerLSection(caseIndex, 0)
+        Set hoop = New CTorsionHoopGeometry
+        hoop.InitializeExplicit section, TestCornerLPath(True, caseIndex), 8#, 16#
+        TestCornerAllocatedLengths section, hoop, expected, "L contour " & caseIndex
+    Next caseIndex
+    Set section = TestCornerLSection(0, 3)
+    Set hoop = New CTorsionHoopGeometry
+    hoop.InitializeExplicit section, TestCornerLPath(True, 0), 8#, 16#
+    TestCornerAllocatedLengths section, hoop, Array(230#, 360#, 410#, 200#, 170#, 250#, 220#, 270#, 330#), "No convex corner bar"
+    Set section = TestCornerLSection(17, 6)
+    Set hoop = New CTorsionHoopGeometry
+    hoop.InitializeExplicit section, TestCornerLPath(True, 17), 8#, 16#
+    TestCornerAllocatedLengths section, hoop, Array(230#, 280#, 270#, 220#, 310#, 310#, 220#, 270#, 330#), "No reentrant corner bar"
+    Set section = TestCornerLSection(0, 0)
+    Set hoop = New CTorsionHoopGeometry: hoop.InitializeAutomatic section, 20#, 8#
+    TestCornerAllocatedLengths section, hoop, expected, "Automatic L offset"
+    TestProjectionCalculatorOutput section
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    RunTorsionCornerLengthTests = "TorsionCornerLengths: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Получает фактически назначенную длину из доли усилия, не повторяя поиск
+' проекций и соседей. Эталон задан вручную по десяти расстояниям вдоль оси.
+Private Sub TestCornerAllocatedLengths(ByVal section As CSectionModel, ByVal hoop As CTorsionHoopGeometry, _
+        ByVal expected As Variant, ByVal label As String)
+    Dim demand As New CTorsionLongitudinalDemand, coefficients() As Double, i As Long, length As Double, total As Double
+    TestProjectionNear label & " full perimeter", hoop.Length, 2440#
+    demand.Initialize section, hoop, 30#: demand.CopyStressPerUnitForce coefficients
+    For i = 1 To section.RebarCount
+        length = coefficients(i) * section.RebarArea(i) * hoop.Length
+        TestProjectionNear label & " tributary length " & i, length, CDbl(expected(i - 1))
+        total = total + length
+    Next i
+    TestProjectionNear label & " no lost or duplicated perimeter", total, 2440#
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт Г-бетон 600 на 700 мм с толщиной ветвей 200 мм. Физические ID
+' стержней следуют заданному списку, независимо от начала и обхода контура.
+Private Function TestCornerLSection(ByVal caseIndex As Long, ByVal omitted As Long) As CSectionModel
+    Dim section As New CSectionModel, path As CGeometryPath, edge As TRegionEdge, i As Long
+    section.AddConcreteElement 300#, 100#, 120000#, 1, shapeType:="Rectangle", width:=600#, height:=200#
+    section.AddConcreteElement 100#, 450#, 100000#, 1, shapeType:="Rectangle", width:=200#, height:=500#
+    Set path = TestCornerLPath(False, caseIndex)
+    For i = 1 To path.SegmentCount
+        path.CopySegment i, edge
+        section.Contours.AddContourLine "L" & i, edge.X1, edge.Y1, edge.X2, edge.Y2
+    Next i
+    Dim xs As Variant, ys As Variant
+    xs = Array(35#, 200#, 565#, 565#, 300#, 165#, 165#, 165#, 35#, 35#)
+    ys = Array(35#, 35#, 35#, 165#, 165#, 165#, 400#, 665#, 665#, 300#)
+    For i = 0 To 9
+        If i + 1 <> omitted Then TestProjectionAddBar section, CDbl(xs(i)), CDbl(ys(i)), 100#
+    Next i
+    Set TestCornerLSection = section
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет начало, направление и разбиение рёбер, сохраняя одну геометрию.
+' Вершины оси (20,20)–(580,20)–(580,180)–(180,180)–(180,680)–(20,680).
+Private Function TestCornerLPath(ByVal axis As Boolean, ByVal caseIndex As Long) As CGeometryPath
+    Dim xs As Variant, ys As Variant, path As New CGeometryPath
+    xs = Array(0#, 600#, 600#, 200#, 200#, 0#): ys = Array(0#, 0#, 200#, 200#, 700#, 700#)
+    If axis Then
+        xs = Array(20#, 580#, 580#, 180#, 180#, 20#): ys = Array(20#, 20#, 180#, 180#, 680#, 680#)
+    End If
+    path.Initialize "TestL"
+    Dim direction As Long, first As Long, nextPoint As Long, i As Long, start As Long
+    direction = 1: If caseIndex Mod 2 = 1 Then direction = -1
+    start = (caseIndex \ 2) Mod 6
+    For i = 0 To 5
+        first = ((start + direction * i) Mod 6 + 6) Mod 6
+        nextPoint = ((first + direction) Mod 6 + 6) Mod 6
+        If caseIndex >= 12 Then
+            path.AddLine "A" & i, xs(first), ys(first), 0.5 * (xs(first) + xs(nextPoint)), 0.5 * (ys(first) + ys(nextPoint))
+            path.AddLine "B" & i, 0.5 * (xs(first) + xs(nextPoint)), 0.5 * (ys(first) + ys(nextPoint)), xs(nextPoint), ys(nextPoint)
+        Else
+            path.AddLine "E" & i, xs(first), ys(first), xs(nextPoint), ys(nextPoint)
+        End If
+    Next i
+    path.Seal True: Set TestCornerLPath = path
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет распределение площади между точкой и связной дугой, включая шов.
 Private Sub TestProjectionComponents()
     Dim points As New CTorsionProjectionStations
