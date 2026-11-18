@@ -831,11 +831,11 @@ function Measure-MathText {
 }
 
 # Отделяет нормативную приписку от самой формулы. Формула остается крупной,
-# а ссылка на СП/EN рисуется меньшим шрифтом, чтобы не спорить с выражением.
+# а источник или принятое правило книги рисуется тем же меньшим шрифтом.
 function Split-FormulaReference {
     param([string]$Text)
 
-    $match = [regex]::Match($Text, "^(.*?)(\s{2,}(?:СП|EN)\s+.*)$")
+    $match = [regex]::Match($Text, "^(.*?)(\s{2,}(?:СП|EN|ACI|Горский|По ACI|Модель книги)\s*.*)$")
     if ($match.Success) {
         return @{
             Formula = $match.Groups[1].Value.TrimEnd()
@@ -1459,6 +1459,7 @@ foreach ($entry in (Get-Content -LiteralPath (Join-Path $PSScriptRoot 'HelpFormu
 function Add-GuideFormulaExplanation {
     param([object]$Sheet, [int]$Row, [string]$Caption)
     $key = $Caption.Trim()
+    if (-not $script:HelpFormulaExplanations.ContainsKey($key)) { $key = (Split-FormulaReference $key).Formula.Trim() }
     if (-not $script:HelpFormulaExplanations.ContainsKey($key)) { throw "Нет расшифровки формулы справки: $key" }
     return (Add-GuideParagraph $Sheet $Row ([string]$script:HelpFormulaExplanations[$key]))
 }

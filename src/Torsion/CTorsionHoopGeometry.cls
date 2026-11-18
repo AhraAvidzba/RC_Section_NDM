@@ -123,7 +123,7 @@ End Function
 
 ' Проецирует точку на ближайшую станцию оси. Два равноудалённых следа
 ' с разных сторон общего угла заменяются серединой короткого участка.
-' Неразрешённые совпадения отмечаются как неоднозначные.
+' При нескольких удалённых проекциях флаг запрашивает полный набор станций.
 Public Function TryProjectStation(ByVal x As Double, ByVal y As Double, ByRef station As Double, _
         ByRef distance As Double, Optional ByRef ambiguous As Boolean = False) As Boolean
     RequireReady
@@ -159,8 +159,33 @@ Public Function TryProjectStation(ByVal x As Double, ByVal y As Double, ByRef st
     TryProjectStation = True
 End Function
 
+' Собирает все ближайшие станции для равных удалённых проекций. Центр
+' круговой дуги задаёт непрерывный интервал; его разбиение на рёбра несущественно.
+Friend Function NearestProjectionStations(ByVal x As Double, ByVal y As Double, ByVal distance As Double) As CTorsionProjectionStations
+    RequireReady
+    Dim result As New CTorsionProjectionStations: result.Initialize mLength
+    Dim i As Long, startStation As Double, parameter As Double, gap As Double, alternative As Boolean
+    For i = LBound(mEdges) To UBound(mEdges)
+        gap = PointGap(mEdges(i), x, y, parameter, alternative)
+        If Abs(gap - distance) <= GEOM_BOUNDARY_TOLERANCE Then
+            If IsArc(mEdges(i)) And x = mEdges(i).CenterX And y = mEdges(i).CenterY Then
+                result.AddArc startStation, startStation + mEdgeLengths(i)
+            Else
+                result.AddPoint startStation + parameter * mEdgeLengths(i)
+                If alternative Then
+                    result.AddPoint startStation
+                    result.AddPoint startStation + mEdgeLengths(i)
+                End If
+            End If
+        End If
+        startStation = startStation + mEdgeLengths(i)
+    Next i
+    result.Seal
+    Set NearestProjectionStations = result
+End Function
+
 ' Устраняет зависимость углового стержня от начальной точки и направления
-' обхода. Удалённые равные проекции остаются неоднозначными.
+' обхода. Для удалённых равных проекций потребитель получает полный набор.
 Private Function ResolveCornerStation(ByVal firstEdge As Long, ByVal secondEdge As Long, ByVal distance As Double, _
         ByVal secondStation As Double, ByRef firstStation As Double) As Boolean
     Dim edgeGap As Long, stationGap As Double

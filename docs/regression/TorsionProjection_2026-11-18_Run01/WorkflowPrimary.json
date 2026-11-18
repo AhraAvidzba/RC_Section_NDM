@@ -1,0 +1,215 @@
+﻿{
+    "Status":  "DIRECTED_EXCEL_FILE_WORKFLOW_PASS_NOT_FULL_SUITE",
+    "Stage":  "ExcelInvalidMethod",
+    "Own":  {
+                "PID":  19332,
+                "UTCticks":  639306098662097399,
+                "QuitRequested":  true,
+                "Absent":  true,
+                "Forced":  true
+            },
+    "Checks":  [
+                   {
+                       "Name":  "T leaves all NM matrices unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "NMT state available immediately after calculation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "NMT algebraic stress sum",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "File detailed output immediate",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "File bar header only",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Summary status 16",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Summary status 17",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Summary status 18",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Widths unchanged after calculation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "UnknownMethod leaves all NM matrices unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "UnknownMethod retains every available T and NMT value",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "UnknownMethod only concrete has InputErr",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "UnknownMethod has no false concrete reserve",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "FormulaError leaves all NM matrices unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "FormulaError retains every available T and NMT value",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "FormulaError only concrete has InputErr",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "FormulaError has no false concrete reserve",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Method error source chain is specific",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "TooWideConcrete leaves all NM matrices unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "TooWideConcrete retains every available T and NMT value",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "TooWideConcrete only concrete has InputErr",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "TooWideConcrete has no false concrete reserve",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "WrongShape leaves all NM matrices unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "WrongShape retains every available T and NMT value",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "WrongShape only concrete has InputErr",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "WrongShape has no false concrete reserve",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "NoneUnusedErrors leaves all NM matrices unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "NoneUnusedErrors retains every available T and NMT value",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "None ignores unused concrete errors",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Concrete recovers after valid setting restored",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "File refresh restores torsion output",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "File refresh leaves snapshot unchanged",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Widths unchanged after file refresh",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Excel detailed output immediate",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Excel bar rows populated",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Widths unchanged after Excel calculation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Excel refresh preserves torsion output",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Widths unchanged after Excel refresh",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Excel partial error keeps calculated NMT",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "Excel summary colors partial input error",
+                       "Passed":  true
+                   }
+               ],
+    "Messages":  [
+                     {
+                         "Name":  "FileZeroT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 2.59 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "FileActiveT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 2.25 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "File_UnknownMethod",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 2.11 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "File_FormulaError",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.94 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "File_TooWideConcrete",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.81 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "File_WrongShape",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.78 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "File_NoneUnusedErrors",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 1.89 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "FileRestored",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «LayoutWorkflow.ndm».\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 1.77 с.\r\n\r\nДанные сохранены в файле «LayoutWorkflow.ndm»."
+                     },
+                     {
+                         "Name":  "ExcelActiveT",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nВремя расчёта: 1.81 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+                     },
+                     {
+                         "Name":  "ExcelInvalidMethod",
+                         "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 1.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 2.09 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+                     }
+                 ]
+}

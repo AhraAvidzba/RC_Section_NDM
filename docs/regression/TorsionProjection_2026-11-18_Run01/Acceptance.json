@@ -1,0 +1,111 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASS_NOT_FULL_SUITE",
+  "Primary": [
+    {
+      "File": "ProjectionPrimary.txt",
+      "SHA256": "E0B5E53FD070AACE27974054986B9558D5BC98C6DF72DF171C52E881021B1785",
+      "Passed": 257,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "CleanRunByteIdentical": true
+    },
+    {
+      "File": "MathPrimary.txt",
+      "SHA256": "7773240B16D68AE17313AECBD582298E38CF4F91A258651BAB02A23943633BE5",
+      "Passed": 44,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "CleanRunByteIdentical": true
+    },
+    {
+      "File": "AvailabilityPrimary.txt",
+      "SHA256": "5C13D3C4D732043DF7E81181ACF311FD3B9BB57DD774CE55BC1EBC469E0F60E5",
+      "Passed": 105,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "CleanRunByteIdentical": true
+    },
+    {
+      "File": "UnitsPrimary.txt",
+      "SHA256": "417F23F5809EB890A99CD640507E3B378CC1C2C43125EE3A39FF7A12DF0EBCD0",
+      "Passed": 57,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "CleanRunByteIdentical": true
+    },
+    {
+      "File": "OutputPrimary.txt",
+      "SHA256": "ACF767AD10FA62C1EB74BD9BD7271026444FB397B5A2FF24F7C6176B739C4EC3",
+      "Passed": 105,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "CleanRunByteIdentical": true
+    },
+    {
+      "File": "GuardPrimary.txt",
+      "SHA256": "18A777992A67E089EC5FAC4CE9FE47ADE90DEB33D8727ADB55B458ECD64A58BB",
+      "Passed": 16,
+      "Failed": 0,
+      "EntirePrimaryRead": true,
+      "CleanRunByteIdentical": true
+    }
+  ],
+  "DirectedAssertionsPerBook": 584,
+  "SourcesComparedPerBook": 192,
+  "WorkflowChecks": 40,
+  "UserBook": {
+    "OriginalSHA256": "FAB8F1449B92BA81CADE3A27CF372515B7ADE029788AEEF86AFC4271248FFC1A",
+    "OutputSHA256": "2FA8BA0584AA60FD57B7032A0F9E57765DD8A0715372D8017FC7921F92BFE638",
+    "AllInputAndNMValuesFormulasUnchanged": true,
+    "CalculationVisualAndPrintPreserved": true,
+    "ConfigChangedCells": 0,
+    "VBAExport": {
+      "File": "VBA_All_Code.txt",
+      "SHA256": "F6DDE69DC4988ED8856B8A618B1A0A9193294457FA960DCA76AD78745B7EC74F"
+    }
+  },
+  "CleanBook": {
+    "SHA256": "ADB3C3569AAB54B47007D449DC4A7AE11050EA9023AEB4DBF1D6CD412684E25C",
+    "BuiltFromCurrentSources": true,
+    "NativeAssertionsPassed": 584,
+    "SourceModulesMatched": 192
+  },
+  "Requirements": {
+    "AutomaticAllEqualProjections": true,
+    "PhysicalAreaAccountedOnce": true,
+    "PhysicalBarIDsUnique": true,
+    "ContinuousCircularArcsHandled": true,
+    "EmptyFiniteStationSetHandled": true,
+    "ForceEquilibriumChecked": true,
+    "ContourOrientationAndSegmentationChecked": true,
+    "All17FormulaReferencesOnRight": true,
+    "SourceFormulaStructureAndBookNotation": true,
+    "PrintedPagesAndFormulaNumbersVerified": true,
+    "PDFProvenanceInHelp": false,
+    "WorkingACIURLsRetained": true,
+    "BrokenGorskyURLsAbsent": true
+  },
+  "Algorithm": "Physical area split equally between connected nearest-projection components; continuous arc shares uniform in arc length. Exact piecewise integration; forces accumulated by physical bar ID.",
+  "EngineeringInterpretation": "Allocation and model parameters recorded in ONQ-009; not presented as numbered source requirements.",
+  "FormulaSourceEvidence": {
+    "ACI": {
+      "(9.2.1a)": 9,
+      "(9.2.2f)": 11,
+      "(9.2.2g)": 11,
+      "(9.2.2b)": 11
+    },
+    "Gorsky": {
+      "(13)": 23,
+      "(17)-(19)": 27
+    }
+  },
+  "VisualInspection": {
+    "NativePDFs": 4,
+    "All17FormulaBlocksInspected": true,
+    "SameReferenceRendererAsOtherChapters": true,
+    "ImagesDeliveredToUser": false
+  },
+  "FullOnOffOrHourPlanRun": false,
+  "SpeedMeasurementsRun": false,
+  "Push": "NOT_PERFORMED_LOCAL_ONLY"
+}

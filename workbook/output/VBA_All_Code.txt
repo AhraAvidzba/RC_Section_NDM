@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-18 14:18:49
+Date: 2026-11-18 17:44:13
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -36820,8 +36820,8 @@ Public Property Get GroupBarCount(ByVal index As Long) As Long
     GroupBarCount = mGroupBars(index)
 End Property
 ' Суммарная площадь арматуры неделимой группы, мм^2.
-Public Property Get GroupArea(ByVal index As Long) As Double
-    GroupArea = mGroupArea(index)
+Public Property Get groupArea(ByVal index As Long) As Double
+    groupArea = mGroupArea(index)
 End Property
 ' Сохраненный коэффициент группы для формулы и пассивного вывода.
 Public Property Get GroupBeta(ByVal index As Long) As Double
@@ -44364,7 +44364,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTorsionHoopGeometry
 TYPE: 2
-LINES: 362
+LINES: 387
 ====================================================================================================
 Option Explicit
 
@@ -44482,7 +44482,7 @@ End Function
 
 ' Проецирует точку на ближайшую станцию оси. Два равноудалённых следа
 ' с разных сторон общего угла заменяются серединой короткого участка.
-' Неразрешённые совпадения отмечаются как неоднозначные.
+' При нескольких удалённых проекциях флаг запрашивает полный набор станций.
 Public Function TryProjectStation(ByVal x As Double, ByVal y As Double, ByRef station As Double, _
         ByRef distance As Double, Optional ByRef ambiguous As Boolean = False) As Boolean
     RequireReady
@@ -44518,8 +44518,33 @@ Public Function TryProjectStation(ByVal x As Double, ByVal y As Double, ByRef st
     TryProjectStation = True
 End Function
 
+' Собирает все ближайшие станции для равных удалённых проекций. Центр
+' круговой дуги задаёт непрерывный интервал; его разбиение на рёбра несущественно.
+Friend Function NearestProjectionStations(ByVal x As Double, ByVal y As Double, ByVal distance As Double) As CTorsionProjectionStations
+    RequireReady
+    Dim result As New CTorsionProjectionStations: result.Initialize mLength
+    Dim i As Long, startStation As Double, parameter As Double, gap As Double, alternative As Boolean
+    For i = LBound(mEdges) To UBound(mEdges)
+        gap = PointGap(mEdges(i), x, y, parameter, alternative)
+        If Abs(gap - distance) <= GEOM_BOUNDARY_TOLERANCE Then
+            If IsArc(mEdges(i)) And x = mEdges(i).centerX And y = mEdges(i).centerY Then
+                result.AddArc startStation, startStation + mEdgeLengths(i)
+            Else
+                result.AddPoint startStation + parameter * mEdgeLengths(i)
+                If alternative Then
+                    result.AddPoint startStation
+                    result.AddPoint startStation + mEdgeLengths(i)
+                End If
+            End If
+        End If
+        startStation = startStation + mEdgeLengths(i)
+    Next i
+    result.Seal
+    Set NearestProjectionStations = result
+End Function
+
 ' Устраняет зависимость углового стержня от начальной точки и направления
-' обхода. Удалённые равные проекции остаются неоднозначными.
+' обхода. Для удалённых равных проекций потребитель получает полный набор.
 Private Function ResolveCornerStation(ByVal firstEdge As Long, ByVal secondEdge As Long, ByVal distance As Double, _
         ByVal secondStation As Double, ByRef firstStation As Double) As Boolean
     Dim edgeGap As Long, stationGap As Double
@@ -44732,7 +44757,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTorsionLongitudinalDemand
 TYPE: 2
-LINES: 94
+LINES: 202
 ====================================================================================================
 Option Explicit
 
@@ -44744,8 +44769,8 @@ Option Explicit
 
 Private mStressPerForce() As Double ' Напряжение стержня в МПа на 1 Н суммарной продольной тяги.
 
-' Распределяет периметр по серединам дуговых расстояний между соседними
-' станциями. Стержни на общей станции получают доли пропорционально площади.
+' Распределяет периметр по соседним станциям. Площадь одного стержня
+' делится между равноправными проекциями, а усилия складываются по его ID.
 Friend Sub Initialize(ByVal section As CSectionModel, ByVal hoop As CTorsionHoopGeometry, ByVal bandWidth As Double)
     If section Is Nothing Or hoop Is Nothing Then AllocationError "Не заданы сечение или ось замкнутого хомута."
     If bandWidth <= 0# Then AllocationError "Расчётная полоса продольной арматуры должна иметь положительную ширину."
@@ -44753,69 +44778,177 @@ Friend Sub Initialize(ByVal section As CSectionModel, ByVal hoop As CTorsionHoop
     If nBars < 3 Then AllocationError "Для распределения тяги кручения нужны продольные стержни минимум на трёх разных станциях контура."
 
     Dim perimeter As Double: perimeter = hoop.length
-    Dim sortedBars() As Long, stations() As Double
-    ReDim sortedBars(1 To nBars), stations(1 To nBars)
-    Dim i As Long, count As Long, x As Double, y As Double, station As Double, distance As Double, ambiguous As Boolean
+    Dim sortedBars() As Long, stations() As Double, weights() As Double
+    ReDim sortedBars(1 To nBars), stations(1 To nBars), weights(1 To nBars)
+    Dim projections() As CTorsionProjectionStations, continuousBars() As Long, continuousCount As Long, allocated As Boolean
+    Dim i As Long, j As Long, count As Long, selected As Long, x As Double, y As Double, station As Double, distance As Double, ambiguous As Boolean
     For i = 1 To nBars
         x = section.RebarX(i): y = section.rebarY(i)
         If hoop.ContainsInside(x, y) And hoop.IsOuterRowPoint(x, y) Then
             If Not hoop.TryProjectStation(x, y, station, distance, ambiguous) Then AllocationError "Недоступна проекция стержня " & section.RebarID(i) & "."
             If distance <= bandWidth + GEOM_BOUNDARY_TOLERANCE Then
-                If ambiguous Then AllocationError "Стержень " & section.RebarID(i) & _
-                    " одинаково близок к разным участкам хомута. Уточните ось хомута или положение стержня."
-                InsertStation sortedBars, stations, count, i, station
+                selected = selected + 1
+                If ambiguous Then
+                    If Not allocated Then
+                        ReDim projections(1 To nBars), continuousBars(1 To nBars): allocated = True
+                    End If
+                    Set projections(i) = hoop.NearestProjectionStations(x, y, distance)
+                    For j = 1 To projections(i).pointCount
+                        InsertStation sortedBars, stations, weights, count, i, projections(i).PointAt(j), projections(i).PointWeight
+                    Next j
+                    If projections(i).arcCount > 0 Then
+                        continuousCount = continuousCount + 1: continuousBars(continuousCount) = i
+                    End If
+                Else
+                    InsertStation sortedBars, stations, weights, count, i, station, 1#
+                End If
             End If
         End If
     Next i
-    If count < 3 Then AllocationError "В расчётной полосе хомута найдено меньше трёх продольных стержней."
+    If selected < 3 Then AllocationError "В расчётной полосе хомута найдено меньше трёх продольных стержней."
 
     Dim firstOfGroup() As Long, groupStation() As Double, groups As Long
-    ReDim firstOfGroup(1 To count + 1), groupStation(1 To count)
-    groups = 1: firstOfGroup(1) = 1: groupStation(1) = stations(1)
+    ReDim firstOfGroup(1 To count + 1), groupStation(0 To count) ' Нулевая граница сохраняет допустимый пустой набор при одних дугах.
+    If count > 0 Then groups = 1: firstOfGroup(1) = 1: groupStation(1) = stations(1)
     For i = 2 To count
         If stations(i) - groupStation(groups) > GEOM_BOUNDARY_TOLERANCE Then
             groups = groups + 1: firstOfGroup(groups) = i: groupStation(groups) = stations(i)
         End If
     Next i
     firstOfGroup(groups + 1) = count + 1
-    If groups < 3 Then AllocationError "Продольная арматура охватывает меньше трёх разных станций хомута."
+    If groups < 3 And continuousCount = 0 Then AllocationError "Продольная арматура охватывает меньше трёх разных станций хомута."
 
     Dim result() As Double: ReDim result(1 To nBars)
-    Dim g As Long, previous As Double, nextStation As Double, fraction As Double, area As Double, j As Long
-    Dim sumFraction As Double
-    previous = groupStation(groups) - perimeter ' Станция слева от шва в развёрнутой координате.
+    Dim g As Long, previous As Double, nextStation As Double, fraction As Double
+    Dim groupArea() As Double, groupWidth() As Double
+    ReDim groupArea(0 To groups), groupWidth(0 To groups)
+    If groups > 0 Then previous = groupStation(groups) - perimeter ' Станция слева от шва в развёрнутой координате.
     For g = 1 To groups
         nextStation = groupStation(1) + perimeter
         If g < groups Then nextStation = groupStation(g + 1)
         fraction = (nextStation - previous) / (2# * perimeter)
         previous = groupStation(g)
-        area = 0#
+        groupWidth(g) = fraction * perimeter
+        groupArea(g) = 0#
         For j = firstOfGroup(g) To firstOfGroup(g + 1) - 1
-            area = area + section.rebarArea(sortedBars(j))
+            groupArea(g) = groupArea(g) + section.rebarArea(sortedBars(j)) * weights(j)
         Next j
-        If area <= 0# Then AllocationError "Площадь продольной арматуры на станции хомута должна быть больше нуля."
-        For j = firstOfGroup(g) To firstOfGroup(g + 1) - 1
-            i = sortedBars(j)
-            result(i) = fraction / area
-            sumFraction = sumFraction + result(i) * section.rebarArea(i)
-        Next j
+        If groupArea(g) <= 0# Then AllocationError "Площадь продольной арматуры на станции хомута должна быть больше нуля."
+        If continuousCount = 0 Then
+            For j = firstOfGroup(g) To firstOfGroup(g + 1) - 1
+                i = sortedBars(j)
+                result(i) = result(i) + fraction * weights(j) / groupArea(g)
+            Next j
+        End If
     Next g
+    If continuousCount > 0 Then DistributeContinuous section, perimeter, sortedBars, stations, weights, firstOfGroup, groupStation, _
+        groupArea, groupWidth, groups, projections, continuousBars, continuousCount, result
+    Dim sumFraction As Double
+    For i = 1 To nBars
+        sumFraction = sumFraction + result(i) * section.rebarArea(i)
+    Next i
     If Abs(sumFraction - 1#) > 0.0000000001 Then AllocationError "Доли продольной тяги не покрывают полный контур хомута."
     mStressPerForce = result
 End Sub
 
 ' Вставляет станцию в отсортированную часть подготовительного массива.
-Private Sub InsertStation(ByRef order() As Long, ByRef stations() As Double, ByRef count As Long, _
-        ByVal rebarIndex As Long, ByVal station As Double)
+Private Sub InsertStation(ByRef order() As Long, ByRef stations() As Double, ByRef weights() As Double, ByRef count As Long, _
+        ByVal rebarIndex As Long, ByVal station As Double, ByVal weight As Double)
+    If count = UBound(order) Then
+        Dim capacity As Long: capacity = 2 * UBound(order)
+        ReDim Preserve order(1 To capacity), stations(1 To capacity), weights(1 To capacity)
+    End If
     Dim index As Long: index = count + 1
     Do While index > 1
         If stations(index - 1) <= station Then Exit Do
-        stations(index) = stations(index - 1): order(index) = order(index - 1)
+        stations(index) = stations(index - 1): order(index) = order(index - 1): weights(index) = weights(index - 1)
         index = index - 1
     Loop
-    stations(index) = station: order(index) = rebarIndex
+    stations(index) = station: order(index) = rebarIndex: weights(index) = weight
     count = count + 1
 End Sub
+
+' Распределяет тягу при непрерывных дуговых проекциях. В каждой ячейке
+' точечной станции её площадь равномерно отнесена к прилегающей длине;
+' дуговая доля площади распределена по своей дуге. Интегрирование выполняется
+' точно по участкам постоянной плотности, без выборки и зависимости от рёбер.
+Private Sub DistributeContinuous(ByVal section As CSectionModel, ByVal perimeter As Double, ByRef order() As Long, _
+        ByRef stations() As Double, ByRef weights() As Double, ByRef firstOfGroup() As Long, ByRef groupStation() As Double, _
+        ByRef groupArea() As Double, ByRef groupWidth() As Double, ByVal groups As Long, _
+        ByRef projections() As CTorsionProjectionStations, ByRef continuousBars() As Long, ByVal continuousCount As Long, ByRef result() As Double)
+    Dim boundaries() As Double, boundaryCount As Long, i As Long, j As Long, g As Long, bar As Long, nextStation As Double
+    ReDim boundaries(1 To 2): boundaries(1) = 0#: boundaries(2) = perimeter: boundaryCount = 2
+    For g = 1 To groups
+        nextStation = groupStation(1) + perimeter
+        If g < groups Then nextStation = groupStation(g + 1)
+        InsertBoundary boundaries, boundaryCount, 0.5 * (groupStation(g) + nextStation), perimeter
+    Next g
+    For i = 1 To continuousCount
+        bar = continuousBars(i)
+        For j = 1 To projections(bar).arcCount
+            InsertBoundary boundaries, boundaryCount, projections(bar).ArcStartAt(j), perimeter
+            InsertBoundary boundaries, boundaryCount, projections(bar).ArcEndAt(j), perimeter
+        Next j
+    Next i
+    Dim densityWeights() As Double: ReDim densityWeights(1 To continuousCount)
+    Dim midpoint As Double, density As Double, pieceFactor As Double, length As Double
+    For j = 1 To boundaryCount - 1
+        length = boundaries(j + 1) - boundaries(j): midpoint = 0.5 * (boundaries(j + 1) + boundaries(j))
+        g = NearestGroup(midpoint, groupStation, groups, perimeter)
+        density = 0#
+        If g > 0 Then density = groupArea(g) / groupWidth(g)
+        For i = 1 To continuousCount
+            bar = continuousBars(i): densityWeights(i) = projections(bar).WeightDensityAt(midpoint)
+            density = density + section.rebarArea(bar) * densityWeights(i)
+        Next i
+        If density <= 0# Then AllocationError "Выбранная продольная арматура не покрывает периметр оси хомута."
+        pieceFactor = length / (perimeter * density)
+        If g > 0 Then
+            For i = firstOfGroup(g) To firstOfGroup(g + 1) - 1
+                bar = order(i): result(bar) = result(bar) + pieceFactor * weights(i) / groupWidth(g)
+            Next i
+        End If
+        For i = 1 To continuousCount
+            bar = continuousBars(i): result(bar) = result(bar) + pieceFactor * densityWeights(i)
+        Next i
+    Next j
+End Sub
+
+' Добавляет границу участка на периоде; шов 0/perimeter остаётся явным.
+Private Sub InsertBoundary(ByRef values() As Double, ByRef count As Long, ByVal value As Double, ByVal perimeter As Double)
+    value = value - perimeter * Int(value / perimeter)
+    Dim i As Long
+    For i = 1 To count
+        If Abs(values(i) - value) <= GEOM_BOUNDARY_TOLERANCE Then Exit Sub
+    Next i
+    count = count + 1: ReDim Preserve values(1 To count): i = count
+    Do While i > 1
+        If values(i - 1) <= value Then Exit Do
+        values(i) = values(i - 1): i = i - 1
+    Loop
+    values(i) = value
+End Sub
+
+' Находит ближайшую точечную группу по длине оси двоичным поиском.
+Private Function NearestGroup(ByVal station As Double, ByRef values() As Double, ByVal count As Long, ByVal perimeter As Double) As Long
+    If count = 0 Then Exit Function
+    Dim low As Long, high As Long, middle As Long, previous As Long, following As Long
+    low = 1: high = count + 1
+    Do While low < high
+        middle = (low + high) \ 2
+        If middle <= count Then
+            If values(middle) < station Then low = middle + 1 Else high = middle
+        Else
+            high = middle
+        End If
+    Loop
+    following = low: If following > count Then following = 1
+    previous = low - 1: If previous < 1 Then previous = count
+    Dim leftGap As Double, rightGap As Double
+    leftGap = Abs(station - values(previous)): leftGap = GeomMin(leftGap, perimeter - leftGap)
+    rightGap = Abs(station - values(following)): rightGap = GeomMin(rightGap, perimeter - rightGap)
+    If leftGap <= rightGap Then NearestGroup = previous Else NearestGroup = following
+End Function
 
 ' Копирует коэффициенты напряжений в порядке исходных стержней.
 Friend Sub CopyStressPerUnitForce(ByRef coefficients() As Double)
@@ -118319,7 +118452,7 @@ Private Function TestResultFingerprint(ByVal result As CCombinationResult, ByVal
         If Not data Is Nothing Then
             text = text & TestScalarFieldsFingerprint(data, "CandidateCount GroupCount NormalX NormalY NeutralProjection GroupGapTolerance RowTolerance NeighborRatioLimit RadiusDiameterMode InteractionRadiusMode CentralTension SectionRevision")
             For j = 1 To data.groupCount
-                text = text & TestDoubleBits(data.GroupX(j)) & TestDoubleBits(data.GroupY(j)) & TestDoubleBits(data.GroupArea(j)) & _
+                text = text & TestDoubleBits(data.GroupX(j)) & TestDoubleBits(data.GroupY(j)) & TestDoubleBits(data.groupArea(j)) & _
                     TestDoubleBits(data.GroupBeta(j)) & CStr(data.GroupRow(j)) & TestArrayFingerprint(data.GroupMembers(j))
             Next j
             For j = 1 To data.CandidateCount
@@ -145283,5 +145416,416 @@ Private Function LogicalTorsionHeaders(ByVal units As CUnitSystem) As Variant
     LogicalTorsionHeaders = result
 End Function
 
+
+
+====================================================================================================
+COMPONENT: CTorsionProjectionStations
+TYPE: 2
+LINES: 157
+====================================================================================================
+Option Explicit
+
+' ==========================================================================
+' Равноправные проекции одного продольного стержня на ось хомута.
+' Площадь делится поровну между отдельными точками и связными дугами;
+' на каждой непрерывной дуге её доля распределяется равномерно по длине.
+' После Seal набор неизменяем; координата станции измеряется вдоль оси, мм.
+' ==========================================================================
+Private mLength As Double, mSealed As Boolean
+Private mPoints() As Double, mPointCount As Long
+Private mStarts() As Double, mEnds() As Double, mArcCount As Long
+Private mComponents As Long
+
+' Задаёт период замкнутой оси до добавления точек и интервалов.
+Friend Sub Initialize(ByVal perimeter As Double)
+    If mLength > 0# Or perimeter <= 0# Then ProjectionError "Не задан единственный положительный периметр проекций."
+    mLength = perimeter
+End Sub
+
+' Добавляет одну станцию без повторного учёта общего конца соседних рёбер.
+Friend Sub AddPoint(ByVal station As Double)
+    RequireBuilding
+    station = Normalize(station)
+    Dim i As Long, gap As Double
+    For i = 1 To mPointCount
+        gap = Abs(mPoints(i) - station)
+        If GeomMin(gap, mLength - gap) <= GEOM_BOUNDARY_TOLERANCE Then Exit Sub
+    Next i
+    mPointCount = mPointCount + 1
+    ReDim Preserve mPoints(1 To mPointCount)
+    mPoints(mPointCount) = station
+End Sub
+
+' Принимает непрерывный равноудалённый участок в порядке обхода оси.
+' Соседние дуги объединяются независимо от разбиения исходного контура.
+Friend Sub AddArc(ByVal firstStation As Double, ByVal lastStation As Double)
+    RequireBuilding
+    If lastStation <= firstStation Then ProjectionError "Равноудалённая дуга должна иметь положительную длину."
+    If mArcCount > 0 Then
+        If Abs(firstStation - mEnds(mArcCount)) <= GEOM_BOUNDARY_TOLERANCE Then
+            mEnds(mArcCount) = lastStation
+            Exit Sub
+        End If
+    End If
+    mArcCount = mArcCount + 1
+    ReDim Preserve mStarts(1 To mArcCount), mEnds(1 To mArcCount)
+    mStarts(mArcCount) = firstStation: mEnds(mArcCount) = lastStation
+End Sub
+
+' Замыкает интервалы через шов и исключает точки, уже принадлежащие дугам.
+Friend Sub Seal()
+    RequireBuilding
+    Dim i As Long, j As Long, firstEnd As Double, lastStart As Double
+    If mArcCount > 1 Then
+        If mStarts(1) <= GEOM_BOUNDARY_TOLERANCE And mEnds(mArcCount) >= mLength - GEOM_BOUNDARY_TOLERANCE Then
+            firstEnd = mEnds(1): lastStart = mStarts(mArcCount)
+            For i = 1 To mArcCount - 2
+                mStarts(i) = mStarts(i + 1): mEnds(i) = mEnds(i + 1)
+            Next i
+            mArcCount = mArcCount - 1
+            mStarts(mArcCount) = lastStart: mEnds(mArcCount) = firstEnd + mLength
+        End If
+    End If
+    j = 0
+    For i = 1 To mPointCount
+        If Not OnAnyArc(mPoints(i)) Then j = j + 1: mPoints(j) = mPoints(i)
+    Next i
+    mPointCount = j: mComponents = mPointCount + mArcCount
+    If mComponents = 0 Then ProjectionError "Не найдены ближайшие проекции стержня."
+    mSealed = True
+End Sub
+
+' Возвращает число отдельных точечных проекций после объединения границ.
+Friend Property Get pointCount() As Long
+    RequireSealed
+    pointCount = mPointCount
+End Property
+
+' Возвращает точечную станцию, нормированную на период оси.
+Friend Property Get PointAt(ByVal index As Long) As Double
+    RequireSealed
+    PointAt = mPoints(index)
+End Property
+
+' Возвращает долю физической площади на одну отдельную точечную проекцию.
+Friend Property Get PointWeight() As Double
+    RequireSealed
+    PointWeight = 1# / mComponents
+End Property
+
+' Возвращает число связных непрерывных дуговых проекций.
+Friend Property Get arcCount() As Long
+    RequireSealed
+    arcCount = mArcCount
+End Property
+
+' Возвращает начало дугового интервала в координате вдоль оси.
+Friend Property Get ArcStartAt(ByVal index As Long) As Double
+    RequireSealed
+    ArcStartAt = mStarts(index)
+End Property
+
+' Возвращает конец интервала; при пересечении шва он может превышать периметр.
+Friend Property Get ArcEndAt(ByVal index As Long) As Double
+    RequireSealed
+    ArcEndAt = mEnds(index)
+End Property
+
+' Возвращает долю площади на единицу длины равноудалённой дуги, 1/мм.
+Friend Function WeightDensityAt(ByVal station As Double) As Double
+    RequireSealed
+    Dim i As Long
+    For i = 1 To mArcCount
+        If OnArc(station, i) Then
+            WeightDensityAt = 1# / (mComponents * (mEnds(i) - mStarts(i)))
+            Exit Function
+        End If
+    Next i
+End Function
+
+' Проверяет принадлежность дуге с учётом периодического шва.
+Private Function OnArc(ByVal station As Double, ByVal index As Long) As Boolean
+    Dim offset As Double: offset = Normalize(station) - mStarts(index)
+    If offset < -GEOM_BOUNDARY_TOLERANCE Then offset = offset + mLength
+    OnArc = offset >= -GEOM_BOUNDARY_TOLERANCE And offset <= mEnds(index) - mStarts(index) + GEOM_BOUNDARY_TOLERANCE
+End Function
+
+' Исключает повтор площади, если точка совпала с концом непрерывной проекции.
+Private Function OnAnyArc(ByVal station As Double) As Boolean
+    Dim i As Long
+    For i = 1 To mArcCount
+        If OnArc(station, i) Then OnAnyArc = True: Exit Function
+    Next i
+End Function
+
+' Сводит станцию к периоду и объединяет численно совпадающие концы оси.
+Private Function Normalize(ByVal station As Double) As Double
+    station = station - mLength * Int(station / mLength)
+    If station <= GEOM_BOUNDARY_TOLERANCE Or mLength - station <= GEOM_BOUNDARY_TOLERANCE Then station = 0#
+    Normalize = station
+End Function
+
+' Запрещает менять подготовленный набор проекций.
+Private Sub RequireBuilding()
+    If mLength <= 0# Or mSealed Then ProjectionError "Набор проекций не подготовлен к заполнению."
+End Sub
+
+' Запрещает читать незавершённое распределение площади.
+Private Sub RequireSealed()
+    If Not mSealed Then ProjectionError "Завершите набор проекций стержня."
+End Sub
+
+' Возвращает ошибку геометрической подготовки без привязки к Excel.
+Private Sub ProjectionError(ByVal description As String)
+    Err.Raise vbObjectError + 4505, TypeName(Me), description
+End Sub
+
+
+====================================================================================================
+COMPONENT: modTestTorsionProjections
+TYPE: 1
+LINES: 242
+====================================================================================================
+Option Explicit
+
+' ==================== ДЛЯ ТЕСТОВ ====================
+' Независимый контроль равных точечных и непрерывных проекций, площади,
+' равновесия, симметрии и независимости от направления и разбиения контура.
+' ===================================================
+Private mTestPassed As Long, mTestFailed As Long, mTestLog As String
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет подготовленные коэффициенты по аналитическим долям тяги.
+Public Function RunTorsionProjectionTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    TestProjectionComponents
+    Dim section As CSectionModel, hoop As CTorsionHoopGeometry, demand As CTorsionLongitudinalDemand
+    Dim coefficients() As Double, baseline() As Double, i As Long, caseIndex As Long, sign As Long
+    For caseIndex = 0 To 7
+        Set section = TestProjectionRectangle(caseIndex, False, 1)
+        Set hoop = New CTorsionHoopGeometry: hoop.InitializeAutomatic section, 20#, 8#
+        Set demand = New CTorsionLongitudinalDemand: demand.Initialize section, hoop, 1000#
+        demand.CopyStressPerUnitForce coefficients
+        For i = 1 To 4: TestProjectionNear "Rectangle corner " & caseIndex & ":" & i, coefficients(i), 29# / 16800#: Next i
+        TestProjectionNear "Rectangle centre " & caseIndex, coefficients(5), 13# / 4200#
+        TestProjectionEquilibrium section, coefficients, "Rectangle " & caseIndex
+        If caseIndex = 0 Then baseline = coefficients
+        For i = 1 To 5: TestProjectionNear "Contour order and segmentation " & caseIndex & ":" & i, coefficients(i), baseline(i): Next i
+    Next caseIndex
+    Set section = TestProjectionRectangle(0, False, 1)
+    Set hoop = New CTorsionHoopGeometry: hoop.InitializeAutomatic section, 20#, 8#
+    Set demand = New CTorsionLongitudinalDemand: demand.Initialize section, hoop, 25#
+    demand.CopyStressPerUnitForce coefficients
+    TestProjectionNear "Ambiguous bar outside selected band ignored", coefficients(5), 0#
+    For i = 1 To 4: TestProjectionNear "Normal corner unchanged " & i, coefficients(i), 1# / 400#: Next i
+
+    Set section = TestProjectionRectangle(0, True, 2)
+    Set hoop = New CTorsionHoopGeometry: hoop.InitializeAutomatic section, 20#, 8#
+    Set demand = New CTorsionLongitudinalDemand: demand.Initialize section, hoop, 1000#
+    demand.CopyStressPerUnitForce coefficients
+    For i = 1 To 4: TestProjectionNear "Square outer eighth " & i, coefficients(i), 1# / 800#: Next i
+    TestProjectionNear "Shared centre station area ratio A", coefficients(5), 1# / 800#
+    TestProjectionNear "Shared centre station area ratio B", coefficients(6), 1# / 800#
+    TestProjectionEquilibrium section, coefficients, "Square shared projections"
+    TestProjectionCalculatorOutput section
+
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, 0#, GEOM_PI * 10000#, 1, shapeType:="Circle", width:=200#, height:=200#
+    section.contours.AddContourCircle "Circle", 0#, 0#, 100#
+    For i = 1 To 3: TestProjectionAddBar section, 0#, 0#, 100# * i: Next i
+    Set hoop = New CTorsionHoopGeometry
+    hoop.InitializeExplicit section, TestProjectionCirclePath(4, 1), 8#, 16#
+    Set demand = New CTorsionLongitudinalDemand: demand.Initialize section, hoop, 1000#
+    demand.CopyStressPerUnitForce coefficients
+    For i = 1 To 3: TestProjectionNear "Only continuous projections " & i, coefficients(i), 1# / 600#: Next i
+    TestProjectionEquilibrium section, coefficients, "Only continuous projections"
+    TestProjectionCalculatorOutput section
+
+    For caseIndex = 0 To 3
+        sign = 1: If caseIndex Mod 2 = 1 Then sign = -1
+        Set section = TestProjectionCircle()
+        Set hoop = New CTorsionHoopGeometry
+        hoop.InitializeExplicit section, TestProjectionCirclePath(4 + 4 * (caseIndex \ 2), sign), 8#, 16#
+        Set demand = New CTorsionLongitudinalDemand: demand.Initialize section, hoop, 1000#
+        demand.CopyStressPerUnitForce coefficients
+        For i = 1 To 5: TestProjectionNear "Circle density and arc segmentation " & caseIndex & ":" & i, coefficients(i), 1# / 500#: Next i
+        TestProjectionEquilibrium section, coefficients, "Circle " & caseIndex
+    Next caseIndex
+    For caseIndex = 0 To 3
+        sign = 1: If caseIndex Mod 2 = 1 Then sign = -1
+        Set section = TestProjectionStadiumSection()
+        Set hoop = New CTorsionHoopGeometry
+        hoop.InitializeExplicit section, TestProjectionStadiumPath(50#, sign, 1 + caseIndex \ 2), 8#, 16#
+        Set demand = New CTorsionLongitudinalDemand: demand.Initialize section, hoop, 1000#
+        demand.CopyStressPerUnitForce coefficients
+        Dim expected As Double, perimeter As Double, arcLength As Double
+        arcLength = 50# * GEOM_PI: perimeter = 200# + 2# * arcLength
+        expected = 1# / (400# + 100# * perimeter / arcLength)
+        TestProjectionNear "Stadium continuous centre " & caseIndex, coefficients(5), expected
+        TestProjectionNear "Stadium left point " & caseIndex, coefficients(1), expected
+        TestProjectionNear "Stadium right point " & caseIndex, coefficients(2), 1# / 400#
+        TestProjectionNear "Stadium top " & caseIndex, coefficients(3), (0.75 - 200# * expected) / 200#
+        TestProjectionNear "Stadium bottom " & caseIndex, coefficients(4), coefficients(3)
+        TestProjectionEquilibrium section, coefficients, "Stadium " & caseIndex
+    Next caseIndex
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.description
+Finished:
+    RunTorsionProjectionTests = "TorsionProjections: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет распределение площади между точкой и связной дугой, включая шов.
+Private Sub TestProjectionComponents()
+    Dim points As New CTorsionProjectionStations
+    points.Initialize 100#: points.AddArc 0#, 25#: points.AddArc 25#, 50#
+    points.AddPoint 50#: points.AddPoint 75#: points.AddPoint 75#: points.Seal
+    TestProjectionAssert "Arc segments merged", points.arcCount = 1
+    TestProjectionAssert "Duplicate endpoint area excluded", points.pointCount = 1
+    TestProjectionNear "Isolated point physical area share", points.PointWeight, 0.5
+    TestProjectionNear "Continuous area density", points.WeightDensityAt(10#), 0.01
+    TestProjectionNear "Area accounted once", points.PointWeight + 50# * points.WeightDensityAt(10#), 1#
+    TestProjectionNear "No density outside nearest arc", points.WeightDensityAt(90#), 0#
+    Set points = New CTorsionProjectionStations
+    points.Initialize 100#: points.AddArc 0#, 10#: points.AddArc 90#, 100#
+    points.AddPoint 0#: points.AddPoint 50#: points.Seal
+    TestProjectionAssert "Periodic arc components merged", points.arcCount = 1 And points.pointCount = 1
+    TestProjectionNear "Seam arc first side", points.WeightDensityAt(5#), 0.025
+    TestProjectionNear "Seam arc second side", points.WeightDensityAt(95#), 0.025
+    TestProjectionNear "Seam area accounted once", points.PointWeight + 20# * points.WeightDensityAt(95#), 1#
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Формирует прямоугольник с фиксированными ID; меняет только обход и деление рёбер.
+Private Function TestProjectionRectangle(ByVal caseIndex As Long, ByVal square As Boolean, ByVal centres As Long) As CSectionModel
+    Dim section As New CSectionModel, halfY As Double, barY As Double, x As Long, y As Long, i As Long
+    halfY = 150#: barY = 115#: If square Then halfY = 100#: barY = 65#
+    section.AddConcreteElement 0#, 0#, 400# * halfY, 1, shapeType:="Rectangle", width:=200#, height:=2# * halfY
+    For x = -1 To 1 Step 2
+        For y = -1 To 1 Step 2
+            TestProjectionAddBar section, 65# * x, barY * y, 100#
+        Next y
+    Next x
+    TestProjectionAddBar section, 0#, 0#, 100#
+    If centres = 2 Then TestProjectionAddBar section, 0#, 0#, 300#
+    Dim xs As Variant, ys As Variant, current As Long, following As Long, direction As Long
+    xs = Array(-100#, 100#, 100#, -100#): ys = Array(-halfY, -halfY, halfY, halfY)
+    direction = 1: If caseIndex Mod 2 = 1 Then direction = -1
+    For i = 0 To 3
+        current = ((caseIndex \ 2 + direction * i) Mod 4 + 4) Mod 4
+        following = ((current + direction) Mod 4 + 4) Mod 4
+        If caseIndex >= 4 Then
+            section.contours.AddContourLine "A" & i, xs(current), ys(current), 0.5 * (xs(current) + xs(following)), 0.5 * (ys(current) + ys(following))
+            section.contours.AddContourLine "B" & i, 0.5 * (xs(current) + xs(following)), 0.5 * (ys(current) + ys(following)), xs(following), ys(following)
+        Else
+            section.contours.AddContourLine "E" & i, xs(current), ys(current), xs(following), ys(following)
+        End If
+    Next i
+    Set TestProjectionRectangle = section
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт круг с четырьмя наружными стержнями и одним в центре.
+Private Function TestProjectionCircle() As CSectionModel
+    Dim section As New CSectionModel
+    section.AddConcreteElement 0#, 0#, GEOM_PI * 10000#, 1, shapeType:="Circle", width:=200#, height:=200#
+    section.contours.AddContourCircle "Circle", 0#, 0#, 100#
+    TestProjectionAddBar section, -65#, 0#, 100#: TestProjectionAddBar section, 65#, 0#, 100#
+    TestProjectionAddBar section, 0#, 65#, 100#: TestProjectionAddBar section, 0#, -65#, 100#
+    TestProjectionAddBar section, 0#, 0#, 100#
+    Set TestProjectionCircle = section
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Строит одну окружность разным числом дуг и в обоих направлениях.
+Private Function TestProjectionCirclePath(ByVal segments As Long, ByVal direction As Long) As CGeometryPath
+    Dim path As New CGeometryPath, i As Long, sweep As Double
+    path.Initialize "Circle": sweep = direction * 2# * GEOM_PI / segments
+    For i = 0 To segments - 1: path.AddArc "Arc" & i, 0#, 0#, 80#, i * sweep, sweep: Next i
+    path.Seal True: Set TestProjectionCirclePath = path
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Даёт стадион с непрерывной ближайшей полуокружностью только у одного стержня.
+Private Function TestProjectionStadiumSection() As CSectionModel
+    Dim section As New CSectionModel, path As CGeometryPath, edge As TRegionEdge, i As Long
+    section.AddConcreteElement 0#, 0#, 33600#, 1, shapeType:="Rectangle", width:=240#, height:=140#
+    Set path = TestProjectionStadiumPath(70#, 1, 1)
+    For i = 1 To path.SegmentCount
+        path.CopySegment i, edge
+        If Abs(edge.sweep) <= GEOM_PARAMETER_TOLERANCE Then
+            section.contours.AddContourLine "L" & i, edge.x1, edge.y1, edge.x2, edge.y2
+        Else
+            section.contours.AddContourArc "A" & i, edge.x1, edge.y1, edge.x2, edge.y2, edge.centerX, edge.centerY, 70#, edge.sweep
+        End If
+    Next i
+    TestProjectionAddBar section, -85#, 0#, 100#: TestProjectionAddBar section, 85#, 0#, 100#
+    TestProjectionAddBar section, 0#, 35#, 100#: TestProjectionAddBar section, 0#, -35#, 100#
+    TestProjectionAddBar section, -50#, 0#, 100#
+    Set TestProjectionStadiumSection = section
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Меняет деление полуокружностей, сохраняя фактическую ось и её размеры.
+Private Function TestProjectionStadiumPath(ByVal radius As Double, ByVal direction As Long, ByVal pieces As Long) As CGeometryPath
+    Dim path As New CGeometryPath, i As Long, sweep As Double, first As Double, centre As Double
+    path.Initialize "Stadium": sweep = direction * GEOM_PI / pieces
+    If direction = 1 Then path.AddLine "Bottom", -50#, -radius, 50#, -radius
+    centre = 50#: first = -GEOM_PI / 2#: If direction = -1 Then centre = -50#
+    For i = 0 To pieces - 1: path.AddArc "First" & i, centre, 0#, radius, first + i * sweep, sweep: Next i
+    If direction = 1 Then path.AddLine "Top", 50#, radius, -50#, radius Else path.AddLine "Top", -50#, radius, 50#, radius
+    centre = -centre: first = GEOM_PI / 2#
+    For i = 0 To pieces - 1: path.AddArc "Second" & i, centre, 0#, radius, first + i * sweep, sweep: Next i
+    If direction = -1 Then path.AddLine "Bottom", 50#, -radius, -50#, -radius
+    path.Seal True: Set TestProjectionStadiumPath = path
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт физическую площадь и соответствующий диаметр без скрытой смены ID.
+Private Sub TestProjectionAddBar(ByVal section As CSectionModel, ByVal x As Double, ByVal y As Double, ByVal area As Double)
+    section.AddRebarElement x, y, Sqr(4# * area / GEOM_PI), area, "A400"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет, что сумма сил относится к физическим стержням, без дублирующих ID.
+Private Sub TestProjectionCalculatorOutput(ByVal section As CSectionModel)
+    Dim p As TTorsionPostParameters, calculator As New CTorsionPostCalculator
+    p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 100#: p.BarBand = 1000#
+    p.SteelResistance = 350#: p.HoopResistance = 300#: p.StrutAngle = 45#: p.ConcreteMethod = "None"
+    calculator.Prepare section, p
+    Dim result As CTorsionPostResult: Set result = calculator.Calculate("Equal", 1000000#, Nothing)
+    Dim bars As Variant, row As Variant, i As Long, total As Double
+    bars = result.bars: row = result.summary
+    TestProjectionAssert "One output per physical bar", UBound(bars, 1) = section.rebarCount
+    For i = 1 To UBound(bars, 1): total = total + bars(i, 3): Next i
+    TestProjectionNear "Calculator force equilibrium", total, CDbl(row(1, 8))
+    TestProjectionAssert "T available without projection error", CStr(row(1, 15)) = "OK" Or CStr(row(1, 15)) = "FAIL"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимо суммирует коэффициент напряжения, умноженный на физическую площадь.
+Private Sub TestProjectionEquilibrium(ByVal section As CSectionModel, ByRef coefficients() As Double, ByVal label As String)
+    Dim i As Long, total As Double
+    For i = 1 To section.rebarCount
+        TestProjectionAssert label & " nonnegative " & i, coefficients(i) >= 0#
+        total = total + coefficients(i) * section.rebarArea(i)
+    Next i
+    TestProjectionNear label & " physical force sum", total, 1#
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает аналитическое значение с относительным допуском.
+Private Sub TestProjectionNear(ByVal label As String, ByVal actual As Double, ByVal expected As Double)
+    TestProjectionAssert label, Abs(actual - expected) <= 0.000000001 * GeomMax(Abs(expected), 0.000001)
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет каждую проверку в первичном журнале, включая фактические отказы.
+Private Sub TestProjectionAssert(ByVal label As String, ByVal passed As Boolean)
+    If passed Then mTestPassed = mTestPassed + 1 Else mTestFailed = mTestFailed + 1
+    mTestLog = mTestLog & vbCrLf & IIf(passed, "PASS ", "FAIL ") & label
+End Sub
 
 

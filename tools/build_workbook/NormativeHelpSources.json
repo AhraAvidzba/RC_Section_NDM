@@ -17,7 +17,7 @@
   {
     "id": "ACI445",
     "caption": "ACI 445.1R-12",
-    "description": "Joint ACI-ASCE Committee 445. Report on Torsion in Structural Concrete. Выдержка ACI University, главы 8–9. Глава 9: пространственная ферма, одноконтурный поток, продольная и поперечная арматура. Инженерные параметры книги оговорены отдельно.",
+    "description": "Joint ACI-ASCE Committee 445. Report on Torsion in Structural Concrete. Глава 9: пространственная ферма, одноконтурный поток, продольная и поперечная арматура. Инженерные параметры книги оговорены отдельно.",
     "kind": "report",
     "url": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
     "relativePath": "norms/Torsion/ACI-445.1R-12-Torsion.pdf"
@@ -25,7 +25,7 @@
   {
     "id": "Gorsky",
     "caption": "Горский (1961)",
-    "description": "В. В. Горский. Проектирование железобетонных конструкций, подверженных кручению. Киев: Госстройиздат УССР, 1961. §3, формула (13), стр.23; §4, формулы (17)–(19), стр.27. В предоставленной копии это страницы PDF 21 и 25.",
+    "description": "В. В. Горский. Проектирование железобетонных конструкций, подверженных кручению. Киев: Госстройиздат УССР, 1961. §3, формула (13), стр.23; §4, формулы (17)–(19), стр.27.",
     "kind": "book",
     "relativePath": "norms/Torsion/Gorsky-1961-Torsion.pdf"
   }

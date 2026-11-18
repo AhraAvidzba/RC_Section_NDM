@@ -1,0 +1,45 @@
+﻿TorsionPost: Passed=44; Failed=0
+PASS Ao = 160*260
+PASS uo = 2*(160+260)
+PASS q = T/(2Ao)
+PASS FT = q*uo
+PASS AsT = FT/Rs
+PASS deltaSigma = FT/(4*As)
+PASS HoopArea = pi*d*d/4
+PASS HoopStress = q*s/Asw
+PASS StrutThickness = 2*axisCover
+PASS StrutStress = 2*q/t
+PASS StrutLimit
+PASS Axis offset excludes diameter addition
+PASS Same axis offset gives same area with other diameter
+PASS NoNM -> N/A, T retained
+PASS Compact bars three columns
+PASS BarForce1
+PASS BarForce2
+PASS BarForce3
+PASS BarForce4
+PASS Allocated force equilibrium
+PASS T sign invariance
+PASS Gorsky coefficient*c*b2*h
+PASS Gorsky changes no longitudinal force
+PASS Concrete disabled
+PASS Saved plane confirmed
+PASS Saved material snapshot exists
+PASS NM compression retains sign
+PASS Signed sum is negative
+PASS Compressive sum has no tensile limit
+PASS Saved plane confirmed
+PASS Saved material snapshot exists
+PASS Outside physical flag still uses saved NM
+PASS Outside physical flag signed sum
+PASS NM reasons stay in NM
+PASS Saved plane confirmed
+PASS Saved material snapshot exists
+PASS T only failure does not override signed sum
+PASS Hollow uses outer area only
+PASS Wide band excludes inner row
+PASS Outer bar ID 1
+PASS Outer bar ID 2
+PASS Outer bar ID 3
+PASS Outer bar ID 4
+PASS Hollow allocates all tie force

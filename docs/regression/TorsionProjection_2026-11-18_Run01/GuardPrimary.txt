@@ -1,0 +1,18 @@
+﻿TorsionPostGuard: Passed=16; Failed=0
+PASS Overlapping clear rejected
+PASS NM data survived bad own range
+PASS Geometric setting error retained
+PASS Wall thickness key retained
+INFO wall diagnostic: Постпроверка T (кручение).; Адреса ячеек:; Config!I104; ; Настройка Torsion.StateType; ; Сохранённое состояние StrengthState не найдено; T рассчитан, сумма NMT недоступна. Включите получение этого состояния в расчётном профиле.; Введённое значение: «StrengthState».; ; Возможное решение:; Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания.; ; Адреса ячеек:; Config!I113 ⟶ Расчет!ZZ2; ; Настройка Torsion.WallThickness; ; Torsion.WallThickness превышает толщину располагаемой бетонной полосы вокруг оси хомута.; ; Возможное решение:; Уменьшите толщину или выберите 0 для автоматического определения. Эта настройка не задаёт полосу отбора арматуры; для неё используется Torsion.BarBand.; Введённое значение: «1000».; ; Проверьте параметры выбранного метода бетона. Продольная арматура и хомут рассчитаны независимо.; Адреса ячеек:; Config!I105; ; Настройка Torsion.HoopAxisOffset; ; Связанный параметр выбранной проверки T.; Введённое значение: «29».; ; Возможное решение:; Исправьте значение в указанной ячейке.; Адреса ячеек:; Config!I106; ; Настройка Torsion.HoopDiameter; ; Связанный параметр выбранной проверки T.; Введённое значение: «8».; ; Возможное решение:; Исправьте значение в указанной ячейке.; Адреса ячеек:; Config!I115; ; Настройка Torsion.ConcreteEfficiency; ; Связанный параметр выбранной проверки T.; Введённое значение: «0.5».; ; Возможное решение:; Исправьте значение в указанной ячейке.; Адреса ячеек:; Config!I114; ; Настройка Torsion.Rb; ; Связанный параметр выбранной проверки T.; Введённое значение: «17.5».; ; Возможное решение:; Исправьте значение в указанной ячейке.
+PASS Wall thickness source chain retained
+PASS Bad thickness preserves longitudinal output
+PASS Bad thickness preserves hoop output
+PASS One clarification in row diagnostic
+PASS Unknown method blocks only concrete
+PASS Unknown method keeps source chain
+PASS Unknown method retains bar forces
+PASS None does not read unused thickness error
+PASS One clarification in combined dialog
+PASS Repeated dialog formatting is stable
+PASS Quoted input clarification is preserved
+PASS NM message remains unchanged

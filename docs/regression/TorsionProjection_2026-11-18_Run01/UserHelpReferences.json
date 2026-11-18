@@ -1,0 +1,112 @@
+{
+  "Status": "ALL_TORSION_FORMULAS_REFERENCED",
+  "FormulaCount": 17,
+  "Formulas": [
+    {
+      "Row": 753,
+      "Name": "NDMHelpFormula_079",
+      "Formula": "q =  (|T|) / (2 A_o)",
+      "Reference": "По ACI 445.1R-12, (9.2.1a), с.9"
+    },
+    {
+      "Row": 756,
+      "Name": "NDMHelpFormula_080",
+      "Formula": "A_s,T,req =  (|T| u_o cot θ) / (2 A_o R_s)",
+      "Reference": "По ACI 445.1R-12, (9.2.2f), с.11"
+    },
+    {
+      "Row": 760,
+      "Name": "NDMHelpFormula_081",
+      "Formula": "F_T = q u_o cot θ",
+      "Reference": "Модель книги: продольная тяга"
+    },
+    {
+      "Row": 769,
+      "Name": "NDMHelpFormula_082",
+      "Formula": "Δσ_T,i =  (ΔF_T,i) / (A_s,i)",
+      "Reference": "Модель книги: распределение тяги"
+    },
+    {
+      "Row": 772,
+      "Name": "NDMHelpFormula_083",
+      "Formula": "Σ_i ΔF_T,i = F_T",
+      "Reference": "Модель книги: равновесие тяги"
+    },
+    {
+      "Row": 777,
+      "Name": "NDMHelpFormula_084",
+      "Formula": "(A_sw) / (s) = (|T|) / (2 A_o R_sw cot θ)",
+      "Reference": "По ACI 445.1R-12, (9.2.2g), с.11"
+    },
+    {
+      "Row": 781,
+      "Name": "NDMHelpFormula_085",
+      "Formula": "σ_sw =  (q s) / (A_sw cot θ) ≤ R_sw",
+      "Reference": "Модель книги: напряжение хомута"
+    },
+    {
+      "Row": 789,
+      "Name": "NDMHelpFormula_086",
+      "Formula": "t_eff,auto = 2 a_min",
+      "Reference": "Модель книги: автоматическая толщина"
+    },
+    {
+      "Row": 792,
+      "Name": "NDMHelpFormula_087",
+      "Formula": "R_diag = ν R_b",
+      "Reference": "Модель книги: сопротивление раскоса"
+    },
+    {
+      "Row": 797,
+      "Name": "NDMHelpFormula_088",
+      "Formula": "T_lim = 2 R_diag A_o t_eff sin θ cos θ",
+      "Reference": "По ACI 445.1R-12, (9.2.2b), с.11"
+    },
+    {
+      "Row": 801,
+      "Name": "NDMHelpFormula_089",
+      "Formula": "σ_diag =  (q (cot θ + tan θ)) / (t_eff) ≤ R_diag",
+      "Reference": "Модель книги: напряжение раскоса"
+    },
+    {
+      "Row": 804,
+      "Name": "NDMHelpFormula_090",
+      "Formula": "k_b =  (R_diag) / (σ_diag)",
+      "Reference": "Модель книги: коэффициент запаса"
+    },
+    {
+      "Row": 812,
+      "Name": "NDMHelpFormula_091",
+      "Formula": "|T| ≤ c R_и b² h",
+      "Reference": "Горский, §3, (13), с.23"
+    },
+    {
+      "Row": 816,
+      "Name": "NDMHelpFormula_092",
+      "Formula": "T_lim = c R_и b² h",
+      "Reference": "Модель книги: предел бетона"
+    },
+    {
+      "Row": 819,
+      "Name": "NDMHelpFormula_093",
+      "Formula": "k_b =  (T_lim) / (|T|)",
+      "Reference": "Модель книги: коэффициент запаса"
+    },
+    {
+      "Row": 828,
+      "Name": "NDMHelpFormula_094",
+      "Formula": "σ_NMT,i = σ_NM,i + Δσ_T,i;  σ_NMT,i ≤ R_s",
+      "Reference": "Модель книги: сумма напряжений"
+    },
+    {
+      "Row": 831,
+      "Name": "NDMHelpFormula_095",
+      "Formula": "k_s,NMT =  (R_s) / (σ_NMT,i)",
+      "Reference": "Модель книги: положительная сумма"
+    }
+  ],
+  "SourceStructureBookNotation": true,
+  "PrintedPaginationOnly": true,
+  "UnavailableHyperlinks": 0,
+  "PublicACIHyperlinks": 7
+}
