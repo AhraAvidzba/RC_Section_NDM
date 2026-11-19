@@ -60,15 +60,18 @@ ACTION_COMPLETION_MACROS = CONTOUR_ELEMENT_MACROS | {
 }
 
 
+TORSION_LOAD_FILTER_MACROS = ACTION_COMPLETION_MACROS | {'modTestTorsionPost.RunTorsionPostTests', 'modTestBatchCalculation.RunAxialLoadZeroFilterTests', 'modTestTorsionPost.RunTorsionPostGuardTests', 'modTestTorsionPost.RunTorsionPostAvailabilityTests', 'modTestTorsionPost.RunTorsionBarLengthTests', 'modTestTorsionPost.RunTorsionPostDiagnosticTests', 'modTestTorsionPost.RunTorsionPostUnitTests', 'modTestTorsionPost.RunTorsionGeometryInvariantTests', 'modTestBatchCalculation.RunLoadReferenceMomentFilterTests', 'modTestTorsionPost.RunTorsionPostOutputTests'}
+TORSION_LOAD_FILTER_GROUP_COUNTS = {**ACTION_COMPLETION_GROUP_COUNTS, "CurrentFeatures": len(TORSION_LOAD_FILTER_MACROS)}
+
 def coverage_errors(manifest):
     """Исторические запуски читаются в прежнем объёме; новый полный набор обязателен целиком."""
     if manifest.get('CoverageDefinition') != 'AllActiveAcceptanceIncludingFocused':
         return []
     errors=[]
     version=manifest.get('CoverageVersion',1)
-    if version not in (1,2,3,4,5,6,7):
+    if version not in (1,2,3,4,5,6,7,8):
         return ['Unsupported full coverage version']
-    counts=ACTION_COMPLETION_GROUP_COUNTS if version==7 else CONTOUR_ELEMENT_GROUP_COUNTS if version==6 else MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
+    counts=TORSION_LOAD_FILTER_GROUP_COUNTS if version==8 else ACTION_COMPLETION_GROUP_COUNTS if version==7 else CONTOUR_ELEMENT_GROUP_COUNTS if version==6 else MESSAGE_PRESENTATION_GROUP_COUNTS if version==5 else SNAPSHOT_ACCELERATION_GROUP_COUNTS if version==4 else INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
     expected={(group,mode) for group in counts for mode in ('No','Yes')}
@@ -85,7 +88,7 @@ def coverage_errors(manifest):
                 errors.append('Individual row coverage is incomplete or duplicated')
         if version >= 4 and job['Group'] == 'CurrentFeatures':
             macros = job.get('Macro', [])
-            required = ACTION_COMPLETION_MACROS if version == 7 else CONTOUR_ELEMENT_MACROS if version == 6 else MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
+            required = TORSION_LOAD_FILTER_MACROS if version == 8 else ACTION_COMPLETION_MACROS if version == 7 else CONTOUR_ELEMENT_MACROS if version == 6 else MESSAGE_PRESENTATION_MACROS if version == 5 else SNAPSHOT_ACCELERATION_MACROS
             if len(macros) != len(required) or set(macros) != required:
                 errors.append('Every feature declared for this coverage version is mandatory')
     return errors
@@ -95,7 +98,7 @@ def runner_coverage_errors(manifest, runner_text):
     """Связывает новую версию с реально сохранённым runner, не меняя исторические планы."""
     versions = {int(value) for value in re.findall(r'\bCoverageVersion\s*=\s*(\d+)\b', runner_text)}
     declared = manifest.get('CoverageVersion', 1)
-    if declared not in (6,7) and not any(version >= 6 for version in versions):
+    if declared not in (6,7,8) and not any(version >= 6 for version in versions):
         return []
     errors = []
     if versions != {declared}:

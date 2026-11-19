@@ -25,7 +25,8 @@ function Get-SystemSettingsCatalog {
             @("[Нагрузки]", "", "-", ""),
             @("Load.ReferenceOffsetX", "0", "мм", "Смещение точки приложения нагрузок по X относительно центра тяжести бетонного сечения без учёта арматуры."),
             @("Load.ReferenceOffsetY", "0", "мм", "Смещение точки приложения нагрузок по Y относительно центра тяжести бетонного сечения. Рабочие моменты для решателя автоматически переносятся к координатам расчётных элементов."),
-            @("Calculation.ZeroMomentPerDepth", "0.0005", "Н*мм/мм", "Порог заданных моментов и моментов устойчивости: M_tol = значение·h. Служебные моменты переноса N·Δx и N·Δy сохраняются."),
+            @("Calculation.ZeroAxialForcePerDepth", "0.001", "Н/мм", "Порог исходной силы N_tol = значение·min(hx, hy), только если оба момента N от эксцентриситета не больше порогов M. По умолчанию 1 tf/m; 0 отключает фильтр N."),
+            @("Calculation.ZeroMomentPerDepth", "0.001", "Н*мм/мм", "Порог заданных моментов и моментов устойчивости: M_tol = значение·h. По умолчанию 1 tf*m/m. Служебные моменты переноса N·Δx и N·Δy сохраняются."),
             @("[Выводимое сочетание]", "", "-", ""),
             @("Output.CombinationMode", "Worst", "-", "Выбор сочетания для схемы и экспорта AutoCAD. Worst использует текущий критерий и сохранённые результаты. User использует Output.CombinationID."),
             @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора Worst по сохранённым запасам. После смены критерия нажмите «Обновить схему и результаты», чтобы обновить ID и нагрузки в сводке."),
@@ -3225,6 +3226,7 @@ function Get-InputUnitFormulaForUnit {
         "мм2" { return '=INDEX(rngUnitSettings,MATCH("Area",INDEX(rngUnitSettings,,1),0),2)' }
         "Н" { return '=INDEX(rngUnitSettings,MATCH("Force",INDEX(rngUnitSettings,,1),0),2)' }
         "Н*мм" { return '=INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)' }
+        "Н/мм" { return '=INDEX(rngUnitSettings,MATCH("Force",INDEX(rngUnitSettings,,1),0),2)&"/"&INDEX(rngUnitSettings,MATCH("Length",INDEX(rngUnitSettings,,1),0),2)' }
         "Н*мм/мм" { return '=INDEX(rngUnitSettings,MATCH("Moment",INDEX(rngUnitSettings,,1),0),2)&"/"&INDEX(rngUnitSettings,MATCH("Length",INDEX(rngUnitSettings,,1),0),2)' }
         "МПа" { return '=INDEX(rngUnitSettings,MATCH("Stress",INDEX(rngUnitSettings,,1),0),2)' }
         "1/мм" { return '=INDEX(rngUnitSettings,MATCH("Curvature",INDEX(rngUnitSettings,,1),0),2)' }

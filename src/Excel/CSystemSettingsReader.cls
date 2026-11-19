@@ -635,7 +635,7 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 7) = "Output.": sectionName = "Нагрузки, сочетания и диаграммы материалов"
         Case Left$(key, 5) = "Plot.": sectionName = "оформление Excel-схемы"
         Case key = "Load.ReferenceOffsetX", key = "Load.ReferenceOffsetY", _
-                key = "Calculation.ZeroMomentPerDepth", key = "General.WorstCombinationCriterion", _
+                key = "Calculation.ZeroAxialForcePerDepth", key = "Calculation.ZeroMomentPerDepth", key = "General.WorstCombinationCriterion", _
                 key = "General.PlateauSlopeFactor", key = "General.DiagramExtension"
             sectionName = "Нагрузки, сочетания и диаграммы материалов"
         Case Left$(key, 9) = "Geometry.": sectionName = "Геометрия"

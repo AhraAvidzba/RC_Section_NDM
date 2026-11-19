@@ -267,7 +267,7 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         ByVal sp63Ks As Double, ByVal sp63DeltaEMin As Double, _
         ByVal sp63DeltaEMax As Double, ByVal sp35PhiP As Double, _
         ByVal sp35NOverNcrLimit As Double, ByVal sp35Table721 As Variant, _
-        Optional ByVal momentFilter As CMomentZeroFilter = Nothing, _
+        Optional ByVal momentFilter As CLoadZeroFilter = Nothing, _
         Optional ByVal sp35TableInputError As String = vbNullString)
     On Error GoTo Failed
     Clear
@@ -422,7 +422,7 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
         ByVal mu2 As Double, ByVal systemType As String, ByVal zeroMomentSign1 As Double, _
         ByVal zeroMomentSign2 As Double, ByVal accidentalMode As String, _
         ByVal accidentalPlanes As String, ByVal accidentalUserValue1 As Double, _
-        ByVal accidentalUserValue2 As Double, ByVal momentFilter As CMomentZeroFilter, _
+        ByVal accidentalUserValue2 As Double, ByVal momentFilter As CLoadZeroFilter, _
         ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
     Dim axis1X As Double
     Dim axis1Y As Double
@@ -484,7 +484,7 @@ End Sub
 ' Применяет общий инженерный фильтр к моментам одной главной плоскости.
 ' Сравнение выполняется по бетонному габариту именно этой плоскости, поэтому
 ' после поворота осей случайный остаток M1/M2 не меняет ветвь устойчивости.
-Private Sub NormalizePlaneMoments(ByRef plane As TPlaneResult, ByVal momentFilter As CMomentZeroFilter)
+Private Sub NormalizePlaneMoments(ByRef plane As TPlaneResult, ByVal momentFilter As CLoadZeroFilter)
     If momentFilter Is Nothing Then Exit Sub
     plane.Moment = momentFilter.NormalizeMoment(plane.Moment, plane.Depth)
     plane.SustainedMoment = momentFilter.NormalizeMoment(plane.SustainedMoment, plane.Depth)

@@ -117,7 +117,17 @@ $currentFeatures=@(
     'modTestCalculationSnapshot.RunConcreteGeometrySnapshotTests',
     'modTestElementGeometryViews.RunElementGeometryViewTests',
     'modTestCalculationSnapshot.RunGeometryHashTests',
-    'modTestCalculationSnapshot.RunWorkbookActionCompletionTests'
+    'modTestCalculationSnapshot.RunWorkbookActionCompletionTests',
+    'modTestBatchCalculation.RunAxialLoadZeroFilterTests',
+    'modTestBatchCalculation.RunLoadReferenceMomentFilterTests',
+    'modTestTorsionPost.RunTorsionPostTests',
+    'modTestTorsionPost.RunTorsionPostAvailabilityTests',
+    'modTestTorsionPost.RunTorsionPostUnitTests',
+    'modTestTorsionPost.RunTorsionPostOutputTests',
+    'modTestTorsionPost.RunTorsionBarLengthTests',
+    'modTestTorsionPost.RunTorsionPostGuardTests',
+    'modTestTorsionPost.RunTorsionPostDiagnosticTests',
+    'modTestTorsionPost.RunTorsionGeometryInvariantTests'
 )
 $jobs=@()
 foreach ($mode in @('No','Yes')) {
@@ -134,7 +144,7 @@ $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToStri
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
     ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
     GeometryTypeInTestCopies='Rectangles';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
-    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=7;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
+    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=8;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
 Save-Run

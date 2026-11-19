@@ -14,7 +14,7 @@ Private Type TBatchTestStats
 End Type
 
 Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
-Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
+Private Const TEST_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
 Private mAudit03ResourceTrace As Boolean ' ДЛЯ ТЕСТОВ: отдельный журнал размеров Excel, не влияющий на расчет и assertions.
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -133,8 +133,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchCapacityLoadPathAllowsZeroInactiveComponents stats
     TestAppendLine stats, "RUN: TestBatchNMxyWithoutMomentsUsesStableForcePath"
     TestBatchNMxyWithoutMomentsUsesStableForcePath stats
-    TestAppendLine stats, "RUN: TestMomentZeroFilterDefaultThresholds"
-    TestMomentZeroFilterDefaultThresholds stats
+    TestAppendLine stats, "RUN: TestMomentZeroFilterThresholds"
+    TestMomentZeroFilterThresholds stats
     TestAppendLine stats, "RUN: TestLoadReferencePreservesEngineeringTransfers"
     TestLoadReferencePreservesEngineeringTransfers stats
     TestAppendLine stats, "RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments"
@@ -876,16 +876,19 @@ End Sub
 ' центр тяжести, поэтому внутри solver-а вместе с N масштабируются и моменты
 ' переноса, но пользовательская постановка остается чистым Nult.
 Private Sub TestBatchRectanglesN200CapacityPathNDoesNotNumFail(ByRef stats As TBatchTestStats)
+    Dim oldZeroMoment As String
     Dim oldMode As String
     Dim oldMethod As String
     Dim oldScope As String
     Dim oldBaseLoadSteps As String
     Dim oldMaxRetries As String
+    oldZeroMoment = TestGetSystemSetting("Calculation.ZeroMomentPerDepth")
     oldMethod = TestGetSystemSetting("Capacity.SolutionStrategy")
     oldBaseLoadSteps = TestGetSystemSetting("Capacity.BaseLoadSteps")
     oldMaxRetries = TestGetSystemSetting("Capacity.MaxRetries")
 
     On Error GoTo RestoreAndFail
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0" ' Здесь проверяется физический эксцентриситет относительно двух центров, без инженерного приближения при выборе метода.
     TestSetSystemSetting "Capacity.BaseLoadSteps", "1"
     TestSetSystemSetting "Capacity.MaxRetries", "0"
 
@@ -897,6 +900,7 @@ Private Sub TestBatchRectanglesN200CapacityPathNDoesNotNumFail(ByRef stats As TB
     TestCheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier", True
 
 Restore:
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", oldZeroMoment
     TestSetSystemSetting "Capacity.SolutionStrategy", oldMethod
     TestSetSystemSetting "Capacity.BaseLoadSteps", oldBaseLoadSteps
     TestSetSystemSetting "Capacity.MaxRetries", oldMaxRetries
@@ -1184,10 +1188,10 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет сам инженерный фильтр практически нулевого момента без solver-а.
 ' Порог растет линейно с бетонным габаритом h: Mtol = value*h.
-Private Sub TestMomentZeroFilterDefaultThresholds(ByRef stats As TBatchTestStats)
-    Dim filter As CMomentZeroFilter
-    Set filter = New CMomentZeroFilter
-    filter.Initialize TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH
+Private Sub TestMomentZeroFilterThresholds(ByRef stats As TBatchTestStats)
+    Dim filter As CLoadZeroFilter
+    Set filter = New CLoadZeroFilter
+    filter.Initialize TEST_ZERO_MOMENT_PER_DEPTH
 
     TestAssertClose stats, "batch.zeroMoment.tinyResidual", filter.NormalizeMoment(2.42E-16, 1000#), 0#, 0#
     TestAssertClose stats, "batch.zeroMoment.h1m.threshold", filter.NormalizeMoment(0.5 * TEST_TF_M_IN_NMM, 1000#), 0#, 0#
@@ -1203,7 +1207,8 @@ End Sub
 Public Function RunLoadReferenceMomentFilterTests() As String
     Dim stats As TBatchTestStats
     On Error GoTo Failed
-    TestMomentZeroFilterDefaultThresholds stats
+    TestLoadReferenceTransformsUserMoments stats
+    TestMomentZeroFilterThresholds stats
     TestCapacityLoadPathFiltersEngineeringSmallMoments stats
     TestLoadReferencePreservesEngineeringTransfers stats
     GoTo Finished
@@ -1219,11 +1224,11 @@ End Function
 ' Одна осевая нагрузка должна давать нулевые моменты в своей точке при любых
 ' координатах модели и множителе lambda; зануление N*deltaX / N*deltaY нарушает этот инвариант.
 Private Sub TestLoadReferencePreservesEngineeringTransfers(ByRef stats As TBatchTestStats)
-    Dim filter As New CMomentZeroFilter, load As CSectionLoadState, restored As CSectionLoadState
+    Dim filter As New CLoadZeroFilter, load As CSectionLoadState, restored As CSectionLoadState
     Dim path As CLoadPathDescriptor, shift As Variant, force As Variant, pathKey As Variant, multiplier As Variant
     Dim referenceX As Double, referenceY As Double, n As Double, targetN As Double, targetMx As Double, targetMy As Double
     Dim toleranceMx As Double, toleranceMy As Double, prefix As String
-    filter.Initialize TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH
+    filter.Initialize TEST_ZERO_MOMENT_PER_DEPTH
     For Each shift In Array(Array(0#, 0#), Array(1000000#, -1000000#), Array(-1000000#, 1000000#))
         referenceX = 357.894736842105 + CDbl(shift(0))
         referenceY = 507.894736842105 + CDbl(shift(1))
@@ -1291,8 +1296,8 @@ End Sub
 ' Проверяет, что LoadPath не пропускает в solver момент, который уже
 ' меньше инженерного порога Calculation.ZeroMomentPerDepth * h.
 Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TBatchTestStats)
-    Dim filter As CMomentZeroFilter
-    Set filter = New CMomentZeroFilter
+    Dim filter As CLoadZeroFilter
+    Set filter = New CLoadZeroFilter
     filter.Initialize 0.001 * TEST_TF_M_IN_NMM
 
     Dim pathMxy As CLoadPathDescriptor
@@ -2472,13 +2477,13 @@ End Sub
 Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = TestBuildBatchCalculator()
-    batch.AddCombination "REF", -1000#, 3000000#, -3000000#, "PR1", "reference"
+    batch.AddCombination "REF", -10000#, 3000000#, -3000000#, "PR1", "reference"
     batch.ApplyLoadReference 40#, -25#
 
     TestAssertClose stats, "batch.reference.userMx", batch.UserMx(1), 3000000#, 0.000001
     TestAssertClose stats, "batch.reference.userMy", batch.UserMy(1), -3000000#, 0.000001
-    TestAssertClose stats, "batch.reference.internalMx", batch.Mx(1), 3025000#, 0.000001
-    TestAssertClose stats, "batch.reference.internalMy", batch.My(1), -3040000#, 0.000001
+    TestAssertClose stats, "batch.reference.internalMx", batch.Mx(1), 3250000#, 0.000001
+    TestAssertClose stats, "batch.reference.internalMy", batch.My(1), -3400000#, 0.000001
     TestAssertClose stats, "batch.reference.x", batch.LoadReferenceX, 40#, 0.000001
     TestAssertClose stats, "batch.reference.y", batch.LoadReferenceY, -25#, 0.000001
     TestAssertClose stats, "batch.reference.offsetX.defaultBase", batch.LoadReferenceOffsetX, 40#, 0.000001
@@ -2486,7 +2491,7 @@ Private Sub TestLoadReferenceTransformsUserMoments(ByRef stats As TBatchTestStat
 
     Dim shiftedBatch As CBatchSectionCalculator
     Set shiftedBatch = TestBuildBatchCalculator()
-    shiftedBatch.AddCombination "REF2", -1000#, 20000#, -30000#, "PR1", "reference shifted"
+    shiftedBatch.AddCombination "REF2", -10000#, 20000#, -30000#, "PR1", "reference shifted"
     shiftedBatch.ApplyLoadReference 140#, 75#, 100#, 100#
     TestAssertClose stats, "batch.reference.offsetX.centroidBase", shiftedBatch.LoadReferenceOffsetX, 40#, 0.000001
     TestAssertClose stats, "batch.reference.offsetY.centroidBase", shiftedBatch.LoadReferenceOffsetY, -25#, 0.000001
@@ -11316,4 +11321,111 @@ Public Function RunLocaleSP35InterpolationTests() As String
     Dim stats As TBatchTestStats
     TestLocaleSP35Interpolation stats
     RunLocaleSP35InterpolationTests = stats.Report & "TOTAL LOCALE SP35 INTERPOLATION: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимо проверяет границы N/M, эксцентриситет, смену начала координат,
+' повторную подготовку из исходной строки и перевод порогов INPUT.
+Public Function RunAxialLoadZeroFilterTests() As String
+    Dim stats As TBatchTestStats, filter As New CLoadZeroFilter, sg As Long, dx As Variant, dy As Variant
+    Dim n As Double, batch As CBatchSectionCalculator, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim system As Object, unitTable As Object, savedSystem As Variant, savedUnits As Variant, r As Long, profileTable As Object, savedProfiles As Variant
+    On Error GoTo Failed
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange: savedSystem = system.Formula
+    Set unitTable = ThisWorkbook.Names("rngUnitSettings").RefersToRange: savedUnits = unitTable.Formula
+    Set batch = TestBuildBatchCalculator()
+    batch.AddCombination "DEFAULT_ZERO", 980.665, 1000000#, -1000000#, "PR1", ""
+    batch.AddCombination "DEFAULT_KEPT", 2941.995, 3000000#, -3000000#, "PR1", ""
+    TestAssertClose stats, "default.N.1tfperm", batch.N(1), 0#, 0#
+    TestAssertClose stats, "default.M.1tfmperm", batch.UserMx(1), 0#, 0#
+    TestAssertClose stats, "default.N.above", batch.N(2), 2941.995, 0#
+    TestAssertClose stats, "default.M.above", batch.UserMx(2), 3000000#, 0#
+    Set profileTable = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange: savedProfiles = profileTable.Formula
+    filter.Initialize 1000#, 2#
+    For sg = -1 To 1 Step 2
+        For Each dx In Array(200#, 300#, 1000#)
+            For Each dy In Array(200#, 300#, 1000#)
+                n = 2# * TestMinDouble(CDbl(dx), CDbl(dy))
+                TestAssertClose stats, "filter.minimumDepth", filter.AxialForceTolerance(CDbl(dx), CDbl(dy)), n, 0#
+                TestAssertClose stats, "filter.N.below", filter.NormalizeAxialForce(sg * n * 0.999, CDbl(dx), CDbl(dy)), 0#, 0#
+                TestAssertClose stats, "filter.N.boundary", filter.NormalizeAxialForce(sg * n, CDbl(dx), CDbl(dy)), 0#, 0#
+                TestAssertClose stats, "filter.N.above", filter.NormalizeAxialForce(sg * n * 1.001, CDbl(dx), CDbl(dy)), sg * n * 1.001, 0#
+                TestAssertClose stats, "filter.eX.boundary", filter.NormalizeAxialForce(sg * n, CDbl(dx), CDbl(dy), 1000# * dx / n), 0#, 0.000001
+                TestAssertClose stats, "filter.eY.boundary", filter.NormalizeAxialForce(sg * n, CDbl(dx), CDbl(dy), 0#, 1000# * dy / n), 0#, 0.000001
+                TestAssertClose stats, "filter.eX.large", filter.NormalizeAxialForce(sg * n, CDbl(dx), CDbl(dy), 1001# * dx / n), sg * n, 0#
+                TestAssertClose stats, "filter.eY.large", filter.NormalizeAxialForce(sg * n, CDbl(dx), CDbl(dy), 0#, -1001# * dy / n), sg * n, 0#
+            Next dy
+        Next dx
+    Next sg
+    filter.Initialize 0#, 2#
+    TestAssertClose stats, "filter.Mdisabled.centeredN", filter.NormalizeAxialForce(400#, 300#, 200#), 0#, 0#
+    TestAssertClose stats, "filter.Mdisabled.eccentricN", filter.NormalizeAxialForce(400#, 300#, 200#, 0.000001), 400#, 0#
+    filter.Initialize 1000#, 0#
+    TestAssertClose stats, "filter.Ndisabled", filter.NormalizeAxialForce(1#, 300#, 200#), 1#, 0#
+    TestAssertClose stats, "filter.Ndisabled.Mworks", filter.NormalizeMoment(200000#, 200#), 0#, 0#
+    ' Фактический batch: пороги задаются во внутренних единицах без CUnitSystem.
+    TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", "2"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "1000"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    batch.AddCombination "AT", 400#, 0#, 0#, "PR1", "", "Auto"
+    batch.AddCombination "ABOVE", 400.001, 0#, 0#, "PR1", "", "Auto"
+    TestAssertClose stats, "batch.filteredN", batch.N(1), 0#, 0#
+    TestAssertClose stats, "batch.originalN", batch.OriginalN(1), 400#, 0#
+    TestAssertClose stats, "batch.aboveN", batch.N(2), 400.001, 0#
+    batch.ApplyLoadReference 0#, 501#
+    TestAssertClose stats, "batch.largeErestoresN", batch.N(1), 400#, 0#
+    TestAssertClose stats, "batch.largeEtransfer", batch.Mx(1), 200400#, 0#
+    batch.ApplyLoadReference 1000000#, -999499#, 1000000#, -1000000#
+    TestAssertClose stats, "batch.translation.N", batch.N(1), 400#, 0#
+    TestAssertClose stats, "batch.translation.pointMx", batch.UserMx(1), 0#, 0#
+    batch.ApplyLoadReference 1000000#, -1000000#, 1000000#, -1000000#
+    TestAssertClose stats, "batch.translation.centeredN", batch.N(1), 0#, 0#
+    batch.ApplyLoadReference 0#, 0#: batch.ApplySettings settings
+    TestAssertClose stats, "batch.repeat.fromOriginal", batch.OriginalN(1), 400#, 0#
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    batch.AddCombination "ZERO", 400#, 0#, 0#, "PR1", "", "Auto": batch.Execute
+    TestAssertTrue stats, "batch.zero.directStateAvailable", batch.ResultAt(1).StrengthResult.DirectState.StateAvailable
+    TestAssertClose stats, "batch.zero.epsilon", batch.ResultAt(1).StrengthResult.DirectState.StateResult.Epsilon0, 0#, 0.000000000001
+    Dim invalid As Variant, reason As String
+    For Each invalid In Array("-1", "text", "")
+        TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", CStr(invalid)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+        batch.AddCombination "INVALID_N_FILTER", -100000#, 0#, 0#, "PR1", "": batch.Execute
+        reason = batch.ResultAt(1).StrengthResult.DirectMeta.ResultComment
+        TestAssertTrue stats, "filter.invalid.key", InStr(1, reason, "Calculation.ZeroAxialForcePerDepth") > 0
+        TestAssertTrue stats, "filter.invalid.address", InStr(1, reason, settings.InputLocation("Calculation.ZeroAxialForcePerDepth")) > 0
+        TestAssertTrue stats, "filter.invalid.noState", Not batch.ResultAt(1).StrengthResult.DirectState.StateAvailable
+    Next invalid
+    ' Перевод 1 tf/m и 1 tf*m/m сохраняет физический смысл при mm/cm/m.
+    Dim lengthName As Variant, divisor As Double
+    For Each lengthName In Array("mm", "cm", "m")
+        divisor = 1#: If lengthName = "cm" Then divisor = 10#
+        If lengthName = "m" Then divisor = 1000#
+        For r = 2 To unitTable.Rows.Count
+            Select Case CStr(unitTable.Cells(r, 1).Value2)
+                Case "Length": unitTable.Cells(r, 2).Value2 = CStr(lengthName)
+                Case "Force": unitTable.Cells(r, 2).Value2 = "tf"
+                Case "Moment": unitTable.Cells(r, 2).Value2 = "tf*m"
+            End Select
+        Next r
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        TestAssertClose stats, "units.NperDepth." & lengthName, units.InputForcePerLengthToInternal(0.001 * divisor), 9.80665, 0.00000001
+        TestAssertClose stats, "units.MperDepth." & lengthName, units.InputMomentPerLengthToInternal(0.001 * divisor), 9806.65, 0.00000001
+        TestAssertEquals stats, "units.Ncaption." & lengthName, units.InputForcePerLengthUnit, "tf/" & lengthName
+    Next lengthName
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1: TestAppendLine stats, "RUNTIME ERROR: " & Err.Description
+Restore:
+    If IsArray(savedProfiles) Then profileTable.Formula = savedProfiles
+    If IsArray(savedSystem) Then system.Formula = savedSystem
+    If IsArray(savedUnits) Then unitTable.Formula = savedUnits
+    RunAxialLoadZeroFilterTests = stats.Report & "TOTAL_AXIAL_LOAD_FILTER: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

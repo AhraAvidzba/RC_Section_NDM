@@ -27,12 +27,14 @@ class TestFullCoverage(unittest.TestCase):
             5: coverage.MESSAGE_PRESENTATION_GROUP_COUNTS,
             6: coverage.CONTOUR_ELEMENT_GROUP_COUNTS,
             7: coverage.ACTION_COMPLETION_GROUP_COUNTS,
+            8: coverage.TORSION_LOAD_FILTER_GROUP_COUNTS,
         }[version]
         feature_macros = {
             4: coverage.SNAPSHOT_ACCELERATION_MACROS,
             5: coverage.MESSAGE_PRESENTATION_MACROS,
             6: coverage.CONTOUR_ELEMENT_MACROS,
             7: coverage.ACTION_COMPLETION_MACROS,
+            8: coverage.TORSION_LOAD_FILTER_MACROS,
         }.get(version, set())
         manifest = dict(CoverageDefinition='AllActiveAcceptanceIncludingFocused',
                         CoverageVersion=version, IncludesFocusedAcceptance=True, Jobs=[])
@@ -73,6 +75,18 @@ class TestFullCoverage(unittest.TestCase):
                 manifest = self.manifest_for_version(version)
                 self.assertEqual(sum(job['ExpectedSuites'] for job in manifest['Jobs']), expected)
                 self.assertEqual(coverage.coverage_errors(manifest), [])
+
+    def test_v8_requires_torsion_and_load_filters_in_both_modes(self):
+        manifest = self.manifest_for_version(8)
+        self.assertEqual(coverage.coverage_errors(manifest), [])
+        self.assertEqual(sum(job['ExpectedSuites'] for job in manifest['Jobs']), 202)
+        self.assertEqual(coverage.runner_coverage_errors(manifest, 'CoverageVersion=8;'), [])
+        for macro in coverage.TORSION_LOAD_FILTER_MACROS - coverage.ACTION_COMPLETION_MACROS:
+            for mode in ('No', 'Yes'):
+                broken = self.manifest_for_version(8)
+                job = next(x for x in broken['Jobs'] if x['Group']=='CurrentFeatures' and x['Mode']==mode)
+                job['Macro'].remove(macro)
+                self.assertTrue(coverage.coverage_errors(broken))
 
     def test_v7_has_182_suites_and_requires_hash_and_completion_in_both_modes(self):
         manifest = self.manifest_for_version(7)
@@ -165,14 +179,14 @@ class TestFullCoverage(unittest.TestCase):
         broken['IncludesFocusedAcceptance'] = False
         self.assertTrue(coverage.coverage_errors(broken))
 
-    def test_runner_declares_the_same_v7_feature_list(self):
+    def test_runner_declares_the_same_v8_feature_list(self):
         text = Path(__file__).with_name('Run-FullOnOffAcceptance.ps1').read_text(encoding='utf-8-sig')
         block = re.search(r'\$currentFeatures\s*=\s*@\((.*?)\)', text, re.S)
         self.assertIsNotNone(block)
         macros = re.findall(r"'([^']+)'", block.group(1))
-        self.assertEqual(len(macros), 13)
-        self.assertEqual(set(macros), coverage.ACTION_COMPLETION_MACROS)
-        self.assertRegex(text, r'CoverageVersion\s*=\s*7\b')
+        self.assertEqual(len(macros), 23)
+        self.assertEqual(set(macros), coverage.TORSION_LOAD_FILTER_MACROS)
+        self.assertRegex(text, r'CoverageVersion\s*=\s*8\b')
 
     def test_finalizer_uses_dynamic_v6_core_count(self):
         """Проверяет композицию Finalize; первичные верификаторы здесь подставлены."""

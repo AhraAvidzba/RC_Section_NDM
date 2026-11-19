@@ -48,7 +48,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal loadPath As CLoadPathDescriptor, _
         ByVal pureAxialForMethod As Boolean, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
-        ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
+        ByVal momentFilter As CLoadZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
     AssertWritable
     ResetNumericSnapshot
@@ -177,7 +177,7 @@ End Sub
 ' приложения нагрузки через общий CSectionLoadState.
 Private Sub StoreUltimateVector(ByVal loadPath As CLoadPathDescriptor, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
-        ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
+        ByVal momentFilter As CLoadZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
     If mSearchResult Is Nothing Then Exit Sub
     If Not mSearchResult.HasLimitPoint Then Exit Sub

@@ -26,7 +26,7 @@ CALC = 'Расчет'
 INPUTS = ('Config', 'Сечения')
 RESULT_LOAD_HEADER = 'AL8:AN9'  # Постоянная объединённая шапка рабочих нагрузок; строки результатов в шаблон не входят.
 SELECTOR = 'rngSectionIllustrationSelector'
-STORAGE_DEFAULTS = {'I13', 'B85', *(f'L{row}' for row in range(71, 101))}
+STORAGE_DEFAULTS = {'I13', *(f'L{row}' for row in range(71, 101))}
 EXAMPLE_INPUTS = {
     'Сечения': tuple(f'{col}{row}' for rows, columns in ((range(37, 45), 'FG'), (range(50, 58), 'FJ'))
                      for row in rows for col in columns),
@@ -435,7 +435,14 @@ def capture(source, baseline, destination):
                 require(links[name].get(address) in (['formula', link], ['formula', wrapped]),
                         f'Не совпадает проверенная ссылка на ID сочетания Config!{address}')
                 links[name][address][1] = wrapped  # Пустой ID должен остаться пустым в таблице входа.
-            for address in sorted(STORAGE_DEFAULTS):
+            # Положение настройки меняется вместе с каталогом; адрес B не является контрактом.
+            crack_keys = [cell.get('r') for cell in cells.values()
+                          if cell.get('t') == 's' and cell.find(M + 'f') is None
+                          and ''.join(strings[int(cell.findtext(M + 'v'))].itertext())
+                          == 'SLS.Crack.Code']
+            require(len(crack_keys) == 1, 'Не найдена единственная настройка SLS.Crack.Code')
+            crack_value = 'B' + CELL_ADDRESS.fullmatch(crack_keys[0]).group(2)
+            for address in sorted(STORAGE_DEFAULTS | {crack_value}):
                 cell = cells[address]
                 require(cell.get('t') == 's' and cell.find(M + 'f') is None,
                         f'Config!{address} должен содержать буквенный выбор')

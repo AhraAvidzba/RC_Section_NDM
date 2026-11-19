@@ -21,7 +21,8 @@ Option Explicit
 Private Const INITIAL_COMBINATION_CAPACITY As Long = 20 ' Начальный размер внутренних массивов; при расширении rngLoadCombinations хранилище растет.
 Private Const COMBINATION_CAPACITY_STEP As Long = 20 ' Число дополнительных мест при расширении массивов, чтобы не копировать их для каждой новой строки сочетаний.
 Private Const CAPACITY_PATH_NONE As String = "None" ' Обозначение отсутствия запущенного расчёта несущей способности для сочетания.
-Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m во внутренних Н*мм/мм.
+Private Const DEFAULT_ZERO_AXIAL_FORCE_PER_DEPTH As Double = 9.80665 ' 1 tf/m во внутренних Н/мм.
+Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 9806.65 ' 1 tf*m/m во внутренних Н*мм/мм.
 
 ' Исходные данные одной строки сочетаний хранятся отдельно от результатов.
 ' Это позволяет сохранить нагрузки пользователя независимо от расчётных усилий.
@@ -54,7 +55,8 @@ Private mLoadReferenceX As Double ' X точки приложения нагру
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
 Private mLoadReferenceOffsetY As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по Y, мм.
-Private mMomentZeroFilter As CMomentZeroFilter ' Общий инженерный фильтр практически нулевых моментов.
+Private mLoadZeroFilter As CLoadZeroFilter ' Общий инструмент независимого зануления исходной N и физических моментов.
+Private mZeroAxialForcePerDepth As Double ' Порог N на единицу минимального бетонного габарита, Н/мм.
 Private mZeroMomentPerDepth As Double ' Порог момента на единицу бетонного габарита, Н*мм/мм.
 Private mConcreteDepthForMx As Double ' Бетонный габарит по Y для проверки Mx, мм.
 Private mConcreteDepthForMy As Double ' Бетонный габарит по X для проверки My, мм.
@@ -149,11 +151,12 @@ Private mStabilityLoadInputError() As String ' Ошибка прочтения �
 Private Sub Class_Initialize()
     Set mStatusPolicy = New CResultStatusPolicy
     Set mReport = New CExecutionReport
-    Set mMomentZeroFilter = New CMomentZeroFilter
+    Set mLoadZeroFilter = New CLoadZeroFilter
     mSettingsValid = True
     mSettingsError = vbNullString
+    mZeroAxialForcePerDepth = DEFAULT_ZERO_AXIAL_FORCE_PER_DEPTH
     mZeroMomentPerDepth = DEFAULT_ZERO_MOMENT_PER_DEPTH
-    mMomentZeroFilter.Initialize mZeroMomentPerDepth
+    mLoadZeroFilter.Initialize mZeroMomentPerDepth, mZeroAxialForcePerDepth
     EnsureCombinationCapacity INITIAL_COMBINATION_CAPACITY
     EnsureStabilityLoadCapacity INITIAL_COMBINATION_CAPACITY
 
@@ -285,6 +288,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mCrackPhi3 = settings.GetRequiredDouble("SLS.Crack.Phi3")
         mCrackPsiS = settings.GetRequiredDouble("SLS.Crack.PsiS")
     End If
+    mZeroAxialForcePerDepth = settings.GetRequiredDouble("Calculation.ZeroAxialForcePerDepth")
     mZeroMomentPerDepth = settings.GetRequiredDouble("Calculation.ZeroMomentPerDepth")
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
@@ -344,6 +348,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         conversionKey = "Solver.ToleranceMy"
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
+        conversionKey = "Calculation.ZeroAxialForcePerDepth"
+        mZeroAxialForcePerDepth = Sgn(mZeroAxialForcePerDepth) * units.InputForcePerLengthToInternal(mZeroAxialForcePerDepth)
         conversionKey = "Calculation.ZeroMomentPerDepth"
         mZeroMomentPerDepth = Sgn(mZeroMomentPerDepth) * units.InputMomentPerLengthToInternal(mZeroMomentPerDepth) ' Переводим момент на единицу длины в Н*мм/мм, сохраняя отрицательный знак для проверки ошибочного ввода.
         conversionKey = vbNullString
@@ -366,8 +372,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mStabilityAccidentalEccentricityUser1, mStabilityAccidentalEccentricityUser2, _
         mStabilitySP63Ks, mStabilitySP63DeltaEMin, mStabilitySP63DeltaEMax, _
         mStabilitySP35PhiP, mStabilitySP35NOverNcrLimit, settings
-    ConfigureMomentZeroFilter
-    NormalizeAllCombinationMoments
+    ConfigureLoadZeroFilter
+    NormalizeAllCombinationLoads
     Exit Sub
 
 InvalidSettings:
@@ -379,6 +385,12 @@ InvalidSettings:
     ElseIf Err.Number = vbObjectError + 6010 Then
         mSettingsError = settings.InputErrorMessage("Calculation.ZeroMomentPerDepth", _
             Err.Description, "Введите ноль для отключения фильтра или положительное число в INPUT-единицах момент/длина.")
+    ElseIf Err.Number = vbObjectError + 6011 Or Err.Number = vbObjectError + 6012 Then
+        mSettingsError = settings.InputErrorMessage("Calculation.ZeroAxialForcePerDepth", _
+            Err.Description, "Введите ноль для отключения фильтра N или допустимое положительное число в INPUT-единицах сила/длина.")
+    ElseIf Err.Number = vbObjectError + 6013 Then
+        mSettingsError = settings.InputErrorMessage("Calculation.ZeroMomentPerDepth", _
+            Err.Description, "Уменьшите коэффициент и проверьте INPUT-единицы момента и длины.")
     Else
         mSettingsError = Err.Description
     End If
@@ -530,7 +542,7 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mInputs(mCount).Comment = comment
     mInputs(mCount).InputValid = inputValid
     mInputs(mCount).InputError = inputError
-    NormalizeCombinationMoments mCount
+    NormalizeCombinationLoads mCount
 End Sub
 
 ' Расширяет хранилище LC без изменения уже прочитанных нагрузок и результатов.
@@ -620,7 +632,7 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
 
     Dim i As Long
     For i = 1 To mCount
-        If mInputs(i).InputValid Then NormalizeCombinationMoments i
+        If mInputs(i).InputValid Then NormalizeCombinationLoads i
     Next i
 
 End Sub
@@ -636,40 +648,52 @@ Private Sub ConfigureConcreteMomentDepths()
     mConcreteDepthForMy = props.ProjectionDepth(mSection, 1#, 0#, False)
 End Sub
 
-' Применяет пользовательский порог к общему фильтру. Отрицательное значение
-' считается ошибкой настройки, потому что порог является модулем момента.
-Private Sub ConfigureMomentZeroFilter()
-    If mMomentZeroFilter Is Nothing Then Set mMomentZeroFilter = New CMomentZeroFilter
-    mMomentZeroFilter.Initialize mZeroMomentPerDepth
+' Применяет независимые пороги к общему фильтру и проверяет их числовой диапазон
+' для текущей геометрии до загрузки сочетаний, чтобы ошибка имела адрес настройки.
+Private Sub ConfigureLoadZeroFilter()
+    If mLoadZeroFilter Is Nothing Then Set mLoadZeroFilter = New CLoadZeroFilter
+    mLoadZeroFilter.Initialize mZeroMomentPerDepth, mZeroAxialForcePerDepth
+    Dim checkedThreshold As Double
+    checkedThreshold = mLoadZeroFilter.AxialForceTolerance(mConcreteDepthForMy, mConcreteDepthForMx)
+    checkedThreshold = mLoadZeroFilter.MomentTolerance(mConcreteDepthForMy)
+    checkedThreshold = mLoadZeroFilter.MomentTolerance(mConcreteDepthForMx)
 End Sub
+
+' Зануляет исходную N по минимальному бетонному габариту до любого переноса и формирования lambda-пути.
+Private Function NormalizeAxialInput(ByVal forceValue As Double) As Double
+    NormalizeAxialInput = forceValue
+    If Not mLoadZeroFilter Is Nothing Then _
+        NormalizeAxialInput = mLoadZeroFilter.NormalizeAxialForce(forceValue, mConcreteDepthForMy, mConcreteDepthForMx, _
+            mLoadReferenceOffsetX, mLoadReferenceOffsetY)
+End Function
 
 ' Зануляет Mx, если он меньше инженерного порога для бетонного габарита по Y.
 Private Function NormalizeMomentMx(ByVal momentValue As Double) As Double
-    If mMomentZeroFilter Is Nothing Then
+    If mLoadZeroFilter Is Nothing Then
         NormalizeMomentMx = momentValue
     Else
-        NormalizeMomentMx = mMomentZeroFilter.NormalizeMoment(momentValue, mConcreteDepthForMx)
+        NormalizeMomentMx = mLoadZeroFilter.NormalizeMoment(momentValue, mConcreteDepthForMx)
     End If
 End Function
 
 ' Зануляет My, если он меньше инженерного порога для бетонного габарита по X.
 Private Function NormalizeMomentMy(ByVal momentValue As Double) As Double
-    If mMomentZeroFilter Is Nothing Then
+    If mLoadZeroFilter Is Nothing Then
         NormalizeMomentMy = momentValue
     Else
-        NormalizeMomentMy = mMomentZeroFilter.NormalizeMoment(momentValue, mConcreteDepthForMy)
+        NormalizeMomentMy = mLoadZeroFilter.NormalizeMoment(momentValue, mConcreteDepthForMy)
     End If
 End Function
 
 ' Заново строит рабочую нагрузку из неизменяемой строки LC. Фильтр и перенос
 ' применяются к исходным числам, а не к результатам предыдущего запуска.
-Private Sub NormalizeCombinationMoments(ByVal index As Long)
+Private Sub NormalizeCombinationLoads(ByVal index As Long)
     If index < 1 Or index > mCount Then Exit Sub
     Dim loadState As CSectionLoadState
     Set loadState = New CSectionLoadState
     If mSettingsValid And mInputs(index).InputValid Then
-        loadState.Initialize mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
-            mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+        loadState.Initialize NormalizeAxialInput(mInputs(index).N), mInputs(index).Mx, mInputs(index).My, _
+            mLoadReferenceX, mLoadReferenceY, mLoadZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
     Else
         loadState.Initialize mInputs(index).N, mInputs(index).Mx, mInputs(index).My, mLoadReferenceX, mLoadReferenceY
     End If
@@ -679,10 +703,10 @@ End Sub
 
 ' Применяет текущую настройку фильтра к уже загруженным сочетаниям. Метод
 ' нужен, если ApplySettings вызывается после чтения строк LC.
-Private Sub NormalizeAllCombinationMoments()
+Private Sub NormalizeAllCombinationLoads()
     Dim i As Long
     For i = 1 To mCount
-        NormalizeCombinationMoments i
+        NormalizeCombinationLoads i
     Next i
 End Sub
 
@@ -697,7 +721,7 @@ Public Sub Execute()
     mSection.BeginForceIntegrationRun mCount
     ClearTransformedReferenceCache ' Модель и материалы могли измениться между запусками. Ранее сохранённый расчётный центр в новом запуске использовать нельзя.
     ConfigureConcreteMomentDepths
-    NormalizeAllCombinationMoments
+    NormalizeAllCombinationLoads
     mExecuting = True
     mCrackDomainBuildCount = 0: mMechanicalPreparationBuildCount = 0
     Dim t0 As Double
@@ -934,7 +958,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilityAccidentalEccentricityUser1, mStabilityAccidentalEccentricityUser2, _
         mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
-        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter, mStabilitySP35TableInputError
+        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mLoadZeroFilter, mStabilitySP35TableInputError
 
     Dim stabilityMeta As CResultMeta
     Set stabilityMeta = stability.ResultMeta
@@ -984,8 +1008,8 @@ Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
         If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
             Dim loadState As CSectionLoadState
             Set loadState = New CSectionLoadState
-            loadState.Initialize mStabilityLoadN(i), mStabilityLoadUserMx(i), mStabilityLoadUserMy(i), _
-                mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+            loadState.Initialize NormalizeAxialInput(mStabilityLoadN(i)), mStabilityLoadUserMx(i), mStabilityLoadUserMy(i), _
+                mLoadReferenceX, mLoadReferenceY, mLoadZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
             nValue = loadState.N
             mxValue = loadState.MxAboutPoint(referenceY)
             myValue = loadState.MyAboutPoint(referenceX)
@@ -1004,7 +1028,7 @@ Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CS
     Set loadState = New CSectionLoadState
     loadState.InitializeFromPointMoments stability.DesignN, stability.DesignMx, stability.DesignMy, _
         referenceX, referenceY, mLoadReferenceX, mLoadReferenceY, _
-        mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+        mLoadZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
 
     Set mWorkingLoads(index) = loadState
     Dim finalDesignMx As Double
@@ -1138,7 +1162,7 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
         mMaterialProvider.ConcreteMaterialForEquilibriumFromSpec(strengthSpec), _
         mMaterialProvider.SteelMaterialForEquilibriumFromSpec(strengthSpec), strengthSpec, _
         loadPath, loadState, _
-        strengthReferenceX, strengthReferenceY, mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, _
+        strengthReferenceX, strengthReferenceY, mLoadReferenceX, mLoadReferenceY, mLoadZeroFilter, _
         mConcreteDepthForMx, mConcreteDepthForMy)
 
     mResults(index).StoreCapacityResult capacityResult

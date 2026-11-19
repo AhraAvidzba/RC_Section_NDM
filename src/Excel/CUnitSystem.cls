@@ -224,6 +224,11 @@ Public Function InputMomentPerLengthToInternal(ByVal value As Double) As Double
     InputMomentPerLengthToInternal = Abs(value) * MomentFactorToNmm(mInputMoment) / LengthFactorToMm(mInputLength)
 End Function
 
+' Переводит положительный коэффициент сила/длина в Н/мм без знака пользовательской N.
+Public Function InputForcePerLengthToInternal(ByVal value As Double) As Double
+    InputForcePerLengthToInternal = Abs(value) * ForceFactorToN(mInputForce) / LengthFactorToMm(mInputLength)
+End Function
+
 ' Переводит внутренний Mx в OUTPUT-единицы с учетом пользовательского знака Mx.
 Public Function InternalMomentMxToOutput(ByVal value As Double) As Double
     InternalMomentMxToOutput = value / MomentFactorToNmm(mOutputMoment) * MxSignFactor()
@@ -296,6 +301,11 @@ End Property
 ' Возвращает подпись INPUT-единицы для настроек размерности момент/длина.
 Public Property Get InputMomentPerLengthUnit() As String
     InputMomentPerLengthUnit = mInputMoment & "/" & mInputLength
+End Property
+
+' Возвращает текущую INPUT-единицу независимого коэффициента порога продольной силы.
+Public Property Get InputForcePerLengthUnit() As String
+    InputForcePerLengthUnit = mInputForce & "/" & mInputLength
 End Property
 
 ' Возвращает выбранную выходную единицу силы без пересчёта самих значений.

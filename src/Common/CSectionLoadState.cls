@@ -14,7 +14,7 @@ Option Explicit
 ' ==========================================================================
 ' Хранит N + Mx + My и точку приложения продольной силы. Переносит моменты
 ' между пользовательской точкой, произвольным расчётным центром и началом
-' координат модели. CMomentZeroFilter нормализует заданные моменты в
+' координат модели. CLoadZeroFilter нормализует заданные моменты в
 ' пользовательской точке. Геометрические переносы затем выполняются точно:
 ' их обнуление изменило бы точку приложения силы и зависело от начала координат.
 
@@ -23,14 +23,14 @@ Private mLoadPointMx As Double ' Mx относительно точки прил
 Private mLoadPointMy As Double ' My относительно точки приложения нагрузки, Н*мм.
 Private mLoadReferenceX As Double ' X точки приложения продольной силы в координатах модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения продольной силы в координатах модели, мм.
-Private mMomentFilter As CMomentZeroFilter ' Общий инженерный фильтр малых моментов.
+Private mMomentFilter As CLoadZeroFilter ' Общий инженерный фильтр малых моментов.
 Private mConcreteDepthForMx As Double ' Бетонный габарит по Y для фильтра Mx, мм.
 Private mConcreteDepthForMy As Double ' Бетонный габарит по X для фильтра My, мм.
 
 ' Инициализирует нагрузку по моментам, заданным относительно точки приложения.
 Public Sub Initialize(ByVal nValue As Double, ByVal loadPointMx As Double, _
         ByVal loadPointMy As Double, ByVal loadReferenceX As Double, _
-        ByVal loadReferenceY As Double, Optional ByVal momentFilter As CMomentZeroFilter = Nothing, _
+        ByVal loadReferenceY As Double, Optional ByVal momentFilter As CLoadZeroFilter = Nothing, _
         Optional ByVal concreteDepthForMx As Double = 0#, Optional ByVal concreteDepthForMy As Double = 0#)
     mN = nValue
     mLoadReferenceX = loadReferenceX
@@ -48,7 +48,7 @@ End Sub
 Public Sub InitializeFromPointMoments(ByVal nValue As Double, ByVal mxAboutPoint As Double, _
         ByVal myAboutPoint As Double, ByVal pointX As Double, ByVal pointY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
-        Optional ByVal momentFilter As CMomentZeroFilter = Nothing, _
+        Optional ByVal momentFilter As CLoadZeroFilter = Nothing, _
         Optional ByVal concreteDepthForMx As Double = 0#, Optional ByVal concreteDepthForMy As Double = 0#)
     Initialize nValue, _
         mxAboutPoint + nValue * (pointY - loadReferenceY), _

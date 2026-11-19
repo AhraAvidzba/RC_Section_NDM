@@ -136,7 +136,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
         ByVal loadState As CSectionLoadState, ByVal strengthReferenceX As Double, _
         ByVal strengthReferenceY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
-        ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
+        ByVal momentFilter As CLoadZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double) As CCapacityResult
     Dim result As CCapacityResult
     Set result = New CCapacityResult
@@ -267,7 +267,7 @@ End Function
 ' LoadMultiplier вместо вырожденной постановки UltimateStrain.
 Private Function IsPureAxialForMethod(ByVal loadPath As CLoadPathDescriptor, _
         ByVal loadState As CSectionLoadState, ByVal referenceX As Double, _
-        ByVal referenceY As Double, ByVal momentFilter As CMomentZeroFilter, _
+        ByVal referenceY As Double, ByVal momentFilter As CLoadZeroFilter, _
         ByVal concreteDepthForMx As Double, ByVal concreteDepthForMy As Double) As Boolean
     If loadPath Is Nothing Then Exit Function
     If loadState Is Nothing Then Exit Function
@@ -282,7 +282,7 @@ End Function
 ' Если фильтр не передан, учитывает лишь небольшую численную погрешность
 ' для самостоятельного программного вызова.
 Private Function MomentIsZeroForMethod(ByVal momentValue As Double, _
-        ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepth As Double) As Boolean
+        ByVal momentFilter As CLoadZeroFilter, ByVal concreteDepth As Double) As Boolean
     If momentFilter Is Nothing Then
         MomentIsZeroForMethod = (Abs(momentValue) <= 0.000000001)
     Else

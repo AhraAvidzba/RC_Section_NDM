@@ -1,4 +1,4 @@
-' ==========================================================================
+﻿' ==========================================================================
 ' ДЛЯ ТЕСТОВ — вспомогательный фрагмент частной приёмки; в выпуск не включается.
 ' ==========================================================================
 
@@ -19,6 +19,7 @@ Public Function TestRunCoreRegressionBatch15() As String
     TestFocusedSelectGeometry "SavedWorkbook"
     TestSetSystemSetting "Load.ReferenceOffsetX", "0"
     TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", "0" ' Независимый контроль равновесия сравнивает заданные силы без инженерного фильтра.
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
     TestSetSystemSetting "SLS.Crack.Code", "SP35"

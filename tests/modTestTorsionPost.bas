@@ -641,3 +641,93 @@ Finished:
     On Error GoTo 0
     RunTorsionPostDiagnosticTests = "TorsionPostDiagnostics: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимая размерностная проверка: подобные фермы, поворот/перенос,
+' круг с точными дугами, сумма длин и тяги без задвоения угловых стержней.
+Public Function RunTorsionGeometryInvariantTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    Dim sizeFactor As Variant, angle As Variant, shift As Variant, sg As Long, p As TTorsionPostParameters
+    Dim section As CSectionModel, calculator As CTorsionPostCalculator, result As CTorsionPostResult
+    Dim data As Variant, bars As Variant, i As Long, lengthSum As Double, forceSum As Double, pi As Double
+    pi = 4# * Atn(1#)
+    For Each sizeFactor In Array(0.1, 1#, 10#)
+        For Each angle In Array(0#, pi / 2#, 0.3)
+            For Each shift In Array(0#, 1000000#)
+                Set section = TestTorsionTransformedRectangle(CDbl(sizeFactor), CDbl(angle), CDbl(shift))
+                p.AxisOffset = 20# * sizeFactor: p.HoopDiameter = 8# * sizeFactor: p.HoopSpacing = 150# * sizeFactor
+                p.BarBand = 25# * sizeFactor: p.SteelResistance = 270#: p.HoopResistance = 170#
+                p.StrutAngle = 45#: p.ConcreteMethod = "None"
+                Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
+                For sg = -1 To 1 Step 2
+                    Set result = calculator.Calculate("INV", sg * 3900000# * sizeFactor ^ 3, Nothing)
+                    data = result.Summary: bars = result.Bars
+                    TestTorsionNear "Similar Ao", data(1, 4), 41600# * sizeFactor ^ 2
+                    TestTorsionNear "Similar perimeter", data(1, 5), 840# * sizeFactor
+                    TestTorsionNear "Similar stress", data(1, 12), 98.4375
+                    TestTorsionAssert "Each physical bar once", UBound(bars, 1) = 4
+                    lengthSum = 0#: forceSum = 0#
+                    For i = 1 To UBound(bars, 1)
+                        lengthSum = lengthSum + CDbl(bars(i, 5)): forceSum = forceSum + CDbl(bars(i, 4))
+                        TestTorsionNear "Similar assigned length", bars(i, 5), 210# * sizeFactor
+                        TestTorsionNear "Similar assigned force", bars(i, 4), 9843.75 * sizeFactor ^ 2
+                        TestTorsionAssert "ID kept after transform", CStr(bars(i, 2)) = "R" & i
+                    Next i
+                    TestTorsionNear "Full perimeter no overlap", lengthSum, CDbl(data(1, 5))
+                    TestTorsionNear "Full tie force no overlap", forceSum, CDbl(data(1, 8))
+                Next sg
+            Next shift
+        Next angle
+    Next sizeFactor
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, 0#, pi * 10000#, shapeType:="Circle", width:=200#, height:=200#
+    section.Contours.AddContourArc "C1", 100#, 0#, -100#, 0#, 0#, 0#, 100#, pi
+    section.Contours.AddContourArc "C2", -100#, 0#, 100#, 0#, 0#, 0#, 100#, pi
+    For i = 0 To 3
+        section.AddRebarElement 65# * Cos(i * pi / 2#), 65# * Sin(i * pi / 2#), Sqr(400# / pi), 100#, "A400", comment:="Окружность"
+    Next i
+    p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#: p.BarBand = 25#
+    Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
+    Set result = calculator.Calculate("CIRCLE", 3900000#, Nothing): data = result.Summary: bars = result.Bars
+    TestTorsionNear "Circle exact Ao", data(1, 4), pi * 6400#
+    TestTorsionNear "Circle exact perimeter", data(1, 5), pi * 160#
+    lengthSum = 0#: forceSum = 0#
+    For i = 1 To UBound(bars, 1)
+        TestTorsionNear "Circle quarter arc", bars(i, 5), pi * 40#
+        lengthSum = lengthSum + CDbl(bars(i, 5)): forceSum = forceSum + CDbl(bars(i, 4))
+    Next i
+    TestTorsionNear "Circle length conservation", lengthSum, pi * 160#
+    TestTorsionNear "Circle force conservation", forceSum, 3900000# / 80#
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    RunTorsionGeometryInvariantTests = "TorsionGeometryInvariant: Passed=" & mTestPassed & "; Failed=" & mTestFailed & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Подобный прямоугольник с фактическим контуром; ожидаемые числа выводятся аналитически.
+Private Function TestTorsionTransformedRectangle(ByVal sizeFactor As Double, ByVal angle As Double, ByVal shift As Double) As CSectionModel
+    Dim section As New CSectionModel, i As Long, j As Long, x As Double, y As Double
+    Dim xx As Double, yy As Double, xNext As Double, yNext As Double, corners As Variant, point As Variant, nextPoint As Variant
+    corners = Array(Array(-100#, -150#), Array(100#, -150#), Array(100#, 150#), Array(-100#, 150#))
+    section.AddConcreteElement shift, -shift, 60000# * sizeFactor ^ 2, shapeType:="Rectangle", width:=200# * sizeFactor, height:=300# * sizeFactor, rotation:=angle
+    For i = 0 To 3
+        point = corners(i): nextPoint = corners((i + 1) Mod 4)
+        xx = shift + sizeFactor * (point(0) * Cos(angle) - point(1) * Sin(angle))
+        yy = -shift + sizeFactor * (point(0) * Sin(angle) + point(1) * Cos(angle))
+        xNext = shift + sizeFactor * (nextPoint(0) * Cos(angle) - nextPoint(1) * Sin(angle))
+        yNext = -shift + sizeFactor * (nextPoint(0) * Sin(angle) + nextPoint(1) * Cos(angle))
+        section.Contours.AddContourLine CStr(i), xx, yy, xNext, yNext
+    Next i
+    For i = -1 To 1 Step 2
+        For j = -1 To 1 Step 2
+            x = 65# * i: y = 115# * j
+            section.AddRebarElement shift + sizeFactor * (x * Cos(angle) - y * Sin(angle)), _
+                -shift + sizeFactor * (x * Sin(angle) + y * Cos(angle)), Sqr(400# / (4# * Atn(1#))) * sizeFactor, _
+                100# * sizeFactor ^ 2, "A400", comment:="Грань прямоугольника"
+        Next j
+    Next i
+    Set TestTorsionTransformedRectangle = section
+End Function
