@@ -6,10 +6,11 @@ Option Explicit
 ' Обработчики управляют справкой, иллюстрацией по именованной ячейке и копированием снимка при Save As.
 Private mLastWorkbookFolder As String ' Последняя папка книги для последовательных Save As после переноса исходного файла.
 
-' При открытии раскрывает раздел настроек Config и листа «Сечения», остальные сворачивает.
+' При открытии настраивает Справку и активирует уже сохранённые границы печати.
 Private Sub Workbook_Open()
     mLastWorkbookFolder = ThisWorkbook.Path
     ApplyHelpDefaults
+    modWorkbookPrintLayout.ActivateDeclaredPrintAreas ThisWorkbook
 End Sub
 
 ' Только выбор справочной картинки: расчётные настройки и таблицы не читаются.

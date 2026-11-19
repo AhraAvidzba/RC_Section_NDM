@@ -1,7 +1,8 @@
-"""Переносит оформленный лист «Расчет» в новую книгу после штатной сборки.
+"""Переносит утверждённое оформление в книгу после штатной сборки.
 
-Шаблон хранит этот лист, его объекты, стили, формулы связи и параметры примера.
-Порядок листов, проект VBA и расположение входных таблиц берутся из сборки.
+Шаблон хранит лист «Расчет», его объекты и формулы связи, параметры примера
+и оформление входных листов без пользовательских значений. Проект VBA,
+настройки и проверки данных создаёт штатный сборщик.
 """
 
 import argparse
@@ -180,20 +181,11 @@ def example_input(cell, strings):
 
 
 def prepare_calculation_sheet(sheet, strings):
-    """Встраивает подписи листа и очищает кеши формул от сохранённых результатов."""
-    stability_reserve_columns = {'AI58': 'AW', 'AJ58': 'AX'}
+    """Сохраняет формулы утверждённого листа, встраивает подписи и очищает их кеши."""
     for cell in sheet.iter(M + 'c'):
         formula = cell.find(M + 'f')
         value = cell.find(M + 'v')
         if formula is not None:
-            reserve_column = stability_reserve_columns.get(cell.get('r'))
-            if reserve_column:
-                sp35 = f'{reserve_column}42'
-                sp63 = f'{reserve_column}56'
-                normalized = f'IFERROR(ROUND(IF($AO$44="СП35",{sp35},{sp63}),2),"-")'
-                require(formula.text in (f'IF($AO$44="СП35",IFERROR({sp35},"-"),IFERROR({sp63},"-"))', normalized),
-                        f'Изменилась проверенная формула запаса устойчивости Расчет!{cell.get("r")}')
-                formula.text = normalized
             if value is not None:
                 cell.remove(value)
             cell.attrib.pop('t', None)
@@ -293,6 +285,71 @@ def example_addresses(name, cells, strings, names):
                  for key, offset in ANNOTATION_EXAMPLE_FIELDS)
 
 
+def capture_input_formatting(parts, path):
+    """Сохраняет оформление входного листа без значений, формул и пользовательских комментариев."""
+    source = xml(parts, path)
+    result = ET.Element(M + 'worksheet', nsmap=source.nsmap)
+    columns = source.find(M + 'cols')
+    if columns is not None:
+        result.append(deepcopy(columns))
+    data = ET.SubElement(result, M + 'sheetData')
+    for original in source.find(M + 'sheetData'):
+        row = ET.SubElement(data, M + 'row', attrib=dict(original.attrib))
+        row.attrib.pop('spans', None)
+        for cell in original:
+            if cell.tag == M + 'c':
+                ET.SubElement(row, M + 'c', r=cell.get('r'), s=cell.get('s', '0'))
+    merges = source.find(M + 'mergeCells')
+    if merges is not None:
+        result.append(deepcopy(merges))
+    return serialize(result)
+
+
+def apply_input_formatting(sheet, formatting):
+    """Применяет стили и объединения; содержимое ячеек и проверки данных задаёт сборщик."""
+    data = sheet.find(M + 'sheetData')
+    rows = {int(row.get('r')): row for row in data}
+    for original in formatting.find(M + 'sheetData'):
+        number = int(original.get('r'))
+        if number not in rows:
+            row = ET.Element(M + 'row', r=str(number))
+            next_row = next((n for n in data if int(n.get('r')) > number), None)
+            data.insert(data.index(next_row) if next_row is not None else len(data), row)
+            rows[number] = row
+        row = rows[number]
+        row.attrib.clear()
+        row.attrib.update(original.attrib)
+        cells = {cell.get('r'): cell for cell in row}
+        for source_cell in original:
+            address = source_cell.get('r')
+            if address not in cells:
+                cell = ET.Element(M + 'c', r=address)
+                column = column_number(CELL_ADDRESS.fullmatch(address)[1])
+                following = next((c for c in row if column_number(CELL_ADDRESS.fullmatch(c.get('r'))[1]) > column), None)
+                row.insert(row.index(following) if following is not None else len(row), cell)
+                cells[address] = cell
+            cells[address].set('s', source_cell.get('s'))
+    for tag in ('cols', 'mergeCells'):
+        old, new = sheet.find(M + tag), formatting.find(M + tag)
+        if old is not None:
+            if new is None:
+                sheet.remove(old)
+            else:
+                sheet.replace(old, deepcopy(new))
+        elif new is not None:
+            # В SpreadsheetML столбцы стоят перед данными, объединения — перед печатными свойствами.
+            boundary = sheet.find(M + 'sheetData') if tag == 'cols' else next(
+                (n for n in sheet if ET.QName(n).localname in ('phoneticPr', 'conditionalFormatting',
+                 'dataValidations', 'hyperlinks', 'printOptions', 'pageMargins', 'pageSetup',
+                 'headerFooter', 'drawing', 'legacyDrawing', 'tableParts', 'extLst')), None)
+            sheet.insert(sheet.index(boundary) if boundary is not None else len(sheet), deepcopy(new))
+    addresses = [CELL_ADDRESS.fullmatch(c.get('r')).groups() for c in data.iter(M + 'c')]
+    if addresses:
+        last_column = max(column_number(column) for column, _ in addresses)
+        last_row = max(int(row) for _, row in addresses)
+        sheet.find(M + 'dimension').set('ref', f'A1:{column_letters(last_column)}{last_row}')
+
+
 def capture(source, baseline, destination):
     """Создаёт переносимый шаблон из проверенного дооформленного файла."""
     parts = read_package(source)
@@ -351,10 +408,13 @@ def capture(source, baseline, destination):
         'names': names,
         'inputNames': input_names,
         'inputCells': links,
+        'inputFormatting': {name: f'input-formatting/{name}.xml' for name in INPUTS},
         'generatedPlotObjectsRemoved': ignored,
     }
     template = {'manifest.json': (json.dumps(metadata, ensure_ascii=False, indent=2) + '\n').encode(),
                 'styles.xml': parts['xl/styles.xml'], **graph}
+    for name, path in metadata['inputFormatting'].items():
+        template[path] = capture_input_formatting(parts, locations[name][1])
     require(not destination.exists(), f'Шаблон уже существует: {destination}')
     write_zip(destination, template)
     print(f'Шаблон «Расчет»: {len(links["Config"])} входов Config, {len(links["Сечения"])} входов «Сечения», '
@@ -362,7 +422,7 @@ def capture(source, baseline, destination):
 
 
 def merge_styles(base, donor, sheet):
-    """Подключает только стили листа «Расчет», оставляя существующие индексы неизменными."""
+    """Подключает используемые стили оформляемого листа, сохраняя существующие индексы."""
     sections = ('numFmts', 'fonts', 'fills', 'borders', 'cellStyleXfs', 'cellXfs', 'dxfs')
     indexes = {}
     for tag in sections:
@@ -547,6 +607,8 @@ def apply(source, template_path, destination):
     input_names = {node.get('name'): node.text for node in names if not node.get('localSheetId')}
     for name, reference in metadata['inputNames'].items():
         require(input_names.get(name) == reference, f'Изменилось расположение входного диапазона {name}')
+    styles = xml(parts, 'xl/styles.xml')
+    donor_styles = xml(template, 'styles.xml')
     for name in INPUTS:
         part = locations[name][1]
         sheet = xml(parts, part)
@@ -554,12 +616,15 @@ def apply(source, template_path, destination):
         for address, (kind, value) in metadata['inputCells'][name].items():
             require(address in cells, f'В новой книге отсутствует {name}!{address}')
             set_cell(cells[address], kind, value)
+        if name in metadata.get('inputFormatting', {}):
+            formatting = xml(template, metadata['inputFormatting'][name])
+            merge_styles(styles, donor_styles, formatting)
+            apply_input_formatting(sheet, formatting)
         parts[part] = serialize(sheet)
     calc = xml(template, metadata['sheet'])
     require(calc.find(M + 'sheetPr').get('codeName') == xml(parts, calc_path).find(M + 'sheetPr').get('codeName'),
             'Изменилось внутреннее имя VBA листа «Расчет»')
-    styles = xml(parts, 'xl/styles.xml')
-    merge_styles(styles, xml(template, 'styles.xml'), calc)
+    merge_styles(styles, donor_styles, calc)
     parts['xl/styles.xml'] = serialize(styles)
     parts[calc_path] = serialize(calc)
     for node in list(names):

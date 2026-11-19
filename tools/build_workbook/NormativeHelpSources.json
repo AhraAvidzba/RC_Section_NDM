@@ -19,7 +19,6 @@
     "caption": "ACI 445.1R-12",
     "description": "Joint ACI-ASCE Committee 445. Report on Torsion in Structural Concrete. Глава 9: пространственная ферма, одноконтурный поток, продольная и поперечная арматура. Инженерные параметры книги оговорены отдельно.",
     "kind": "report",
-    "url": "https://www.concrete.org/Portals/0/Files/PDF/4451R12ed.pdf",
     "relativePath": "norms/Torsion/ACI-445.1R-12-Torsion.pdf"
   },
   {
@@ -33,7 +32,6 @@
     "id": "EC2_2004",
     "caption": "EN 1992-1-1:2004",
     "description": "Eurocode 2. П.2.4.2.4(1), таблица 2.1N: gamma_c = 1,5 для постоянных и переходных расчётных ситуаций; п.3.1.2, таблица 3.1: классы и цилиндрическая прочность; п.6.3.2: расчёт кручения и эффективная стенка.",
-    "kind": "standard",
-    "url": "https://regbar.com/wp-content/uploads/2019/09/bs_en_1992-1-1-2004_eurocode_2.pdf"
+    "kind": "standard"
   }
 ]
