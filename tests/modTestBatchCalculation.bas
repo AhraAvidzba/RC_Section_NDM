@@ -135,6 +135,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchNMxyWithoutMomentsUsesStableForcePath stats
     TestAppendLine stats, "RUN: TestMomentZeroFilterDefaultThresholds"
     TestMomentZeroFilterDefaultThresholds stats
+    TestAppendLine stats, "RUN: TestLoadReferencePreservesEngineeringTransfers"
+    TestLoadReferencePreservesEngineeringTransfers stats
     TestAppendLine stats, "RUN: TestCapacityLoadPathFiltersEngineeringSmallMoments"
     TestCapacityLoadPathFiltersEngineeringSmallMoments stats
     TestAppendLine stats, "RUN: TestBatchZeroMomentFilterNormalizesCapacityPath"
@@ -1193,6 +1195,96 @@ Private Sub TestMomentZeroFilterDefaultThresholds(ByRef stats As TBatchTestStats
         Abs(filter.NormalizeMoment(0.5002 * TEST_TF_M_IN_NMM, 1000#)) > 0#
     TestAssertClose stats, "batch.zeroMoment.h02m.threshold", filter.NormalizeMoment(0.1 * TEST_TF_M_IN_NMM, 200#), 0#, 0#
     TestAssertClose stats, "batch.zeroMoment.h3m.threshold", filter.NormalizeMoment(1.5 * TEST_TF_M_IN_NMM, 3000#), 0#, 0#
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет независимость точного переноса от порога, величины базовой силы
+' и начала координат, сохраняя инженерное зануление пользовательского момента.
+Public Function RunLoadReferenceMomentFilterTests() As String
+    Dim stats As TBatchTestStats
+    On Error GoTo Failed
+    TestMomentZeroFilterDefaultThresholds stats
+    TestCapacityLoadPathFiltersEngineeringSmallMoments stats
+    TestLoadReferencePreservesEngineeringTransfers stats
+    GoTo Finished
+Failed:
+    stats.Failed = stats.Failed + 1
+    TestAppendLine stats, "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+Finished:
+    TestAppendLine stats, "TOTAL_LOAD_REFERENCE_FILTER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunLoadReferenceMomentFilterTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Одна осевая нагрузка должна давать нулевые моменты в своей точке при любых
+' координатах модели и множителе lambda; зануление N*deltaX / N*deltaY нарушает этот инвариант.
+Private Sub TestLoadReferencePreservesEngineeringTransfers(ByRef stats As TBatchTestStats)
+    Dim filter As New CMomentZeroFilter, load As CSectionLoadState, restored As CSectionLoadState
+    Dim path As CLoadPathDescriptor, shift As Variant, force As Variant, pathKey As Variant, multiplier As Variant
+    Dim referenceX As Double, referenceY As Double, n As Double, targetN As Double, targetMx As Double, targetMy As Double
+    Dim toleranceMx As Double, toleranceMy As Double, prefix As String
+    filter.Initialize TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH
+    For Each shift In Array(Array(0#, 0#), Array(1000000#, -1000000#), Array(-1000000#, 1000000#))
+        referenceX = 357.894736842105 + CDbl(shift(0))
+        referenceY = 507.894736842105 + CDbl(shift(1))
+        For Each force In Array(-1#, -2#, 1#, 2#)
+            n = CDbl(force) * 9806.65
+            prefix = "loadTransfer.n=" & CStr(force) & ".shift=" & CStr(shift(0))
+            Set load = New CSectionLoadState
+            load.Initialize n, 0.1 * TEST_TF_M_IN_NMM, -0.1 * TEST_TF_M_IN_NMM, referenceX, referenceY, filter, 1300#, 1000#
+            TestAssertClose stats, prefix & ".inputMxFiltered", load.LoadPointMx, 0#, 0#
+            TestAssertClose stats, prefix & ".inputMyFiltered", load.LoadPointMy, 0#, 0#
+            TestAssertClose stats, prefix & ".internalMxPreserved", load.InternalMx, n * referenceY, 0.00001
+            TestAssertClose stats, prefix & ".internalMyPreserved", load.InternalMy, n * referenceX, 0.00001
+            TestAssertClose stats, prefix & ".forceMxPreserved", load.AxialMxAboutPoint(0#), n * referenceY, 0.00001
+            TestAssertClose stats, prefix & ".forceMyPreserved", load.AxialMyAboutPoint(0#), n * referenceX, 0.00001
+            TestAssertClose stats, prefix & ".ownPointMx", load.MxAboutPoint(referenceY), 0#, 0#
+            TestAssertClose stats, prefix & ".ownPointMy", load.MyAboutPoint(referenceX), 0#, 0#
+            TestAssertClose stats, prefix & ".smallPointTransferMx", load.MxAboutPoint(referenceY + 10#), -10# * n, 0.00001
+            TestAssertClose stats, prefix & ".smallPointTransferMy", load.MyAboutPoint(referenceX - 10#), 10# * n, 0.00001
+            Set restored = New CSectionLoadState
+            restored.InitializeFromPointMoments n, load.InternalMx, load.InternalMy, 0#, 0#, referenceX, referenceY, filter, 1300#, 1000#
+            TestAssertClose stats, prefix & ".roundTripMx", restored.LoadPointMx, 0#, 0.00001
+            TestAssertClose stats, prefix & ".roundTripMy", restored.LoadPointMy, 0#, 0.00001
+            For Each pathKey In Array("Auto", "LambdaN", "LambdaNMxy")
+                Set path = New CLoadPathDescriptor: path.InitializeFromLoadState CStr(pathKey), load
+                TestAssertTrue stats, prefix & "." & CStr(pathKey) & ".valid", path.Valid And path.HasScaledLoad
+                For Each multiplier In Array(1#, 10#, 1000#)
+                    targetN = path.NOffset + CDbl(multiplier) * path.NBase
+                    targetMx = path.MxOffset + CDbl(multiplier) * path.MxBase
+                    targetMy = path.MyOffset + CDbl(multiplier) * path.MyBase
+                    toleranceMx = Abs(targetN * referenceY) * 0.000000000001 + 0.00001
+                    toleranceMy = Abs(targetN * referenceX) * 0.000000000001 + 0.00001
+                    TestAssertClose stats, prefix & "." & CStr(pathKey) & ".lambda=" & CStr(multiplier) & ".Mx", targetMx - targetN * referenceY, 0#, toleranceMx
+                    TestAssertClose stats, prefix & "." & CStr(pathKey) & ".lambda=" & CStr(multiplier) & ".My", targetMy - targetN * referenceX, 0#, toleranceMy
+                Next multiplier
+            Next pathKey
+        Next force
+    Next shift
+    Set load = New CSectionLoadState
+    load.Initialize -9806.65, 0.7 * TEST_TF_M_IN_NMM, -0.6 * TEST_TF_M_IN_NMM, 357.894736842105, 507.894736842105, filter, 1300#, 1000#
+    TestAssertClose stats, "loadTransfer.realUserMxRetained", load.LoadPointMx, 0.7 * TEST_TF_M_IN_NMM, 0#
+    TestAssertClose stats, "loadTransfer.realUserMyRetained", load.LoadPointMy, -0.6 * TEST_TF_M_IN_NMM, 0#
+    TestAssertClose stats, "loadTransfer.MxDecomposition", load.InternalMx - load.AxialMxAboutPoint(0#), load.LoadPointMx, 0.00001
+    TestAssertClose stats, "loadTransfer.MyDecomposition", load.InternalMy - load.AxialMyAboutPoint(0#), load.LoadPointMy, 0.00001
+    ' После устойчивости инженерный порог по-прежнему действует на рабочий
+    ' момент в пользовательской точке, а последующий перенос к модели остаётся точным.
+    Set restored = New CSectionLoadState
+    n = -9806.65: referenceX = 357.894736842105: referenceY = 507.894736842105
+    restored.InitializeFromPointMoments n, _
+        0.1 * TEST_TF_M_IN_NMM + n * (referenceY - 486.506391945871), _
+        -0.1 * TEST_TF_M_IN_NMM + n * (referenceX - 368.984093331813), _
+        368.984093331813, 486.506391945871, referenceX, referenceY, filter, 1300#, 1000#
+    TestAssertClose stats, "loadTransfer.afterStabilitySmallMxFiltered", restored.LoadPointMx, 0#, 0#
+    TestAssertClose stats, "loadTransfer.afterStabilitySmallMyFiltered", restored.LoadPointMy, 0#, 0#
+    TestAssertClose stats, "loadTransfer.afterStabilityInternalMxPreserved", restored.InternalMx, n * referenceY, 0.00001
+    TestAssertClose stats, "loadTransfer.afterStabilityInternalMyPreserved", restored.InternalMy, n * referenceX, 0.00001
+    Set path = New CLoadPathDescriptor: path.InitializeFromLoadState "LambdaN", restored
+    TestAssertTrue stats, "loadTransfer.afterStabilityForceOnly", path.ForceOnly
+    filter.Initialize 0#
+    load.Initialize n, 0.1 * TEST_TF_M_IN_NMM, -0.1 * TEST_TF_M_IN_NMM, referenceX, referenceY, filter, 1300#, 1000#
+    TestAssertClose stats, "loadTransfer.disabledFilterUserMxRetained", load.LoadPointMx, 0.1 * TEST_TF_M_IN_NMM, 0#
+    TestAssertClose stats, "loadTransfer.disabledFilterUserMyRetained", load.LoadPointMy, -0.1 * TEST_TF_M_IN_NMM, 0#
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

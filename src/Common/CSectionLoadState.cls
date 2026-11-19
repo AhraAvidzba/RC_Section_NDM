@@ -14,9 +14,9 @@ Option Explicit
 ' ==========================================================================
 ' Хранит N + Mx + My и точку приложения продольной силы. Переносит моменты
 ' между пользовательской точкой, произвольным расчётным центром и началом
-' координат модели. Если передан CMomentZeroFilter, одинаково учитывает
-' практически нулевые моменты перед прочностью, несущей способностью,
-' устойчивостью и расчётом трещин.
+' координат модели. CMomentZeroFilter нормализует заданные моменты в
+' пользовательской точке. Геометрические переносы затем выполняются точно:
+' их обнуление изменило бы точку приложения силы и зависело от начала координат.
 
 Private mN As Double ' Продольная сила во внутренних единицах, Н.
 Private mLoadPointMx As Double ' Mx относительно точки приложения нагрузки, Н*мм.
@@ -56,27 +56,29 @@ Public Sub InitializeFromPointMoments(ByVal nValue As Double, ByVal mxAboutPoint
         loadReferenceX, loadReferenceY, momentFilter, concreteDepthForMx, concreteDepthForMy
 End Sub
 
-' Возвращает Mx относительно точки с координатой Y = pointY.
+' Возвращает Mx относительно точки с координатой Y = pointY без повторного
+' инженерного зануления; слагаемое N*deltaY необходимо для той же физической нагрузки.
 Public Function MxAboutPoint(ByVal pointY As Double) As Double
-    MxAboutPoint = NormalizeMx(mLoadPointMx + mN * (mLoadReferenceY - pointY))
+    MxAboutPoint = mLoadPointMx + mN * (mLoadReferenceY - pointY)
 End Function
 
-' Возвращает My относительно точки с координатой X = pointX.
+' Возвращает My относительно точки с координатой X = pointX с точным переносом N*deltaX.
 Public Function MyAboutPoint(ByVal pointX As Double) As Double
-    MyAboutPoint = NormalizeMy(mLoadPointMy + mN * (mLoadReferenceX - pointX))
+    MyAboutPoint = mLoadPointMy + mN * (mLoadReferenceX - pointX)
 End Function
 
 ' Возвращает часть Mx, создаваемую только продольной силой относительно
-' заданной точки. Пользовательские моменты в это значение не входят.
+' заданной точки. Это служебное слагаемое переноса: порог малых моментов к нему
+' не применяется, пользовательские моменты в него не входят.
 Public Function AxialMxAboutPoint(ByVal pointY As Double) As Double
-    AxialMxAboutPoint = NormalizeMx(mN * (mLoadReferenceY - pointY))
+    AxialMxAboutPoint = mN * (mLoadReferenceY - pointY)
 End Function
 
 ' Возвращает часть My, создаваемую только продольной силой относительно
 ' заданной точки. Метод нужен LoadPath, где момент от N масштабируется
 ' вместе с N, а пользовательские Mx/My могут масштабироваться отдельно.
 Public Function AxialMyAboutPoint(ByVal pointX As Double) As Double
-    AxialMyAboutPoint = NormalizeMy(mN * (mLoadReferenceX - pointX))
+    AxialMyAboutPoint = mN * (mLoadReferenceX - pointX)
 End Function
 
 ' Проверяет, является ли растягивающая сила центральной относительно заданной точки.
