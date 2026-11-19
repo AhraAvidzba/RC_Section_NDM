@@ -16,6 +16,7 @@ Option Explicit
 ' Одинаковые правила используются перед расчётом и при выводе снимка;
 ' класс не читает Excel, не вставляет строки и не изменяет данные.
 Private mIssues As Collection ' Причины отказа, включая готовые рекомендации по вставке строк.
+Private mRowsGapCount As Long ' Несколько вставок выполняются снизу вверх, чтобы указанные номера не сместились.
 
 ' Создаёт отдельный список проблем для одного действия пользователя.
 Private Sub Class_Initialize()
@@ -35,6 +36,7 @@ Public Sub CheckRowsGap(ByVal rangeName As String, ByVal previousBottomRow As Lo
     If insertBeforeRow < 1 Then insertBeforeRow = nextTopRow
     mIssues.Add "На листе Results вставьте " & CStr(count) & " " & RowsWord(count) & _
         " над строкой " & CStr(insertBeforeRow) & ", чтобы опустить диапазон " & rangeName & "."
+    mRowsGapCount = mRowsGapCount + 1
 End Sub
 
 ' Собирает понятный итог с числом сочетаний, конкретными строками и доступным действием.
@@ -42,7 +44,9 @@ Public Function Message(ByVal combinationCount As Long, Optional ByVal stoppedAc
         Optional ByVal canReduceInput As Boolean = True) As String
     Dim text As String, index As Long
     text = "Все сочетания (" & CStr(combinationCount) & _
-        ") не помещаются в текущую раскладку или пределы листа Results. " & stoppedAction & vbCrLf & "Что сделать:"
+        ") не помещаются в текущую раскладку или пределы листа Results. " & stoppedAction & vbCrLf & vbCrLf & "Что сделать:"
+    If mRowsGapCount > 1 Then text = text & vbCrLf & _
+        "Выполняйте вставки снизу вверх, начиная с большего номера строки: номера указаны для текущей раскладки."
     For index = 1 To mIssues.Count
         text = text & vbCrLf & CStr(index) & ") " & CStr(mIssues(index))
     Next index

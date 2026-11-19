@@ -1,6 +1,6 @@
 VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-20 00:35:20
+Date: 2026-11-20 01:22:35
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -46069,7 +46069,7 @@ Private Function TryReadFirstStraightEdgeRotation(ByVal entity As Object, _
     DeleteAcadObjectQuietly tempEntity
     mEdgeProbeCount = mEdgeProbeCount + 1
 
-    If Not IsArray(pieces) Then GoTo Cleanup
+    If Not IsArray(pieces) Then GoTo CleanUp
 
     Dim i As Long
     For i = LBound(pieces) To UBound(pieces)
@@ -46081,7 +46081,7 @@ Private Function TryReadFirstStraightEdgeRotation(ByVal entity As Object, _
         End If
     Next i
 
-Cleanup:
+CleanUp:
     DeleteExplodedPiecesQuietly pieces
     Exit Function
 
@@ -62930,8 +62930,8 @@ Private Sub DrawFormedGeometryExport(ByVal Workbook As Object, ByVal section As 
     Exit Sub
 Failed:
     number = Err.number: description = Err.description: source = Err.source
-    Resume Cleanup
-Cleanup:
+    Resume CleanUp
+CleanUp:
     On Error Resume Next
     DeleteAcadTemporarySources document, sources
     On Error GoTo 0
@@ -64338,7 +64338,7 @@ Public Function TestExportConcreteElementGeometry(ByVal ms As Object, ByVal geom
     Dim source As Object, number As Long, description As String
     On Error GoTo Failed
     TestExportConcreteElementGeometry = AddAcadConcreteGeometry(ms, geometry, "TEST_CONCRETE", 8, sources)
-Cleanup:
+CleanUp:
     On Error Resume Next
     For Each source In sources: source.Delete: Next source
     On Error GoTo 0
@@ -64346,7 +64346,7 @@ Cleanup:
     Exit Function
 Failed:
     number = Err.number: description = Err.description
-    Resume Cleanup
+    Resume CleanUp
 End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
@@ -64723,12 +64723,12 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal Workbook As Object, ByVal snaps
     rowCount = torsionWriter.RequiredRowsForWorkbook(Workbook, torsionCount)
     Dim firstTorsionRow As Long: firstTorsionRow = anchor.row - torsionWriter.HeaderRowsAboveAnchor
     If Not ResultRowsFitSheet(firstTorsionRow, rowCount, anchor.Worksheet.rows.count) Then _
-        layout.issues.Add ResultRowLimitDescription("rngTorsionSummaryAnchor", firstTorsionRow, rowCount, anchor.Worksheet.rows.count)
+        layout.Issues.Add ResultRowLimitDescription("rngTorsionSummaryAnchor", firstTorsionRow, rowCount, anchor.Worksheet.rows.count)
     Set nextAnchor = Workbook.names.item("rngNDMSectionGeometry").RefersToRange
     nextTopRow = nextAnchor.row - 2
     layout.CheckRowsGap "rngNDMSectionGeometry и расположенных ниже таблиц Results", _
         firstTorsionRow + rowCount - 1, nextTopRow, nextTopRow
-    If layout.issues.count > 0 Then Err.Raise 5, "ValidateRestoredSnapshotLayout", _
+    If layout.Issues.count > 0 Then Err.Raise 5, "ValidateRestoredSnapshotLayout", _
         layout.message(snapshot.TableRowCount("Summary") - 12, "Обновление результатов не выполнено.", False)
 End Sub
 
@@ -68125,10 +68125,10 @@ Private Function FormSectionCore(ByVal Workbook As Object, Optional ByVal starte
     Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
     Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
     Dim layout As New CResultsLayoutValidator
-    Dim issues As Collection: Set issues = layout.issues
-    ValidateSnapshotOutputLayout issues, Workbook, Workbook.Worksheets.item("Results"), writer, _
+    Dim Issues As Collection: Set Issues = layout.Issues
+    ValidateSnapshotOutputLayout Issues, Workbook, Workbook.Worksheets.item("Results"), writer, _
         section.concreteCount + section.rebarCount, 0, 0, section.annotationCount, section.contours.count, 2, writer.EstimatedElementGeometryRows(section)
-    If issues.count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", layout.message(0)
+    If Issues.count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", layout.message(0)
     Dim previewStore As CCalculationSnapshotStore: Set previewStore = New CCalculationSnapshotStore
     Dim storageMode As String: storageMode = previewStore.storageMode(Workbook)
     If storageMode = "File" Then
@@ -68437,7 +68437,7 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     Const SNAPSHOT_GAP_COLUMNS As Long = 2
 
     Dim layout As New CResultsLayoutValidator
-    Dim issues As Collection: Set issues = layout.issues
+    Dim Issues As Collection: Set Issues = layout.Issues
 
     Dim summaryWriter As CBatchResultWriter
     Dim strengthWriter As CStrengthSummaryWriter
@@ -68470,7 +68470,7 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     Set ws = summaryAnchor.Worksheet
     If Not (strengthAnchor.Worksheet Is ws) Or Not (crackAnchor.Worksheet Is ws) Or _
             Not (stabilityAnchor.Worksheet Is ws) Or Not (torsionAnchor.Worksheet Is ws) Or Not (elementAnchor.Worksheet Is ws) Then
-        AddLayoutIssue issues, "rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngTorsionSummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
+        AddLayoutIssue Issues, "rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngTorsionSummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
     End If
 
     Dim outputCombinationRows As Long
@@ -68480,7 +68480,7 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     Dim summaryCols As Long
     summaryRows = summaryWriter.RequiredSummaryOutputRowsForWorkbook(Workbook, batch.count)
     summaryCols = summaryWriter.RequiredSummaryOutputColumns()
-    CheckFootprintWithinSheet issues, ws, "rngBatchSummary", _
+    CheckFootprintWithinSheet Issues, ws, "rngBatchSummary", _
         summaryAnchor.row, summaryAnchor.column, summaryRows, summaryCols
 
     Dim strengthTopRow As Long
@@ -68490,9 +68490,9 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     strengthRows = strengthWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     strengthCols = strengthWriter.RequiredColumns()
     If strengthTopRow < 1 Then
-        AddLayoutIssue issues, "rngStrengthSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы прочности."
+        AddLayoutIssue Issues, "rngStrengthSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы прочности."
     Else
-        CheckFootprintWithinSheet issues, ws, "rngStrengthSummaryAnchor с шапкой прочности", _
+        CheckFootprintWithinSheet Issues, ws, "rngStrengthSummaryAnchor с шапкой прочности", _
             strengthTopRow, strengthAnchor.column, strengthRows, strengthCols
     End If
 
@@ -68503,9 +68503,9 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     crackRows = crackWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     crackCols = crackWriter.RequiredColumns()
     If crackTopRow < 1 Then
-        AddLayoutIssue issues, "rngCrackSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы трещин."
+        AddLayoutIssue Issues, "rngCrackSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы трещин."
     Else
-        CheckFootprintWithinSheet issues, ws, "rngCrackSummaryAnchor с шапкой трещин", _
+        CheckFootprintWithinSheet Issues, ws, "rngCrackSummaryAnchor с шапкой трещин", _
             crackTopRow, crackAnchor.column, crackRows, crackCols
     End If
 
@@ -68516,9 +68516,9 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     stabilityRows = stabilityWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     stabilityCols = stabilityWriter.RequiredColumns()
     If stabilityTopRow < 1 Then
-        AddLayoutIssue issues, "rngStabilitySummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы устойчивости."
+        AddLayoutIssue Issues, "rngStabilitySummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы устойчивости."
     Else
-        CheckFootprintWithinSheet issues, ws, "rngStabilitySummaryAnchor с шапкой устойчивости", _
+        CheckFootprintWithinSheet Issues, ws, "rngStabilitySummaryAnchor с шапкой устойчивости", _
             stabilityTopRow, stabilityAnchor.column, stabilityRows, stabilityCols
     End If
 
@@ -68526,9 +68526,9 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
     torsionTopRow = torsionAnchor.row - torsionWriter.HeaderRowsAboveAnchor
     torsionRows = torsionWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     If torsionTopRow < 1 Then
-        AddLayoutIssue issues, "rngTorsionSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы кручения."
+        AddLayoutIssue Issues, "rngTorsionSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы кручения."
     Else
-        CheckFootprintWithinSheet issues, ws, "rngTorsionSummaryAnchor с шапкой кручения", _
+        CheckFootprintWithinSheet Issues, ws, "rngTorsionSummaryAnchor с шапкой кручения", _
             torsionTopRow, torsionAnchor.column, torsionRows, torsionWriter.RequiredColumns()
     End If
 
@@ -68572,11 +68572,11 @@ Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section 
             Array("rngNDMElementGeometry", 1#, Workbook.names.item("rngNDMElementGeometry").RefersToRange.row))
         OfferExternalCalculationSnapshot Workbook, CDbl(elementCount) * estimatedStateCount, interactive, mandatoryRows, elementGeometryRows
     End If ' Отсутствующий якорь ниже диагностирует общий проверяющий код, без чтения несуществующего Range ради предупреждения.
-    ValidateSnapshotOutputLayout issues, Workbook, ws, ndmWriter, elementCount, _
+    ValidateSnapshotOutputLayout Issues, Workbook, ws, ndmWriter, elementCount, _
         estimatedStateCount, batch.count, section.annotationCount, section.contours.count, SNAPSHOT_GAP_COLUMNS, elementGeometryRows, _
         CalculationSnapshotOutputPolicy("File", 0#, mandatoryRows, ws.rows.count) <> "RowLimit"
 
-    If issues.count > 0 Then
+    If Issues.count > 0 Then
         Err.Raise vbObjectError + 4163, "ValidateResultsOutputLayout", _
             layout.message(outputCombinationRows)
     End If
@@ -68637,7 +68637,7 @@ MissingName:
 End Function
 
 ' Проверяет расстояния между соседними нижними таблицами Results и их ширину.
-Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal Workbook As Object, _
+Private Sub ValidateSnapshotOutputLayout(ByVal Issues As Collection, ByVal Workbook As Object, _
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
         ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long, ByVal elementGeometryRows As Double, _
@@ -68678,9 +68678,9 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal Workb
         On Error GoTo 0
 
         If Not (anchor.Worksheet Is ws) Then
-            AddLayoutIssue issues, names(index) & " должен находиться на том же листе Results, что и остальные блоки вывода."
+            AddLayoutIssue Issues, names(index) & " должен находиться на том же листе Results, что и остальные блоки вывода."
         End If
-        CheckFootprintWithinSheet issues, ws, names(index), anchor.row, anchor.column, rows(index), cols(index)
+        CheckFootprintWithinSheet Issues, ws, names(index), anchor.row, anchor.column, rows(index), cols(index)
         If Not ResultRowsFitSheet(anchor.row, rows(index), ws.rows.count) Then
             If index = 1 Or index = 7 Then stateRowsOverflow = True Else mandatoryRowsFit = False
         End If
@@ -68693,32 +68693,32 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal Workb
             Else
                 gapColumns = anchors(other).column - anchor.column - cols(index)
             End If
-            If gapColumns < requiredGapColumns Then AddLayoutIssue issues, _
+            If gapColumns < requiredGapColumns Then AddLayoutIssue Issues, _
                 "Между " & names(other) & " и " & names(index) & " требуется не менее " & CStr(requiredGapColumns) & " пустых столбцов."
         Next other
     Next index
-    If stateRowsOverflow And Not fileMode And mandatoryRowsFit And mandatoryOutputRowsFit Then AddLayoutIssue issues, ExternalSnapshotStorageAdvice(Workbook)
+    If stateRowsOverflow And Not fileMode And mandatoryRowsFit And mandatoryOutputRowsFit Then AddLayoutIssue Issues, ExternalSnapshotStorageAdvice(Workbook)
     Exit Sub
 
 MissingSnapshotAnchor:
-    AddLayoutIssue issues, "На листе Results не найден якорь " & names(index) & "."
+    AddLayoutIssue Issues, "На листе Results не найден якорь " & names(index) & "."
     On Error GoTo 0
 End Sub
 
 ' Проверяет, что прямоугольник вывода не выходит за пределы листа Excel.
-Private Sub CheckFootprintWithinSheet(ByVal issues As Collection, ByVal ws As Object, _
+Private Sub CheckFootprintWithinSheet(ByVal Issues As Collection, ByVal ws As Object, _
         ByVal blockName As String, ByVal firstRow As Long, ByVal firstColumn As Long, _
         ByVal rowCount As Double, ByVal columnCount As Long)
     If rowCount < 1 Then rowCount = 1
     If columnCount < 1 Then columnCount = 1
     If firstRow < 1 Or firstColumn < 1 Then
-        AddLayoutIssue issues, blockName & " имеет некорректный левый верхний угол вывода."
+        AddLayoutIssue Issues, blockName & " имеет некорректный левый верхний угол вывода."
         Exit Sub
     End If
 
-    If Not ResultRowsFitSheet(firstRow, rowCount, ws.rows.count) Then AddLayoutIssue issues, ResultRowLimitDescription(blockName, firstRow, rowCount, ws.rows.count)
+    If Not ResultRowsFitSheet(firstRow, rowCount, ws.rows.count) Then AddLayoutIssue Issues, ResultRowLimitDescription(blockName, firstRow, rowCount, ws.rows.count)
     If firstColumn + columnCount - 1 > ws.columns.count Then
-        AddLayoutIssue issues, blockName & " требует " & CStr(columnCount) & _
+        AddLayoutIssue Issues, blockName & " требует " & CStr(columnCount) & _
             " столбцов от столбца " & CStr(firstColumn) & ", но справа не хватает столбцов листа."
     End If
 End Sub
@@ -68757,9 +68757,9 @@ End Function
 
 ' Добавляет конкретную проблему размещения Results в общий список исправлений.
 ' Отсутствующий список допускается у служебного вызова и не создает новую коллекцию.
-Private Sub AddLayoutIssue(ByVal issues As Collection, ByVal text As String)
-    If issues Is Nothing Then Exit Sub
-    issues.Add text
+Private Sub AddLayoutIssue(ByVal Issues As Collection, ByVal text As String)
+    If Issues Is Nothing Then Exit Sub
+    Issues.Add text
 End Sub
 
 ' Выбирает большее число при резервировании строк под сохранённые состояния и аннотации.
@@ -76928,10 +76928,10 @@ Public Function RunRealAutoCADContourFormatTests(ByVal ownedApplication As Objec
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует."
     doc.SaveAs path
     mReport = mReport & "NATIVE_DWG: " & path & vbCrLf
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck "native.format.runtime; " & CStr(Err.number) & "; " & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
     On Error GoTo 0
@@ -77122,10 +77122,10 @@ NextFarLoad:
         TestCheckCloseFar prefix & ".savedOriginalY", restored.concreteY(1), model.concreteY(1), 0.000001
     Next position
     doc.SaveAs ThisWorkbook.path & "\FarOrigin_1000m.dwg"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck "far.runtime; " & CStr(Err.number) & "; " & Err.description, False
-Cleanup:
+CleanUp:
     mNativeProgress = False
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
@@ -77232,10 +77232,10 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует; перезапись запрещена."
     doc.SaveAs path
     mReport = mReport & "NATIVE_DWG: " & path & vbCrLf
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck "native.runtime; " & CStr(Err.number) & "; " & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
     If Not previous Is Nothing Then previous.Activate
@@ -77251,7 +77251,7 @@ End Function
 Private Sub TestCheckWorldCoordinateGuard()
     Dim document As CTestFakeAcadDocument, settings As CSystemSettingsReader
     Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, value As Variant
-    Dim number As Long, description As String, mode As Long, expectedError As Long
+    Dim number As Long, description As String, mode As Long, ExpectedError As Long
     Set document = New CTestFakeAcadDocument: Set settings = New CSystemSettingsReader
     Set importer = New CAutoCADSectionModelImporter
     For Each value In Array(0, Empty, Null, "1", 2, True, 0.5, CVErr(2015))
@@ -77260,9 +77260,9 @@ Private Sub TestCheckWorldCoordinateGuard()
         Set model = importer.ImportFromDocument(document, settings)
         number = Err.number: description = Err.description: Err.Clear
         On Error GoTo 0
-        expectedError = vbObjectError + 4408
-        If mode = 1 Then expectedError = vbObjectError + 4407
-        TestCheck "worldUCS.reject." & CStr(mode), number = expectedError And model Is Nothing
+        ExpectedError = vbObjectError + 4408
+        If mode = 1 Then ExpectedError = vbObjectError + 4407
+        TestCheck "worldUCS.reject." & CStr(mode), number = ExpectedError And model Is Nothing
         TestCheck "worldUCS.noGeometryRead." & CStr(mode), document.TestGeometryReads = 0 And document.TestVariableReads = 1
         TestCheck "worldUCS.instruction." & CStr(mode), InStr(description, "_UCS") > 0 And InStr(description, "_World") > 0
     Next value
@@ -77367,10 +77367,10 @@ Private Sub TestCheckNativeWorldCoordinateGuard(ByVal doc As Object)
     query.Initialize restored
     TestCheckArea "native.openingOnly.restoredArea", query.ConcreteDomain.area, 8000# - 125# * GEOM_PI
     TestCheck "native.openingOnly.restoredSource", query.ConcreteDomain.source = "ElementBoundaryLoops+KnownOpening"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     failure = Err.number: failureDescription = Err.description
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not world Is Nothing Then doc.ActiveUCS = world
     If Not fixture Is Nothing Then fixture.Close False
@@ -78034,11 +78034,11 @@ Private Sub TestCheckNativeConcreteComponentExport(ByVal document As Object)
         TestCheck "native.components.sameBoundary." & CStr(i), matched
     Next i
     TestCheckArea "native.components.totalArea", actualArea, 7600# * GEOM_PI
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     number = Err.number: description = Err.description
-    Resume Cleanup
-Cleanup:
+    Resume CleanUp
+CleanUp:
     On Error Resume Next
     For Each entity In owned: entity.Delete: Next entity
     On Error GoTo 0
@@ -78118,11 +78118,11 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
             TestCheck prefix & ".ownedCleanup", document.modelSpace.count = before
         Next contourMode
     Next mode
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     number = Err.number: description = Err.description
-    Resume Cleanup
-Cleanup:
+    Resume CleanUp
+CleanUp:
     On Error Resume Next
     For Each entity In owned: entity.Delete: Next entity
     system.formula = savedSettings
@@ -82571,7 +82571,7 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
     TestAssertTrue stats, "batch.writer.availableRows.summaryRows43", _
         writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, 1) = 43
 
-Cleanup:
+CleanUp:
     On Error Resume Next
     ThisWorkbook.names.item("rngLoadCombinations").RefersTo = originalRefersTo
     ' Возвращаем исходный лист до удаления временного, чтобы Excel не выбирал
@@ -82591,7 +82591,7 @@ Cleanup:
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: batch.writer.availableRows; " & Err.description
-    Resume Cleanup
+    Resume CleanUp
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -90241,22 +90241,22 @@ Private Sub TestSnapshotMissingGeometryFile(ByVal store As CCalculationSnapshotS
     Dim before As Variant: before = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry")
     Dim number As Long, Failed As Long, reason As String
     fs.MoveFile path, hidden
-    On Error GoTo Cleanup
+    On Error GoTo CleanUp
     Dim model As CSectionModel
     On Error Resume Next
     Set model = ReadFormedSectionFromResults(ThisWorkbook, False)
     number = Err.number: Err.Clear
-    On Error GoTo Cleanup
+    On Error GoTo CleanUp
     TestSnapshotCheck "preview.missingFile.noRecalcFallback", number <> 0 And model Is Nothing
     On Error Resume Next
     UpdateSectionResultsForWorkbook ThisWorkbook
     number = Err.number: Err.Clear
-    On Error GoTo Cleanup
+    On Error GoTo CleanUp
     TestSnapshotCheck "preview.missingFile.noRestoreFallback", number <> 0
     TestSnapshotCheck "preview.missingFile.keepsResults", TestSnapshotOptionalMatrixEqual(before, ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry"))
     TestSnapshotCheck "preview.missingFile.keepsLink", store.HasFileReference(ThisWorkbook)
-    GoTo Cleanup
-Cleanup:
+    GoTo CleanUp
+CleanUp:
     Failed = Err.number: reason = Err.description
     fs.MoveFile hidden, path
     If Failed <> 0 Then Err.Raise Failed, "TestSnapshotMissingGeometryFile", reason
@@ -91157,7 +91157,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' File без привязки не имеет права подменять свой источник сохранившимися таблицами Excel.
-Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional ByVal expectedError As Long = 0) As Boolean
+Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional ByVal ExpectedError As Long = 0) As Boolean
     On Error GoTo Rejected
     Dim model As CSectionModel, text As String
     Select Case consumer
@@ -91167,8 +91167,8 @@ Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional B
     End Select
     Exit Function
 Rejected:
-    If expectedError = 0 Then expectedError = vbObjectError + 4956
-    TestSnapshotFileReadRejected = Err.number = expectedError
+    If ExpectedError = 0 Then ExpectedError = vbObjectError + 4956
+    TestSnapshotFileReadRejected = Err.number = ExpectedError
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -97560,10 +97560,10 @@ Private Sub TestAudit03SettingsTableGuards(ByRef stats As TConfigTestStats)
     Next index
     TestCheck stats, "audit03.settingsTable.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestLogLine stats, "SETTINGS_TABLE_CASES: blocks=6; positions=2; variants=" & CStr(cases) & "; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 FailedRun:
     TestCheck stats, "audit03.settingsTable.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -97661,10 +97661,10 @@ Private Sub TestCheckMultiAreaInputs(ByRef stats As TConfigTestStats)
     Next index
     TestCheck stats, "audit03.multiArea.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestLogLine stats, "MULTI_AREA_CASES: blocks=6; positions=2; entrypoints=2; invalidCases=24; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 FailedRun:
     TestCheck stats, "audit03.multiArea.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -97784,10 +97784,10 @@ Private Sub TestCheckGeneralRunControls(ByRef stats As TConfigTestStats)
     TestCheck stats, "audit03.generalRun.messages.noWorkbook", code <> 0 And InStr(1, reason, "Книга", vbTextCompare) > 0
     TestCheck stats, "audit03.generalRun.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestLogLine stats, "GENERAL_RUN_CASES: positions=2; invalidVariants=" & CStr(cases) & "; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 FailedRun:
     TestCheck stats, "audit03.generalRun.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not stream Is Nothing Then stream.Close
     If Not fixture Is Nothing Then fixture.Close False
@@ -99125,10 +99125,10 @@ Public Function RunLocaleNumberTests(Optional ByRef passedCount As Long = 0, Opt
     fixture.Close False: Set fixture = Nothing: Set area = Nothing
     TestCheck stats, "locale.snapshot.readAfterClose", settings.GetRequiredDouble("Locale.TestNumber") = 123.5
     TestCheck stats, "locale.snapshot.addressAfterClose", settings.InputLocation("Locale.TestNumber") = originalLocation
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck stats, "locale.runtime." & Err.number & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     Application.UseSystemSeparators = False: Application.decimalSeparator = oldDecimal
@@ -99205,10 +99205,10 @@ Public Function RunLocaleBoundaryTests(Optional ByRef passedCount As Long = 0, O
         Kill path: path = vbNullString
         Set fixture = Application.Workbooks.Add(-4167): fixture.Worksheets(1).name = "LocaleBoundary"
     Next separator
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck stats, "locale.boundary.runtime." & Err.number & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     If Not reopened Is Nothing Then reopened.Close False
@@ -99307,10 +99307,10 @@ Public Function RunLocaleSavedContractTests(Optional ByRef passedCount As Long =
         Next value
     Next kind
     TestCheck stats, "locale.savedContract.noSolver", SectionEquilibriumSolveCount() = solveCount
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck stats, "locale.savedContract.runtime." & Err.number & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not cell Is Nothing Then cell.value2 = original
     If Not fixture Is Nothing Then fixture.Close False
@@ -116847,7 +116847,7 @@ End Sub
 ' Переполнение при построении технической ветви возвращается как явная
 ' ошибка построения, а не как урезанная диаграмма с ложным пределом.
 Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestStats)
-    On Error GoTo expectedError
+    On Error GoTo ExpectedError
     Dim steel As CSteelMaterialParameters
     Set steel = New CSteelMaterialParameters
     steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 1E+308, 1E+308, 1E+308, 1E+308
@@ -116858,7 +116858,7 @@ Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestS
     Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
     TestAssertTrue stats, "audit02.technical.overflowRejected", False
     Exit Sub
-expectedError:
+ExpectedError:
     TestAssertTrue stats, "audit02.technical.overflowRejected", Err.number = vbObjectError + 3245
 End Sub
 
@@ -116942,11 +116942,11 @@ End Sub
 Private Function TestAudit03CaptureDiagramInitialize(ByVal diagram As CMaterialDiagram, _
         ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
         ByRef description As String) As Long
-    On Error GoTo expectedError
+    On Error GoTo ExpectedError
     description = vbNullString
     diagram.InitializeFromArrays strains, stresses, pointCount
     Exit Function
-expectedError:
+ExpectedError:
     TestAudit03CaptureDiagramInitialize = Err.number
     description = Err.description
 End Function
@@ -116956,10 +116956,10 @@ End Function
 ' Успех или случайная ошибка индекса вместо EnsureInitialized не принимаются.
 Private Function TestAudit03CaptureDiagramStress(ByVal diagram As CMaterialDiagram) As Long
     Dim stress As Double
-    On Error GoTo expectedError
+    On Error GoTo ExpectedError
     stress = diagram.GetStress(-0.00075)
     Exit Function
-expectedError:
+ExpectedError:
     TestAudit03CaptureDiagramStress = Err.number
 End Function
 
@@ -117088,12 +117088,12 @@ Private Sub TestAudit03MaterialConfigBehavior(ByRef stats As TMaterialTestStats)
             TestAudit03MaterialDiagramSignature(provider.SteelMaterialFromSpec(spec)) = _
             TestAudit03MaterialDiagramSignature(baseline.SteelMaterialFromSpec(spec))
     Next i
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     failureNumber = Err.number
     failureDescription = Err.description
     TestAssertTrue stats, "audit03.materialConfig.runtime." & CStr(failureNumber) & "." & failureDescription, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not IsEmpty(savedConcrete) Then concreteRange.formula = savedConcrete
     If Not IsEmpty(savedSteel) Then steelRange.formula = savedSteel
@@ -117148,12 +117148,12 @@ End Function
 ' Перехватывает только контролируемую попытку прочитать неверный материал.
 ' Последующий recovery использует новый provider, чтобы не скрывать ошибку.
 Private Function TestAudit03MaterialConfigError(ByRef description As String) As Long
-    On Error GoTo expectedError
+    On Error GoTo ExpectedError
     Dim provider As CMaterialModelProvider
     description = vbNullString
     Set provider = TestAudit03MaterialConfigProvider()
     Exit Function
-expectedError:
+ExpectedError:
     TestAudit03MaterialConfigError = Err.number
     description = Err.description
 End Function
@@ -117555,7 +117555,7 @@ End Sub
 Private Function TestMaterialOrderCase(ByVal pair As Long, ByVal valueSet As String, ByVal boundary As Double, _
         ByVal alpha As Double, ByVal extension As Boolean, ByRef description As String, ByRef inputKey As String, _
         ByRef actualLimit As Double, ByRef expectedLimit As Double) As Long
-    On Error GoTo expectedError
+    On Error GoTo ExpectedError
     description = vbNullString: inputKey = vbNullString: actualLimit = 0#: expectedLimit = 0#
     Dim eb2 As Double, ebt2 As Double, eb0 As Double, ebt0 As Double, esc2 As Double, es2 As Double
     Dim threeEsc2 As Double, threeEs2 As Double, factor As Double, resistance As Double
@@ -117615,7 +117615,7 @@ Private Function TestMaterialOrderCase(ByVal pair As Long, ByVal valueSet As Str
     If pair <= 6 Then Set diagram = provider.ConcreteMaterialFromSpec(spec) Else Set diagram = provider.SteelMaterialFromSpec(spec)
     If pair = 2 Or pair = 4 Or pair = 6 Or pair = 8 Or pair = 10 Then actualLimit = diagram.PhysicalTensionStrain Else actualLimit = diagram.PhysicalCompressionStrain
     Exit Function
-expectedError:
+ExpectedError:
     TestMaterialOrderCase = Err.number: description = Err.description
 End Function
 
@@ -119126,10 +119126,10 @@ Private Sub TestPlotContainerContracts(ByRef stats As TUiTestStats)
     actual = fixture.Worksheets.item("Results").range("A1:FP20").value2
     TestAudit03ComparePlainSnapshot stats, "plotContainer.results", saved, actual, 1
     TestAssertTrue stats, "plotContainer.noSolve", SectionEquilibriumSolveCount() = solves
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "plotContainer.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.CutCopyMode = False
     If Not fixture Is Nothing Then fixture.Close False
@@ -119422,10 +119422,10 @@ Public Function RunContourLineWeightTests() As String
         cell.offset(0, -1).value2 = "ContourLineWeight"
     Next position
     TestAssertTrue stats, "contourWeight.noSolve", SectionEquilibriumSolveCount() = solves
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "contourWeight.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -119595,10 +119595,10 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.contourArc.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "CONTOUR_ARC_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.contourArc.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.decimalSeparator = savedDecimal: Application.ThousandsSeparator = savedThousands: Application.UseSystemSeparators = savedSeparators
     If Not fixture Is Nothing Then fixture.Close False
@@ -119854,10 +119854,10 @@ Private Sub TestAudit03NamedAnnotationSettings(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.namedAnnotation.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "NAMED_ANNOTATION_CASES: fields=21; positions=2; variants=" & CStr(cases) & "; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.namedAnnotation.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -119990,10 +119990,10 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Next mode
     TestAssertTrue stats, "audit03.autoPlot.noSolve", SectionEquilibriumSolveCount() = 0
     TestAppendLine stats, "AUTO_PLOT_CASES: variants=" & CStr(cases) & "; workbookFixtures=1; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.autoPlot.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -120201,10 +120201,10 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.snapshotMetadata.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "SNAPSHOT_METADATA_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.snapshotMetadata.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -120583,10 +120583,10 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     Next index
     TestAssertTrue stats, "audit03.generalPlot.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "GENERAL_PLOT_CASES: variants=" & CStr(cases) & "; geometryFixtures=2; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.generalPlot.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -120866,10 +120866,10 @@ Private Sub TestAudit03AnnotationLayoutContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.annotation.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "ANNOTATION_CASES: variants=" & CStr(cases) & "; layoutFixtures=1; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.annotation.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -120943,10 +120943,10 @@ Private Sub TestAudit03PlotEnableContracts(ByRef stats As TUiTestStats)
     UpdateSectionGeometryPreviewForWorkbook fixture
     TestAssertTrue stats, "audit03.generalPlot.enable.recovery", TestAudit03PlotShapeExists(chart, "ElementConcrete") And Not TestAudit03PlotShapeExists(chart, "Audit03Sentinel")
     TestAssertTrue stats, "audit03.generalPlot.enable.noSolve", SectionEquilibriumSolveCount() = solveCount
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.generalPlot.enable.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -121206,10 +121206,10 @@ Private Sub TestLocaleSavedNumbers(ByRef stats As TUiTestStats, ByVal fixture As
         Next field
     Next separator
     TestAssertTrue stats, "locale.saved.noSolver", SectionEquilibriumSolveCount() = solveCount
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "locale.saved.runtime." & Err.number & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not cell Is Nothing Then cell.value2 = original
     anchor.Resize(18, 4).value2 = saved
@@ -121490,10 +121490,10 @@ Private Sub TestIndexedFixtureIntegrity(ByRef stats As TUiTestStats)
         TestAssertTrue stats, prefix & ".recovery", UBound(actual, 1) = 3 And CStr(actual(3, 5)) = "R1"
     Next mutation
     TestAssertTrue stats, "indexedFixture.noSolve", SectionEquilibriumSolveCount() = solves
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "indexedFixture.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -124297,10 +124297,10 @@ Private Sub TestDurationLocaleValid(ByRef stats As TProfileStats, ByVal loads As
             stats.cases = stats.cases + 1
         Next column
     Next separator
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestCheck stats, "durationLocale.runtime." & Err.number & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.UseSystemSeparators = False: Application.decimalSeparator = oldDecimal
     Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
@@ -130534,10 +130534,10 @@ Private Sub TestAudit03InputCurvatureBinding(ByRef stats As TSectionSolverTestSt
             Next unitIndex
         Next axis
     Next method
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "automaticCurvature.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not unitRange Is Nothing Then unitRange.formula = savedUnits
     Application.DisplayAlerts = False
@@ -131194,10 +131194,10 @@ Private Sub TestAudit03SolverSettingEffects(ByRef stats As TSectionSolverTestSta
     TestAudit03InvalidSolverSettingEffects stats, sheet, section, concrete, steel
     TestAudit03LineSearchSettingEffects stats, sheet, section, steel
     TestAudit03NegativeUnsignedUnitSettings stats, sheet, section, concrete, steel
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.effect.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -135194,7 +135194,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 10042
+LINES: 10045
 ====================================================================================================
 Option Explicit
 
@@ -135943,7 +135943,7 @@ Private Sub TestLoadCombinationRangeMinimumRows(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.loads.minRows.headerOnlyRejected", errorNumber <> 0 And _
         InStr(1, errorText, "минимум одну строку", vbTextCompare) > 0
 
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not tempSheet Is Nothing Then tempSheet.Delete
     app.DisplayAlerts = oldDisplayAlerts
@@ -135953,7 +135953,7 @@ Cleanup:
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: ui.loads.minRows; err=" & CStr(Err.number) & "; " & Err.description
-    Resume Cleanup
+    Resume CleanUp
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -136859,7 +136859,7 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
         InStr(1, errorText, "rngStabilitySummaryAnchor", vbTextCompare) > 0 And _
         InStr(1, errorText, "rngLoadCombinations", vbTextCompare) > 0
 
-Cleanup:
+CleanUp:
     On Error Resume Next
     ThisWorkbook.names.item("rngLoadCombinations").RefersTo = originalRefersTo
     If Not tempSheet Is Nothing Then tempSheet.Delete
@@ -136870,7 +136870,7 @@ Cleanup:
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: ui.results.layoutGuard; err=" & CStr(Err.number) & "; " & Err.description
-    Resume Cleanup
+    Resume CleanUp
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -139326,14 +139326,14 @@ Private Function TestPlotAnnotationTextUnitCellIsDynamic(ByVal rowName As String
     settings.Worksheet.Calculate
     TestPlotAnnotationTextUnitCellIsDynamic = (CStr(settings.cells.item(targetRow, 4).value2) = "pt")
 
-Cleanup:
+CleanUp:
     If Not valuesSaved Then Exit Function
     settings.cells.item(textUnitsRow, 2).value2 = oldRebarUnits
     settings.cells.item(textUnitsRow, 3).value2 = oldDimensionUnits
     settings.Worksheet.Calculate
     Exit Function
 Failed:
-    If valuesSaved Then Resume Cleanup
+    If valuesSaved Then Resume CleanUp
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -139812,10 +139812,10 @@ Private Sub TestAudit03ReaderContract(ByRef stats As TUiTestStats)
     Next columns
     TestAudit03ReaderRows stats, sheet
     TestAudit03ReaderTinyUnits stats, sheet
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.reader.entry.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -140053,10 +140053,10 @@ Private Sub TestAudit03InputContracts(ByRef stats As TUiTestStats)
     TestAudit03AssertInputError stats, Nothing, "MeshProduct", "audit03.input.mesh.product", vbObjectError + 2108
     TestAudit03AssertInputError stats, Nothing, "MeshBoundary", "audit03.input.mesh.boundary", vbObjectError + 2109
     TestAudit03AssertInputError stats, Nothing, "MeshSubcellProduct", "audit03.input.mesh.subcellProduct", vbObjectError + 2108
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.input.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -140081,7 +140081,7 @@ End Sub
 ' Сетка с непредставимым числом ячеек должна отказать до выделения массива/цикла.
 Private Function TestAudit03CaptureInputError(ByVal source As Object, ByVal operation As String, _
         ByRef description As String) As Long
-    On Error GoTo expectedError
+    On Error GoTo ExpectedError
     Dim settings As CSystemSettingsReader, profiles As CCalculationProfileCatalog
     Dim mesh As CFiberMeshBuilder, geometry As CGeometryRegion
     Dim solver As CSectionSolver, registry As CSectionTypeRegistry
@@ -140124,7 +140124,7 @@ Private Function TestAudit03CaptureInputError(ByVal source As Object, ByVal oper
             End Select
     End Select
     Exit Function
-expectedError:
+ExpectedError:
     TestAudit03CaptureInputError = Err.number
     description = Err.description
 End Function
@@ -140203,11 +140203,11 @@ Private Sub TestAudit03ProfileInputContracts(ByRef stats As TUiTestStats)
         TestAssertTrue stats, "audit03.profile.missing." & CStr(key), actualCode = vbObjectError + 3988
         TestAssertTrue stats, "audit03.profile.missingReason." & CStr(key), InStr(1, description, CStr(key), vbBinaryCompare) > 0
     Next key
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.profile.runtime; " & CStr(Err.number) & "; " & Err.description
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -140294,11 +140294,11 @@ Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats
     TestAssertClose stats, "audit03.numeric.optionalDiameterBlank", settings.GetDouble("Rebar.Diameter2"), 0#, 0#
     TestAssertClose stats, "audit03.numeric.optionalKeyDefault", settings.GetDouble("Audit03.Absent", 17#), 17#, 0#
     TestAudit03BatchNumericSettingsInput stats
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.numeric.runtime; " & CStr(Err.number) & "; " & Err.description
-Cleanup:
+CleanUp:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -140415,11 +140415,11 @@ Private Sub TestAudit03UnitSignConsumers(ByRef stats As TUiTestStats)
         TestAppendLine stats, "UNIT_SIGN_CONSUMER: key=" & CStr(key) & "|capacity=" & cap.StopReason & _
             "|formation=" & formed.ResultMeta.resultComment & "|batch=" & result.DirectStateMeta.resultComment
     Next key
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.unitSign.runtime; " & CStr(Err.number) & "; " & Err.description
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not target Is Nothing Then target.formula = savedFormula
     If Not unitRange Is Nothing Then unitRange.formula = savedUnits
@@ -140485,11 +140485,11 @@ Private Sub TestAudit03BatchNumericSettingsInput(ByRef stats As TUiTestStats)
     batch.Execute
     TestAssertTrue stats, "audit03.numeric.Batch.restoredStatus", batch.ResultAt(1).status <> "InputErr"
     TestAssertTrue stats, "audit03.numeric.Batch.restoredSolve", batch.ResultAt(1).DirectStateMeta.calculated
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.numeric.Batch.runtime; " & CStr(Err.number) & "; " & Err.description
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not target Is Nothing Then target.formula = savedFormula
     On Error GoTo 0
@@ -142968,10 +142968,10 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.readLifecycle.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "READ_LIFECYCLE_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.readLifecycle.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -143112,10 +143112,10 @@ Private Sub TestAudit03ExcelGuardContracts(ByRef stats As TUiTestStats)
     Next mode
     TestAssertTrue stats, "audit03.excelGuard.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "EXCEL_GUARD_CASES: failedEnterVariants=8; validEnterVariants=24; equilibriumCases=0"
-    GoTo Cleanup
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "audit03.excelGuard.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If owned Then
         Err.Clear: currentStart = TestExcelProcessIdentity(otherExcel, checkedPID)
@@ -145221,13 +145221,16 @@ Private Sub TestTorsionBlockLayoutGuard(ByRef stats As TUiTestStats)
     Next shift
     Dim layout As New CResultsLayoutValidator
     layout.CheckRowsGap "rngTorsionSummaryAnchor", 151, 154, 153
-    TestAssertTrue stats, "ui.torsionLayout.exactFit", layout.issues.count = 0
+    TestAssertTrue stats, "ui.torsionLayout.exactFit", layout.Issues.count = 0
     layout.CheckRowsGap "rngTorsionSummaryAnchor", 152, 154, 153
-    TestAssertTrue stats, "ui.torsionLayout.oneRow", layout.issues.count = 1 And InStr(layout.message(31), "1 строку над строкой 153") > 0
-    GoTo Cleanup
+    TestAssertTrue stats, "ui.torsionLayout.oneRow", layout.Issues.count = 1 And InStr(layout.message(31), "1 строку над строкой 153") > 0
+    TestAssertTrue stats, "ui.torsionLayout.actionParagraph", InStr(layout.message(31), "." & vbCrLf & vbCrLf & "Что сделать:") > 0
+    layout.CheckRowsGap "rngNDMElementResults", 188, 190, 190
+    TestAssertTrue stats, "ui.torsionLayout.bottomUp", layout.Issues.count = 2 And InStr(layout.message(31), "снизу вверх") > 0
+    GoTo CleanUp
 Failed:
     TestAssertTrue stats, "ui.torsionLayout.runtime." & CStr(Err.number) & "." & Err.description, False
-Cleanup:
+CleanUp:
     On Error Resume Next
     If Len(oldAnchor) > 0 Then ThisWorkbook.names.item("rngTorsionSummaryAnchor").RefersTo = oldAnchor
     If Not anchor Is Nothing Then anchor.value2 = marker
@@ -147123,7 +147126,7 @@ End Property
 ====================================================================================================
 COMPONENT: CResultsLayoutValidator
 TYPE: 2
-LINES: 58
+LINES: 62
 ====================================================================================================
 Option Explicit
 
@@ -147134,6 +147137,7 @@ Option Explicit
 ' Одинаковые правила используются перед расчётом и при выводе снимка;
 ' класс не читает Excel, не вставляет строки и не изменяет данные.
 Private mIssues As Collection ' Причины отказа, включая готовые рекомендации по вставке строк.
+Private mRowsGapCount As Long ' Несколько вставок выполняются снизу вверх, чтобы указанные номера не сместились.
 
 ' Создаёт отдельный список проблем для одного действия пользователя.
 Private Sub Class_Initialize()
@@ -147141,8 +147145,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Возвращает общий список для проверок габаритов листа и отсутствующих якорей.
-Public Property Get issues() As Collection
-    Set issues = mIssues
+Public Property Get Issues() As Collection
+    Set Issues = mIssues
 End Property
 
 ' Проверяет свободный интервал; вставка выполняется над заголовком следующей таблицы.
@@ -147153,6 +147157,7 @@ Public Sub CheckRowsGap(ByVal rangeName As String, ByVal previousBottomRow As Lo
     If insertBeforeRow < 1 Then insertBeforeRow = nextTopRow
     mIssues.Add "На листе Results вставьте " & CStr(count) & " " & RowsWord(count) & _
         " над строкой " & CStr(insertBeforeRow) & ", чтобы опустить диапазон " & rangeName & "."
+    mRowsGapCount = mRowsGapCount + 1
 End Sub
 
 ' Собирает понятный итог с числом сочетаний, конкретными строками и доступным действием.
@@ -147160,7 +147165,9 @@ Public Function message(ByVal combinationCount As Long, Optional ByVal stoppedAc
         Optional ByVal canReduceInput As Boolean = True) As String
     Dim text As String, index As Long
     text = "Все сочетания (" & CStr(combinationCount) & _
-        ") не помещаются в текущую раскладку или пределы листа Results. " & stoppedAction & vbCrLf & "Что сделать:"
+        ") не помещаются в текущую раскладку или пределы листа Results. " & stoppedAction & vbCrLf & vbCrLf & "Что сделать:"
+    If mRowsGapCount > 1 Then text = text & vbCrLf & _
+        "Выполняйте вставки снизу вверх, начиная с большего номера строки: номера указаны для текущей раскладки."
     For index = 1 To mIssues.count
         text = text & vbCrLf & CStr(index) & ") " & CStr(mIssues(index))
     Next index

@@ -1,0 +1,18 @@
+{
+  "Status": "PASS",
+  "InputCellsCompared": {
+    "Config": 1920,
+    "Сечения": 848,
+    "Расчет": 1077,
+    "Справка": 1851
+  },
+  "InputDifferences": [],
+  "NativeComponents": 203,
+  "SourceComponentsCompared": 197,
+  "DocumentationOnlyGeneratedModules": [
+    "modSectionRecipeApiGuide"
+  ],
+  "CodeDifferences": [],
+  "Normalization": "Functional tokens with exact string literals and statement boundaries; identifier casing and whitespace; expected VBE Double formatting to15 significant figures; comments excluded from functional comparison",
+  "UserCandidateSHA256": "08C71B70BDC5D8298220B64D17A39F7B14D457903BD9CCA63AB225C3D91D5E16"
+}

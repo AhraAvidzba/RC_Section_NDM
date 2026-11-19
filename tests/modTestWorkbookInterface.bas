@@ -10027,6 +10027,9 @@ Private Sub TestTorsionBlockLayoutGuard(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.torsionLayout.exactFit", layout.Issues.Count = 0
     layout.CheckRowsGap "rngTorsionSummaryAnchor", 152, 154, 153
     TestAssertTrue stats, "ui.torsionLayout.oneRow", layout.Issues.Count = 1 And InStr(layout.Message(31), "1 строку над строкой 153") > 0
+    TestAssertTrue stats, "ui.torsionLayout.actionParagraph", InStr(layout.Message(31), "." & vbCrLf & vbCrLf & "Что сделать:") > 0
+    layout.CheckRowsGap "rngNDMElementResults", 188, 190, 190
+    TestAssertTrue stats, "ui.torsionLayout.bottomUp", layout.Issues.Count = 2 And InStr(layout.Message(31), "снизу вверх") > 0
     GoTo CleanUp
 Failed:
     TestAssertTrue stats, "ui.torsionLayout.runtime." & CStr(Err.Number) & "." & Err.Description, False

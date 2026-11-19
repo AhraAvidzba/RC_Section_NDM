@@ -1,0 +1,16 @@
+﻿{
+    "Status":  "PASS_PENDING_PRIMARY_AND_OWN_CLOSURE_REVIEW",
+    "PID":  24248,
+    "StartTicksUTC":  "639307224026194158",
+    "StartedUTC":  "2026-11-19T22:00:04.3828205+00:00",
+    "SourceCommit":  "465d7683964ea50ee1dfac4afe1f470480299729",
+    "SourceSHA256":  "63DD6443620EC5B067CB8906A1518DE9092A210A56023E8140C6EA8D3C0568D5",
+    "EvidenceDirectory":  "docs/regression/FocusedAcceptance_2026-11-20_AxialTorsion_Precheck",
+    "Purpose":  "Directed focused verification; does not replace complete202+122 acceptance",
+    "FinishedUTC":  "2026-11-19T22:19:21.6142227+00:00",
+    "ExitCode":  0,
+    "ChangedInputs":  [
+
+                      ],
+    "HEADUnchanged":  true
+}

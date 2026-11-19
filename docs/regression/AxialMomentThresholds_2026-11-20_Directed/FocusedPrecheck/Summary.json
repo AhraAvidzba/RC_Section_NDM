@@ -1,0 +1,11 @@
+{
+  "Status": "DIRECTED_FOCUSED_PASS_NOT_FULL_ONOFF",
+  "IndividualCases": 122,
+  "PassedAssertions": 14010,
+  "ElapsedSeconds": 1154.9165576,
+  "Records": 26,
+  "OwnIdentitiesClosed": 31,
+  "ArchiveFiles": 233,
+  "ArchiveSHA256": "81788A3A7235860B2F242892BB75315759471FBF65F15257688213A6C2C7B7B7",
+  "FullAcceptanceClaim": false
+}
