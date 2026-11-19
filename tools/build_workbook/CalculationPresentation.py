@@ -190,9 +190,10 @@ def prepare_calculation_sheet(sheet, strings):
             if reserve_column:
                 sp35 = f'{reserve_column}42'
                 sp63 = f'{reserve_column}56'
-                require(formula.text == f'IF($AO$44="СП35",IFERROR({sp35},"-"),IFERROR({sp63},"-"))',
+                normalized = f'IFERROR(ROUND(IF($AO$44="СП35",{sp35},{sp63}),2),"-")'
+                require(formula.text in (f'IF($AO$44="СП35",IFERROR({sp35},"-"),IFERROR({sp63},"-"))', normalized),
                         f'Изменилась проверенная формула запаса устойчивости Расчет!{cell.get("r")}')
-                formula.text = f'IFERROR(ROUND(IF($AO$44="СП35",{sp35},{sp63}),2),"-")'
+                formula.text = normalized
             if value is not None:
                 cell.remove(value)
             cell.attrib.pop('t', None)
@@ -326,9 +327,10 @@ def capture(source, baseline, destination):
             for row in range(71, 101):
                 address = f'H{row}'
                 link = f'Расчет!{"P" if row <= 85 else "X"}{row - (27 if row <= 85 else 42)}'
-                require(links[name].get(address) == ['formula', link],
+                wrapped = f'IF({link}="","",{link})'
+                require(links[name].get(address) in (['formula', link], ['formula', wrapped]),
                         f'Не совпадает проверенная ссылка на ID сочетания Config!{address}')
-                links[name][address][1] = f'IF({link}="","",{link})'  # Пустой ID должен остаться пустым в таблице входа.
+                links[name][address][1] = wrapped  # Пустой ID должен остаться пустым в таблице входа.
             for address in sorted(STORAGE_DEFAULTS):
                 cell = cells[address]
                 require(cell.get('t') == 's' and cell.find(M + 'f') is None,

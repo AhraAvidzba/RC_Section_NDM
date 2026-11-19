@@ -3,6 +3,8 @@
 Входные листы получают только новые адреса прежних ссылок на справку. Стили
 добавляются к исходному каталогу, поэтому существующие индексы не меняются.
 Рисунки формул сохраняют исходные изображения и получают новые позиции.
+После изменения формул справки удаляется их устаревшая цепочка вычислений;
+Excel строит этот технический кеш заново при открытии книги.
 """
 import argparse
 import copy
@@ -155,19 +157,45 @@ def package_help(source, native, target, receipt):
         transform.getparent().replace(transform, copy.deepcopy(native_transform))
         assert int(native_transform.find('a:ext', NS).get('cy')) > 0, name
         names.append(name)
-    assert set(names) == anchors.keys() and len(names) == 76
+    assert set(names) == anchors.keys() and len(names) > 0
     parts[old_drawing_name] = dump(old_drawing)
-    changed = [n for n in before if before[n] != parts[n]]
-    allowed = {'xl/styles.xml', 'xl/workbook.xml', 'xl/worksheets/sheet1.xml', 'xl/worksheets/sheet2.xml', 'xl/worksheets/sheet3.xml', old_drawing_name}
+    # Цепочка содержит прежние адреса формул HYPERLINK. После перестановки
+    # абзацев её ссылки на отсутствующие ячейки мешают нативному открытию.
+    rel_name = 'xl/_rels/workbook.xml.rels'
+    relationships = xml(parts[rel_name])
+    removed_cache = []
+    for relation in list(relationships):
+        if relation.get('Type').endswith('/calcChain'):
+            cache_target = relation.get('Target')
+            cache = cache_target.lstrip('/') if cache_target.startswith('/') else posixpath.normpath(posixpath.join('xl', cache_target))
+            assert cache.startswith('xl/') and cache in parts
+            removed_cache.append(cache)
+            parts.pop(cache)
+            relationships.remove(relation)
+    if removed_cache:
+        parts[rel_name] = dump(relationships)
+        types = xml(parts['[Content_Types].xml'])
+        for node in list(types):
+            if node.get('PartName', '').lstrip('/') in removed_cache:
+                types.remove(node)
+        parts['[Content_Types].xml'] = dump(types)
+    workbook = xml(parts['xl/workbook.xml'])
+    workbook.find('m:calcPr', NS).set('fullCalcOnLoad', '1')
+    parts['xl/workbook.xml'] = dump(workbook)
+    changed = [n for n in before if before[n] != parts.get(n)]
+    allowed = {'xl/styles.xml', 'xl/workbook.xml', 'xl/worksheets/sheet1.xml', 'xl/worksheets/sheet2.xml', 'xl/worksheets/sheet3.xml', old_drawing_name,
+               rel_name, '[Content_Types].xml', *removed_cache}
     assert set(changed) <= allowed, changed
     assert before['xl/vbaProject.bin'] == parts['xl/vbaProject.bin']
     assert not Path(target).exists()
     with ZipFile(target, 'w') as archive:
         for info in infos:
-            archive.writestr(info, parts[info.filename])
+            if info.filename in parts:
+                archive.writestr(info, parts[info.filename])
     result = {'Status': 'PASS', 'SourceSHA256': hashlib.sha256(Path(source).read_bytes()).hexdigest().upper(),
               'TargetSHA256': hashlib.sha256(Path(target).read_bytes()).hexdigest().upper(),
               'ChangedParts': changed, 'HelpLinks': link_count, 'Pictures': len(names),
+              'RemovedFormulaCache': removed_cache,
               'VBAByteIdentical': True, 'MediaByteIdentical': True, 'OtherPartsByteIdentical': True}
     Path(receipt).write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(result))

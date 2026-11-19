@@ -1,4 +1,4 @@
-﻿{
+{
   "Schema": 1,
   "Names": [
     {
@@ -617,22 +617,16 @@
           "First": 43,
           "Last": 66,
           "Width": 7.14,
-          "Hidden": true
+          "Hidden": false
         },
         {
           "First": 67,
           "Last": 70,
           "Width": 8.43,
-          "Hidden": true
-        },
-        {
-          "First": 71,
-          "Last": 71,
-          "Width": 8.43,
           "Hidden": false
         },
         {
-          "First": 72,
+          "First": 71,
           "Last": 16384,
           "Width": 8.43,
           "Hidden": false
@@ -973,17 +967,11 @@
         {
           "First": 1,
           "Last": 92,
-          "Width": 10,
+          "Width": 10.0,
           "Hidden": false
         },
         {
           "First": 93,
-          "Last": 93,
-          "Width": 8.57,
-          "Hidden": false
-        },
-        {
-          "First": 94,
           "Last": 94,
           "Width": 8.57,
           "Hidden": false
@@ -996,12 +984,6 @@
         },
         {
           "First": 97,
-          "Last": 97,
-          "Width": 8.57,
-          "Hidden": false
-        },
-        {
-          "First": 98,
           "Last": 98,
           "Width": 8.57,
           "Hidden": false
@@ -1033,7 +1015,7 @@
         {
           "First": 105,
           "Last": 105,
-          "Width": 9,
+          "Width": 9.0,
           "Hidden": false
         },
         {
@@ -1056,14 +1038,8 @@
         },
         {
           "First": 116,
-          "Last": 129,
-          "Width": 14,
-          "Hidden": false
-        },
-        {
-          "First": 130,
           "Last": 131,
-          "Width": 14,
+          "Width": 14.0,
           "Hidden": false
         },
         {
@@ -1097,7 +1073,7 @@
   },
   "Provenance": {
     "Workbook": "RC_Section_NDM.xlsm",
-    "SHA256": "DD407F4F0D2D37B15341FA4F59B8FF0DB731A31D18BEB697F9F3D24667C94219",
-    "Captured": "2026-11-18T11:01:01"
+    "SHA256": "0296F27E46E748810BFBC0929BF16E73EFBB4AA9716C0271067C258F7F3EC0E7",
+    "Captured": "2026-11-19T13:31:23"
   }
 }
