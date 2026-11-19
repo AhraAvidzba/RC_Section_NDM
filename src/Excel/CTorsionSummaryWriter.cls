@@ -16,6 +16,26 @@ Option Explicit
 ' и поэлементную таблицы, готовит шесть колонок общей сводки. НДМ не решает;
 ' изменяет только собственные области Results без изменения ширин и высот.
 
+' Число строк данных включает доступные строки таблицы сочетаний, как у остальных сводок.
+Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal actual As Long) As Long
+    RequiredDataRowsForWorkbook = TorsionDataRows(workbook, actual)
+End Function
+
+' Высота подробной таблицы с четырьмя строками шапки; синий заголовок расположен отдельно над ней.
+Public Function RequiredRowsForWorkbook(ByVal workbook As Object, ByVal actual As Long) As Long
+    RequiredRowsForWorkbook = RequiredDataRowsForWorkbook(workbook, actual) + HeaderRowsAboveAnchor
+End Function
+
+' Число строк шапки над первой строкой результатов кручения.
+Public Property Get HeaderRowsAboveAnchor() As Long
+    HeaderRowsAboveAnchor = 4
+End Property
+
+' Полная ширина подробной таблицы, включая промежуток между её частями.
+Public Function RequiredColumns() As Long
+    RequiredColumns = TORSION_POST_DISPLAY_COLUMNS
+End Function
+
 ' Сохраняет расчётные значения и поэлементные усилия отдельными матрицами.
 Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results As Collection, _
         ByVal units As CUnitSystem)

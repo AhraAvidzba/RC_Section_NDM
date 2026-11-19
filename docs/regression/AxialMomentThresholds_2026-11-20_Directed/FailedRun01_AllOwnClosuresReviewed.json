@@ -1,0 +1,163 @@
+﻿{
+    "Status":  "FAILED_RUN_OWN_IDENTITIES_TERMINAL_NOT_ACCEPTANCE",
+    "CheckedUTC":  "2026-11-19T21:27:17.1977776+00:00",
+    "AllOwnIdentitiesTerminal":  true,
+    "InputsUnchanged":  true,
+    "SourceSHA256":  "6801DBFA33C130615E815BE4CE4E0CA433E014CBF9FDED099B6438FEB9CD679B",
+    "SourceCommit":  "e6b8c89bdcefa6a219754b83236ae4b3db9d2809",
+    "Identities":  [
+                       {
+                           "Name":  "powershell",
+                           "PID":  5468,
+                           "StartTicksUTC":  "639307056572844274",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-11-19_AxialTorsion_Run01/DriverRun.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27268,
+                           "StartTicksUTC":  "639307056629920719",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Full_Off.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Full_Off.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  25072,
+                           "StartTicksUTC":  "639307119798879109",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Geometry_Off.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Geometry_Off.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27004,
+                           "StartTicksUTC":  "639307123996298802",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SP35_Off.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SP35_Off.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  24120,
+                           "StartTicksUTC":  "639307124277541526",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Recipes_Off.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Recipes_Off.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  24268,
+                           "StartTicksUTC":  "639307129037626785",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SavedOffsets_Off.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SavedOffsets_Off.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  13632,
+                           "StartTicksUTC":  "639307129389409229",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/CurrentFeatures_Off.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/CurrentFeatures_Off.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27580,
+                           "StartTicksUTC":  "639307131437716140",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Full_On.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Full_On.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  16292,
+                           "StartTicksUTC":  "639307190974911295",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Geometry_On.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Geometry_On.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  20020,
+                           "StartTicksUTC":  "639307195195978658",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SP35_On.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SP35_On.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  12808,
+                           "StartTicksUTC":  "639307195479515623",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Recipes_On.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/Recipes_On.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  6204,
+                           "StartTicksUTC":  "639307200258771378",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SavedOffsets_On.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/SavedOffsets_On.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  15028,
+                           "StartTicksUTC":  "639307200612751191",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/CurrentFeatures_On.txt",
+                                              "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01/CurrentFeatures_On.txt.Ownership.json"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  27144,
+                           "StartTicksUTC":  "639307202697860605",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-11-19_AxialTorsion_Run01/FullLaunch.stdout.log"
+                                          ]
+                       },
+                       {
+                           "Name":  "EXCEL",
+                           "PID":  21772,
+                           "StartTicksUTC":  "639307202939339568",
+                           "State":  "Absent",
+                           "Provenance":  [
+                                              "docs/regression/FullSuiteLaunch_2026-11-19_AxialTorsion_Run01/FullLaunch.stdout.log"
+                                          ]
+                       }
+                   ],
+    "CoreReportsRead":  12,
+    "CoreMacrosReviewed":  202,
+    "FocusedRecordCount":  0,
+    "FocusedPreparationFailed":  true,
+    "FullAcceptanceClaim":  false,
+    "AnyProcessClosed":  false
+}

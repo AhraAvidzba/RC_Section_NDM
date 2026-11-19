@@ -98,6 +98,18 @@ try {
     $fixtureHash=''
     if ($SavedFixture) {
         $fixture=Get-Content -LiteralPath $SavedFixture -Raw -Encoding UTF8 | ConvertFrom-Json
+        $fixtureNames=@($fixture.Tables | ForEach-Object Name)
+        if ('rngNDMElementGeometry' -notin $fixtureNames) {
+            $geometry=$fixture.Tables | Where-Object Name -eq 'rngNDMSectionGeometry'
+            if (@($geometry.Values | Select-Object -Skip 1 | Where-Object { $_[2] -eq 'Concrete' -and $_[6] -eq 'Contour' }).Count) {
+                throw 'Контрольное сечение Contour должно содержать фактические границы rngNDMElementGeometry.'
+            }
+            # Для Rectangle/Equivalent square границы не требуются; границы исходной книги относятся к другой сетке.
+            # Сохраняется текущая 18-колоночная шапка, а строки чужой модели удаляются только в частной probe-копии.
+            $boundary=$book.Names.Item('rngNDMElementGeometry').RefersToRange.Cells.Item(1,1)
+            $boundaryRows=[int]$boundary.CurrentRegion.Rows.Count
+            if ($boundaryRows -gt 1) { [void]$boundary.Offset(1,0).Resize($boundaryRows-1,18).ClearContents() }
+        }
         foreach($table in $fixture.Tables) {
             $anchor=$book.Names.Item($table.Name).RefersToRange.Cells.Item(1,1)
             $anchor.CurrentRegion.ClearContents()

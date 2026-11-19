@@ -1,4 +1,4 @@
-"""Читает контрольное сечение из XLSM без запуска старого VBA."""
+"""Читает контрольное сечение и фактические границы из XLSM без запуска VBA."""
 import argparse
 import hashlib
 import json
@@ -15,7 +15,7 @@ def column(text):
     return result
 
 def export(source):
-    names=('rngNDMSectionGeometry','rngNDMSectionContours','rngNDMSectionProperties','rngNDMSectionAnnotations','rngNDMMaterialDiagrams')
+    names=('rngNDMSectionGeometry','rngNDMSectionContours','rngNDMSectionProperties','rngNDMSectionAnnotations','rngNDMMaterialDiagrams','rngNDMElementGeometry')
     with zipfile.ZipFile(source) as archive:
         strings=[]
         if 'xl/sharedStrings.xml' in archive.namelist():
@@ -26,6 +26,8 @@ def export(source):
         sheets={x.attrib['name']:rels[x.attrib['{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id']] for x in book.findall('m:sheets/m:sheet',NS)}
         output=[]
         for name in names:
+            if name == 'rngNDMElementGeometry' and name not in refs:
+                continue  # Контрольные Rectangle/Equivalent square из файлов без таблицы границ остаются допустимыми.
             sheet,cell=refs[name].split('!')
             sheet=sheet.strip("'").replace("''", "'")
             col,row=re.match(r'\$?([A-Z]+)\$?(\d+)',cell).groups()
@@ -50,6 +52,11 @@ def export(source):
             while values.get((row+height,col)) not in (None,''):height+=1
             output.append({'Name':name,'Rows':height,'Columns':width,
                            'Values':[[values.get((row+r,col+c)) for c in range(width)] for r in range(height)]})
+        geometry=next(item for item in output if item['Name']=='rngNDMSectionGeometry')
+        boundaries=next((item for item in output if item['Name']=='rngNDMElementGeometry'),None)
+        if any(row[2]=='Concrete' and row[6]=='Contour' for row in geometry['Values'][1:]):
+            if boundaries is None or boundaries['Rows'] <= 1 or boundaries['Columns'] != 18:
+                raise ValueError('Contour fixture requires the full 18-column rngNDMElementGeometry matrix')
     return {'SourceSHA256':hashlib.sha256(source.read_bytes()).hexdigest().upper(),'Tables':output}
 
 if __name__=='__main__':

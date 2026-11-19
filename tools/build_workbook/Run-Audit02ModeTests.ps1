@@ -149,7 +149,7 @@ function Get-ResultsStatusStyleHash([object]$Book) {
     $rows = [int]$names.Item('rngLoadCombinations').RefersToRange.Rows.Count - 1
     $records = New-Object 'System.Collections.Generic.List[object]'
     $blocks = @(
-        @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
+        @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15,16,17,18)},
         @{name='rngStrengthSummaryAnchor'; offset=0; columns=@(3,30,49)},
         @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,21,24,25,29,44,67,72)},
         @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,44,50,59,65,78,90)}
@@ -168,7 +168,7 @@ function Get-ResultsStatusStyleHash([object]$Book) {
     }
     $anchor = $names.Item('rngBatchSummary').RefersToRange
     for ($r = 7; $r -le 13; $r++) {
-        $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $r, $anchor.Column + 27)
+        $cell = $anchor.Worksheet.Cells.Item($anchor.Row + $r, $anchor.Column + 41)
         $records.Add(@{block='legend'; address=$cell.Address(); value=[string]$cell.Value2;
             fill=[int]$cell.Interior.Color; display=[int]$cell.DisplayFormat.Interior.Color;
             conditionalRules=[int]$cell.FormatConditions.Count})

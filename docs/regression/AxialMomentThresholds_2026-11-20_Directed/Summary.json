@@ -1,0 +1,15 @@
+{
+  "Status": "DIRECTED_PASS_FULL_PENDING",
+  "DirectedCases": 20,
+  "DirectedAssertions": 3546,
+  "NativeComponents": 203,
+  "SourceComponentsCompared": 197,
+  "InputCellsPreserved": 5696,
+  "FailedFullRun01CoreSuites": 202,
+  "FailedFullRun01Assertions": 146,
+  "FailedFullRun01FocusedCases": 0,
+  "ArchivedPrimaryFiles": 128,
+  "ArchiveSHA256": "C80E4D0B5ACED05C4A3D03CF7B699BF373A8FAED47F6AE8A8C4C8BC0551CA69D",
+  "SourceBooksIncludedInArchive": false,
+  "FullAcceptanceClaim": false
+}

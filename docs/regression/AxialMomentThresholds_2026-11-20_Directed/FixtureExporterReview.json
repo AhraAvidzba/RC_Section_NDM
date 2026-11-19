@@ -1,0 +1,5 @@
+{
+  "Status": "PASS",
+  "MissingContourBoundariesRejected": true,
+  "Reason": "Contour fixture requires the full 18-column rngNDMElementGeometry matrix"
+}

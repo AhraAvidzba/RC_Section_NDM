@@ -8,7 +8,6 @@ Option Explicit
 ' а также обновление схемы. Геометрию и расчётные алгоритмы
 ' выполняют соответствующие классы; модуль задаёт порядок действий в книге.
 
-Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых строк между крупными таблицами Results.
 
 ' Запускает полный сценарий кнопки расчета для текущей книги и показывает итог.
 ' Чтение, расчёт и запись выполняет RunSectionCalculationForWorkbook; ошибка выводится
@@ -262,10 +261,11 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
     Dim outputStage As Boolean: outputStage = True ' Модель готова: последующие отказы относятся к сохранению или выводу, а не к вводу геометрии.
     Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
     Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
-    Dim issues As Collection: Set issues = New Collection
+    Dim layout As New CResultsLayoutValidator
+    Dim issues As Collection: Set issues = layout.Issues
     ValidateSnapshotOutputLayout issues, workbook, workbook.Worksheets.Item("Results"), writer, _
         section.ConcreteCount + section.RebarCount, 0, 0, section.AnnotationCount, section.Contours.Count, 2, writer.EstimatedElementGeometryRows(section)
-    If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
+    If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", layout.Message(0)
     Dim previewStore As CCalculationSnapshotStore: Set previewStore = New CCalculationSnapshotStore
     Dim storageMode As String: storageMode = previewStore.StorageMode(workbook)
     If storageMode = "File" Then
@@ -573,13 +573,14 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
     Const SNAPSHOT_GAP_COLUMNS As Long = 2
 
-    Dim issues As Collection
-    Set issues = New Collection
+    Dim layout As New CResultsLayoutValidator
+    Dim issues As Collection: Set issues = layout.Issues
 
     Dim summaryWriter As CBatchResultWriter
     Dim strengthWriter As CStrengthSummaryWriter
     Dim crackWriter As CCrackSummaryWriter
     Dim stabilityWriter As CStabilitySummaryWriter
+    Dim torsionWriter As New CTorsionSummaryWriter
     Dim ndmWriter As CNDMResultsWriter
     Set summaryWriter = New CBatchResultWriter
     Set strengthWriter = New CStrengthSummaryWriter
@@ -591,20 +592,22 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim strengthAnchor As Object
     Dim crackAnchor As Object
     Dim stabilityAnchor As Object
+    Dim torsionAnchor As Object
     Dim elementAnchor As Object
     On Error GoTo MissingAnchor
     Set summaryAnchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
     Set strengthAnchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     Set crackAnchor = workbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     Set stabilityAnchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    Set torsionAnchor = workbook.Names.Item("rngTorsionSummaryAnchor").RefersToRange
     Set elementAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
     On Error GoTo 0
 
     Dim ws As Object
     Set ws = summaryAnchor.Worksheet
     If Not (strengthAnchor.Worksheet Is ws) Or Not (crackAnchor.Worksheet Is ws) Or _
-            Not (stabilityAnchor.Worksheet Is ws) Or Not (elementAnchor.Worksheet Is ws) Then
-        AddLayoutIssue issues, "rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
+            Not (stabilityAnchor.Worksheet Is ws) Or Not (torsionAnchor.Worksheet Is ws) Or Not (elementAnchor.Worksheet Is ws) Then
+        AddLayoutIssue issues, "rngBatchSummary, rngStrengthSummaryAnchor, rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngTorsionSummaryAnchor и rngNDMElementResults должны находиться на одном листе Results."
     End If
 
     Dim outputCombinationRows As Long
@@ -656,6 +659,16 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
             stabilityTopRow, stabilityAnchor.Column, stabilityRows, stabilityCols
     End If
 
+    Dim torsionTopRow As Long, torsionRows As Long
+    torsionTopRow = torsionAnchor.Row - torsionWriter.HeaderRowsAboveAnchor
+    torsionRows = torsionWriter.RequiredRowsForWorkbook(workbook, batch.Count)
+    If torsionTopRow < 1 Then
+        AddLayoutIssue issues, "rngTorsionSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы кручения."
+    Else
+        CheckFootprintWithinSheet issues, ws, "rngTorsionSummaryAnchor с шапкой кручения", _
+            torsionTopRow, torsionAnchor.Column, torsionRows, torsionWriter.RequiredColumns()
+    End If
+
     Dim summaryBottomRow As Long
     Dim strengthBottomRow As Long
     Dim crackBottomRow As Long
@@ -666,18 +679,12 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     crackBottomRow = crackTopRow + crackRows - 1
     stabilityBottomRow = stabilityTopRow + stabilityRows - 1
     snapshotTitleRow = elementAnchor.Row - 2
-    If summaryBottomRow + RESULTS_TABLE_GAP_ROWS >= strengthTopRow Then
-        AddRowsGapIssue issues, "rngStrengthSummaryAnchor", summaryBottomRow, strengthTopRow, strengthTopRow - 1
-    End If
-    If strengthBottomRow + RESULTS_TABLE_GAP_ROWS >= crackTopRow Then
-        AddRowsGapIssue issues, "rngCrackSummaryAnchor", strengthBottomRow, crackTopRow, crackTopRow - 1
-    End If
-    If crackBottomRow + RESULTS_TABLE_GAP_ROWS >= stabilityTopRow Then
-        AddRowsGapIssue issues, "rngStabilitySummaryAnchor", crackBottomRow, stabilityTopRow, stabilityTopRow - 1
-    End If
-    If stabilityBottomRow + RESULTS_TABLE_GAP_ROWS >= snapshotTitleRow Then
-        AddRowsGapIssue issues, "rngNDMElementResults и расположенных ниже таблиц Results", stabilityBottomRow, snapshotTitleRow, snapshotTitleRow
-    End If
+    layout.CheckRowsGap "rngStrengthSummaryAnchor", summaryBottomRow, strengthTopRow, strengthTopRow - 1
+    layout.CheckRowsGap "rngCrackSummaryAnchor", strengthBottomRow, crackTopRow, crackTopRow - 1
+    layout.CheckRowsGap "rngStabilitySummaryAnchor", crackBottomRow, stabilityTopRow, stabilityTopRow - 1
+    layout.CheckRowsGap "rngTorsionSummaryAnchor", stabilityBottomRow, torsionTopRow, torsionTopRow - 1
+    layout.CheckRowsGap "rngNDMElementResults и расположенных ниже таблиц Results", _
+        torsionTopRow + torsionRows - 1, snapshotTitleRow, snapshotTitleRow
 
     Dim estimatedStateCount As Long
     Dim elementCount As Long
@@ -693,6 +700,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
             Array("rngStrengthSummaryAnchor", CDbl(strengthRows), strengthTopRow), _
             Array("rngCrackSummaryAnchor", CDbl(crackRows), crackTopRow), _
             Array("rngStabilitySummaryAnchor", CDbl(stabilityRows), stabilityTopRow), _
+            Array("rngTorsionSummaryAnchor", CDbl(torsionRows), torsionTopRow), _
             Array("rngNDMSectionGeometry", 1# + elementCount, workbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row), _
             Array("rngNDMSectionContours", 1# + section.Contours.Count, workbook.Names.Item("rngNDMSectionContours").RefersToRange.Row), _
             Array("rngNDMSectionProperties", CDbl(ndmWriter.EstimatedSectionPropertyRows(0, 0)), workbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row), _
@@ -707,7 +715,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
     If issues.Count > 0 Then
         Err.Raise vbObjectError + 4163, "ValidateResultsOutputLayout", _
-            ResultsOutputLayoutMessage(outputCombinationRows, issues)
+            layout.Message(outputCombinationRows)
     End If
     Exit Sub
 
@@ -725,6 +733,7 @@ Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
         "rngStrengthSummaryAnchor", _
         "rngCrackSummaryAnchor", _
         "rngStabilitySummaryAnchor", _
+        "rngTorsionSummaryAnchor", _
         "rngNDMElementResults")
 
     Dim missing As String
@@ -740,7 +749,7 @@ Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
         MissingResultsAnchorMessage = _
             "На листе Results не удалось прочитать один из обязательных якорей вывода. " & _
             "Проверьте именованные диапазоны rngBatchSummary, rngStrengthSummaryAnchor, " & _
-            "rngCrackSummaryAnchor, rngStabilitySummaryAnchor и rngNDMElementResults."
+            "rngCrackSummaryAnchor, rngStabilitySummaryAnchor, rngTorsionSummaryAnchor и rngNDMElementResults."
     ElseIf InStr(1, missing, ",", vbBinaryCompare) > 0 Then
         MissingResultsAnchorMessage = _
             "На листе Results не найдены обязательные якоря вывода: " & missing & ". " & _
@@ -889,60 +898,6 @@ Private Sub AddLayoutIssue(ByVal issues As Collection, ByVal text As String)
     If issues Is Nothing Then Exit Sub
     issues.Add text
 End Sub
-
-' Добавляет рекомендацию о числе строк между соседними таблицами Results.
-' rowsToInsert — недостающее число строк до начала следующей таблицы;
-' insertBeforeRow — строка синего заголовка, перед которой следует вставить строки.
-Private Sub AddRowsGapIssue(ByVal issues As Collection, ByVal rangeName As String, _
-        ByVal previousBottomRow As Long, ByVal nextTopRow As Long, ByVal insertBeforeRow As Long)
-    Dim rowsToInsert As Long
-    rowsToInsert = previousBottomRow + RESULTS_TABLE_GAP_ROWS + 1 - nextTopRow
-    If rowsToInsert < 1 Then rowsToInsert = 1
-    If insertBeforeRow < 1 Then insertBeforeRow = nextTopRow
-
-    AddLayoutIssue issues, "На листе Results вставьте " & CStr(rowsToInsert) & " " & RowsWord(rowsToInsert) & _
-        " над строкой " & CStr(insertBeforeRow) & ", чтобы опустить диапазон " & rangeName & "."
-End Sub
-
-' Возвращает короткое русское склонение слова "строка" для пользовательской подсказки.
-Private Function RowsWord(ByVal count As Long) As String
-    Dim lastTwo As Long
-    lastTwo = Abs(count) Mod 100
-    If lastTwo >= 11 And lastTwo <= 14 Then
-        RowsWord = "строк"
-        Exit Function
-    End If
-
-    Select Case Abs(count) Mod 10
-        Case 1
-            RowsWord = "строку"
-        Case 2, 3, 4
-            RowsWord = "строки"
-        Case Else
-            RowsWord = "строк"
-    End Select
-End Function
-
-' Объясняет отказ до расчета, когда блокам Results не хватает строк.
-' Включает уже подготовленные адресные рекомендации, не теряя число сочетаний.
-Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVal issues As Collection) As String
-    ResultsOutputLayoutMessage = "Все сочетания (" & CStr(combinationCount) & _
-        ") не помещаются в текущую раскладку или пределы листа Results. Расчет не запущен." & _
-        vbCrLf & "Что сделать:" & _
-        vbCrLf & NumberedCollectionLines(issues) & _
-        vbCrLf & CStr(issues.Count + 1) & ") Либо на листе Config уменьшите число строк в rngLoadCombinations."
-End Function
-
-' Собирает список действий компактным нумерованным перечнем для итогового окна.
-Private Function NumberedCollectionLines(ByVal items As Collection) As String
-    Dim lines As String
-    Dim i As Long
-    For i = 1 To items.Count
-        If Len(lines) > 0 Then lines = lines & vbCrLf
-        lines = lines & CStr(i) & ") " & CStr(items.Item(i))
-    Next i
-    NumberedCollectionLines = lines
-End Function
 
 ' Выбирает большее число при резервировании строк под сохранённые состояния и аннотации.
 Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long

@@ -1,0 +1,43 @@
+{
+  "Q6": "",
+  "T6": "минимальные коэффициенты запаса",
+  "Q7": "",
+  "T7": "прочность",
+  "Y8": "",
+  "AB8": "Плоскость 1",
+  "AP6": "Расшифровка статусов",
+  "AP7": "Статус",
+  "AQ7": "Описание",
+  "NamedAnchors": [
+    {
+      "attributes": {
+        "name": "rngCrackSummaryAnchor"
+      },
+      "formula": "Results!$A$85"
+    },
+    {
+      "attributes": {
+        "name": "rngNDMElementResults"
+      },
+      "formula": "Results!$BG$192"
+    },
+    {
+      "attributes": {
+        "name": "rngStabilitySummaryAnchor"
+      },
+      "formula": "Results!$A$122"
+    },
+    {
+      "attributes": {
+        "name": "rngStrengthSummaryAnchor"
+      },
+      "formula": "Results!$A$49"
+    },
+    {
+      "attributes": {
+        "name": "rngTorsionSummaryAnchor"
+      },
+      "formula": "Results!$A$158"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "REVIEW_REQUIRED",
+    "FinishedUTC":  "2026-11-19T21:25:23.6748378+00:00",
+    "SourceSHA256":  "6801DBFA33C130615E815BE4CE4E0CA433E014CBF9FDED099B6438FEB9CD679B",
+    "SourceCommit":  "e6b8c89bdcefa6a219754b83236ae4b3db9d2809",
+    "RunnerExit":  1,
+    "SummaryExit":  1,
+    "FinalizeExit":  1,
+    "CompleteAcceptancePassed":  false,
+    "ExpectedSuites":  202,
+    "CoverageVersion":  8,
+    "PrimaryReviewStillRequired":  true,
+    "ChangedInputs":  [
+
+                      ],
+    "HeadChanged":  false,
+    "DriverError":  "",
+    "EvidenceDirectory":  "docs/regression/FullOnOff_2026-11-19_AxialTorsion_Run01"
+}

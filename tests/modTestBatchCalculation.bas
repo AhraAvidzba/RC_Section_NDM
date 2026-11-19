@@ -4493,19 +4493,19 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     TestAssertTrue stats, "batch.writer.strengthBlockPosition", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49
     TestAssertTrue stats, "batch.writer.crackBlockPosition", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85
     TestAssertTrue stats, "batch.writer.stabilityBlockPosition", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And _
-        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 156
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.Row = 192
     TestAssertTrue stats, "batch.writer.meta.worstLabel", CStr(resultsSheet.Cells.Item(summaryRow, 2).Value2) = "Определяющее сочетание"
     TestAssertTrue stats, "batch.writer.meta.worstValue", CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2) = batch.WorstCombinationID
     TestAssertTrue stats, "batch.writer.meta.solverCalls", CStr(resultsSheet.Cells.Item(summaryRow + 2, 2).Value2) = "Количество решений НДС"
     TestAssertTrue stats, "batch.writer.meta.valuesCentered", resultsSheet.Cells.Item(summaryRow, 1).HorizontalAlignment = -4108 And _
         resultsSheet.Cells.Item(summaryRow + 3, 1).HorizontalAlignment = -4108
     TestAssertTrue stats, "batch.writer.header.statusGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 6).Value2) = "статус проверки"
-    TestAssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 17).Value2) = "минимальные коэффициенты запаса"
+    TestAssertTrue stats, "batch.writer.header.reserveGroup", CStr(resultsSheet.Cells.Item(summaryRow + 5, 20).Value2) = "минимальные коэффициенты запаса"
     TestAssertTrue stats, "batch.writer.header.statusStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 6).Value2) = "прочность"
-    TestAssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 17).Value2) = "прочность"
+    TestAssertTrue stats, "batch.writer.header.reserveStrength", CStr(resultsSheet.Cells.Item(summaryRow + 6, 20).Value2) = "прочность"
     TestAssertTrue stats, "batch.writer.header.centered", resultsSheet.Cells.Item(summaryRow + 5, 6).HorizontalAlignment = -4108 And _
-        resultsSheet.Cells.Item(summaryRow + 7, 17).HorizontalAlignment = -4108
-    TestAssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 17).HorizontalAlignment = -4131
+        resultsSheet.Cells.Item(summaryRow + 7, 20).HorizontalAlignment = -4108
+    TestAssertTrue stats, "batch.writer.header.commentLeft", resultsSheet.Cells.Item(summaryRow + 10, 20).HorizontalAlignment = -4131
     TestAssertTrue stats, "batch.writer.header.epsilon", CStr(resultsSheet.Cells.Item(summaryRow + 7, 6).Value2) = _
         "по деформациям " & ChrW$(&H3B5)
     TestAssertTrue stats, "batch.writer.header.sp63StatusPlaneMerge", _
@@ -4515,54 +4515,54 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
         CStr(resultsSheet.Cells.Item(summaryRow + 9, 14).Value2) = "Ncr/N" And _
         Not resultsSheet.Cells.Item(summaryRow + 9, 14).MergeCells
     TestAssertTrue stats, "batch.writer.header.sp63ReservePlaneMerge", _
-        CStr(resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
-        resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Rows.Count = 2 And _
-        resultsSheet.Cells.Item(summaryRow + 7, 25).MergeArea.Columns.Count = 1 And _
-        CStr(resultsSheet.Cells.Item(summaryRow + 9, 25).Value2) = "Ncr/N" And _
-        Not resultsSheet.Cells.Item(summaryRow + 9, 25).MergeCells
+        CStr(resultsSheet.Cells.Item(summaryRow + 7, 28).MergeArea.Cells.Item(1, 1).Value2) = "Плоскость 1" And _
+        resultsSheet.Cells.Item(summaryRow + 7, 28).MergeArea.Rows.Count = 2 And _
+        resultsSheet.Cells.Item(summaryRow + 7, 28).MergeArea.Columns.Count = 1 And _
+        CStr(resultsSheet.Cells.Item(summaryRow + 9, 28).Value2) = "Ncr/N" And _
+        Not resultsSheet.Cells.Item(summaryRow + 9, 28).MergeCells
     TestAssertTrue stats, "batch.writer.header.id", _
         CStr(resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Cells.Item(1, 1).Value2) = "Combination ID"
     TestAssertTrue stats, "batch.writer.header.idMergeRows", resultsSheet.Cells.Item(summaryRow + 5, 1).MergeArea.Rows.Count = 5
-    TestAssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 17).Value2), "деформациям", vbTextCompare) > 0
+    TestAssertTrue stats, "batch.writer.header.commentRow", InStr(1, CStr(resultsSheet.Cells.Item(summaryRow + 10, 20).Value2), "деформациям", vbTextCompare) > 0
     TestAssertTrue stats, "batch.writer.worst.label", CStr(resultsSheet.Cells.Item(summaryRow + 11, 1).Value2) = "worst LC"
     TestAssertTrue stats, "batch.writer.worst.commentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 2).Value2) = "-"
     TestAssertTrue stats, "batch.writer.worst.resultCommentDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 3).Value2) = "-"
     TestAssertTrue stats, "batch.writer.worst.overallDash", CStr(resultsSheet.Cells.Item(summaryRow + 11, 4).Value2) = "-"
     TestAssertTrue stats, "batch.writer.worst.noNa", Not TestBatchSummaryWorstRowContainsText(resultsSheet, "N/A")
     TestAssertTrue stats, "batch.writer.worst.bold", resultsSheet.Cells.Item(summaryRow + 11, 1).Font.Bold And _
-        resultsSheet.Cells.Item(summaryRow + 11, 17).Font.Bold
-    TestAssertTrue stats, "batch.writer.statusLegend.title", TestBatchSummaryCellText(resultsSheet, summaryRow + 5, 35) = "Расшифровка статусов"
+        resultsSheet.Cells.Item(summaryRow + 11, 20).Font.Bold
+    TestAssertTrue stats, "batch.writer.statusLegend.title", TestBatchSummaryCellText(resultsSheet, summaryRow + 5, 42) = "Расшифровка статусов"
     TestAssertTrue stats, "batch.writer.statusLegend.header", _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 35) = "Статус" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 36) = "Описание"
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 42) = "Статус" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 6, 43) = "Описание"
     TestAssertTrue stats, "batch.writer.statusLegend.values", _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 7, 35) = "OK" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 9, 35) = "BaseFail" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 11, 35) = "InputErr" And _
-        TestBatchSummaryCellText(resultsSheet, summaryRow + 12, 35) = "CalcErr"
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 7, 42) = "OK" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 9, 42) = "BaseFail" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 11, 42) = "InputErr" And _
+        TestBatchSummaryCellText(resultsSheet, summaryRow + 12, 42) = "CalcErr"
     TestAssertTrue stats, "batch.writer.statusLegend.mergeOnlyTitle", _
-        resultsSheet.Cells.Item(summaryRow + 5, 35).MergeArea.Columns.Count = 2 And _
-        Not resultsSheet.Cells.Item(summaryRow + 6, 35).MergeCells And _
-        Not resultsSheet.Cells.Item(summaryRow + 7, 36).MergeCells
+        resultsSheet.Cells.Item(summaryRow + 5, 42).MergeArea.Columns.Count = 2 And _
+        Not resultsSheet.Cells.Item(summaryRow + 6, 42).MergeCells And _
+        Not resultsSheet.Cells.Item(summaryRow + 7, 43).MergeCells
     TestAssertTrue stats, "batch.writer.statusLegend.noWrap", _
-        Not resultsSheet.Cells.Item(summaryRow + 7, 36).WrapText
+        Not resultsSheet.Cells.Item(summaryRow + 7, 43).WrapText
     TestAssertTrue stats, "batch.writer.statusLegend.italicValues", _
-        resultsSheet.Cells.Item(summaryRow + 7, 35).Font.Italic And _
-        resultsSheet.Cells.Item(summaryRow + 13, 36).Font.Italic
+        resultsSheet.Cells.Item(summaryRow + 7, 42).Font.Italic And _
+        resultsSheet.Cells.Item(summaryRow + 13, 43).Font.Italic
     TestAssertTrue stats, "batch.writer.statusLegend.colors", _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 35) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 35) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 35) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 35) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 35) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 35) And _
-        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 35)
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 7, 42) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 8, 42) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 9, 42) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 10, 42) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 11, 42) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 42) And _
+        TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 13, 42)
     TestAssertTrue stats, "batch.writer.reserve.dataNotHeaderFill", _
-        resultsSheet.Cells.Item(summaryRow + 12, 17).Interior.ColorIndex = -4142
+        resultsSheet.Cells.Item(summaryRow + 12, 20).Interior.ColorIndex = -4142
     TestAssertWorstSummaryRowMatchesData stats, resultsSheet
     TestAssertTrue stats, "batch.writer.data.firstId", CStr(resultsSheet.Cells.Item(summaryRow + 12, 1).Value2) = "W1"
     TestAssertTrue stats, "batch.writer.data.capacityStatus", Len(CStr(resultsSheet.Cells.Item(summaryRow + 12, 7).Value2)) > 0
-    TestAssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 18).Value2)
+    TestAssertTrue stats, "batch.writer.data.capacityReserve", IsNumeric(resultsSheet.Cells.Item(summaryRow + 12, 21).Value2)
     TestAssertTrue stats, "batch.writer.data.statusColors", _
         TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 4) And _
         TestStatusCellHasExpectedFill(resultsSheet, summaryRow + 12, 6) And _
@@ -4780,38 +4780,38 @@ Private Sub TestAssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTes
 
     If checkStrength And strengthRow > 0 Then
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".strain", _
-            resultsSheet.Cells.Item(summaryRow, 17).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 20).Value2, _
             resultsSheet.Cells.Item(strengthRow, 29).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".capacity", _
-            resultsSheet.Cells.Item(summaryRow, 18).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 21).Value2, _
             resultsSheet.Cells.Item(strengthRow, 48).Value2
     End If
     If checkCrack And crackRow > 0 Then
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
-            resultsSheet.Cells.Item(summaryRow, 19).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 22).Value2, _
             resultsSheet.Cells.Item(crackRow, 66).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
-            resultsSheet.Cells.Item(summaryRow, 20).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 23).Value2, _
             resultsSheet.Cells.Item(crackRow, 71).Value2
     End If
     If checkStability And stabilityRow > 0 Then
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
-            resultsSheet.Cells.Item(summaryRow, 21).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 24).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 43).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1table", _
-            resultsSheet.Cells.Item(summaryRow, 22).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 25).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 49).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2eta", _
-            resultsSheet.Cells.Item(summaryRow, 23).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 26).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 58).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p2table", _
-            resultsSheet.Cells.Item(summaryRow, 24).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 27).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 64).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p1", _
-            resultsSheet.Cells.Item(summaryRow, 25).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 28).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 77).Value2
         TestAssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp63p2", _
-            resultsSheet.Cells.Item(summaryRow, 26).Value2, _
+            resultsSheet.Cells.Item(summaryRow, 29).Value2, _
             resultsSheet.Cells.Item(stabilityRow, 89).Value2
     End If
 End Sub
@@ -4851,16 +4851,16 @@ End Function
 ' Проверяет строку worst LC: в статусном блоке должен стоять номер LC,
 ' а в блоке запасов - коэффициент из той же строки LC и того же столбца проверки.
 Private Sub TestAssertWorstSummaryRowMatchesData(ByRef stats As TBatchTestStats, ByVal resultsSheet As Object)
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 6, 17
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 7, 18
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 8, 19
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 9, 20
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 10, 21
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 11, 22
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 12, 23
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 13, 24
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 14, 25
-    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 15, 26
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "strain", 6, 20
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "capacity", 7, 21
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "crack", 8, 22
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "longCrack", 9, 23
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1eta", 10, 24
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p1table", 11, 25
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2eta", 12, 26
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp35p2table", 13, 27
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p1", 14, 28
+    TestAssertWorstSummaryColumnMatchesData stats, resultsSheet, "sp63p2", 15, 29
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -4870,7 +4870,7 @@ Private Function TestBatchSummaryWorstRowContainsText(ByVal resultsSheet As Obje
     anchorRow = TestBatchSummaryStartRow()
 
     Dim columnIndex As Long
-    For columnIndex = 6 To 26
+    For columnIndex = 6 To 32
         If StrComp(Trim$(CStr(resultsSheet.Cells.Item(anchorRow + 11, columnIndex).Value2)), _
                 textValue, vbTextCompare) = 0 Then
             TestBatchSummaryWorstRowContainsText = True
@@ -11387,12 +11387,41 @@ Public Function RunAxialLoadZeroFilterTests() As String
     TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
     TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
     TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    ' Начальная сила на пороге сохранена большим эксцентриситетом. Предельная
+    ' точка должна оставаться ненулевой, даже когда обе её компоненты уже ниже фильтров.
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    TestSetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", "5"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "450000"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = TestBuildBatchCalculator(False): batch.ApplySettings settings
+    batch.AddCombination "LIMIT_BELOW_FILTERS", 1000#, 0#, 0#, "PR1", "", "LambdaN"
+    batch.ApplyLoadReference 0#, 100000#
+    TestAssertClose stats, "batch.limitBelowFilters.initialForceKept", batch.N(1), 1000#, 0#
+    batch.Execute
+    Dim limiting As CCapacityResult: Set limiting = batch.ResultAt(1).StrengthResult.Capacity
+    TestAssertTrue stats, "batch.limitBelowFilters.pointExists", limiting.SearchResult.HasLimitPoint And limiting.CapacityStateAvailable
+    TestAssertTrue stats, "batch.limitBelowFilters.nonzeroNult", limiting.NUltimate > 0# And limiting.NUltimate < 1000#
+    TestAssertTrue stats, "batch.limitBelowFilters.subunitLambda", limiting.LambdaCapacity > 0# And limiting.LambdaCapacity < 1#
+    TestAssertTrue stats, "batch.limitBelowFilters.internalMomentBelowFilter", limiting.NUltimate * 100000# < 90000000#
+    TestAssertClose stats, "batch.limitBelowFilters.scaledForce", limiting.NUltimate, 1000# * limiting.LambdaCapacity, settings.GetRequiredDouble("Solver.ToleranceN")
+    If limiting.CapacityStateAvailable Then
+        TestAssertClose stats, "batch.limitBelowFilters.targetN", limiting.StateResult.TargetN, limiting.NUltimate, settings.GetRequiredDouble("Solver.ToleranceN")
+        TestAssertClose stats, "batch.limitBelowFilters.integratedN", limiting.StateResult.Nint, limiting.NUltimate, settings.GetRequiredDouble("Solver.ToleranceN")
+        TestAssertClose stats, "batch.limitBelowFilters.integratedMx", limiting.StateResult.Mxint, limiting.NUltimate * 100000#, settings.GetRequiredDouble("Solver.ToleranceMx")
+    End If
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", "2"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "1000"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
     batch.AddCombination "ZERO", 400#, 0#, 0#, "PR1", "", "Auto": batch.Execute
     TestAssertTrue stats, "batch.zero.directStateAvailable", batch.ResultAt(1).StrengthResult.DirectState.StateAvailable
     TestAssertClose stats, "batch.zero.epsilon", batch.ResultAt(1).StrengthResult.DirectState.StateResult.Epsilon0, 0#, 0.000000000001
     Dim invalid As Variant, reason As String
-    For Each invalid In Array("-1", "text", "")
+    For Each invalid In Array("-1", "text", "", "1E308")
         TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", CStr(invalid)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
@@ -11428,4 +11457,27 @@ Restore:
     If IsArray(savedSystem) Then system.Formula = savedSystem
     If IsArray(savedUnits) Then unitTable.Formula = savedUnits
     RunAxialLoadZeroFilterTests = stats.Report & "TOTAL_AXIAL_LOAD_FILTER: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет актуальную компоновку сводки и её соответствие подробным результатам.
+Public Function RunBatchWriterLayoutTests() As String
+    Dim stats As TBatchTestStats, settings As Object, profiles As Object
+    Dim oldSettings As Variant, oldProfiles As Variant
+    On Error GoTo Failed
+    Set settings = ThisWorkbook.Names("rngSystemSettings").RefersToRange: oldSettings = settings.Formula
+    Set profiles = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange: oldProfiles = profiles.Formula
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
+    TestStabilitySP35TableBoundaryReservePasses stats
+    TestBatchSummaryWriter stats
+    TestBatchSummaryPreservesSourceRowGaps stats
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1: TestAppendLine stats, "RUNTIME ERROR: " & Err.Description
+Restore:
+    If IsArray(oldSettings) Then settings.Formula = oldSettings
+    If IsArray(oldProfiles) Then profiles.Formula = oldProfiles
+    RunBatchWriterLayoutTests = stats.Report & "TOTAL_BATCH_WRITER_LAYOUT: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

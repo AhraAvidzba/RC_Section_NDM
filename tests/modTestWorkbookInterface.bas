@@ -211,6 +211,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAppendLine stats, "RUN: TestThirtyCombinationsWithFiveStatesWriteSnapshot"
     TestThirtyCombinationsWithFiveStatesWriteSnapshot stats
     TestDynamicLoadCombinationRangeAndLayoutGuard stats
+    TestTorsionBlockLayoutGuard stats
     TestAppendLine stats, "RUN: TestExecutionReportFile"
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
@@ -1452,11 +1453,11 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.results.strength.anchor", ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Row = 49 And ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Column = 1
     TestAssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
     TestAssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
-    TestAssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 1
-    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 40
-    TestAssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 19
-    TestAssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 27
-    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 90
+    TestAssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 192 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 1
+    TestAssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 192 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 40
+    TestAssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 192 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 19
+    TestAssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 192 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 27
+    TestAssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 192 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 90
     TestAssertTrue stats, "ui.results.geometry.noSource", TestResultHeaderColumn(geometryResults, "SourceName") = 0
     TestAssertTrue stats, "ui.results.geometry.noMaterialClass", TestResultHeaderColumn(geometryResults, "MaterialClass") = 0
     TestAssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -2101,7 +2102,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     Dim governingID As String
     governingID = CStr(resultsSheet.Cells.Item(summaryRow, 1).Value2)
     Dim expectedID As String
-    expectedID = TestExpectedGoverningByLowestStrengthSafety(resultsSheet, summaryRow)
+    expectedID = TestExpectedGoverningByLowestCapacityReserve(resultsSheet, summaryRow)
     TestAppendLine stats, "INFO: ui.governing actual=" & governingID & "; expected=" & expectedID
 
     TestAssertTrue stats, "ui.governing.id", governingID = expectedID
@@ -2113,26 +2114,31 @@ End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимо выбирает LC по минимальному положительному запасу в записанном summary.
 ' Пустые строки пропускаются; производственный выбор governing здесь не вызывается.
-Private Function TestExpectedGoverningByLowestStrengthSafety(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
+Private Function TestExpectedGoverningByLowestCapacityReserve(ByVal resultsSheet As Object, ByVal summaryRow As Long) As String
     Dim rowIndex As Long
     Dim bestSafety As Double
     For rowIndex = summaryRow + 12 To summaryRow + 30
         If Len(Trim$(CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2))) > 0 Then
             Dim safetyValue As Double
-            safetyValue = TestStrengthSafetyForSummaryRow(resultsSheet, rowIndex)
+            safetyValue = TestCapacityReserveForSummaryRow(resultsSheet, rowIndex)
             If safetyValue > 0# And (bestSafety = 0# Or safetyValue < bestSafety) Then
                 bestSafety = safetyValue
-                TestExpectedGoverningByLowestStrengthSafety = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
+                TestExpectedGoverningByLowestCapacityReserve = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
             End If
         End If
     Next rowIndex
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Читает численный запас подробной строки; пустое/текстовое поле не участвует в минимуме.
-Private Function TestStrengthSafetyForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
-    If IsNumeric(resultsSheet.Cells.Item(rowIndex, 17).Value2) Then _
-        TestStrengthSafetyForSummaryRow = CDbl(resultsSheet.Cells.Item(rowIndex, 17).Value2)
+' Читает запас Capacity из подробной таблицы по ID; пустое/текстовое поле не участвует в минимуме.
+Private Function TestCapacityReserveForSummaryRow(ByVal resultsSheet As Object, ByVal rowIndex As Long) As Double
+    Dim combinationID As String, strengthRow As Long
+    combinationID = CStr(resultsSheet.Cells.Item(rowIndex, 1).Value2)
+    strengthRow = TestStrengthSummaryRowByCombination(resultsSheet, combinationID)
+    If strengthRow > 0 Then
+        If IsNumeric(resultsSheet.Cells.Item(strengthRow, 48).Value2) Then _
+            TestCapacityReserveForSummaryRow = CDbl(resultsSheet.Cells.Item(strengthRow, 48).Value2)
+    End If
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -9950,3 +9956,86 @@ Public Function RunFormationDisplayStateTests() As String
     TestFormationDisplayState stats
     RunFormationDisplayStateTests = stats.Report & "TOTAL_FORMATION_DISPLAY_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' В изолированной копии проверяет позиции таблиц и Worst по подробному Capacity.
+Public Function RunWorkbookLayoutTests() As String
+    Dim stats As TUiTestStats
+    On Error GoTo Failed
+    TestCircleWorkbookRunWritesResults stats
+    TestGoverningCombinationWritesDetailedResults stats
+    TestDynamicLoadCombinationRangeAndLayoutGuard stats
+    TestTorsionBlockLayoutGuard stats
+    GoTo Finished
+Failed:
+    stats.Failed = stats.Failed + 1: TestAppendLine stats, "RUNTIME ERROR: " & Err.Description
+Finished:
+    RunWorkbookLayoutTests = stats.Report & "TOTAL_WORKBOOK_LAYOUT: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Изолирует нехватку одной строки у кручения сверху и снизу, до расчёта и при чтении File.
+' Проверяет точное место вставки и сохранность Results; собственный снимок удаляется после проверки.
+Private Sub TestTorsionBlockLayoutGuard(ByRef stats As TUiTestStats)
+    Dim oldStorage As String, oldName As String, oldAnchor As String, path As String, ownsFile As Boolean
+    Dim anchor As Object, marker As Variant
+    On Error GoTo Failed
+    oldStorage = TestGetSystemSetting("Results.SnapshotStorage")
+    oldName = TestGetSystemSetting("Results.SnapshotName")
+    oldAnchor = ThisWorkbook.Names.Item("rngTorsionSummaryAnchor").RefersTo
+    TestPrepareCircleInput
+    TestSetSystemSetting "Results.SnapshotStorage", "File"
+    TestSetSystemSetting "Results.SnapshotName", "TestTorsionLayout_" & Format$(Now, "yyyymmdd_hhnnss") & "_" & CStr(CLng(Timer * 1000#))
+    Dim store As New CCalculationSnapshotStore
+    path = store.SnapshotPath(ThisWorkbook)
+    If TestFileExists(path) Then Err.Raise 5, , "Чужой файл занимает путь проверки раскладки кручения."
+    ownsFile = True
+    Dim message As String: message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
+    Dim checksum As New CFileChecksum, digest As String: digest = checksum.FileSHA256(path)
+    Set anchor = ThisWorkbook.Names.Item("rngTorsionSummaryAnchor").RefersToRange
+    marker = anchor.Value2: anchor.Value2 = "TEST_TORSION_LAYOUT_SENTINEL"
+    Dim shift As Variant, action As Long, number As Long, description As String, expectedRow As Long, expectedName As String
+    For Each shift In Array(-1, 1)
+        ThisWorkbook.Names.Item("rngTorsionSummaryAnchor").RefersTo = "=" & anchor.Offset(CLng(shift), 0).Address(True, True, 1, True)
+        If CLng(shift) < 0 Then
+            expectedRow = anchor.Row + CLng(shift) - 5: expectedName = "rngTorsionSummaryAnchor"
+        Else
+            expectedRow = ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row - 2
+            expectedName = "rngNDM"
+        End If
+        For action = 0 To 1
+            number = 0: description = ""
+            On Error Resume Next
+            If action = 0 Then
+                message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            Else
+                UpdateSectionResultsForWorkbook ThisWorkbook
+            End If
+            number = Err.Number: description = Err.Description: Err.Clear
+            On Error GoTo Failed
+            Dim prefix As String: prefix = "ui.torsionLayout." & CStr(shift) & "." & CStr(action)
+            TestAssertTrue stats, prefix & ".blocked", number <> 0
+            TestAssertTrue stats, prefix & ".exactRows", InStr(1, description, "вставьте 1 строку над строкой " & CStr(expectedRow), vbTextCompare) > 0
+            TestAssertTrue stats, prefix & ".range", InStr(1, description, expectedName, vbTextCompare) > 0
+            TestAssertTrue stats, prefix & ".preserved", CStr(anchor.Value2) = "TEST_TORSION_LAYOUT_SENTINEL"
+            TestAssertTrue stats, prefix & ".fileUnchanged", checksum.FileSHA256(path) = digest
+        Next action
+        ThisWorkbook.Names.Item("rngTorsionSummaryAnchor").RefersTo = oldAnchor
+    Next shift
+    Dim layout As New CResultsLayoutValidator
+    layout.CheckRowsGap "rngTorsionSummaryAnchor", 151, 154, 153
+    TestAssertTrue stats, "ui.torsionLayout.exactFit", layout.Issues.Count = 0
+    layout.CheckRowsGap "rngTorsionSummaryAnchor", 152, 154, 153
+    TestAssertTrue stats, "ui.torsionLayout.oneRow", layout.Issues.Count = 1 And InStr(layout.Message(31), "1 строку над строкой 153") > 0
+    GoTo CleanUp
+Failed:
+    TestAssertTrue stats, "ui.torsionLayout.runtime." & CStr(Err.Number) & "." & Err.Description, False
+CleanUp:
+    On Error Resume Next
+    If Len(oldAnchor) > 0 Then ThisWorkbook.Names.Item("rngTorsionSummaryAnchor").RefersTo = oldAnchor
+    If Not anchor Is Nothing Then anchor.Value2 = marker
+    TestSetSystemSetting "Results.SnapshotStorage", oldStorage
+    TestSetSystemSetting "Results.SnapshotName", oldName
+    If ownsFile And TestFileExists(path) Then CreateObject("Scripting.FileSystemObject").DeleteFile path, True
+    On Error GoTo 0
+End Sub

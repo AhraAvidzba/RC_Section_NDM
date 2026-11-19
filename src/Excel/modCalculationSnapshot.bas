@@ -156,17 +156,32 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snaps
         End If
     Next key
     If snapshot.IsGeometryPreview Then Exit Sub
-    Dim names As Variant, keys As Variant, nextNames As Variant, headers As Variant, i As Long
-    names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+    Dim layout As New CResultsLayoutValidator
+    Dim names As Variant, keys As Variant, headerRows As Variant, i As Long, bottomRow As Long, nextTopRow As Long
+    names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor", "rngTorsionSummaryAnchor")
     keys = Array("Summary", "Strength.Data", "Cracks.Data", "Stability.Data")
-    nextNames = Array("rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor", "rngNDMSectionGeometry")
-    headers = Array(4, 4, 5, 2)
+    headerRows = Array(0, 4, 4, 5, 4)
     For i = 0 To 3
-        Set anchor = workbook.Names.Item(CStr(names(i))).RefersToRange: values = snapshot.Table(CStr(keys(i)))
-        Dim nextAnchor As Object: Set nextAnchor = workbook.Names.Item(CStr(nextNames(i))).RefersToRange
-        If anchor.Row + UBound(values, 1) + CLng(headers(i)) + 1 >= nextAnchor.Row Then Err.Raise 5, , _
-            "В снимке больше строк, чем в текущей раскладке Results: " & CStr(names(i)) & " пересекает " & CStr(nextNames(i)) & ". Увеличьте расстояние между именованными диапазонами."
+        Set anchor = workbook.Names.Item(CStr(names(i))).RefersToRange
+        bottomRow = anchor.Row + snapshot.TableRowCount(CStr(keys(i))) - 1
+        Dim nextAnchor As Object: Set nextAnchor = workbook.Names.Item(CStr(names(i + 1))).RefersToRange
+        nextTopRow = nextAnchor.Row - CLng(headerRows(i + 1))
+        layout.CheckRowsGap CStr(names(i + 1)), bottomRow, nextTopRow, nextTopRow - 1
     Next i
+    Dim torsionWriter As New CTorsionSummaryWriter, torsionCount As Long
+    torsionCount = 1
+    If snapshot.HasTable(TORSION_POST_DATA_KEY) Then torsionCount = snapshot.TableRowCount(TORSION_POST_DATA_KEY)
+    Set anchor = workbook.Names.Item("rngTorsionSummaryAnchor").RefersToRange
+    rowCount = torsionWriter.RequiredRowsForWorkbook(workbook, torsionCount)
+    Dim firstTorsionRow As Long: firstTorsionRow = anchor.Row - torsionWriter.HeaderRowsAboveAnchor
+    If Not ResultRowsFitSheet(firstTorsionRow, rowCount, anchor.Worksheet.Rows.Count) Then _
+        layout.Issues.Add ResultRowLimitDescription("rngTorsionSummaryAnchor", firstTorsionRow, rowCount, anchor.Worksheet.Rows.Count)
+    Set nextAnchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+    nextTopRow = nextAnchor.Row - 2
+    layout.CheckRowsGap "rngNDMSectionGeometry и расположенных ниже таблиц Results", _
+        firstTorsionRow + rowCount - 1, nextTopRow, nextTopRow
+    If layout.Issues.Count > 0 Then Err.Raise 5, "ValidateRestoredSnapshotLayout", _
+        layout.Message(snapshot.TableRowCount("Summary") - 12, "Обновление результатов не выполнено.", False)
 End Sub
 
 ' Проверяет таблицы, остающиеся на листе при File, без копирования матриц.
@@ -189,6 +204,12 @@ Private Function RestoredSnapshotMandatoryRowsFit(ByVal workbook As Object, ByVa
         Set anchor = workbook.Names.Item(CStr(names(i))).RefersToRange
         If Not ResultRowsFitSheet(anchor.Row - CLng(headerRows(i)), CDbl(snapshot.TableRowCount(CStr(keys(i)))) + CLng(headerRows(i)), anchor.Worksheet.Rows.Count) Then Exit Function
     Next i
+    Dim torsionWriter As New CTorsionSummaryWriter, torsionCount As Long
+    torsionCount = 1
+    If snapshot.HasTable(TORSION_POST_DATA_KEY) Then torsionCount = snapshot.TableRowCount(TORSION_POST_DATA_KEY)
+    Set anchor = workbook.Names.Item("rngTorsionSummaryAnchor").RefersToRange
+    If Not ResultRowsFitSheet(anchor.Row - torsionWriter.HeaderRowsAboveAnchor, _
+            torsionWriter.RequiredRowsForWorkbook(workbook, torsionCount), anchor.Worksheet.Rows.Count) Then Exit Function
     RestoredSnapshotMandatoryRowsFit = True
 End Function
 

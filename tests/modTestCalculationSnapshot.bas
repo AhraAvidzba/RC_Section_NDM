@@ -32,7 +32,7 @@ Public Function RunTestWorstCriterionRefresh(ByVal storageMode As String) As Str
     TestSnapshotCheck "worst.initialSolver", solverCalls > 0
 
     Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
-    Dim data As Variant, output As Object: Set output = anchor.Resize(42, 33)
+    Dim data As Variant, output As Object: Set output = anchor.Resize(42, 40)
     Dim store As New CCalculationSnapshotStore, checksum As New CFileChecksum, original As CCalculationSnapshot
     If storageMode = "File" Then
         Set original = store.LoadFile(ThisWorkbook)
@@ -42,11 +42,11 @@ Public Function RunTestWorstCriterionRefresh(ByVal storageMode As String) As Str
     End If
     TestSnapshotCheck "worst.twoCases", CStr(data(13, 1)) = "PERF_01" And CStr(data(14, 1)) = "PERF_02"
     data(1, 1) = "PERF_01"
-    data(13, 17) = 1.2: data(14, 17) = 2.5
-    data(13, 18) = 2.5: data(14, 18) = 1.2
-    data(13, 19) = 3#: data(13, 20) = 1.2: data(14, 19) = 2#
-    data(13, 10) = "NumFail": data(13, 21) = 0.01
-    data(14, 14) = "OK": data(14, 25) = 2#
+    data(13, 20) = 1.2: data(14, 20) = 2.5
+    data(13, 21) = 2.5: data(14, 21) = 1.2
+    data(13, 22) = 3#: data(13, 23) = 1.2: data(14, 22) = 2#
+    data(13, 10) = "NumFail": data(13, 24) = 0.01
+    data(14, 14) = "OK": data(14, 28) = 2#
     Dim archivePath As String, archiveHash As String
     If storageMode = "File" Then
         Dim sample As New CCalculationSnapshot, key As Variant, values As Variant
@@ -57,7 +57,7 @@ Public Function RunTestWorstCriterionRefresh(ByVal storageMode As String) As Str
         Next key
         store.SaveFile ThisWorkbook, sample
         archivePath = store.SnapshotPath(ThisWorkbook): archiveHash = checksum.FileSHA256(archivePath)
-        anchor.Cells(13, 18).Value2 = 0.01 ' Лист не является источником выбора при файловом хранении.
+        anchor.Cells(13, 21).Value2 = 0.01 ' Лист не является источником выбора при файловом хранении.
     Else
         output.Value2 = data
     End If
@@ -72,7 +72,7 @@ Public Function RunTestWorstCriterionRefresh(ByVal storageMode As String) As Str
         UpdateSectionResultsForWorkbook ThisWorkbook
         TestSnapshotCheck "worst.visible." & CStr(criterion), CStr(anchor.Value2) = expected
         TestSnapshotCheck "worst.visibleLoads." & CStr(criterion), _
-            TestSnapshotSameMatrix(anchor.Cells(12, 28).Resize(1, 6).Value2, anchor.Cells(expectedRow, 28).Resize(1, 6).Value2)
+            TestSnapshotSameMatrix(anchor.Cells(12, 35).Resize(1, 6).Value2, anchor.Cells(expectedRow, 35).Resize(1, 6).Value2)
         Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
         TestSnapshotCheck "worst.plot." & CStr(criterion), reader.LoadCase = expected
         TestSnapshotCheck "worst.export." & CStr(criterion), _
@@ -1753,7 +1753,7 @@ Public Function TestExcelCurrentResultsRefresh() As String
     Dim properties As Variant: properties = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionProperties")
     TestSnapshotCheck "excel.readableLoadCaseProperties", Not TestSnapshotCommonOnly(properties)
     Dim names As Variant: names = Array("rngBatchSummary", "rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
-    Dim widths As Variant: widths = Array(33, 49, 72, STABILITY_SNAPSHOT_COLUMNS)
+    Dim widths As Variant: widths = Array(40, 49, 72, STABILITY_SNAPSHOT_COLUMNS)
     Dim before(0 To 3) As Variant, i As Long
     Dim plot As String: plot = TestSnapshotPlot()
     Dim exported As String: exported = Audit02ReadExportSnapshotForTests(ThisWorkbook)
@@ -2025,26 +2025,26 @@ Private Sub TestSnapshotOriginalLoadMemory()
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сравнивает новые исходные числа с фактическим вводом, а рабочие — с таблицей устойчивости.
+' Сравнивает сохранённые исходные числа с фактическим вводом, а рабочие — с таблицей устойчивости.
 ' Строка worst обязана принадлежать тому же LC, что указан в самом верху снимка.
 Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
     Dim data As Variant: data = snapshot.Table("Summary")
-    TestSnapshotCheck "loads.summary.width", UBound(data, 2) = 33
-    TestSnapshotCheck "loads.summary.title", CStr(data(6, 28)) = "Нагрузки в точке приложения"
-    TestSnapshotCheck "loads.summary.lineBreak", InStr(CStr(data(8, 31)), vbLf & "(если применимо)") > 0
-    TestSnapshotCheck "loads.summary.originalMxComment", CStr(data(11, 29)) = "Исходный изгибающий момент Mx"
-    TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 30)) = "Исходный изгибающий момент My"
-    TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 31)), ChrW$(&H3B7)) = 0
-    TestSnapshotCheck "loads.summary.momentsEta", InStr(CStr(data(11, 32)), ChrW$(&H3B7)) > 0
-    TestSnapshotCheck "loads.summary.workingMxComment", CStr(data(11, 32)) = "Изгибающий момент Mx с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
-    TestSnapshotCheck "loads.summary.workingMyComment", CStr(data(11, 33)) = "Изгибающий момент My с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+    TestSnapshotCheck "loads.summary.width", UBound(data, 2) = 40
+    TestSnapshotCheck "loads.summary.title", CStr(data(6, 35)) = "Нагрузки в точке приложения"
+    TestSnapshotCheck "loads.summary.lineBreak", InStr(CStr(data(8, 38)), vbLf & "(если применимо)") > 0
+    TestSnapshotCheck "loads.summary.originalMxComment", CStr(data(11, 36)) = "Исходный изгибающий момент Mx"
+    TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 37)) = "Исходный изгибающий момент My"
+    TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 38)), ChrW$(&H3B7)) = 0
+    TestSnapshotCheck "loads.summary.momentsEta", InStr(CStr(data(11, 39)), ChrW$(&H3B7)) > 0
+    TestSnapshotCheck "loads.summary.workingMxComment", CStr(data(11, 39)) = "Изгибающий момент Mx с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
+    TestSnapshotCheck "loads.summary.workingMyComment", CStr(data(11, 40)) = "Изгибающий момент My с учётом " & ChrW$(&H3B7) & " от продольного изгиба (если применимо)"
     Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
-    TestSnapshotCheck "loads.summary.workingMxSeparate", Not CBool(anchor.Cells(11, 32).MergeCells)
-    TestSnapshotCheck "loads.summary.workingMySeparate", Not CBool(anchor.Cells(11, 33).MergeCells)
+    TestSnapshotCheck "loads.summary.workingMxSeparate", Not CBool(anchor.Cells(11, 39).MergeCells)
+    TestSnapshotCheck "loads.summary.workingMySeparate", Not CBool(anchor.Cells(11, 40).MergeCells)
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Dim units As CUnitSystem: Set units = New CUnitSystem: units.LoadFromSettings settings
-    TestSnapshotCheck "loads.summary.forceUnit", CStr(data(10, 28)) = "N, " & units.OutputForceUnit
-    TestSnapshotCheck "loads.summary.momentUnit", CStr(data(10, 29)) = "Mx, " & units.OutputMomentUnit
+    TestSnapshotCheck "loads.summary.forceUnit", CStr(data(10, 35)) = "N, " & units.OutputForceUnit
+    TestSnapshotCheck "loads.summary.momentUnit", CStr(data(10, 36)) = "Mx, " & units.OutputMomentUnit
     Dim loads As Variant: loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange.Value2
     Dim stable As Variant: stable = snapshot.Table("Stability.Data")
     Dim row As Long, inputRow As Long, stableRow As Long, column As Long, expected As Double
@@ -2055,20 +2055,20 @@ Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
         Next inputRow
         If inputRow > UBound(loads, 1) Then Err.Raise 5, , "Ввод тестового сочетания не найден."
         expected = units.InternalForceToOutput(units.InputForceToInternal(CDbl(loads(inputRow, 2))))
-        TestSnapshotCheck "loads.summary.originalN." & CStr(row), TestSnapshotDouble(data(row, 28)) = TestSnapshotDouble(expected)
+        TestSnapshotCheck "loads.summary.originalN." & CStr(row), TestSnapshotDouble(data(row, 35)) = TestSnapshotDouble(expected)
         expected = units.InternalMomentMxToOutput(units.InputMomentMxToInternal(CDbl(loads(inputRow, 3))))
-        TestSnapshotCheck "loads.summary.originalMx." & CStr(row), TestSnapshotDouble(data(row, 29)) = TestSnapshotDouble(expected)
+        TestSnapshotCheck "loads.summary.originalMx." & CStr(row), TestSnapshotDouble(data(row, 36)) = TestSnapshotDouble(expected)
         expected = units.InternalMomentMyToOutput(units.InputMomentMyToInternal(CDbl(loads(inputRow, 4))))
-        TestSnapshotCheck "loads.summary.originalMy." & CStr(row), TestSnapshotDouble(data(row, 30)) = TestSnapshotDouble(expected)
+        TestSnapshotCheck "loads.summary.originalMy." & CStr(row), TestSnapshotDouble(data(row, 37)) = TestSnapshotDouble(expected)
         For stableRow = 1 To UBound(stable, 1)
             If CStr(stable(stableRow, 1)) = CStr(data(row, 1)) And CStr(stable(stableRow, 3)) = "OK" Then
                 For column = 0 To 2
-                    TestSnapshotCheck "loads.summary.afterStability." & CStr(row) & "." & CStr(column), TestSnapshotDouble(data(row, 31 + column)) = TestSnapshotDouble(stable(stableRow, 12 + column))
+                    TestSnapshotCheck "loads.summary.afterStability." & CStr(row) & "." & CStr(column), TestSnapshotDouble(data(row, 38 + column)) = TestSnapshotDouble(stable(stableRow, 12 + column))
                 Next column
             End If
         Next stableRow
         If CStr(data(row, 1)) = CStr(data(1, 1)) Then
-            For column = 28 To 33
+            For column = 35 To 40
                 TestSnapshotCheck "loads.summary.worst." & CStr(column), TestSnapshotDouble(data(12, column)) = TestSnapshotDouble(data(row, column))
             Next column
         End If
@@ -2087,7 +2087,10 @@ Private Sub TestSnapshotLegacySummary(ByVal original As CCalculationSnapshot)
         If CStr(key) = "Summary" Then
             ReDim data(1 To UBound(saved, 1), 1 To 26)
             For row = 1 To UBound(saved, 1)
-                For column = 1 To 26: data(row, column) = saved(row, column): Next column
+                For column = 1 To 15: data(row, column) = saved(row, column): Next column
+                ' Формат 26 колонок содержит пустую колонку 16 и запасы 17..26;
+                ' в актуальной сводке им соответствуют 19 и 20..29 после статусов кручения.
+                For column = 16 To 26: data(row, column) = saved(row, column + 3): Next column
             Next row
             sample.AddTable CStr(key), data
         Else
@@ -2098,9 +2101,15 @@ Private Sub TestSnapshotLegacySummary(ByVal original As CCalculationSnapshot)
     Dim writer As CBatchResultWriter: Set writer = New CBatchResultWriter
     writer.RestoreSummary ThisWorkbook, sample
     Dim target As Object: Set target = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
-    TestSnapshotCheck "loads.legacy.explicitMissing", CStr(target.Cells(11, 28).Value2) = "Не сохранено в этом снимке"
-    TestSnapshotCheck "loads.legacy.noCurrentInput", Application.CountA(target.Offset(11, 27).Resize(31, 6)) = 0
+    TestSnapshotCheck "loads.legacy.explicitMissing", CStr(target.Cells(11, 35).Value2) = "Не сохранено в этом снимке"
+    TestSnapshotCheck "loads.legacy.noCurrentInput", Application.CountA(target.Offset(11, 34).Resize(31, 6)) = 0
     saved = original.Table("Summary")
+    Dim reserves() As Variant
+    ReDim reserves(1 To UBound(saved, 1) - 11, 1 To 10)
+    For row = 12 To UBound(saved, 1)
+        For column = 1 To 10: reserves(row - 11, column) = saved(row, column + 19): Next column
+    Next row
+    TestSnapshotCheck "loads.legacy.reserveMapping", TestSnapshotSameMatrix(reserves, target.Cells(12, 20).Resize(UBound(reserves, 1), 10).Value2)
     TestSnapshotCheck "loads.legacy.keepsWorst", CStr(target.Cells(1, 1).Value2) = CStr(saved(1, 1))
     writer.RestoreSummary ThisWorkbook, original
 End Sub
