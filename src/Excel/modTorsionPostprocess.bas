@@ -108,6 +108,7 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     If Abs(torque) >= 1E+100 Then Err.Raise 5, , "Модуль T превышает допустимый числовой диапазон."
     If torque = 0# Then Exit Function ' Нулевая строка не читает параметры хомута и не запрашивает НДС.
     torque = Abs(units.InputMomentMxToInternal(torque)) ' Для независимой проверки используется модуль T; знаки изгиба не влияют на результат.
+    column = 0 ' Строка T уже проверена; последующие ошибки принадлежат настройкам или вычислителю, а не ячейке момента.
     If calculator Is Nothing And Len(preparationError) = 0 Then PrepareTorsionPostCalculator workbook, section, units, calculator, settings, preparationError, concreteInputError
     If Len(preparationError) > 0 Then Err.Raise 5, , preparationError
     Dim i As Long, stateName As String
@@ -140,9 +141,14 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     Set ReadTorsionPostRow = result
     Exit Function
 Failed:
-    Dim reason As String: reason = InputDiagnosticText(Err.Description, _
-        source.Worksheet.Name & "!" & source.Cells(row, column).Address(False, False), _
-        "Постпроверка T (кручение), ID «" & identifier & "»", data(row, column))
+    Dim reason As String, context As String
+    reason = Err.Description: context = "Постпроверка T (кручение), ID «" & identifier & "»"
+    If column > 0 Then
+        reason = InputDiagnosticText(reason, source.Worksheet.Name & "!" & source.Cells(row, column).Address(False, False), _
+            context, data(row, column))
+    Else
+        reason = WorkbookMessageParagraph(context, reason) ' Reader уже сохранил ключ, значение и адрес настройки; повторная привязка к T создала бы ложный источник ошибки.
+    End If
     reason = WorkbookDialogText(reason, workbook)
     Set result = New CTorsionPostResult
     result.InitializeFailure identifier, reason

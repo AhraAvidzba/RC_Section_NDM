@@ -9866,18 +9866,12 @@
         },
         {
           "First": 57,
-          "Last": 66,
+          "Last": 57,
           "Width": 7.14,
           "Hidden": false
         },
         {
-          "First": 67,
-          "Last": 70,
-          "Width": 8.43,
-          "Hidden": false
-        },
-        {
-          "First": 71,
+          "First": 58,
           "Last": 16384,
           "Width": 8.43,
           "Hidden": false
@@ -10324,7 +10318,7 @@
   },
   "Provenance": {
     "Workbook": "RC_Section_NDM.xlsm",
-    "SHA256": "8BF770032A6EF523FDB5E699EAA3D3DE1056AEC977E57ABAB10F063A7A464E95",
-    "Captured": "2026-11-19T14:20:00"
+    "SHA256": "C3541A37B18EB8580EE7656A066D6F1F0010842FE40AFF649176B160D812F4AA",
+    "Captured": "2026-11-19T17:58:41"
   }
 }

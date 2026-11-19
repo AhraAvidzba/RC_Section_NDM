@@ -569,3 +569,75 @@ Finished:
     On Error GoTo 0
     RunTorsionPostGuardTests = "TorsionPostGuard: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Различает адрес ошибки строки T и адрес настройки, включая повторное использование
+' ошибки подготовки для нескольких сочетаний. Все изменения выполняются в тестовой копии и восстанавливаются.
+Public Function RunTorsionPostDiagnosticTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    Dim loads As Object, torques As Object, table As Object, axis As Object, linked As Object
+    Dim originalLoads As Variant, originalTorques As Variant, originalAxis As Variant, originalLinked As Variant
+    Dim row As Long, settings As New CSystemSettingsReader, units As New CUnitSystem
+    Dim snapshot As CCalculationSnapshot, batch As New CBatchSectionCalculator, data As Variant
+    Dim warning As String, reason As String, torqueAddress As String, axisAddress As String, identifierAddress As String
+    On Error GoTo Failed
+    Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange.Cells(2, 1).Resize(2, 1)
+    Set torques = ThisWorkbook.Names("rngTorsionCombinations").RefersToRange
+    Set table = ThisWorkbook.Names("rngTorsionSettings").RefersToRange
+    For row = 2 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = "Torsion.HoopAxisOffset" Then Set axis = table.Cells(row, 2)
+    Next row
+    Set linked = ThisWorkbook.Worksheets("Расчет").Range("ZZ2")
+    originalLoads = loads.Formula: originalTorques = torques.Formula
+    originalAxis = axis.Formula: originalLinked = linked.Formula
+    torqueAddress = torques.Worksheet.Name & "!" & torques.Cells(2, 2).Address(False, False)
+    identifierAddress = torques.Worksheet.Name & "!" & torques.Cells(2, 1).Address(False, False)
+    axisAddress = axis.Worksheet.Name & "!" & axis.Address(False, False)
+    loads.Cells(1, 1).Value2 = "TestDiag1": loads.Cells(2, 1).Value2 = "TestDiag2"
+    torques.Offset(1, 0).Resize(torques.Rows.Count - 1, 2).ClearContents
+    torques.Cells(2, 1).Value2 = "TestDiag1": torques.Cells(2, 2).Value2 = 10#
+    torques.Cells(3, 1).Value2 = "TestDiag2": torques.Cells(3, 2).Value2 = 20#
+    linked.Value2 = "29+": axis.Formula = "='Расчет'!ZZ2"
+    settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+    Set snapshot = New CCalculationSnapshot
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, snapshot)
+    data = snapshot.Table(TORSION_POST_DATA_KEY)
+    TestTorsionAssert "Both requested combinations preserved", UBound(data, 1) = 2
+    For row = 1 To 2
+        reason = CStr(data(row, 39))
+        TestTorsionAssert "Setting failure status " & CStr(row), CStr(data(row, 38)) = "InputErr"
+        TestTorsionAssert "Setting key retained " & CStr(row), InStr(1, reason, "Torsion.HoopAxisOffset", vbBinaryCompare) > 0
+        TestTorsionAssert "Setting and formula source retained " & CStr(row), InStr(1, reason, axisAddress, vbBinaryCompare) > 0 And InStr(1, reason, "Расчет!ZZ2", vbBinaryCompare) > 0
+        TestTorsionAssert "Valid torque is not blamed " & CStr(row), InStr(1, reason, torqueAddress, vbBinaryCompare) = 0 And InStr(1, reason, InputDiagnosticValueLine(10#), vbBinaryCompare) = 0
+        TestTorsionAssert "Invalid setting value retained " & CStr(row), InStr(1, reason, InputDiagnosticValueLine("29+"), vbBinaryCompare) > 0
+        TestTorsionAssert "Single action block " & CStr(row), UBound(Split(reason, "Возможное решение:")) = 1
+    Next row
+    torques.Cells(3, 2).Value2 = 0#: torques.Cells(2, 2).Value2 = "bad T"
+    Set snapshot = New CCalculationSnapshot
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, snapshot)
+    data = snapshot.Table(TORSION_POST_DATA_KEY): reason = CStr(data(1, 39))
+    TestTorsionAssert "Invalid torque keeps its address", InStr(1, reason, torqueAddress, vbBinaryCompare) > 0
+    TestTorsionAssert "Invalid torque does not blame settings", InStr(1, reason, "Torsion.HoopAxisOffset", vbBinaryCompare) = 0
+    torques.Cells(2, 1).Value2 = "TestMissing": torques.Cells(2, 2).Value2 = 10#
+    Set snapshot = New CCalculationSnapshot
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, snapshot)
+    data = snapshot.Table(TORSION_POST_DATA_KEY): reason = CStr(data(1, 39))
+    TestTorsionAssert "Missing ID keeps its address", InStr(1, reason, identifierAddress, vbBinaryCompare) > 0
+    TestTorsionAssert "Missing ID does not blame torque", InStr(1, reason, torqueAddress, vbBinaryCompare) = 0
+    torques.Cells(2, 2).Value2 = 0#
+    Set snapshot = New CCalculationSnapshot
+    warning = CaptureTorsionPostprocess(ThisWorkbook, TestTorsionRectangle(), batch, units, snapshot)
+    data = snapshot.Table(TORSION_POST_DATA_KEY)
+    TestTorsionAssert "Zero torque does not read invalid setting", Len(warning) = 0 And Len(CStr(data(1, 39))) = 0
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    On Error Resume Next
+    If IsArray(originalLoads) Then loads.Formula = originalLoads
+    If IsArray(originalTorques) Then torques.Formula = originalTorques
+    If Not axis Is Nothing Then axis.Formula = originalAxis
+    If Not linked Is Nothing Then linked.Formula = originalLinked
+    On Error GoTo 0
+    RunTorsionPostDiagnosticTests = "TorsionPostDiagnostics: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
+End Function

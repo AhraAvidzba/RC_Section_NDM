@@ -24,6 +24,7 @@ T = '{http://schemas.openxmlformats.org/package/2006/content-types}'
 XDR = '{http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing}'
 CALC = 'Расчет'
 INPUTS = ('Config', 'Сечения')
+RESULT_LOAD_HEADER = 'AL8:AN9'  # Постоянная объединённая шапка рабочих нагрузок; строки результатов в шаблон не входят.
 SELECTOR = 'rngSectionIllustrationSelector'
 STORAGE_DEFAULTS = {'I13', 'B85', *(f'L{row}' for row in range(71, 101))}
 EXAMPLE_INPUTS = {
@@ -350,6 +351,52 @@ def apply_input_formatting(sheet, formatting):
         sheet.find(M + 'dimension').set('ref', f'A1:{column_letters(last_column)}{last_row}')
 
 
+def capture_result_header(parts, path):
+    """Сохраняет только постоянную шапку нагрузок Results, без результатов и метаданных запуска."""
+    original = xml(parts, path)
+    result = ET.Element(M + 'worksheet', nsmap=original.nsmap)
+    data = ET.SubElement(result, M + 'sheetData')
+    for row in original.find(M + 'sheetData'):
+        selected = [cell for cell in row if cell.get('r') in {f'{col}{number}' for col in ('AL', 'AM', 'AN') for number in (8, 9)}]
+        if selected:
+            target = ET.SubElement(data, M + 'row', r=row.get('r'))
+            target.extend(deepcopy(cell) for cell in selected)
+    merges = ET.SubElement(result, M + 'mergeCells', count='1')
+    require(any(node.get('ref') == RESULT_LOAD_HEADER for node in original.find(M + 'mergeCells')),
+            'Не найдена объединённая шапка рабочих нагрузок Results')
+    ET.SubElement(merges, M + 'mergeCell', ref=RESULT_LOAD_HEADER)
+    require(not any(cell.find(M + 'f') is not None for cell in result.iter(M + 'c')), 'В постоянной шапке Results обнаружена формула')
+    prepare_calculation_sheet(result, xml(parts, 'xl/sharedStrings.xml'))
+    return serialize(result)
+
+
+def apply_result_header(sheet, header):
+    """Переносит шесть ячеек шапки и её объединение; другие области Results остаются штатными."""
+    data = sheet.find(M + 'sheetData')
+    rows = {int(row.get('r')): row for row in data}
+    for original in header.find(M + 'sheetData'):
+        number = int(original.get('r'))
+        if number not in rows:
+            rows[number] = ET.Element(M + 'row', r=str(number))
+            following = next((node for node in data if int(node.get('r')) > number), None)
+            data.insert(data.index(following) if following is not None else len(data), rows[number])
+        row = rows[number]
+        for cell in original:
+            existing = next((node for node in row if node.get('r') == cell.get('r')), None)
+            if existing is not None:
+                row.remove(existing)
+            column = column_number(CELL_ADDRESS.fullmatch(cell.get('r'))[1])
+            following = next((node for node in row if column_number(CELL_ADDRESS.fullmatch(node.get('r'))[1]) > column), None)
+            row.insert(row.index(following) if following is not None else len(row), deepcopy(cell))
+    merges = sheet.find(M + 'mergeCells')
+    if merges is None:
+        merges = ET.Element(M + 'mergeCells')
+        sheet.insert(sheet.index(data) + 1, merges)
+    if not any(node.get('ref') == RESULT_LOAD_HEADER for node in merges):
+        merges.append(deepcopy(header.find(M + 'mergeCells')[0]))
+    merges.set('count', str(len(merges)))
+
+
 def capture(source, baseline, destination):
     """Создаёт переносимый шаблон из проверенного дооформленного файла."""
     parts = read_package(source)
@@ -409,12 +456,14 @@ def capture(source, baseline, destination):
         'inputNames': input_names,
         'inputCells': links,
         'inputFormatting': {name: f'input-formatting/{name}.xml' for name in INPUTS},
+        'resultHeader': 'result-load-header.xml',
         'generatedPlotObjectsRemoved': ignored,
     }
     template = {'manifest.json': (json.dumps(metadata, ensure_ascii=False, indent=2) + '\n').encode(),
                 'styles.xml': parts['xl/styles.xml'], **graph}
     for name, path in metadata['inputFormatting'].items():
         template[path] = capture_input_formatting(parts, locations[name][1])
+    template[metadata['resultHeader']] = capture_result_header(parts, locations['Results'][1])
     require(not destination.exists(), f'Шаблон уже существует: {destination}')
     write_zip(destination, template)
     print(f'Шаблон «Расчет»: {len(links["Config"])} входов Config, {len(links["Сечения"])} входов «Сечения», '
@@ -609,6 +658,13 @@ def apply(source, template_path, destination):
         require(input_names.get(name) == reference, f'Изменилось расположение входного диапазона {name}')
     styles = xml(parts, 'xl/styles.xml')
     donor_styles = xml(template, 'styles.xml')
+    if metadata.get('resultHeader'):
+        header = xml(template, metadata['resultHeader'])
+        merge_styles(styles, donor_styles, header)
+        result_path = locations['Results'][1]
+        results = xml(parts, result_path)
+        apply_result_header(results, header)
+        parts[result_path] = serialize(results)
     for name in INPUTS:
         part = locations[name][1]
         sheet = xml(parts, part)
