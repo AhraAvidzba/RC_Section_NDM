@@ -44,14 +44,7 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
             If Len(identifier) > 0 Then dictionary(identifier) = row
         End If
     Next row
-    For row = 2 To UBound(data, 1)
-        If TorsionRowRequested(data(row, 1), data(row, 2)) Then
-            If Not IsError(data(row, 1)) And Not IsNull(data(row, 1)) Then
-                identifier = Trim$(CStr(data(row, 1)))
-                If requested.Exists(identifier) Then requested(identifier) = -1 Else requested.Add identifier, row
-            End If
-        End If
-    Next row
+    Set requested = RequestedTorsionIDs(data)
     For row = 2 To UBound(data, 1)
         If TorsionRowRequested(data(row, 1), data(row, 2)) Then
             Set result = ReadTorsionPostRow(workbook, section, batch, units, source, data, row, main, dictionary, requested, _
@@ -60,12 +53,16 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
         End If
     Next row
     torsionWriter.CaptureSummary snapshot, results, units
-    Dim summary As Variant, warnings As Long, policy As New CResultStatusPolicy
+    Dim summary As Variant, warnings As Long, policy As New CResultStatusPolicy, firstReason As String
     For Each result In results
         summary = result.Summary
-        If CStr(summary(1, 38)) <> policy.OK Then warnings = warnings + 1
+        If CStr(summary(1, 38)) <> policy.OK Then
+            warnings = warnings + 1
+            If Len(firstReason) = 0 And Len(CStr(summary(1, 39))) > 0 Then firstReason = CStr(summary(1, 39))
+        End If
     Next result
     If warnings > 0 Then CaptureTorsionPostCore = "Постпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — " & CStr(warnings) & ". Причины указаны в блоке NMT на Results."
+    If Len(firstReason) > 0 Then CaptureTorsionPostCore = WorkbookMessageParagraph(CaptureTorsionPostCore, "Первая причина:" & vbCrLf & firstReason)
     Exit Function
 TableFailed:
     Dim reason As String: reason = Err.Description
@@ -75,6 +72,34 @@ TableFailed:
     results.Add result
     torsionWriter.CaptureSummary snapshot, results, units
     CaptureTorsionPostCore = "Постпроверка T (кручение) завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены."
+End Function
+
+' Возвращает только применимость T до отбора NM. Ошибка таблицы остаётся диагностикой блока NMT, включая запуск без НДМ.
+Public Function RequestedTorsionCombinationIDs(ByVal workbook As Object) As Object
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary"): result.CompareMode = vbTextCompare
+    Set RequestedTorsionCombinationIDs = result
+    On Error GoTo Unavailable
+    Dim source As Object: Set source = OptionalTorsionRange(workbook, "rngTorsionCombinations")
+    If source Is Nothing Then Exit Function
+    If source.Areas.Count <> 1 Or source.Columns.Count <> 2 Or source.Rows.Count < 2 Then Exit Function
+    Dim data As Variant: data = source.Value2
+    Set RequestedTorsionCombinationIDs = RequestedTorsionIDs(data)
+Unavailable:
+End Function
+
+' Общий индекс активных T: ошибочное значение тоже запрашивает строку, повторный ID помечается для адресной диагностики.
+Private Function RequestedTorsionIDs(ByRef data As Variant) As Object
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary"): result.CompareMode = vbTextCompare
+    Dim row As Long, identifier As String
+    For row = 2 To UBound(data, 1)
+        If TorsionRowRequested(data(row, 1), data(row, 2)) Then
+            If Not IsError(data(row, 1)) And Not IsNull(data(row, 1)) Then
+                identifier = Trim$(CStr(data(row, 1)))
+                If result.Exists(identifier) Then result(identifier) = -1 Else result.Add identifier, row
+            End If
+        End If
+    Next row
+    Set RequestedTorsionIDs = result
 End Function
 
 ' Определяет применимость строки до проверки ID и чтения настроек.
@@ -111,15 +136,16 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     column = 0 ' Строка T уже проверена; последующие ошибки принадлежат настройкам или вычислителю, а не ячейке момента.
     If calculator Is Nothing And Len(preparationError) = 0 Then PrepareTorsionPostCalculator workbook, section, units, calculator, settings, preparationError, concreteInputError
     If Len(preparationError) > 0 Then Err.Raise 5, , preparationError
-    Dim i As Long, stateName As String
+    Dim i As Long, stateName As String, zeroNormalState As Boolean
     stateName = settings.GetRequiredString("Torsion.StateType")
     For i = 1 To batch.Count
         If StrComp(batch.CombinationID(i), identifier, vbTextCompare) = 0 Then
+            zeroNormalState = batch.IsAdditionalLoadOnly(i)
             Set state = batch.ResultAt(i).StateRepository.FindState(SectionStateTypeFromText(stateName))
             Exit For
         End If
     Next i
-    Set result = calculator.Calculate(identifier, torque, state)
+    Set result = calculator.Calculate(identifier, torque, state, zeroNormalState)
     Dim values As Variant, bars As Variant, addressed As CTorsionPostResult
     values = result.Summary
     Dim diagnostic As String, concreteDiagnostic As String

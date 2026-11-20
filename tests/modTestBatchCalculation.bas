@@ -11335,18 +11335,18 @@ Public Function RunAxialLoadZeroFilterTests() As String
     Set unitTable = ThisWorkbook.Names("rngUnitSettings").RefersToRange: savedUnits = unitTable.Formula
     Set batch = TestBuildBatchCalculator()
     batch.AddCombination "DEFAULT_ZERO", 980.665, 1000000#, -1000000#, "PR1", ""
-    batch.AddCombination "DEFAULT_KEPT", 2941.995, 3000000#, -3000000#, "PR1", ""
+    batch.AddCombination "DEFAULT_KEPT", 3922.66, 3000000#, -3000000#, "PR1", ""
     TestAssertClose stats, "default.N.1tfperm", batch.N(1), 0#, 0#
     TestAssertClose stats, "default.M.1tfmperm", batch.UserMx(1), 0#, 0#
-    TestAssertClose stats, "default.N.above", batch.N(2), 2941.995, 0#
+    TestAssertClose stats, "default.N.above", batch.N(2), 3922.66, 0#
     TestAssertClose stats, "default.M.above", batch.UserMx(2), 3000000#, 0#
     Set profileTable = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange: savedProfiles = profileTable.Formula
     filter.Initialize 1000#, 2#
     For sg = -1 To 1 Step 2
         For Each dx In Array(200#, 300#, 1000#)
             For Each dy In Array(200#, 300#, 1000#)
-                n = 2# * TestMinDouble(CDbl(dx), CDbl(dy))
-                TestAssertClose stats, "filter.minimumDepth", filter.AxialForceTolerance(CDbl(dx), CDbl(dy)), n, 0#
+                n = 2# * TestMaxDouble(CDbl(dx), CDbl(dy))
+                TestAssertClose stats, "filter.maximumDepth", filter.AxialForceTolerance(CDbl(dx), CDbl(dy)), n, 0#
                 TestAssertClose stats, "filter.N.below", filter.NormalizeAxialForce(sg * n * 0.999, CDbl(dx), CDbl(dy)), 0#, 0#
                 TestAssertClose stats, "filter.N.boundary", filter.NormalizeAxialForce(sg * n, CDbl(dx), CDbl(dy)), 0#, 0#
                 TestAssertClose stats, "filter.N.above", filter.NormalizeAxialForce(sg * n * 1.001, CDbl(dx), CDbl(dy)), sg * n * 1.001, 0#
@@ -11369,10 +11369,10 @@ Public Function RunAxialLoadZeroFilterTests() As String
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
     batch.AddCombination "AT", 400#, 0#, 0#, "PR1", "", "Auto"
-    batch.AddCombination "ABOVE", 400.001, 0#, 0#, "PR1", "", "Auto"
+    batch.AddCombination "ABOVE", 600.001, 0#, 0#, "PR1", "", "Auto"
     TestAssertClose stats, "batch.filteredN", batch.N(1), 0#, 0#
     TestAssertClose stats, "batch.originalN", batch.OriginalN(1), 400#, 0#
-    TestAssertClose stats, "batch.aboveN", batch.N(2), 400.001, 0#
+    TestAssertClose stats, "batch.aboveN", batch.N(2), 600.001, 0#
     batch.ApplyLoadReference 0#, 501#
     TestAssertClose stats, "batch.largeErestoresN", batch.N(1), 400#, 0#
     TestAssertClose stats, "batch.largeEtransfer", batch.Mx(1), 200400#, 0#
@@ -11457,6 +11457,74 @@ Restore:
     If IsArray(savedSystem) Then system.Formula = savedSystem
     If IsArray(savedUnits) Then unitTable.Formula = savedUnits
     RunAxialLoadZeroFilterTests = stats.Report & "TOTAL_AXIAL_LOAD_FILTER: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет ранний отбор NM после фильтра, сохранение T и отсутствие решения НДС для отдельного этапа.
+Public Function RunZeroLoadCombinationTests() As String
+    Dim stats As TBatchTestStats, savedSystem As Variant, system As Object, sheet As Object
+    Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, reader As New CLoadCombinationReader
+    Dim ids As Object, data(1 To 10, 1 To 7) As Variant, row As Long, column As Long, inactive As Variant
+    On Error GoTo Failed
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange: savedSystem = system.Formula
+    TestSetSystemSetting "Calculation.ZeroAxialForcePerDepth", "2"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "1000"
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0": TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    Set sheet = ThisWorkbook.Worksheets.Add
+    For column = 1 To 7: data(1, column) = Choose(column, "CombinationID", "N", "Mx", "My", "ProfileId", "LoadPath", "Comment"): Next column
+    For row = 2 To 10
+        data(row, 1) = "LC" & row: data(row, 5) = "PR1"
+    Next row
+    data(3, 2) = 599.999: data(4, 2) = -600#
+    data(5, 3) = 200000#: data(5, 4) = -300000#
+    data(7, 2) = -600#: data(7, 3) = 200000#: data(7, 4) = -300000#
+    data(8, 2) = 600.001: data(9, 3) = 200000.001
+    data(10, 2) = CVErr(2015)
+    For Each inactive In Array(2, 3, 4, 5, 6, 7)
+        data(inactive, 5) = CVErr(2015): data(inactive, 6) = CVErr(2015): data(inactive, 7) = CVErr(2015)
+    Next inactive
+    sheet.Range("A1:G10").Value2 = data
+    Set ids = CreateObject("Scripting.Dictionary"): ids.CompareMode = vbTextCompare
+    ids.Add "LC6", 1: ids.Add "LC7", 1
+    reader.LoadFromRange sheet.Range("A1:G10"), batch, Nothing, ids
+    TestAssertClose stats, "reader.skipped", reader.SkippedZeroCount, 4#, 0#
+    TestAssertClose stats, "reader.retained", batch.Count, 5#, 0#
+    TestAssertTrue stats, "reader.Traw.only", batch.IsAdditionalLoadOnly(1)
+    TestAssertTrue stats, "reader.Tfiltered.only", batch.IsAdditionalLoadOnly(2)
+    TestAssertClose stats, "reader.original.N", batch.OriginalN(2), -600#, 0#
+    TestAssertClose stats, "reader.N.aboveMaximumDepth", batch.N(3), 600.001, 0#
+    TestAssertClose stats, "reader.M.above", batch.UserMx(4), 200000.001, 0#
+    TestAssertClose stats, "reader.sourceOffset", batch.SourceDataOffset(3), 7#, 0#
+    TestAssertTrue stats, "reader.invalid.retained", Not batch.IsAdditionalLoadOnly(5)
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    reader.LoadFromRange sheet.Range("A1:G7"), batch, Nothing, ids
+    batch.Execute
+    TestAssertClose stats, "Tonly.solverCalls", batch.SolverCallCount, 0#, 0#
+    TestAssertClose stats, "Tonly.states", batch.ResultAt(1).StateRepository.StateCount + batch.ResultAt(2).StateRepository.StateCount, 0#, 0#
+    TestAssertClose stats, "Tonly.normalCount", batch.NormalLoadCombinationCount, 0#, 0#
+    TestAssertTrue stats, "Tonly.noNMerror", batch.ResultAt(1).InputErrorMeta Is Nothing
+    TestSetSystemSetting "Load.ReferenceOffsetY", "334"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    TestAssertTrue stats, "eccentric.N.kept", Not batch.IsInputLoadZero(600#, 0#, 0#)
+    TestAssertTrue stats, "eccentric.M.kept", Not batch.IsInputLoadZero(1#, 200000.001, 0#)
+    TestAssertTrue stats, "eccentric.M.filtered", batch.IsInputLoadZero(0#, 200000#, 300000#)
+    TestSetSystemSetting "Load.ReferenceOffsetY", "invalid unused offset"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    TestAssertTrue stats, "Tonly.unusedOffset", batch.IsInputLoadZero(0#, 0#, 0#)
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1: TestAppendLine stats, "RUNTIME ERROR: " & Err.Description
+Restore:
+    If IsArray(savedSystem) Then system.Formula = savedSystem
+    If Not sheet Is Nothing Then
+        Dim alerts As Boolean: alerts = Application.DisplayAlerts
+        Application.DisplayAlerts = False: sheet.Delete: Application.DisplayAlerts = alerts
+    End If
+    RunZeroLoadCombinationTests = stats.Report & "TOTAL_ZERO_LOAD_COMBINATIONS: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

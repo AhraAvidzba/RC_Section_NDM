@@ -1,0 +1,18 @@
+﻿TorsionPostGuard: Passed=16; Failed=0
+PASS Overlapping clear rejected
+PASS NM data survived bad own range
+PASS Geometric setting error retained
+PASS Wall thickness key retained
+INFO wall diagnostic: Постпроверка T (кручение).; Адреса ячеек:; Config!I105; ; Настройка Torsion.StateType; ; Сохранённое состояние StrengthState не найдено; T рассчитан, сумма NMT недоступна. Включите получение этого состояния в расчётном профиле.; Введённое значение: «StrengthState».; ; Возможное решение:; Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания.; ; Адреса ячеек:; Config!I118; ; Настройка Torsion.RebarAxisOffset; ; Не удалось построить среднюю линию эффективной стенки. После смещения у прямого участка не осталось положительной длины.; ; Возможное решение:; Уменьшите расстояние смещения или увеличьте размеры исходного контура. Для сложного контура проверьте допустимость одной замкнутой стенки и её толщину.; Введённое значение: «50».; ; Проверьте параметры выбранного метода бетона. Продольная арматура и хомут рассчитаны независимо.; Адреса ячеек:; Config!I119 ⟶ Расчет!ZZ2; ; Настройка Torsion.WallThickness; ; Связанный параметр выбранной проверки T.; Введённое значение: «1000».; ; Возможное решение:; Исправьте значение в указанной ячейке.
+PASS Wall thickness source chain retained
+PASS Bad thickness preserves longitudinal output
+PASS Bad thickness preserves hoop output
+PASS One clarification in row diagnostic
+PASS Unknown method blocks only concrete
+PASS Unknown method keeps source chain
+PASS Unknown method retains bar forces
+PASS None does not read unused thickness error
+PASS One clarification in combined dialog
+PASS Repeated dialog formatting is stable
+PASS Quoted input clarification is preserved
+PASS NM message remains unchanged

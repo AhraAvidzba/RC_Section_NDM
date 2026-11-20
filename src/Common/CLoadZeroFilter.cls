@@ -12,12 +12,12 @@ Option Explicit
 ' ==========================================================================
 ' Независимая проверка практически нулевой продольной силы и моментов
 ' ==========================================================================
-' Обнуляет N до построения траектории по минимальному бетонному габариту,
+' Обнуляет N до построения траектории по максимальному бетонному габариту,
 ' а физические компоненты моментов в пользовательском вводе или главных
 ' плоскостях устойчивости. Служебные слагаемые переноса N*deltaX и N*deltaY сохраняются;
 ' вызывающий код не должен фильтровать ими смену начала координат. Порог применяется до выбора расчёта
 ' и начального приближения; допуски численного равновесия задаются отдельно.
-' Ntol = Calculation.ZeroAxialForcePerDepth * min(hx, hy).
+' Ntol = Calculation.ZeroAxialForcePerDepth * max(hx, hy).
 ' Малая N сохраняется, если хотя бы один её момент от эксцентриситета
 ' относительно бетонного центра превышает порог соответствующей плоскости.
 ' Для каждой плоскости Mtol = Calculation.ZeroMomentPerDepth * h, где h —
@@ -37,16 +37,16 @@ Public Sub Initialize(ByVal momentPerDepth As Double, Optional ByVal axialForceP
     mAxialForcePerDepth = axialForcePerDepth
 End Sub
 
-' Возвращает порог N по меньшему габариту бетонного сечения; нулевой коэффициент отключает фильтр силы.
+' Возвращает порог N по большему габариту бетонного сечения; нулевой коэффициент отключает фильтр силы.
 Public Function AxialForceTolerance(ByVal concreteDepthX As Double, ByVal concreteDepthY As Double) As Double
     If mAxialForcePerDepth <= 0# Or concreteDepthX <= 0# Or concreteDepthY <= 0# Then Exit Function
-    Dim minimumDepth As Double: minimumDepth = concreteDepthX
-    If concreteDepthY < minimumDepth Then minimumDepth = concreteDepthY
+    Dim maximumDepth As Double: maximumDepth = concreteDepthX
+    If concreteDepthY > maximumDepth Then maximumDepth = concreteDepthY
     On Error GoTo Overflow
-    AxialForceTolerance = mAxialForcePerDepth * minimumDepth
+    AxialForceTolerance = mAxialForcePerDepth * maximumDepth
     Exit Function
 Overflow:
-    Err.Raise vbObjectError + 6012, "CLoadZeroFilter", "Порог N по минимальному габариту сечения выходит за допустимый числовой диапазон."
+    Err.Raise vbObjectError + 6012, "CLoadZeroFilter", "Порог N по максимальному габариту сечения выходит за допустимый числовой диапазон."
 End Function
 
 ' Проверяет исходную силу до построения пути, одинаково для сжатия и растяжения; равенство порогу включает зануление.

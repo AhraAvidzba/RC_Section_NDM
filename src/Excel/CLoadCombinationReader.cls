@@ -20,26 +20,31 @@ Option Explicit
 ' Если передан CUnitSystem, усилия сразу переводятся из INPUT-единиц и
 ' пользовательской системы знаков во внутреннюю систему расчетного ядра.
 
+Private mSkippedZeroCount As Long ' Число корректных строк, полностью обнулённых до запуска НДС.
+Private mSkippedZeroIDs As String ' ID пропусков для отчёта без создания строк Results.
+
 ' Загружает сочетания из именованного диапазона книги.
 Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3950, "CLoadCombinationReader", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3951, "CLoadCombinationReader", "Пакетный расчетчик не передан."
-    LoadFromRange workbook.Names.Item("rngLoadCombinations").RefersToRange, batch, units
+    LoadFromRange workbook.Names.Item("rngLoadCombinations").RefersToRange, batch, units, RequestedTorsionCombinationIDs(workbook)
 End Sub
 
 ' Читает сочетания из переданного диапазона. Общий способ используется
 ' обычной книгой и тестами без ручного запуска её интерфейса.
-Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
+Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing, _
+        Optional ByVal additionalLoadIDs As Object = Nothing)
     If batch Is Nothing Then Err.Raise vbObjectError + 3953, "CLoadCombinationReader", "Пакетный расчетчик не передан."
     RequireSourceTable source
 
     Dim data As Variant
     data = source.Value2
     RequireUniqueIDs data, source
+    mSkippedZeroCount = 0: mSkippedZeroIDs = vbNullString
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1) ' Пустой номер отключает строку, сохраняя введённые нагрузки и её исходное место.
-        If Not IsBlankCell(data(rowIndex, 1)) Then AddRow data, batch, rowIndex, units, source
+        If Not IsBlankCell(data(rowIndex, 1)) Then AddRow data, batch, rowIndex, units, source, additionalLoadIDs
     Next rowIndex
 End Sub
 
@@ -93,7 +98,7 @@ End Sub
 ' Ошибки ввода не прерывают весь расчет: строка попадает в отчет как InvalidInput,
 ' остальные сочетания продолжают считаться.
 Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator, ByVal rowIndex As Long, _
-        ByVal units As CUnitSystem, ByVal source As Object)
+        ByVal units As CUnitSystem, ByVal source As Object, ByVal additionalLoadIDs As Object)
     Dim combinationID As String
     Dim profileId As String
     Dim loadPathText As String
@@ -107,10 +112,21 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText, hasError)
     mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText, hasError)
     myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText, hasError)
-    If Not hasError Then ' Точно нулевой LC не использует профиль, путь и комментарий; ненулевые малые нагрузки сохраняются.
+    If Not hasError Then ' Инженерный ноль не использует профиль, путь и комментарий; ошибочный ввод нагрузки не скрывается.
         ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, hasError, source, rowIndex
         If Not hasError Then
-            If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
+            If batch.IsInputLoadZero(nValue, mxValue, myValue) Then
+                Dim hasAdditionalLoad As Boolean
+                If Not additionalLoadIDs Is Nothing Then hasAdditionalLoad = additionalLoadIDs.Exists(combinationID)
+                If hasAdditionalLoad Then
+                    batch.AddAdditionalLoadOnlyCombination combinationID, nValue, mxValue, myValue, rowIndex - 1, RowLocation(source, rowIndex)
+                Else
+                    mSkippedZeroCount = mSkippedZeroCount + 1
+                    If Len(mSkippedZeroIDs) > 0 Then mSkippedZeroIDs = mSkippedZeroIDs & ", "
+                    mSkippedZeroIDs = mSkippedZeroIDs & combinationID
+                End If
+                Exit Sub
+            End If
         End If
     End If
     profileId = ReadCellText(data(rowIndex, 5), CellLocation(source, rowIndex, 5, "ProfileId"), errorText, hasError)
@@ -139,6 +155,16 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
             RowLocation(source, rowIndex), source.Worksheet.Name & "!" & source.Cells(rowIndex, 5).Address(False, False)
     End If
 End Sub
+
+' Возвращает количество строк, исключённых общим фильтром до решения и вывода.
+Public Property Get SkippedZeroCount() As Long
+    SkippedZeroCount = mSkippedZeroCount
+End Property
+
+' Возвращает номера исключённых строк для отдельного пояснения в отчёте.
+Public Property Get SkippedZeroIDs() As String
+    SkippedZeroIDs = mSkippedZeroIDs
+End Property
 
 ' Читает нагрузку, где пустая ячейка означает 0.
 ' Это позволяет задавать одноосный изгиб как N + Mx при пустом My.

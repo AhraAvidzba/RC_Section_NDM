@@ -7,6 +7,48 @@ Option Explicit
 Private mTestPassed As Long, mTestFailed As Long, mTestLog As String
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' При явном нуле NM сумма равна T; отсутствующее ненулевое состояние по-прежнему не подменяется нулём.
+Public Function RunTorsionOnlyTests() As String
+    mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
+    On Error GoTo Failed
+    Dim section As CSectionModel: Set section = TestTorsionRectangle()
+    Dim p As TTorsionPostParameters
+    p.StateName = "StrengthState": p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#
+    p.SteelResistance = 270#: p.HoopResistance = 170#: p.BarBand = 25#: p.StrutAngle = 45#: p.ConcreteMethod = "None"
+    Dim calculator As New CTorsionPostCalculator: calculator.Prepare section, p
+    Dim result As CTorsionPostResult, values As Variant, bars As Variant, i As Long, total As Double
+    Set result = calculator.Calculate("T_ONLY", 3900000#, Nothing, True)
+    values = result.Summary: bars = result.Bars
+    TestTorsionNear "Zero NM exactly", values(1, 30), 0#
+    TestTorsionNear "T + zero NM", values(1, 33), 98.4375
+    TestTorsionNear "Same governing T increment", values(1, 31), CDbl(values(1, 12))
+    TestTorsionNear "Same reserve T and NMT", values(1, 35), CDbl(values(1, 14))
+    TestTorsionAssert "Sum is available", CStr(values(1, 36)) = "OK" And CStr(values(1, 38)) = "OK"
+    TestTorsionAssert "No missing state reason", Len(result.StateFailureReason) = 0 And Len(CStr(values(1, 39))) = 0
+    For i = 1 To UBound(bars, 1): total = total + CDbl(bars(i, 4)): Next i
+    TestTorsionNear "Force preserved", total, 39375#
+    Set result = calculator.Calculate("MISSING_NM", 3900000#, Nothing)
+    values = result.Summary
+    TestTorsionAssert "Missing nonzero NM is unavailable", CStr(values(1, 36)) = "N/A" And Len(result.StateFailureReason) > 0
+    section.Contours.Clear
+    Set calculator = New CTorsionPostCalculator
+    Dim number As Long, reason As String
+    On Error Resume Next
+    calculator.Prepare section, p
+    number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    TestTorsionAssert "Missing outer blocks only T preparation", number <> 0
+    TestTorsionAssert "Missing outer cause is clear", InStr(1, reason, "нет достоверного наружного контура", vbTextCompare) > 0
+    TestTorsionAssert "Missing outer gives action", InStr(1, reason, "снова сформируйте сечение", vbTextCompare) > 0
+    TestTorsionAssert "Missing outer does not blame hoop inputs", Len(calculator.FailureSettingKeys) = 0
+    GoTo Finished
+Failed:
+    mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
+Finished:
+    RunTorsionOnlyTests = "TorsionOnly: Passed=" & CStr(mTestPassed) & "; Failed=" & CStr(mTestFailed) & mTestLog
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Сверяет геометрию оси, тягу, силы стержней, хомут и два предела бетона.
 Public Function RunTorsionPostTests() As String
     mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString

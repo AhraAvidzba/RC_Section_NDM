@@ -1,0 +1,17 @@
+﻿{
+    "Status":  "PASS",
+    "SettingsComment":  "Порог исходной силы N_tol = значение·max(hx, hy), по максимальному габариту бетона, только если оба момента N от эксцентриситета не больше порогов M. По умолчанию 1 tf/m; 0 отключает фильтр N. Полностью нулевое NM без T не рассчитывается и не выводится.",
+    "Blocks":  [
+                   {
+                       "Key":  "Calculation.ZeroAxialForcePerDepth",
+                       "Row":  1217,
+                       "Lines":  5
+                   },
+                   {
+                       "Key":  "Calculation.ZeroMomentPerDepth",
+                       "Row":  1224,
+                       "Lines":  7
+                   }
+               ],
+    "TorsionUpdated":  true
+}

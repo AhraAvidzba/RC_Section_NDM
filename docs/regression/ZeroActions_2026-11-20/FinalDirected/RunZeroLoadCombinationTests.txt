@@ -1,0 +1,18 @@
+﻿OK: reader.skipped; actual=4.; expected=4.
+OK: reader.retained; actual=5.; expected=5.
+OK: reader.Traw.only
+OK: reader.Tfiltered.only
+OK: reader.original.N; actual=-600.; expected=-600.
+OK: reader.N.aboveMaximumDepth; actual=600.001; expected=600.001
+OK: reader.M.above; actual=200000.001; expected=200000.001
+OK: reader.sourceOffset; actual=7.; expected=7.
+OK: reader.invalid.retained
+OK: Tonly.solverCalls; actual=0.; expected=0.
+OK: Tonly.states; actual=0.; expected=0.
+OK: Tonly.normalCount; actual=0.; expected=0.
+OK: Tonly.noNMerror
+OK: eccentric.N.kept
+OK: eccentric.M.kept
+OK: eccentric.M.filtered
+OK: Tonly.unusedOffset
+TOTAL_ZERO_LOAD_COMBINATIONS: passed=17; failed=0

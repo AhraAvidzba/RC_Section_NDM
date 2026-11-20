@@ -1,0 +1,106 @@
+﻿TorsionPostAvailability: Passed=105; Failed=0
+PASS Saved plane confirmed
+PASS Saved material snapshot exists
+PASS UnknownMethod concrete InputErr
+PASS UnknownMethod overall cannot be OK
+PASS UnknownMethod no invented concrete limit
+PASS UnknownMethod reason retained
+PASS UnknownMethod T result 3
+PASS UnknownMethod T result 4
+PASS UnknownMethod T result 5
+PASS UnknownMethod T result 6
+PASS UnknownMethod T result 7
+PASS UnknownMethod T result 8
+PASS UnknownMethod T result 9
+PASS UnknownMethod T result 10
+PASS UnknownMethod T result 11
+PASS UnknownMethod T result 12
+PASS UnknownMethod T result 13
+PASS UnknownMethod T result 14
+PASS UnknownMethod T result 15
+PASS UnknownMethod T result 16
+PASS UnknownMethod T result 17
+PASS UnknownMethod T result 18
+PASS UnknownMethod T result 19
+PASS UnknownMethod T result 20
+PASS UnknownMethod T result 21
+PASS UnknownMethod NMT result 29
+PASS UnknownMethod NMT result 30
+PASS UnknownMethod NMT result 31
+PASS UnknownMethod NMT result 32
+PASS UnknownMethod NMT result 33
+PASS UnknownMethod NMT result 34
+PASS UnknownMethod NMT result 35
+PASS UnknownMethod NMT result 36
+PASS UnknownMethod NMT result 37
+PASS ExcessiveThickness concrete InputErr
+PASS ExcessiveThickness overall cannot be OK
+PASS ExcessiveThickness no invented concrete limit
+PASS ExcessiveThickness reason retained
+PASS ExcessiveThickness T result 3
+PASS ExcessiveThickness T result 4
+PASS ExcessiveThickness T result 5
+PASS ExcessiveThickness T result 6
+PASS ExcessiveThickness T result 7
+PASS ExcessiveThickness T result 8
+PASS ExcessiveThickness T result 9
+PASS ExcessiveThickness T result 10
+PASS ExcessiveThickness T result 11
+PASS ExcessiveThickness T result 12
+PASS ExcessiveThickness T result 13
+PASS ExcessiveThickness T result 14
+PASS ExcessiveThickness T result 15
+PASS ExcessiveThickness T result 16
+PASS ExcessiveThickness T result 17
+PASS ExcessiveThickness T result 18
+PASS ExcessiveThickness T result 19
+PASS ExcessiveThickness T result 20
+PASS ExcessiveThickness T result 21
+PASS ExcessiveThickness NMT result 29
+PASS ExcessiveThickness NMT result 30
+PASS ExcessiveThickness NMT result 31
+PASS ExcessiveThickness NMT result 32
+PASS ExcessiveThickness NMT result 33
+PASS ExcessiveThickness NMT result 34
+PASS ExcessiveThickness NMT result 35
+PASS ExcessiveThickness NMT result 36
+PASS ExcessiveThickness NMT result 37
+PASS InvalidConcreteInput concrete InputErr
+PASS InvalidConcreteInput overall cannot be OK
+PASS InvalidConcreteInput no invented concrete limit
+PASS InvalidConcreteInput reason retained
+PASS InvalidConcreteInput T result 3
+PASS InvalidConcreteInput T result 4
+PASS InvalidConcreteInput T result 5
+PASS InvalidConcreteInput T result 6
+PASS InvalidConcreteInput T result 7
+PASS InvalidConcreteInput T result 8
+PASS InvalidConcreteInput T result 9
+PASS InvalidConcreteInput T result 10
+PASS InvalidConcreteInput T result 11
+PASS InvalidConcreteInput T result 12
+PASS InvalidConcreteInput T result 13
+PASS InvalidConcreteInput T result 14
+PASS InvalidConcreteInput T result 15
+PASS InvalidConcreteInput T result 16
+PASS InvalidConcreteInput T result 17
+PASS InvalidConcreteInput T result 18
+PASS InvalidConcreteInput T result 19
+PASS InvalidConcreteInput T result 20
+PASS InvalidConcreteInput T result 21
+PASS InvalidConcreteInput NMT result 29
+PASS InvalidConcreteInput NMT result 30
+PASS InvalidConcreteInput NMT result 31
+PASS InvalidConcreteInput NMT result 32
+PASS InvalidConcreteInput NMT result 33
+PASS InvalidConcreteInput NMT result 34
+PASS InvalidConcreteInput NMT result 35
+PASS InvalidConcreteInput NMT result 36
+PASS InvalidConcreteInput NMT result 37
+PASS Equal density at 45 gives same longitudinal and hoop stress
+PASS Equal resistance gives same T reserve
+PASS Band wider than maximum dimension keeps eligible area
+PASS Wide band keeps longitudinal force
+PASS Wide band is not clamped to geometry
+PASS Gorsky shape error only in concrete
+PASS Hollow wide band keeps outer row rule

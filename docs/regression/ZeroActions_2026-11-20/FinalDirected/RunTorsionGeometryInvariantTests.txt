@@ -1,0 +1,657 @@
+﻿TorsionGeometryInvariant: Passed=656; Failed=0
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Similar Ao
+PASS Similar perimeter
+PASS Similar stress
+PASS Each physical bar once
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Similar assigned length
+PASS Similar assigned force
+PASS ID kept after transform
+PASS Full perimeter no overlap
+PASS Full tie force no overlap
+PASS Circle exact Ao
+PASS Circle exact perimeter
+PASS Circle quarter arc
+PASS Circle quarter arc
+PASS Circle quarter arc
+PASS Circle quarter arc
+PASS Circle length conservation
+PASS Circle force conservation

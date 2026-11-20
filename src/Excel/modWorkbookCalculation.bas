@@ -460,13 +460,8 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook workbook, batch, units
-    If batch.Count = 0 Then
-        CalculateSectionCore = "Расчёт не запускался: нет сочетаний с заполненным CombinationID и ненулевыми нагрузками. Прежние результаты сохранены."
-        report.AddStep CalculateSectionCore
-        report.Save CalculateSectionCore
-        excelGuard.Restore True
-        Exit Function
-    End If
+    report.AddValue "Пропущено нулевых сочетаний без T", CStr(reader.SkippedZeroCount)
+    If reader.SkippedZeroCount > 0 Then report.AddValue "ID пропущенных сочетаний", reader.SkippedZeroIDs
     report.AddValue "Прочитано сочетаний", CStr(batch.Count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
     LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
@@ -477,7 +472,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
 
     report.AddSection "Точка приложения нагрузки"
     report.AddStep "Расчет центра тяжести бетонного сечения для пользовательской точки нагрузки."
-    ApplyLoadReferenceFromSettings section, settings, units, batch
+    If batch.NormalLoadCombinationCount > 0 Then ApplyLoadReferenceFromSettings section, settings, units, batch
     report.AddValue "Точка приложения нагрузки X", ReportLengthText(batch.LoadReferenceX, units)
     report.AddValue "Точка приложения нагрузки Y", ReportLengthText(batch.LoadReferenceY, units)
 
@@ -493,7 +488,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
 
     report.AddSection "Расчет сочетаний"
     Dim savedProfileValues As Variant: savedProfileValues = workbook.Names.Item("rngCalculationProfiles").RefersToRange.Value2 ' Замораживает исходный профиль до вычислений, без чтения Config при подготовке файла.
-    batch.Execute
+    If batch.Count > 0 Then batch.Execute ' Нулевая очередь обновляет пустой вывод и сохраняет геометрию; решатель не запускается.
     report.AddValue "Время batch-расчета", FormatReportNumber(batch.ElapsedSeconds) & " с"
     report.AddValue "Количество стартов UltimateStrain", CStr(batch.UltimateStrainStartCount)
     report.AddValue "Количество итераций НДС", CStr(batch.SolverIterationCount)
@@ -527,6 +522,10 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
     CalculateSectionCore = CalculationBatchMessage(batch, , requiresAttention)
+    If batch.Count = 0 Then CalculateSectionCore = "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена."
+    If batch.Count > 0 And batch.NormalLoadCombinationCount = 0 Then CalculateSectionCore = "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю."
+    If reader.SkippedZeroCount > 0 Then CalculateSectionCore = WorkbookMessageParagraph(CalculateSectionCore, _
+        "Пропущено нулевых сочетаний без T: " & CStr(reader.SkippedZeroCount) & "." & vbCrLf & "ID: " & reader.SkippedZeroIDs & ".")
     CalculateSectionCore = WorkbookMessageAfterOutcome(CalculateSectionCore, dataOrigin)
     requiresAttention = requiresAttention Or plotHasWarning
     If Len(plotWarning) > 0 Then CalculateSectionCore = CalculateSectionCore & vbCrLf & vbCrLf & plotWarning

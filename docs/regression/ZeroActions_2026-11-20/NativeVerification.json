@@ -1,0 +1,38 @@
+﻿[
+    {
+        "Path":  "docs/regression/ZeroActions_2026-11-20/Candidate.xlsm",
+        "Status":  "PASS",
+        "Compiled":  true,
+        "ComponentCount":  203,
+        "SourceModules":  [
+                              "CLoadZeroFilter",
+                              "CBatchSectionCalculator",
+                              "CLoadCombinationReader",
+                              "modTorsionPostprocess",
+                              "modWorkbookCalculation",
+                              "CTorsionPostCalculator",
+                              "modTestBatchCalculation",
+                              "modTestTorsionPost"
+                          ],
+        "HelpVerified":  true,
+        "SHA256":  "3A7C105311C7F12D73EF8B98A82230AEBEA78EE675257AFCB351DCFBAC32A13B"
+    },
+    {
+        "Path":  "outputs/ZeroActions_2026-11-20/Clean.xlsm",
+        "Status":  "PASS",
+        "Compiled":  true,
+        "ComponentCount":  203,
+        "SourceModules":  [
+                              "CLoadZeroFilter",
+                              "CBatchSectionCalculator",
+                              "CLoadCombinationReader",
+                              "modTorsionPostprocess",
+                              "modWorkbookCalculation",
+                              "CTorsionPostCalculator",
+                              "modTestBatchCalculation",
+                              "modTestTorsionPost"
+                          ],
+        "HelpVerified":  true,
+        "SHA256":  "A308D4A97325643FE35B0BA4154C9C0653024F4CE65C08DE3AC99D319519B84B"
+    }
+]

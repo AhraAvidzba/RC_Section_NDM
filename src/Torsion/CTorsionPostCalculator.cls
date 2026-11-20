@@ -34,6 +34,12 @@ Private mConcreteFailureStatus As String, mConcreteFailureReason As String, mCon
 Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionPostParameters)
     If Not mSection Is Nothing Then ModelError "Геометрия этапа T уже подготовлена."
     If section Is Nothing Then ModelError "Не передана сохранённая геометрия сечения."
+    Dim hasOuter As Boolean, contourIndex As Long
+    For contourIndex = 1 To section.Contours.Count
+        If StrComp(section.Contours.LoopRole(contourIndex), "Outer", vbTextCompare) = 0 Then hasOuter = True: Exit For
+    Next contourIndex
+    If Not hasOuter Then ModelError "Проверка T (кручение) не выполнена: в сохранённой геометрии нет достоверного наружного контура бетона. " & _
+        "По одной бетонной сетке ось хомута не восстанавливается. Задайте замкнутый наружный контур при импорте и снова сформируйте сечение. Результаты NM сохраняются независимо."
     If section.RebarCount < 3 Then ModelError "Для проверки T нужны как минимум три наружных продольных стержня."
     Set mSection = section
     mP.StateName = parameters.StateName: mP.AxisOffset = parameters.AxisOffset
@@ -72,8 +78,9 @@ Friend Sub Prepare(ByVal section As CSectionModel, ByRef parameters As TTorsionP
 End Sub
 
 ' Считает T независимо от физических пределов готового состояния. При
-' отсутствии сохранённых напряжений только сумма T+NM получает N/A.
-Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, ByVal state As CSectionStateResult) As CTorsionPostResult
+' отсутствии сохранённых напряжений только сумма T+NM получает N/A. Явный ноль NM не требует решателя или снимка материалов.
+Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, ByVal state As CSectionStateResult, _
+        Optional ByVal zeroNormalState As Boolean = False) As CTorsionPostResult
     If mSection Is Nothing Then ModelError "Геометрия отдельного этапа T не подготовлена."
     Dim row(1 To 1, 1 To TORSION_POST_COLUMNS) As Variant, bars() As Variant
     torque = Abs(torque)
@@ -87,6 +94,7 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
     If Not state Is Nothing Then available = state.Converged And state.HasMaterialSnapshot
     Dim snapshot As Variant
     If available Then snapshot = state.PrepareElementSnapshot(mSection)
+    If zeroNormalState Then available = True
     Dim count As Long, i As Long, outputRow As Long
     For i = 1 To mSection.RebarCount
         If mCoefficients(i) > 0# Then count = count + 1
@@ -104,7 +112,7 @@ Friend Function Calculate(ByVal identifier As String, ByVal torque As Double, By
             bars(outputRow, 4) = delta * mSection.RebarArea(i): bars(outputRow, 5) = mAllocatedLengths(i)
             If criticalT = 0 Or delta > maxDelta Then criticalT = i: maxDelta = delta
             If available Then
-                normal = CDbl(snapshot(mSection.ConcreteCount + i, 4))
+                If zeroNormalState Then normal = 0# Else normal = CDbl(snapshot(mSection.ConcreteCount + i, 4))
                 combined = normal + delta ' Положительное напряжение — растяжение; сжатие НДМ сохраняет знак минус.
                 If criticalCombined = 0 Or combined > maxCombined Then
                     criticalCombined = i: maxCombined = combined

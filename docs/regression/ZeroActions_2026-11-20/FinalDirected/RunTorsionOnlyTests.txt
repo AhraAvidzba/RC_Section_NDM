@@ -1,0 +1,13 @@
+﻿TorsionOnly: Passed=12; Failed=0
+PASS Zero NM exactly
+PASS T + zero NM
+PASS Same governing T increment
+PASS Same reserve T and NMT
+PASS Sum is available
+PASS No missing state reason
+PASS Force preserved
+PASS Missing nonzero NM is unavailable
+PASS Missing outer blocks only T preparation
+PASS Missing outer cause is clear
+PASS Missing outer gives action
+PASS Missing outer does not blame hoop inputs

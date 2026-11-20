@@ -1,0 +1,19 @@
+﻿TorsionPostDiagnostics: Passed=18; Failed=0
+PASS Both requested combinations preserved
+PASS Setting failure status 1
+PASS Setting key retained 1
+PASS Setting and formula source retained 1
+PASS Valid torque is not blamed 1
+PASS Invalid setting value retained 1
+PASS Single action block 1
+PASS Setting failure status 2
+PASS Setting key retained 2
+PASS Setting and formula source retained 2
+PASS Valid torque is not blamed 2
+PASS Invalid setting value retained 2
+PASS Single action block 2
+PASS Invalid torque keeps its address
+PASS Invalid torque does not blame settings
+PASS Missing ID keeps its address
+PASS Missing ID does not blame torque
+PASS Zero torque does not read invalid setting

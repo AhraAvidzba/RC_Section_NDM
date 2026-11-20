@@ -1,0 +1,24 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ZeroActions_2026-11-20\\Candidate.xlsm",
+    "WorkbookSHA256":  "BF10FC81B2BD02D366D292752B971B3DA7E2059BD3B77988682E40F89D73ABB3",
+    "ProductionSHA256":  "667722BB435B57B3F28D29FB30432B3CB6F7295A18397578805B1C7822ABD71D",
+    "Compiled":  true,
+    "Modules":  [
+                    "CBatchSectionCalculator",
+                    "CLoadZeroFilter",
+                    "CLoadCombinationReader",
+                    "modTorsionPostprocess",
+                    "modWorkbookCalculation",
+                    "CTorsionPostCalculator",
+                    "modTestBatchCalculation",
+                    "modTestTorsionPost"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

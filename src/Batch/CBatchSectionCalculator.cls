@@ -39,6 +39,7 @@ Private Type TCombinationInput
     Comment As String ' Пользовательское пояснение сочетания.
     InputValid As Boolean ' Признак корректных исходных данных сочетания.
     InputError As String ' Причина ошибки исходных данных сочетания.
+    AdditionalLoadOnly As Boolean ' При нулевых NM запрошена самостоятельная проверка дополнительных нагрузок; НДС не требуется.
 End Type
 
 Private mSection As CSectionModel ' Одна расчётная модель сечения для всех сочетаний нагрузок.
@@ -55,8 +56,12 @@ Private mLoadReferenceX As Double ' X точки приложения нагру
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
 Private mLoadReferenceOffsetY As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по Y, мм.
+Private mInputSettings As CSystemSettingsReader ' Уже прочитанные настройки для проверки эксцентриситета до добавления строки.
+Private mInputUnits As CUnitSystem ' Перевод смещения в мм без обращения к Excel.
+Private mInputOffsetsKnown As Boolean ' Явная точка приложения имеет приоритет над кэшем настроек.
+Private mInputOffsetsExplicit As Boolean ' Программно заданное смещение сохраняется при повторном ApplySettings.
 Private mLoadZeroFilter As CLoadZeroFilter ' Общий инструмент независимого зануления исходной N и физических моментов.
-Private mZeroAxialForcePerDepth As Double ' Порог N на единицу минимального бетонного габарита, Н/мм.
+Private mZeroAxialForcePerDepth As Double ' Порог N на единицу максимального бетонного габарита, Н/мм.
 Private mZeroMomentPerDepth As Double ' Порог момента на единицу бетонного габарита, Н*мм/мм.
 Private mConcreteDepthForMx As Double ' Бетонный габарит по Y для проверки Mx, мм.
 Private mConcreteDepthForMy As Double ' Бетонный габарит по X для проверки My, мм.
@@ -247,6 +252,8 @@ End Property
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     On Error GoTo InvalidSettings
     If settings Is Nothing Then Exit Sub
+    Set mInputSettings = settings: Set mInputUnits = units
+    mInputOffsetsKnown = mInputOffsetsExplicit
     mSettingsValid = True
     mSettingsError = vbNullString
     Dim settingIndex As Long, settingKey As String
@@ -454,6 +461,8 @@ Public Sub ClearCombinations()
     mLoadReferenceY = 0#
     mLoadReferenceOffsetX = 0#
     mLoadReferenceOffsetY = 0#
+    mInputOffsetsKnown = False
+    mInputOffsetsExplicit = False
 End Sub
 
 ' Очищает таблицу постоянных/длительных нагрузок для расчета устойчивости.
@@ -520,6 +529,13 @@ Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId 
     AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, loadPathText, sourceDataOffset, sourceReference
 End Sub
 
+' Сохраняет исходные NM для отдельной проверки при подтверждённом инженерном нуле; профиль НДС не используется.
+Public Sub AddAdditionalLoadOnlyCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
+        ByVal myValue As Double, ByVal sourceDataOffset As Long, ByVal sourceReference As String)
+    AddCombinationInternal combinationID, nValue, mxValue, myValue, vbNullString, vbNullString, True, vbNullString, vbNullString, sourceDataOffset, sourceReference
+    mInputs(mCount).AdditionalLoadOnly = True
+End Sub
+
 ' Единая точка добавления строки сочетания. Через нее проходят и корректные
 ' LC, и строки с ошибкой ввода; это гарантирует одинаковую нумерацию,
 ' сохранение комментариев и нормализацию малых моментов только для валидных
@@ -542,6 +558,7 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mInputs(mCount).Comment = comment
     mInputs(mCount).InputValid = inputValid
     mInputs(mCount).InputError = inputError
+    mInputs(mCount).AdditionalLoadOnly = False
     NormalizeCombinationLoads mCount
 End Sub
 
@@ -629,6 +646,8 @@ Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Do
     mLoadReferenceY = referenceY
     mLoadReferenceOffsetX = referenceX - baseX
     mLoadReferenceOffsetY = referenceY - baseY
+    mInputOffsetsKnown = True
+    mInputOffsetsExplicit = True
 
     Dim i As Long
     For i = 1 To mCount
@@ -659,7 +678,54 @@ Private Sub ConfigureLoadZeroFilter()
     checkedThreshold = mLoadZeroFilter.MomentTolerance(mConcreteDepthForMx)
 End Sub
 
-' Зануляет исходную N по минимальному бетонному габариту до любого переноса и формирования lambda-пути.
+' Проверяет исходные NM общим фильтром до чтения неприменимых профиля и пути. Ошибочные настройки не скрывают ненулевой ввод.
+Public Function IsInputLoadZero(ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As Boolean
+    If nValue = 0# And mxValue = 0# And myValue = 0# Then IsInputLoadZero = True: Exit Function
+    If Not mSettingsValid Or mLoadZeroFilter Is Nothing Then Exit Function
+    If Not mLoadZeroFilter.IsMomentEffectivelyZero(mxValue, mConcreteDepthForMx) Then Exit Function
+    If Not mLoadZeroFilter.IsMomentEffectivelyZero(myValue, mConcreteDepthForMy) Then Exit Function
+    If nValue <> 0# Then
+        If Abs(nValue) > mLoadZeroFilter.AxialForceTolerance(mConcreteDepthForMy, mConcreteDepthForMx) Then Exit Function
+        EnsureInputReferenceOffsets
+    End If
+    IsInputLoadZero = mLoadZeroFilter.IsAxialForceEffectivelyZero(nValue, mConcreteDepthForMy, mConcreteDepthForMx, _
+        mLoadReferenceOffsetX, mLoadReferenceOffsetY)
+End Function
+
+' Читает смещения из кэша только для малой N; моментная нагрузка и чистое T не используют эти поля.
+Private Sub EnsureInputReferenceOffsets()
+    If mInputOffsetsKnown Or mInputSettings Is Nothing Then Exit Sub
+    Dim key As String, value As Double
+    On Error GoTo Failed
+    key = "Load.ReferenceOffsetX": value = mInputSettings.GetRequiredDouble(key)
+    If Not mInputUnits Is Nothing Then value = mInputUnits.InputLengthToInternal(value)
+    mLoadReferenceOffsetX = value
+    key = "Load.ReferenceOffsetY": value = mInputSettings.GetRequiredDouble(key)
+    If Not mInputUnits Is Nothing Then value = mInputUnits.InputLengthToInternal(value)
+    mLoadReferenceOffsetY = value
+    mInputOffsetsKnown = True
+    Exit Sub
+Failed:
+    If Err.Number <> 6 Then Err.Raise Err.Number, Err.Source, Err.Description
+    Err.Raise vbObjectError + 4139, TypeName(Me), mInputSettings.InputErrorMessage(key, _
+        "Смещение слишком велико для перевода в мм.", "Уменьшите модуль числа и проверьте INPUT-единицу длины.")
+End Sub
+
+' Подтверждает, что отдельный этап не подменяет отсутствующее или ошибочное ненулевое НДС нулём.
+Public Function IsAdditionalLoadOnly(ByVal index As Long) As Boolean
+    IsAdditionalLoadOnly = mInputs(index).AdditionalLoadOnly And mInputs(index).InputValid And _
+        mWorkingLoads(index).N = 0# And mWorkingLoads(index).LoadPointMx = 0# And mWorkingLoads(index).LoadPointMy = 0#
+End Function
+
+' Возвращает число сочетаний, которым требуются проверки НДМ или диагностика ошибочного ввода NM.
+Public Property Get NormalLoadCombinationCount() As Long
+    Dim i As Long
+    For i = 1 To mCount
+        If Not IsAdditionalLoadOnly(i) Then NormalLoadCombinationCount = NormalLoadCombinationCount + 1
+    Next i
+End Property
+
+' Зануляет исходную N по максимальному бетонному габариту до любого переноса и формирования lambda-пути.
 Private Function NormalizeAxialInput(ByVal forceValue As Double) As Double
     NormalizeAxialInput = forceValue
     If Not mLoadZeroFilter Is Nothing Then _
@@ -813,6 +879,11 @@ Private Sub RunCombination(ByVal index As Long)
     If Not mInputs(index).InputValid Then
         ReportStep "Решение НДС не запущено из-за ошибки исходных данных: " & mInputs(index).InputError
         MarkInvalid index, mInputs(index).InputError
+        Exit Sub
+    End If
+
+    If IsAdditionalLoadOnly(index) Then
+        ReportStep "НДС не рассчитывается: N, Mx и My равны нулю после фильтрации; запрошена отдельная проверка дополнительных нагрузок."
         Exit Sub
     End If
 

@@ -1,0 +1,194 @@
+﻿OK: default.N.1tfperm; actual=0.; expected=0.
+OK: default.M.1tfmperm; actual=0.; expected=0.
+OK: default.N.above; actual=3922.66; expected=3922.66
+OK: default.M.above; actual=3000000.; expected=3000000.
+OK: filter.maximumDepth; actual=400.; expected=400.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-400.4; expected=-400.4
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-400.; expected=-400.
+OK: filter.eY.large; actual=-400.; expected=-400.
+OK: filter.maximumDepth; actual=600.; expected=600.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-600.6; expected=-600.6
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-600.; expected=-600.
+OK: filter.eY.large; actual=-600.; expected=-600.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-2002.; expected=-2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-2000.; expected=-2000.
+OK: filter.eY.large; actual=-2000.; expected=-2000.
+OK: filter.maximumDepth; actual=600.; expected=600.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-600.6; expected=-600.6
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-600.; expected=-600.
+OK: filter.eY.large; actual=-600.; expected=-600.
+OK: filter.maximumDepth; actual=600.; expected=600.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-600.6; expected=-600.6
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-600.; expected=-600.
+OK: filter.eY.large; actual=-600.; expected=-600.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-2002.; expected=-2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-2000.; expected=-2000.
+OK: filter.eY.large; actual=-2000.; expected=-2000.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-2002.; expected=-2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-2000.; expected=-2000.
+OK: filter.eY.large; actual=-2000.; expected=-2000.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-2002.; expected=-2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-2000.; expected=-2000.
+OK: filter.eY.large; actual=-2000.; expected=-2000.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=-2002.; expected=-2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=-2000.; expected=-2000.
+OK: filter.eY.large; actual=-2000.; expected=-2000.
+OK: filter.maximumDepth; actual=400.; expected=400.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=400.4; expected=400.4
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=400.; expected=400.
+OK: filter.eY.large; actual=400.; expected=400.
+OK: filter.maximumDepth; actual=600.; expected=600.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=600.6; expected=600.6
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=600.; expected=600.
+OK: filter.eY.large; actual=600.; expected=600.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=2002.; expected=2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=2000.; expected=2000.
+OK: filter.eY.large; actual=2000.; expected=2000.
+OK: filter.maximumDepth; actual=600.; expected=600.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=600.6; expected=600.6
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=600.; expected=600.
+OK: filter.eY.large; actual=600.; expected=600.
+OK: filter.maximumDepth; actual=600.; expected=600.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=600.6; expected=600.6
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=600.; expected=600.
+OK: filter.eY.large; actual=600.; expected=600.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=2002.; expected=2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=2000.; expected=2000.
+OK: filter.eY.large; actual=2000.; expected=2000.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=2002.; expected=2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=2000.; expected=2000.
+OK: filter.eY.large; actual=2000.; expected=2000.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=2002.; expected=2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=2000.; expected=2000.
+OK: filter.eY.large; actual=2000.; expected=2000.
+OK: filter.maximumDepth; actual=2000.; expected=2000.
+OK: filter.N.below; actual=0.; expected=0.
+OK: filter.N.boundary; actual=0.; expected=0.
+OK: filter.N.above; actual=2002.; expected=2002.
+OK: filter.eX.boundary; actual=0.; expected=0.
+OK: filter.eY.boundary; actual=0.; expected=0.
+OK: filter.eX.large; actual=2000.; expected=2000.
+OK: filter.eY.large; actual=2000.; expected=2000.
+OK: filter.Mdisabled.centeredN; actual=0.; expected=0.
+OK: filter.Mdisabled.eccentricN; actual=400.; expected=400.
+OK: filter.Ndisabled; actual=1.; expected=1.
+OK: filter.Ndisabled.Mworks; actual=0.; expected=0.
+OK: batch.filteredN; actual=0.; expected=0.
+OK: batch.originalN; actual=400.; expected=400.
+OK: batch.aboveN; actual=600.001; expected=600.001
+OK: batch.largeErestoresN; actual=400.; expected=400.
+OK: batch.largeEtransfer; actual=200400.; expected=200400.
+OK: batch.translation.N; actual=400.; expected=400.
+OK: batch.translation.pointMx; actual=0.; expected=0.
+OK: batch.translation.centeredN; actual=0.; expected=0.
+OK: batch.repeat.fromOriginal; actual=400.; expected=400.
+OK: batch.limitBelowFilters.initialForceKept; actual=1000.; expected=1000.
+OK: batch.limitBelowFilters.pointExists
+OK: batch.limitBelowFilters.nonzeroNult
+OK: batch.limitBelowFilters.subunitLambda
+OK: batch.limitBelowFilters.internalMomentBelowFilter
+OK: batch.limitBelowFilters.scaledForce; actual=299.702329760446; expected=299.702329760589
+OK: batch.limitBelowFilters.targetN; actual=299.702329760589; expected=299.702329760446
+OK: batch.limitBelowFilters.integratedN; actual=299.702329760446; expected=299.702329760446
+OK: batch.limitBelowFilters.integratedMx; actual=29970232.9760589; expected=29970232.9760446
+OK: batch.zero.directStateAvailable
+OK: batch.zero.epsilon; actual=0.; expected=0.
+OK: filter.invalid.key
+OK: filter.invalid.address
+OK: filter.invalid.noState
+OK: filter.invalid.key
+OK: filter.invalid.address
+OK: filter.invalid.noState
+OK: filter.invalid.key
+OK: filter.invalid.address
+OK: filter.invalid.noState
+OK: filter.invalid.key
+OK: filter.invalid.address
+OK: filter.invalid.noState
+OK: units.NperDepth.mm; actual=9.80665; expected=9.80665
+OK: units.MperDepth.mm; actual=9806.65; expected=9806.65
+OK: units.Ncaption.mm
+OK: units.NperDepth.cm; actual=9.80665; expected=9.80665
+OK: units.MperDepth.cm; actual=9806.65; expected=9806.65
+OK: units.Ncaption.cm
+OK: units.NperDepth.m; actual=9.80665; expected=9.80665
+OK: units.MperDepth.m; actual=9806.65; expected=9806.65
+OK: units.Ncaption.m
+TOTAL_AXIAL_LOAD_FILTER: passed=193; failed=0
