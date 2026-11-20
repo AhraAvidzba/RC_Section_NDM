@@ -1,0 +1,240 @@
+{
+  "Status": "PASS",
+  "CheckedUTC": "2026-11-20T03:14:22.989582+00:00",
+  "SourceCommit": "84b6ff508aa3f9567281567665b85a3a5e3c453c",
+  "SourceSHA256": "08C71B70BDC5D8298220B64D17A39F7B14D457903BD9CCA63AB225C3D91D5E16",
+  "OriginalDriverStatusPreserved": "REVIEW_REQUIRED",
+  "OriginalUnverifiedTorsionSuites": 16,
+  "OriginalFailedAssertions": 0,
+  "Cause": "Postprocessor recognized TOTAL but not the eight exact named torsion totals.",
+  "ChangedFrozenInputsAfterCompletion": [
+    "tools/build_workbook/Summarize-GeometryFull.py"
+  ],
+  "ProductionAndWorkbookUnchanged": true,
+  "InputsChecked": 583,
+  "PrimaryRecordsUnchanged": 40,
+  "OriginalScopeReviewSHA256": "73510375656B0376AD1AD28D02B8C1D2E4AD0F181B41CCFF79B2FD2776E62BE7",
+  "OriginalClosuresSHA256": "5449299CCBF01758133A340C04700698306645D84815C3D266E1535363F0BC5A",
+  "OriginalSummarySHA256": "E7F6B0DDD9F755B400290F69753229125BC2AE781FC61D25BF462FCC831D9549",
+  "OldParserSHA256": "42949976829B9FF130F0CE37B208F90CAFB42CAE8C88226F90026CBA867EDF95",
+  "CorrectedParserSHA256": "6C1389F01901115B7A59BAD38BAC014B7F3F138B41F91E5B30DD6CD60D72D720",
+  "ParserTestSHA256": "77C52C82E8A692EF0E476BEAE7272AD2A9FDC4357EC5CB0823EEA71A95F84F27",
+  "VerifierTests": [
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-11-20_AxialTorsion_Run02/Test-FullLogTotals.py.result.txt",
+      "SHA256": "58729D0AB28D3C8E2F622341C03B15FD9A4FCAD9E499DE7DCAF99007A7717AFB",
+      "ExitCode": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-11-20_AxialTorsion_Run02/Test-FullCoverageVerifier.py.result.txt",
+      "SHA256": "950E041539F4CB3032F47C8D21C37ACE8DDDE327F7088446E53F0963B39B382A",
+      "ExitCode": 0
+    },
+    {
+      "Path": "docs/regression/FullSuiteLaunch_2026-11-20_AxialTorsion_Run02/Test-FocusedAcceptanceVerifier.py.result.txt",
+      "SHA256": "35CF52A265877E5D2CC1CB623EFB71405091A944D6B7FACAB5910489C1C46AC8",
+      "ExitCode": 0
+    }
+  ],
+  "CorrectedSummarySHA256": "931B11AE3C17174F7CEA35B43674091C33FD4DE4A1BBAB80E9653A9719F2CD65",
+  "CombinedAcceptanceSHA256": "0EFD07C9D2C60D08E1952FA57B14841FE66CE5B248B703608729C1205373C8A6",
+  "CoreSuites": 202,
+  "PrintedSuccessfulCoreAssertionLines": 334930,
+  "CoreSuiteDeclaredPassedAssertions": 905898,
+  "Counting": "Printed lines and suite counters are separate measures; some suites print only selected assertion lines.",
+  "FocusedSingleCases": 122,
+  "FocusedPassedAssertions": 14010,
+  "Torsion": [
+    {
+      "Mode": "No",
+      "Suites": [
+        {
+          "name": "modTestTorsionPost.RunTorsionPostTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:42:58",
+          "finished": "2026-11-20T03:42:59",
+          "passed": 50,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostAvailabilityTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:01",
+          "finished": "2026-11-20T03:43:01",
+          "passed": 105,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostUnitTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:03",
+          "finished": "2026-11-20T03:43:04",
+          "passed": 66,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostOutputTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:05",
+          "finished": "2026-11-20T03:43:07",
+          "passed": 117,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionBarLengthTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:08",
+          "finished": "2026-11-20T03:43:11",
+          "passed": 116,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostGuardTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:13",
+          "finished": "2026-11-20T03:43:13",
+          "passed": 16,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostDiagnosticTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:15",
+          "finished": "2026-11-20T03:43:15",
+          "passed": 18,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionGeometryInvariantTests",
+          "status": "PASS",
+          "started": "2026-11-20T03:43:17",
+          "finished": "2026-11-20T03:43:17",
+          "passed": 656,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "Mode": "Yes",
+      "Suites": [
+        {
+          "name": "modTestTorsionPost.RunTorsionPostTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:04",
+          "finished": "2026-11-20T05:43:04",
+          "passed": 50,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostAvailabilityTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:06",
+          "finished": "2026-11-20T05:43:06",
+          "passed": 105,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostUnitTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:08",
+          "finished": "2026-11-20T05:43:09",
+          "passed": 66,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostOutputTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:10",
+          "finished": "2026-11-20T05:43:12",
+          "passed": 117,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionBarLengthTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:13",
+          "finished": "2026-11-20T05:43:16",
+          "passed": 116,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostGuardTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:17",
+          "finished": "2026-11-20T05:43:18",
+          "passed": 16,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionPostDiagnosticTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:19",
+          "finished": "2026-11-20T05:43:20",
+          "passed": 18,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestTorsionPost.RunTorsionGeometryInvariantTests",
+          "status": "PASS",
+          "started": "2026-11-20T05:43:21",
+          "finished": "2026-11-20T05:43:22",
+          "passed": 656,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "AllOwnIdentitiesTerminal": 43,
+  "CleanBuildSHA256": "136B8CF8BFBD6F54BEC8CEDF3A9A651786E23A1C5A9D8F70C9FCC77264011B22",
+  "FinishedUTC": "2026-11-20T03:02:52.7088614+00:00",
+  "Deadline": "2026-11-20T10:00:00.0000000+03:00",
+  "NoCalculationRerun": "All original primary reports are unchanged; only strict reporting was repeated."
+}

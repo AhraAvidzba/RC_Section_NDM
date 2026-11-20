@@ -6,6 +6,31 @@ import re
 from pathlib import Path
 
 
+TORSION_TOTAL_LABELS = {
+    'modTestTorsionPost.RunTorsionPostTests': 'TorsionPost',
+    'modTestTorsionPost.RunTorsionPostAvailabilityTests': 'TorsionPostAvailability',
+    'modTestTorsionPost.RunTorsionPostUnitTests': 'TorsionPostUnits',
+    'modTestTorsionPost.RunTorsionPostOutputTests': 'TorsionPostOutput',
+    'modTestTorsionPost.RunTorsionBarLengthTests': 'TorsionBarLength',
+    'modTestTorsionPost.RunTorsionPostGuardTests': 'TorsionPostGuard',
+    'modTestTorsionPost.RunTorsionPostDiagnosticTests': 'TorsionPostDiagnostics',
+    'modTestTorsionPost.RunTorsionGeometryInvariantTests': 'TorsionGeometryInvariant',
+}
+
+
+def torsion_totals(name, block):
+    """Связывает единственный итог кручения с точным именем suite и фактически напечатанными assertions."""
+    label = TORSION_TOTAL_LABELS[name]
+    totals = re.findall(r'(?m)^' + re.escape(label) + r': Passed=(\d+); Failed=(\d+)\r?$', block)
+    named = re.findall(r'(?m)^(?:' + '|'.join(map(re.escape, TORSION_TOTAL_LABELS.values())) +
+                       r'): Passed=\d+; Failed=\d+\r?$', block)
+    passed = len(re.findall(r'(?m)^PASS ', block))
+    failed = len(re.findall(r'(?m)^FAIL(?::| )', block))
+    valid = (len(totals) == len(named) == 1 and int(totals[0][0]) > 0 and
+             (int(totals[0][0]), int(totals[0][1])) == (passed, failed))
+    return totals, valid
+
+
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -26,13 +51,17 @@ def inspect(path, source_hash, expected_count):
         name = start.group(1)
         finish = re.search(r"(?m)^SUITE_FINISHED: " + re.escape(name) + r"; (.+)$", block)
         totals = re.findall(r"(?m)^TOTAL[^\r\n]*?passed=(\d+); failed=(\d+)[^\r\n]*", block)
+        verified_total = bool(totals)
+        if name in TORSION_TOTAL_LABELS:
+            named_totals, verified_total = torsion_totals(name, block)
+            totals.extend(named_totals)  # Вложенные ошибки TOTAL остаются отказом независимо от итоговой шапки.
         failed_lines = re.findall(r"(?m)^FAIL(?::| ).*$", block)
         failures = sum(int(failed) for _, failed in totals)
         passed = int(totals[-1][0]) if totals else None
         status = "RUNNING" if not finish else "PASS"
         if failed_lines or failures or "RUNTIME ERROR" in block:
             status = "FAIL"
-        if finish and not totals:
+        if finish and not verified_total and status != "FAIL":
             status = "UNVERIFIED_TOTAL"
         suites.append({"name": name, "status": status, "started": start.group(2),
                        "finished": finish.group(1) if finish else None,

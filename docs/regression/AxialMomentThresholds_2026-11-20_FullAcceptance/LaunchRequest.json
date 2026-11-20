@@ -1,0 +1,2355 @@
+{
+  "ExplicitUserConfirmation": true,
+  "UserAuthorization": "Добавить независимый порог N с охраной моментов от эксцентриситета, значения по умолчанию 1 tf/m и 1 tf*m/m; запустить полный набор с кручением и повторять после исправлений, если прогноз завершения до 20.11.2026 10:00 МСК. Проверить также вместимость подробной таблицы кручения и адресные рекомендации по вставке строк.",
+  "SourceCommit": "84b6ff508aa3f9567281567665b85a3a5e3c453c",
+  "SourceSHA256": "08C71B70BDC5D8298220B64D17A39F7B14D457903BD9CCA63AB225C3D91D5E16",
+  "AllCodeSHA256": "4205340694C41BEC5F98E345C587723FA9763F3638FFBC052352CCF24BC3B1BB",
+  "ExpectedSuites": 202,
+  "CoverageVersion": 8,
+  "IncludesFocusedAcceptance": true,
+  "ForecastHours": 6,
+  "Deadline": "2026-11-20T10:00:00+03:00",
+  "EvidenceDirectory": "docs/regression/FullOnOff_2026-11-20_AxialTorsion_Run02",
+  "SourceWorkbook": "workbook/output/RC_Section_NDM.xlsm",
+  "Python": "C:/Users/avidzba/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+  "PythonDependencies": "outputs/AxialMomentThresholds_2026-11-19_Run01/test_dependencies",
+  "RequiredCommitGiB": 8,
+  "RequiredPhysicalGiB": 8,
+  "ProtectedInputs": [
+    {
+      "Path": "AGENTS.md",
+      "SHA256": "8B461264FCF493310929A5A57D85508493469A5754F8E67A10542199D04244C1"
+    },
+    {
+      "Path": "docs/FocusedValidationPlan.md",
+      "SHA256": "59D2719F01CE7EDA906FEE2608390423753BF06FA6DC8CBB99D24A2514CD0F6C"
+    },
+    {
+      "Path": "docs/ValidationPlan.md",
+      "SHA256": "5464B64A8F1DA9C8BDA56574A99BAE0FA696C7953E472BAD2FD03B724B558314"
+    },
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "08C71B70BDC5D8298220B64D17A39F7B14D457903BD9CCA63AB225C3D91D5E16"
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "4205340694C41BEC5F98E345C587723FA9763F3638FFBC052352CCF24BC3B1BB"
+    }
+  ],
+  "SourceComponents": [
+    {
+      "Path": "src/Batch/CBatchSectionCalculator.cls",
+      "SHA256": "0961B2BF24553C602CEFC7994A43A61E83D86DE9812ECA327E1CD6FCBFECA430"
+    },
+    {
+      "Path": "src/Batch/CCalculationProfile.cls",
+      "SHA256": "E1B8D6B4052E289D52F8AF5CBF17B95B23DD0E7906722A836C3B7D90D6BEEEA4"
+    },
+    {
+      "Path": "src/Batch/CCalculationProfileCatalog.cls",
+      "SHA256": "D080CC5D1BED316341E602D8DB5226CFE0EE54276DBFF5A835E196C4F70D7D33"
+    },
+    {
+      "Path": "src/Batch/CCombinationResult.cls",
+      "SHA256": "1995EB25F68AF952037230E5ED1B082E7748C86EC224B8864EBF260B5956C10E"
+    },
+    {
+      "Path": "src/Batch/CDirectStateResult.cls",
+      "SHA256": "0AA544ACBEC77FA7E1561674F80DEC63A007C7BD76E39181BE0C09AA7B98BA65"
+    },
+    {
+      "Path": "src/Batch/CSectionStateResult.cls",
+      "SHA256": "DFE0217A10EF36F441980E08761AC1D12468BC54739EF674E1E8A7CACB2F0247"
+    },
+    {
+      "Path": "src/Batch/CStateProvider.cls",
+      "SHA256": "7054B0266A78FED445D0DDB31E0B54B204394733E7EC428F63931AD9E1526072"
+    },
+    {
+      "Path": "src/Batch/CStateRepository.cls",
+      "SHA256": "CBF68CFABD01B8BA3ECC1E54654EF9490FABF97DAF640162AEFC83BFEA2E208A"
+    },
+    {
+      "Path": "src/Batch/CStateRequest.cls",
+      "SHA256": "FF9A785CE7953411996336EAC21BFB90D6665A9F983D73BABDB4E4B870DC8AA4"
+    },
+    {
+      "Path": "src/Batch/CStrengthResult.cls",
+      "SHA256": "E7E359CCDEBB2DEB90700DDE93CDBFDCF8B859F7D38E57D53638FE0697040D8E"
+    },
+    {
+      "Path": "src/Common/CLoadPathDescriptor.cls",
+      "SHA256": "62CEF9812972105D87A78D44D3E6ED0F6C0180D2313ABEB631DABA720AD71F19"
+    },
+    {
+      "Path": "src/Common/CLoadPathMath.cls",
+      "SHA256": "9C4352A7CDD0174B7DF9884A923E447CB60DA73CE66F976703A34FFA2892DB2A"
+    },
+    {
+      "Path": "src/Common/CLoadPathVector.cls",
+      "SHA256": "0787D5AC0370717F70D5DCF91C37D138A4EF67B34698B79751CD6014071C28CB"
+    },
+    {
+      "Path": "src/Common/CLoadZeroFilter.cls",
+      "SHA256": "2F6E5D1FAB8B0DF35DA744D15AFF64B1BE92C10FB454CFE2E40984391D6D4C29"
+    },
+    {
+      "Path": "src/Common/CResultMeta.cls",
+      "SHA256": "CB16997F094F4A11CF9FE21ADC3BF9943759823EB6928A5776E79D2A2569EF90"
+    },
+    {
+      "Path": "src/Common/CResultStatusPolicy.cls",
+      "SHA256": "7F0A84F67BD069F40645DA4E5C3C1295810F6C9D5BA469759B922CCB9DCC35D4"
+    },
+    {
+      "Path": "src/Common/CSectionLoadState.cls",
+      "SHA256": "6B01A1AEFB2B8F13AAE6C99A6B2CE43D22B4228029DDBD25161EEE2CD69101D6"
+    },
+    {
+      "Path": "src/Common/modCalculationPurpose.bas",
+      "SHA256": "EE0FD2FCD67CEBA350ECEF0CC086C35457F13F06D7BEED574356A0C16790478B"
+    },
+    {
+      "Path": "src/Common/modGeometryPrimitives.bas",
+      "SHA256": "E6246B5D3D04753FC090764EBF63BAC0C4AAF4AE13F1E1313011F4E90B4A1521"
+    },
+    {
+      "Path": "src/Common/modGeometryTypes.bas",
+      "SHA256": "C647FE73F84D55421859826E83234D0DD508A287A0E88E5DB19F692E4D4E8390"
+    },
+    {
+      "Path": "src/Common/modResultStatus.bas",
+      "SHA256": "A91C9356A2927B8352F64C22C7449818E765CA910B30D67FB9CE0290BF69E1A1"
+    },
+    {
+      "Path": "src/Common/modSectionRecipeApiGuide.bas",
+      "SHA256": "F3FE07E878CABFC0F27F13EDCFDB977236C3093A865F2950E592614429E0E639"
+    },
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "6DDE2DAB0F7908387E8791B16D6AD8E0A3336F7AF4A7CE5AC5B515B3EFD64719"
+    },
+    {
+      "Path": "src/Common/modSolverWorkStats.bas",
+      "SHA256": "F411D5E7FBBA340FFDE3B7FF91EB9DE6D7392E3293DCF37453245D7EE2F0FA02"
+    },
+    {
+      "Path": "src/Crack/CCrackFormationCalculator.cls",
+      "SHA256": "5691C1D82A7CD6DF2B941FB3DEB9965512EA0581AFA7A972D053FE8F860DE5F9"
+    },
+    {
+      "Path": "src/Crack/CCrackFormationResult.cls",
+      "SHA256": "04E3328DA5C347EFA54512347B2E810B118FECE344647947819BFED101BEA73E"
+    },
+    {
+      "Path": "src/Crack/CCrackResult.cls",
+      "SHA256": "B40DE594B5CADE1A509722265A59F32D7C473FD4C3D25951193A98C261C51459"
+    },
+    {
+      "Path": "src/Crack/CCrackWidthCalculator.cls",
+      "SHA256": "B406CED94F98A1B0A75E311E7013DA16BC15AC29A8E9F8B316A0B6C085B2A2C1"
+    },
+    {
+      "Path": "src/Crack/CCrackWidthResult.cls",
+      "SHA256": "29F1A2BACD65FB9A59FBB9FBA9E8C12C69B521A0930EDDE789FCF2E639748D36"
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "SHA256": "D1E08F145DA875E355E0E62EDD39D384021F7B2AEB9BADC1434846EDCBFC4A18"
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackResult.cls",
+      "SHA256": "325AE412CFC501CC8138FC9AAD2B32819B12834ED438C09B87BF801954AA8BFC"
+    },
+    {
+      "Path": "src/Crack/CSP35CrackData.cls",
+      "SHA256": "17FF57D7B5D69EEA3B94D9C9BB2AED7B8C170A74696538376BB2820E35A9F0BC"
+    },
+    {
+      "Path": "src/Excel/CAutoCADContourReader.cls",
+      "SHA256": "3CF402E60E0190D7C6266B77EE7F02A3EE75ACAD639EA94173FD2069055E9DCB"
+    },
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "SHA256": "B4A829E19D21166E484382FF8365222319347CB8D99307FF41995D49369495A7"
+    },
+    {
+      "Path": "src/Excel/CBatchResultWriter.cls",
+      "SHA256": "D68624355A06A3DE61B504AA0C0D0D33ED633ECADCF0A78F9DF45C9D748EE7B0"
+    },
+    {
+      "Path": "src/Excel/CBinarySnapshotFile.cls",
+      "SHA256": "DDDE8EAFD6B12269FD297AF6BEF711B64A7921F0B5415EE6E99E453A0BD5B06E"
+    },
+    {
+      "Path": "src/Excel/CCalculationSnapshot.cls",
+      "SHA256": "7257DF934C526C1AAA813712559C8322091CF4F41C8738F0E72907936D877536"
+    },
+    {
+      "Path": "src/Excel/CCalculationSnapshotStore.cls",
+      "SHA256": "F0B7F2D43D839689A56B0B5C81B522E750062A95F6E158C25B2D23C9F73C3EFC"
+    },
+    {
+      "Path": "src/Excel/CCrackSummaryWriter.cls",
+      "SHA256": "202BF9853F6DBF967428B5C83EBE829F7E35871BEA50BDE88827E988E1C5976A"
+    },
+    {
+      "Path": "src/Excel/CExcelAppStateGuard.cls",
+      "SHA256": "E364E31B1AADB69133D439B730690ECDE4BED1B13E12700653D11F1CD7067A75"
+    },
+    {
+      "Path": "src/Excel/CExecutionReport.cls",
+      "SHA256": "C484EEA89D6A01D56FD263DFCF0AF12407F1AF0A23A1A48CDDB37A207253FF0A"
+    },
+    {
+      "Path": "src/Excel/CFileChecksum.cls",
+      "SHA256": "09584BAA5D1FC45E86EDE5E7328B977F4631C4C2C7255360A0115EAB3B297699"
+    },
+    {
+      "Path": "src/Excel/CIndexedSnapshotFile.cls",
+      "SHA256": "10A9985953772897C45AA925E706159C85DB7BC32DA2DD3BC186CCD1A2B1DFA5"
+    },
+    {
+      "Path": "src/Excel/CLoadCombinationReader.cls",
+      "SHA256": "D4C86F3F96509836E83ED32A758EEE1233DCE19C1C96323A1105646ED74424CB"
+    },
+    {
+      "Path": "src/Excel/CNDMResultsWriter.cls",
+      "SHA256": "51C6CEA452A9234F9DA9FBF008B3DDB547B05DF1AC02A0EC43402A9CDC2CA4B8"
+    },
+    {
+      "Path": "src/Excel/CPlotAnnotationLayout.cls",
+      "SHA256": "F5159596F20C286DC3CD8028D27F9F3099E661D1C826B3564722F292B873A63D"
+    },
+    {
+      "Path": "src/Excel/CResultBlockIndex.cls",
+      "SHA256": "6438F8B0DE2771E7B54F2BC9A01C47360FE420A34AFEBB3615C4178F8D88E2D9"
+    },
+    {
+      "Path": "src/Excel/CResultReadSource.cls",
+      "SHA256": "8BC27B5BC0D9ED2FD6731F4E20224F5A6B7DB4EFCB8C831224D45A6B231DC560"
+    },
+    {
+      "Path": "src/Excel/CResultsLayoutValidator.cls",
+      "SHA256": "F80A3E3500C99E74988B58859892D5EA16B6B0D487A83A0D4573B1F000B77240"
+    },
+    {
+      "Path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "SHA256": "D7AAF59C813510C4AD5B66220A90C17AB80146742073B9CDA8594D282285A95F"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotDataReader.cls",
+      "SHA256": "4CBB693A1AE09263562784CD14B8D51EC7D5F79168BD2836B3091A50B6C89227"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "470F2ECBD0108DE1F263AFA1FB85E3CA8C9960D6D147CD400F997C8924D7225C"
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "B4C7E7E060E33A77E455B0C69A9D497A0EB5C7513869E81A49133B961A66DE8D"
+    },
+    {
+      "Path": "src/Excel/CStabilitySummaryWriter.cls",
+      "SHA256": "72CEE4F73EC7B01A7A9CFF5D5803D9D8522CF8EF4ECAB55F4F85869544470997"
+    },
+    {
+      "Path": "src/Excel/CStrengthSummaryWriter.cls",
+      "SHA256": "1A93866F5E4323EC89685B7FB61379199D30E2D1454E6A64B834BAACD9BE4BCE"
+    },
+    {
+      "Path": "src/Excel/CSystemSettingsReader.cls",
+      "SHA256": "D76B960130FF0F8C019FB00DE2C8F02CDDB17EDE3F43532C4D88CD19A889E2F9"
+    },
+    {
+      "Path": "src/Excel/CTorsionSummaryWriter.cls",
+      "SHA256": "7BB64A22679D38A7F3F32214D726A5540425B678B9DD2251631FB8622F899DD4"
+    },
+    {
+      "Path": "src/Excel/CUnitSystem.cls",
+      "SHA256": "E673F9F0D6699824F9A8FEFC40C3023945DC3190019114411B42419B1552D73D"
+    },
+    {
+      "Path": "src/Excel/modAutoCADStressExport.bas",
+      "SHA256": "0C687B62EF16472787D1130C8ACC0F4697DABDD2F4C7999510D05D4DFBA0DF04"
+    },
+    {
+      "Path": "src/Excel/modCalculationSnapshot.bas",
+      "SHA256": "1461AA0FA95C3A4845EED466D43BBB4715DA8D823215C7922B2A45D6F0B413C2"
+    },
+    {
+      "Path": "src/Excel/modIndexedExcelResults.bas",
+      "SHA256": "93B1588BCBB5ABCBD009E827D6BC587D68416F8F7EBAD92A6E302B79217740AE"
+    },
+    {
+      "Path": "src/Excel/modMeshConfiguration.bas",
+      "SHA256": "EA3DC58EE8EA7938C49D19CE8325E610B73C0A3D78D4CA9E6173138464138518"
+    },
+    {
+      "Path": "src/Excel/modResultsFormatting.bas",
+      "SHA256": "B249CD30E16C448006C6C52DDA8F6F8AD7D70BD6B43F7F4ED7F9A12189FE4623"
+    },
+    {
+      "Path": "src/Excel/modSectionIllustrations.bas",
+      "SHA256": "053CB4D1B6836B49A3C18CB52DBC4BDB3CD1A5C92569A8988025330E703C88D6"
+    },
+    {
+      "Path": "src/Excel/modSectionOptionalData.bas",
+      "SHA256": "C83492048DCE6193E503C7912E34B6BC6EF29F5C82FD78C023C2444AC7C9AFAA"
+    },
+    {
+      "Path": "src/Excel/modSectionRecipeSetup.bas",
+      "SHA256": "E815F360D52EDCD970E168D324A4E730B59FEE5935ADA079ADEA1FD2D395E113"
+    },
+    {
+      "Path": "src/Excel/modSectionSnapshot.bas",
+      "SHA256": "08BC55196E20A18D6BA36C386647C188D3D62F8B1E3513444635DB22E37E8A35"
+    },
+    {
+      "Path": "src/Excel/modSnapshotTables.bas",
+      "SHA256": "48511CC9289CD4E3E79B08F33183D18CDB894C2F791392A0B587DD2EC66C6B85"
+    },
+    {
+      "Path": "src/Excel/modStatusFormatting.bas",
+      "SHA256": "BB96EDA83D82B39563890507E7C2C0D5BF04B8C13696C76C47EFA0A33D3CAF68"
+    },
+    {
+      "Path": "src/Excel/modTorsionPostTables.bas",
+      "SHA256": "B003111BD7CD44B7311ECB79DEF4A35F6F44CEADF6D3FE5108C9724FABEDC95B"
+    },
+    {
+      "Path": "src/Excel/modTorsionPostprocess.bas",
+      "SHA256": "E0287974A30003B2B1965501B48618CB3861A1FB4D586A7C60B3410CED26636C"
+    },
+    {
+      "Path": "src/Excel/modWorkbookCalculation.bas",
+      "SHA256": "98043793036AF21C412A3DCCC5EC31832230AE853236CEEC0195DFF696BE39E7"
+    },
+    {
+      "Path": "src/Excel/modWorkbookMessages.bas",
+      "SHA256": "2FE642F119841BE88EF084B0D98C9E388C59C1A24A78A7D02A5B6F9FE6DD02F3"
+    },
+    {
+      "Path": "src/Excel/modWorkbookPrintLayout.bas",
+      "SHA256": "8EB6D5110121877699950C47CC4EB7F5631A89A491CB3F93AE146E610FA4011E"
+    },
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "0E8F56F8EE2B74CFB52A4B2AE1CD5C5280EFA4267ABC36E76D571E2044DF112C"
+    },
+    {
+      "Path": "src/Geometry/CGeometryDiagnostic.cls",
+      "SHA256": "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B"
+    },
+    {
+      "Path": "src/Geometry/CGeometryDistance.cls",
+      "SHA256": "D4AF4A6C7F3E2F145608E95552A1F08EABD1A206105B2C4CFA5AD893E9F2A10E"
+    },
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "418C08AE763B88232A7E51C51D7E406BD66348C02237087C256DC0227CC24EDF"
+    },
+    {
+      "Path": "src/Geometry/CGeometryRegion.cls",
+      "SHA256": "ECB70A3363D36A7E50DCA0A3F72AE95E254FBCA8C8F8FBBF2E18C2120DDE53B1"
+    },
+    {
+      "Path": "src/Geometry/CGeometryVariableOffset.cls",
+      "SHA256": "F8F3749D2B16CBE986BA1DD4B254F7C71FC0A309D924A06EA392BA2162A49310"
+    },
+    {
+      "Path": "src/Geometry/CPolygonSpec.cls",
+      "SHA256": "DBE2CEC2D9A456F01A39FBA31149A80F44D84A3FF4179EE7B4AB434BA1C79564"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "4BEABA60A74285E78B87E03CF88FA9EC0E5B6305F49660495ADD654F27EB5145"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "SHA256": "36B0C473A0D3402124A0F3F2ADF799463F9E69292E9CE5B0BEDD97B199813D50"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipePointedSection.cls",
+      "SHA256": "4455A15E177059A6CFFF71339B38BDEC176A12D4CF7534205CA6A550735F433B"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectangles.cls",
+      "SHA256": "A4FCBE759732D4E2FDDB2FB7BE8346F086BFF04C575C06803A9DDC212B30FADC"
+    },
+    {
+      "Path": "src/Interfaces/ILimitSearchProblem.cls",
+      "SHA256": "C6F243EB1B6E98F899D3B8CEEF9C00D4987B2DF0E1F21C8F4B075793E5CF1E20"
+    },
+    {
+      "Path": "src/Materials/CConcreteMaterialParameters.cls",
+      "SHA256": "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3"
+    },
+    {
+      "Path": "src/Materials/CMaterialDiagram.cls",
+      "SHA256": "3BB8F27184832DB07D73230B47717F24CE4FDC5756267EBCCEA80D87404B2BE7"
+    },
+    {
+      "Path": "src/Materials/CMaterialModelProvider.cls",
+      "SHA256": "81A645F00F53E9E498CF64BB1BD5E284E1587551B63FB3716B14B1F8B48FFE13"
+    },
+    {
+      "Path": "src/Materials/CMaterialModelSpec.cls",
+      "SHA256": "E9999EE79D6E94352717821EC5D544AD78876FB4A55398F30FB7EBB9C77D6183"
+    },
+    {
+      "Path": "src/Materials/CSteelMaterialParameters.cls",
+      "SHA256": "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045"
+    },
+    {
+      "Path": "src/Materials/CTestLinearConcreteMaterial.cls",
+      "SHA256": "351F58E83EFDBCDDF4F0BC0B1166D47A8EEA0A00456D47D2C0D850E72FFAAA8E"
+    },
+    {
+      "Path": "src/Materials/CTestLinearSteelMaterial.cls",
+      "SHA256": "154E0FE1C86379ECC5AF5B0B30B88F798EB49293F305BEA0A36958A655534BDD"
+    },
+    {
+      "Path": "src/Section/CConcreteElement.cls",
+      "SHA256": "9901AA9AADCB58B2FFF390D250A4A47BCE3E1A61DD2A41A6462B6E4A34B2574D"
+    },
+    {
+      "Path": "src/Section/CConcreteRegion.cls",
+      "SHA256": "5F19F30C1DF99573C230D62FF6FF4E5C95D0B87B7390972318F97E93597FE5BD"
+    },
+    {
+      "Path": "src/Section/CRebarContactBuilder.cls",
+      "SHA256": "2F767080D38BBBF267C788FF75D112B086D2552F0C5835E4E46FA706764BC43C"
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "8B313DA2ED8369C8F71E2152598BB0C615F0A33B0563246869A116F90DC8918F"
+    },
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "SHA256": "7309484E00E81FCF7338C0FCE7337C1A490DC61B9A67E742A67AE20C8488DA0A"
+    },
+    {
+      "Path": "src/Section/CRebarOffsetContours.cls",
+      "SHA256": "4DAFC3EF6603258704F6DA92999FEE0A59D3B36CD2D85C08CA3FC8CFD68435F2"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "7A032D1CC2468BEF09B4A343899DC946F76050659867FAFC66E28EFFFD77FD73"
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "D6592B046E0B0F019E7FC38CE2F66D094C8469569EA4B0FE0C2040C83020B80D"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "6319075D544465891B7EF0EB34AB7C4985FC96BFF7201ECE97EE6A93F8A21C62"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotations.cls",
+      "SHA256": "271A9E0F74AF730AE4D680CFC6469D028F96881899D7DD2105508AD6FC743E79"
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "SHA256": "86C44FFFF80B889A296DEABE7C0C0E63586F7C7B1434F572E6A73AC939459EF9"
+    },
+    {
+      "Path": "src/Section/CSectionContours.cls",
+      "SHA256": "149D74A7FF734822325F2ED14AC092D4834EEDD7A1BE7B92290F02451BC4FC9B"
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "SHA256": "78964C7C87D373648022123D4F807A39263047D044FC5888D1C96018F3652B9C"
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "04C0A237653FA6B110E7171E0E55848988D908E0DC986AA3F20788EC6281BC78"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "AD3DE01FF3B602F698A884EDAA52E832E28617E44029A27F0BDA96C966C2AE36"
+    },
+    {
+      "Path": "src/Section/CSectionInputReader.cls",
+      "SHA256": "A94159517FB76DD7E70F5A3279B94FB4167C7D4CF1DF5D7A71DC77BB8EA5C088"
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "SHA256": "B6BAC5A551774EFC50467323012FFB0C33EA8E717A8F2B94B5DFED793A89B2D5"
+    },
+    {
+      "Path": "src/Section/CSectionModel.cls",
+      "SHA256": "014536B4C28FD063408D0BD0046B0C71A608B17301D8F1BEB9BAAF10B7E0CDC4"
+    },
+    {
+      "Path": "src/Section/CSectionModelBuilder.cls",
+      "SHA256": "8EECC23EF584154694CD9FED6DAFBCD47D0D65BF569BB844AE94BA4193A4F918"
+    },
+    {
+      "Path": "src/Section/CSectionPropertiesCalculator.cls",
+      "SHA256": "FDFED012E2D808C3494F06558D2C5290EA317E113C704A20C29DFD20CD67B72B"
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "1088CDE1E89361A750946BA69BB0DDA8B8F78259E5C9001D668DFF1097E04DC0"
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0"
+    },
+    {
+      "Path": "src/Solver/CCapacityCalculator.cls",
+      "SHA256": "2301480E51D0C92253DAAAE4D51C8ADDDF9C4C62EE022ECD85101B82E77AABE7"
+    },
+    {
+      "Path": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "SHA256": "5C180D1D121FF03896C1C14EA682FC69A94BF29B246CB98F95B00CF1F73B5F17"
+    },
+    {
+      "Path": "src/Solver/CCapacityResult.cls",
+      "SHA256": "CEA0CB1947FC682C17E1BF3D5E90FC232F940C34886BFFF629C360195001D849"
+    },
+    {
+      "Path": "src/Solver/CCapacitySolver.cls",
+      "SHA256": "7043CB33479C09CEEE2E757E1FAA2E67E614F627CF9A07F1B99ABA87E991DC84"
+    },
+    {
+      "Path": "src/Solver/CCrackLimitSearchProblem.cls",
+      "SHA256": "ABCE62C2CAE61ADA7F4F6DFB5CA8C07541AB32AB15B1C97B20E1F77DCAC57444"
+    },
+    {
+      "Path": "src/Solver/CDiscreteForceIntegrator.cls",
+      "SHA256": "38B4415C734B9D0B3A57FFDDCEE4AF676004BF79BF05F64293F46582EE1AE83D"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchCoordinator.cls",
+      "SHA256": "E8AEC6491AA26549AB38009001C6B46A535274901447CA0AA1CE41A3E1832389"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchRequest.cls",
+      "SHA256": "F49C67F26783D8F9E4A06CEB786279A3A75148A05353E496CA471F2A212DBFA7"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchResult.cls",
+      "SHA256": "B8C29041A3870F82BD767305F5BB5C0F38F1B32A20CD6374715D4D857628DB0D"
+    },
+    {
+      "Path": "src/Solver/CLinearSystem3x3.cls",
+      "SHA256": "F2DF0773DB7859288569D01F00C95CA4D4BC55DB955E694C0752B3C462A291AE"
+    },
+    {
+      "Path": "src/Solver/CLoadMultiplierSearch.cls",
+      "SHA256": "5D5C4B8F44875592F561BB0D2225AEF8965354C61A764664C4AA5ABDA5FEC949"
+    },
+    {
+      "Path": "src/Solver/CSectionNumericalFrame.cls",
+      "SHA256": "EA5CBA6B4F477E640EB23E730ACE870E630670695BEC3849044712DDFAA544E5"
+    },
+    {
+      "Path": "src/Solver/CSectionSolver.cls",
+      "SHA256": "3D9FFFBFD5AE3D23F3C109D3EC592A7CF1F03AFC1C6DBA1E8971F3D0899F059D"
+    },
+    {
+      "Path": "src/Solver/CSectionStrainLimits.cls",
+      "SHA256": "4729BB38394B092DC185B588412E74A9174D136D2DFD714B35469FE69A3D08EE"
+    },
+    {
+      "Path": "src/Solver/CStateGuessBuilder.cls",
+      "SHA256": "199DE0864CF1154E24904AD2A2AC0FFD92E9CE90A0F601E35D96261A242214EE"
+    },
+    {
+      "Path": "src/Solver/CStateSolutionRunner.cls",
+      "SHA256": "937F42EC71D1982DC6EE9C3B0C36508533139847F5185E285ABB65B7793B2EEA"
+    },
+    {
+      "Path": "src/Solver/CUltimateStrainSearch.cls",
+      "SHA256": "A9800F33350BDB73AEC8F97ABDF45B2BD54902D2A57BD3DC8B5B16C1A31A2733"
+    },
+    {
+      "Path": "src/Solver/modLimitSearchRequestFactory.bas",
+      "SHA256": "680EE52AC8589CED2A84C78C4FAC8F4CCF1311BE11051A9A513610E655DCE942"
+    },
+    {
+      "Path": "src/Solver/modNonlinearStepControl.bas",
+      "SHA256": "625519B63D01CE15340D857387CEEAC576AF4C9AF8CB7055E68066A95D40C874"
+    },
+    {
+      "Path": "src/Stability/CStabilityCalculator.cls",
+      "SHA256": "4A6C241D22957F5F059BB6B84CBE54000201B9196405B1CCA91C4C41FF0DD6B8"
+    },
+    {
+      "Path": "src/Stability/CStabilityResult.cls",
+      "SHA256": "B75F0C483B89566283E8E3DEAA14383042B374BE381C4B9E33EA0E2E451D46A3"
+    },
+    {
+      "Path": "src/Torsion/CTorsionConcreteCheck.cls",
+      "SHA256": "0E75D5B5AD34505519A146BC2A9FF2F8D1534F9C1152A1F84096A2F498909EF0"
+    },
+    {
+      "Path": "src/Torsion/CTorsionHoopGeometry.cls",
+      "SHA256": "62D4374280C7ECCD1899EA15C7424454D0004976D1D5E23138351C6FA9728E10"
+    },
+    {
+      "Path": "src/Torsion/CTorsionLongitudinalDemand.cls",
+      "SHA256": "F2488848AA7E3480BD22E552B71777D0BD88DAB5F1FAB18B1842EE3A4F2F35DF"
+    },
+    {
+      "Path": "src/Torsion/CTorsionPostCalculator.cls",
+      "SHA256": "6BB1B41E9B2B7F9F515A6A5693A4DCD8F81CB0454994E0934777B62612F29E14"
+    },
+    {
+      "Path": "src/Torsion/CTorsionPostResult.cls",
+      "SHA256": "520FD1A0FEAF4F6882F9769403554B4C8351E6C14689DF0347FBFBB55A3E0E15"
+    },
+    {
+      "Path": "src/Torsion/CTorsionProjectionStations.cls",
+      "SHA256": "A02663FB0DD2F8F3E098F77366826055037343568332C2DB96F1E790A1AE9790"
+    },
+    {
+      "Path": "src/Torsion/modTorsionPostTypes.bas",
+      "SHA256": "AAD8BADA9172B135277FBB2068312B1BCFFB3CE3E057D358B87353FA81C3077C"
+    },
+    {
+      "Path": "tests/CTestExcelApplicationState.cls",
+      "SHA256": "C8D315E2030BA09874FA1554ABC618ADC2D712E533C79EACC1EC096F5BD1D1EF"
+    },
+    {
+      "Path": "tests/CTestFakeAcadContour.cls",
+      "SHA256": "003D8D6EAB6BD9F0AD90DBE9218C2160CF1A5E7BA526307C59F0C1AB8949D2E3"
+    },
+    {
+      "Path": "tests/CTestFakeAcadContourExport.cls",
+      "SHA256": "ECA3A2E97181F0CF4D57B531A61E90EF59DD2222FB46EA62B8AFB7F0D7AA4250"
+    },
+    {
+      "Path": "tests/CTestFakeAcadDocument.cls",
+      "SHA256": "8EFA36329F286AF9D8B8D24B789CA567175A991DB456039733DABE1F29B40A9B"
+    },
+    {
+      "Path": "tests/CTestFakeAcadLine.cls",
+      "SHA256": "6C505D9ADA9FE36A2E1B436531A5934C5DB7CFFD5B67DB0B60035C84DF849B27"
+    },
+    {
+      "Path": "tests/CTestFakeAcadRegion.cls",
+      "SHA256": "6EAA19B00D5614066AFF01E8AC067CC9A21D653B12BAFC87DDC229AB0EE35E0A"
+    },
+    {
+      "Path": "tests/CTestLimitSearchProblem.cls",
+      "SHA256": "D4E2D1878A79F72433998059F4AA0D47FB8FD36E041404CAAE3DADE6FB0F0870"
+    },
+    {
+      "Path": "tests/CTestWorkflowWorkbook.cls",
+      "SHA256": "01EAC96EA8FEB91F92C0205BEBBFE360ECE40775796D520C303B27E36EFF9E4E"
+    },
+    {
+      "Path": "tests/modTestAudit02Api.bas",
+      "SHA256": "C1816F815916F1B615BC9D8B00E4F9E5B6DA71335A70138C851B8700B6525D0A"
+    },
+    {
+      "Path": "tests/modTestAudit02Snapshots.bas",
+      "SHA256": "2811B162146BCF3AF44B4CA323B6E72F73F27B1FBD5AA1FEEC53107631030F41"
+    },
+    {
+      "Path": "tests/modTestAutoCADConfig.bas",
+      "SHA256": "76396E9A8BC94E79DD55A12D85F3570ECF21830B74820B152B59810C821AF965"
+    },
+    {
+      "Path": "tests/modTestAutoCADContours.bas",
+      "SHA256": "2A7A32C939F9E2D1BC13C003CECAC37D0B5C87EB9AB55194E6B4F41593226CCC"
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "SHA256": "53AFD7F01E6D0903433C2D856C4E312CBADC06BF7FCB1FF872EB2326EA3FC8EE"
+    },
+    {
+      "Path": "tests/modTestCalculationSnapshot.bas",
+      "SHA256": "6915EEEF86BFC5075241E8FE81B1B8847D4FA24E0A0C5A671E46EBA05663890A"
+    },
+    {
+      "Path": "tests/modTestCapacitySolver.bas",
+      "SHA256": "89D73E883BF1FA41949C2B9381084FAF54BA6C5AE765D3012D7A45EC06E72F85"
+    },
+    {
+      "Path": "tests/modTestConfiguration.bas",
+      "SHA256": "ABFD8DDCE4805BBD6DA21EE69C10264C2D41A60C60BDF635C41231BB035C9D7B"
+    },
+    {
+      "Path": "tests/modTestContourMesh.bas",
+      "SHA256": "D8462C78ABFE55B50E67AA224A3DD0996330D268D5DBCA5320D14188F1586488"
+    },
+    {
+      "Path": "tests/modTestCrackWidth.bas",
+      "SHA256": "CEAE3E50AEAB87F64258D49B5E27D9B4FD69575CF3D69BAA13BA2F67AC4649D8"
+    },
+    {
+      "Path": "tests/modTestDeclarativeExamples.bas",
+      "SHA256": "382CC86D7BFE1E58248C9DCC7BE1B1E33D388CDC1ED40151F8B3DA5E99BFE885"
+    },
+    {
+      "Path": "tests/modTestDeclarativeGeometry.bas",
+      "SHA256": "53E9FBA682553EE0BCDB1A140BB0F07524F641F9FB1B43AC111EA6579A861345"
+    },
+    {
+      "Path": "tests/modTestDiscreteForces.bas",
+      "SHA256": "2377255FA484103026742B81D9216903B3A4EEEB4B296FC575E495DCDEDFB4F4"
+    },
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "SHA256": "3403ECD8D98FDB89F62F4291DC69D92745C1E6FCE77BB0D6F2AAF898A895B4F0"
+    },
+    {
+      "Path": "tests/modTestElementGeometryViews.bas",
+      "SHA256": "B759EB263A10DD4161B4632759106524C2B51FB66BCD73B361D5927609C8D457"
+    },
+    {
+      "Path": "tests/modTestGeneralGeometryConfig.bas",
+      "SHA256": "C776AAEA6E5A03ED63976C94FD310103F02641F838B7970468E08AD1ADE38FF9"
+    },
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "SHA256": "348E72E27636BA9F8787FAA219C4E377F4FEA88794E7D52FD39AE56BBF3F0FCB"
+    },
+    {
+      "Path": "tests/modTestGeometryConfig.bas",
+      "SHA256": "B2FFD85AA6CF1FF7D7283EA89DF9BBE76BE83564269048D706A0F4A847058342"
+    },
+    {
+      "Path": "tests/modTestGeometryFixtures.bas",
+      "SHA256": "161EDE940D00DFC28F3116FC0108ACF200B3417DAA7B8C85A073F9B8931B0A57"
+    },
+    {
+      "Path": "tests/modTestGeometryPublication.bas",
+      "SHA256": "53CCFE826D1A442803C453BC80DADFEB915A8C8C6DBF76CC4BF9E6B1FFE50EBD"
+    },
+    {
+      "Path": "tests/modTestGeometryQuery.bas",
+      "SHA256": "D74B38D9AEF5D37DDD4096D3E9033A970A0B85F1205B4EF023E32CA1FAF4740A"
+    },
+    {
+      "Path": "tests/modTestGeometryReview.bas",
+      "SHA256": "341484F21AE15D3B9EC12028D1D6070E34D6C52A8388C281AB5F0E9FF85CADD8"
+    },
+    {
+      "Path": "tests/modTestGeometrySolidSnapshots.bas",
+      "SHA256": "2565A6706FB02659B36313BDDCE4BECC05FA134EA682945358DED333D4CF34D2"
+    },
+    {
+      "Path": "tests/modTestIndividualContours.bas",
+      "SHA256": "35C2B64119A1E9EF2EDCE75C40DFE62FC2ADB4A963C3681FD1AE4CC5D4A62A5F"
+    },
+    {
+      "Path": "tests/modTestLoadTableConfig.bas",
+      "SHA256": "D8084AA9F1DB7B3C96D821B002CB2D41970E4656F842B804E3F7DDB32364F4E2"
+    },
+    {
+      "Path": "tests/modTestMaterialDiagrams.bas",
+      "SHA256": "BC581B09A51296938450766DCEDCD5476AA0C65935800005F186C70177491564"
+    },
+    {
+      "Path": "tests/modTestPerformance.bas",
+      "SHA256": "53D44B31FB68F21D7F2A218B1D3972654BE0DD36ACEFE6822B0702B930138406"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "SHA256": "06C343598BB324327FE48CFDE88FBA2B004DD3806DBF9027AD8A7880863E6AFA"
+    },
+    {
+      "Path": "tests/modTestPolygonSpec.bas",
+      "SHA256": "3E3A12174E25B92F5BD5EE5B205E241874A9268AC592322ADDD3174F7409F55E"
+    },
+    {
+      "Path": "tests/modTestProfileConfig.bas",
+      "SHA256": "2D8EA23942FC0543FF375EB0AE6AF1B2B30106C33D2A94503E44632C13C28EE3"
+    },
+    {
+      "Path": "tests/modTestRecipeAnnotations.bas",
+      "SHA256": "2DBFDE54FDA3756D2F5CDA2007ABB458E317D998C91C1C9DB40EC9C13F0B6B0A"
+    },
+    {
+      "Path": "tests/modTestRecipeApiCatalogue.bas",
+      "SHA256": "75D807FC636DD8D8A20587D63D45FD3058FA38A7C41D92FFF2F2379C01730658"
+    },
+    {
+      "Path": "tests/modTestRecipeOperations.bas",
+      "SHA256": "5576A1CA6AF487ABFB193941B00E0336B51C070676B46B89FACC2042D564C916"
+    },
+    {
+      "Path": "tests/modTestRecipeSetbacks.bas",
+      "SHA256": "7AF3BE1EC293680D8A1BB1E9CE385F8D1E5C16AF43E90D0D34709B309E4ACA9F"
+    },
+    {
+      "Path": "tests/modTestRegressionBaseline.bas",
+      "SHA256": "3CD473CA937E2A44E0B09ADBE750F0B5D1BAA2B32D7C0AA6403953B780905C84"
+    },
+    {
+      "Path": "tests/modTestSP35CrackWidth.bas",
+      "SHA256": "A5018C1775E732C338F07A1753D2F327E77B98F66FF9029B3E6616A9A38AEF09"
+    },
+    {
+      "Path": "tests/modTestSectionInputReader.bas",
+      "SHA256": "D7EA646F51E40A197D42511269D095B183FCDC186A84F3E46B7CC540D1CDF211"
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "SHA256": "E6838EFA0E6C586971BB0BC73392009AC70AEC8756DB33BB23415CF36D74BF02"
+    },
+    {
+      "Path": "tests/modTestSectionSolver.bas",
+      "SHA256": "036C3A7A1D2F9EF1435F0F6C9EB44B95CCC7E17CD4F0D5625C1DBDFB8BBE2143"
+    },
+    {
+      "Path": "tests/modTestSectionWorkflow.bas",
+      "SHA256": "71792B65F72DD8E11DAB1DF00760577FEF12F954DBF75C4771F6B72CCA877AFE"
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "SHA256": "4978C5726A461993D1C3F459A6C534910E133D38C1DC4FF3D655CEC67B0C8257"
+    },
+    {
+      "Path": "tests/modTestTorsionConcrete.bas",
+      "SHA256": "26AFE2D3D06330A860A6692164F557315DB3599882586CD99EA3DF6640A872E1"
+    },
+    {
+      "Path": "tests/modTestTorsionPost.bas",
+      "SHA256": "BEB38A091A686AD823177F1BAEC0D0B3AAEDC8B5DB3783CF756EF386C82477D9"
+    },
+    {
+      "Path": "tests/modTestTorsionProjections.bas",
+      "SHA256": "2563FC1B57656F0FBDDDBBAD8ACC939F4F28201A9F37821D7876B1911AA23869"
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "SHA256": "EE28E9D9FA7BF38AE725CD31271A17227666EB62E1550A9E92F828A99164B23B"
+    },
+    {
+      "Path": "tests/modTestZeroContourParity.bas",
+      "SHA256": "E02E9E901AF95D4AC7EF65CFBE0F37E9C7DE4A5DFE8611C8AAD88FA2F8C4B77A"
+    },
+    {
+      "Path": "tests/test_geometry_snapshot_comparator.py",
+      "SHA256": "DA333EB607174A08A6A114417D425913780C370B4805521027F56029E5778DF0"
+    },
+    {
+      "Path": "tools/build_workbook/Accept-OverloadRelease.py",
+      "SHA256": "F18A7544CE988402521D0E5A03D042D62128EF775D1FED78B5146EEF2A35B902"
+    },
+    {
+      "Path": "tools/build_workbook/Add-Audit03ControlTableEvidence.ps1",
+      "SHA256": "ED048E02D8420F4FDFDD3254CECF9CC704E546F3685F0AC4A9A4598596FF0964"
+    },
+    {
+      "Path": "tools/build_workbook/Add-Audit03MetadataEvidence.ps1",
+      "SHA256": "786F7F6626DA08BDFD88D019188B511B919DDAA7AF0B3942E73B251E73EAAB7D"
+    },
+    {
+      "Path": "tools/build_workbook/Add-Audit03NormativeTableEvidence.ps1",
+      "SHA256": "95CC3FCDBA04BEE1A9122CA9A3B3A1BC3E17CDB34593F7C7D96A33B835204686"
+    },
+    {
+      "Path": "tools/build_workbook/Analyze-PlateauSlopeExperiment.ps1",
+      "SHA256": "8CFDEF429AD9F3AFC4841E11FEA3BE0FAF30A2DFB5272270968B9927CDBBDC42"
+    },
+    {
+      "Path": "tools/build_workbook/Analyze-RetirementFixtures.py",
+      "SHA256": "04898F3CEB0DFE13A68A53A8F7CB26849A07478754F644525A9139761BB0F41A"
+    },
+    {
+      "Path": "tools/build_workbook/Archive-GeometryFullEvidence.py",
+      "SHA256": "D3979FD46BF1E3570DEDCDB9AAD70BCC7978D7EAEEFA44BBD9C3913AEAD0C0CF"
+    },
+    {
+      "Path": "tools/build_workbook/Archive-PlateauFactorEvidence.py",
+      "SHA256": "44D654A405AE15CE85D34DBEF53550A221F941DA5AC079B53E785F5EA288169E"
+    },
+    {
+      "Path": "tools/build_workbook/Archive-RecipeSimplification.py",
+      "SHA256": "0F609128F8DCAC524E6A63B3D9FA502F83A8197AA7921954BE57E625E407E7A1"
+    },
+    {
+      "Path": "tools/build_workbook/Archive-SegmentNaming.py",
+      "SHA256": "353C13897BAAD6372D036D2002C28E47FEA2265685D7F4FFAF40B28BB2FA3E76"
+    },
+    {
+      "Path": "tools/build_workbook/Audit-ClassComments.py",
+      "SHA256": "8A4F5C62A511A17DE6A1774EAF500630602D9AF421C7315F80D199FD5C0E247C"
+    },
+    {
+      "Path": "tools/build_workbook/Audit-FullTestExpectations.py",
+      "SHA256": "8F4A2831D126C53AB29C121AC708DF6E5CA44546736982A08581587886BEB2EA"
+    },
+    {
+      "Path": "tools/build_workbook/Audit-ProgramMessages.py",
+      "SHA256": "59300B3F229A0DA7F36904A93A49263226FDE8A34DC0D16D183D9B128640D75F"
+    },
+    {
+      "Path": "tools/build_workbook/Audit-VbaDocumentation.py",
+      "SHA256": "BF5B6EF6B4B5957AF4AC18FE3A8F65B8EA2FD3D96DAEF47A55B4D0F14F859B5C"
+    },
+    {
+      "Path": "tools/build_workbook/Build-GeometryFullAcceptance.py",
+      "SHA256": "BDC3796616CE240FFAE56395D00514C8BBB5FE35427E70C369761E45D58DEA43"
+    },
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeApi.py",
+      "SHA256": "8B0FF37BFBA67039D7CD5036121165C6172975DF3FBA1F0C0087CF40B1BB913C"
+    },
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeApiExamples.py",
+      "SHA256": "7A7CEDFDAC6B30E2168E3A3A8502BD126A80D03BCC644686ADE186A1B2E715F0"
+    },
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeGuide.py",
+      "SHA256": "69F5CFAC70CA47004EE5A636084B21EC8BBABC3F778E7F522022C8B30BD8236B"
+    },
+    {
+      "Path": "tools/build_workbook/Build-SectionRecipeVbeGuide.py",
+      "SHA256": "A081B4F9AC452A92C6AEE3E42EDAD5F20EA8FCD9A1E8EB9883DE097B95AA6434"
+    },
+    {
+      "Path": "tools/build_workbook/Build-Workbook.ps1",
+      "SHA256": "A19348A221FC732CFA481B8348577DDF0CA388F8A776EAD93308664ADE5080AD"
+    },
+    {
+      "Path": "tools/build_workbook/Build_SectionRecipeApiSupport.py",
+      "SHA256": "7D7DA1726A632942BB2684B4C81C5E4813566A017CCEC991D2A9835459BB40C5"
+    },
+    {
+      "Path": "tools/build_workbook/CalculationPresentation.py",
+      "SHA256": "67C0CED74635289C0B50DE5596D2979D6DE2AC817049CF6AB386082614A609B4"
+    },
+    {
+      "Path": "tools/build_workbook/CalculationPresentation.zip",
+      "SHA256": "FD39809BE711B23ECDF813BD76AA2EFC31BA372F7CF2670EC518A8AB39DE1ED9"
+    },
+    {
+      "Path": "tools/build_workbook/Capture-GeometryRefactorBaseline.ps1",
+      "SHA256": "4579B3F8FFA705F10786C1E76EA59EA7F0910C3931047CB1301598C10E9F78B1"
+    },
+    {
+      "Path": "tools/build_workbook/Capture-PostAudit03Baseline.ps1",
+      "SHA256": "9F07915980EBD7C6F159019AC1ACD9B8568D5B7728845DB6465FB8D6B819060A"
+    },
+    {
+      "Path": "tools/build_workbook/Capture-WorkbookLayout.ps1",
+      "SHA256": "92C1F0723913B80E9FEEB0232072AE7BC63CD17E9E4382FAC60C224C0F7E2D68"
+    },
+    {
+      "Path": "tools/build_workbook/ClassCommentMeanings.py",
+      "SHA256": "1717AFD0320AB38EDAEC3351267C321F5B4F12BF94A56301BD242E57960BB5D8"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-Audit03SuiteNumbers.ps1",
+      "SHA256": "76F6F2F79B4128CA07AF4B09D14215EDFCFF0D7904048F20707BB194D9E73748"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-Audit03WorkbookHelp.ps1",
+      "SHA256": "69EC77A75FD340D4B1A2717618047F800B6C3541B2BEB9E4AD9546DF4006C2CE"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-CADKernelEvidence.py",
+      "SHA256": "7313ACF3E72053832DFA913875836EC1EFD5A283D244774EED095C29ED2324DC"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-FocusedReportFormatting.ps1",
+      "SHA256": "ECD25D6E14C53D523A7D933A58155CA5D69CCCF722996E0B847DC39F60F1484B"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-GeometrySnapshots.py",
+      "SHA256": "257047E2C3EC63CB47007D5191393286117BB29BE14305445B7B7FDC3E2B977C"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-PerformanceVba.ps1",
+      "SHA256": "F0C5B8DCC4852497D3DD5A64A11861118778760117623107D7C7DFAE8064D75B"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-PlateauFactorControls.py",
+      "SHA256": "FEFFC1A31B438980E6C30B0222DB63B814735407FEC357CAAAAA76155F239F68"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-SharedRebarEvidence.py",
+      "SHA256": "ECB3F0A3B10FA9D162B9578EBD6B535824324C54C74419C2D47443B0CE7F67E3"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-SnapshotPayloads.py",
+      "SHA256": "477CFEC93044AD5DF8A1DC320EF407FB7958E910E16B064F414D9E2F5C5B7732"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-SnapshotResultsFormatting.py",
+      "SHA256": "EFC2E7D277868C6B56522FA394C59F66E02DBF121AFAEF3C95D520E1CC17C4D0"
+    },
+    {
+      "Path": "tools/build_workbook/Complete-ClassComments.py",
+      "SHA256": "BD3926560166AAD79B910D59FB7A9AEBB83C04A1D6A3BDBE21513AE7C702164E"
+    },
+    {
+      "Path": "tools/build_workbook/Complete-ContourCADVerification.ps1",
+      "SHA256": "2CDA6ABF85037E4DAACFDA437356B058AF5CF59C3196718D9D8B8B021D563FF6"
+    },
+    {
+      "Path": "tools/build_workbook/Complete-FocusedRunEvidence.ps1",
+      "SHA256": "B2CCCDC404DE124B10ABCD30D893EB7DAAE4B69B802AC47AB37774BB85334346"
+    },
+    {
+      "Path": "tools/build_workbook/CoreRegressionBatchProbe.bas",
+      "SHA256": "867AE489389C7E960F8525CFF7B83FD0BFDC5721591F295C96D225E7A2D54A6E"
+    },
+    {
+      "Path": "tools/build_workbook/Describe-FocusedAcceptance.ps1",
+      "SHA256": "92ABDC9410A7226316210475DFCB769205A48B36485B9F6BDC1316615B93A11D"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03CodeCensus.ps1",
+      "SHA256": "8EB6D9DC5AF78FE043A72E7F3E711E0A34159F6B17D83717228926A4FD7DB696"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03ConfigCensus.ps1",
+      "SHA256": "E86DEBFE8DD010F933786878BB21DCC8D8019B0F26D2A7CAFDB57AD195335DDF"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03ConfigRegistry.ps1",
+      "SHA256": "96F363D3D06DCD7612C2B0D4751FCC9882428FB15EE78D951B41AB6BFC67B3B9"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03FinalConfigEvidence.ps1",
+      "SHA256": "A9DFD2526B5278DD5B15DC755539582B996A8967757C909FF4F33F2581A8ED8A"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03LoadMatrixSummary.ps1",
+      "SHA256": "47678C883AD596702359C65CB637DF37F9FB99E58ADFE18EABF176C7D6255E6D"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03PerformanceSummary.ps1",
+      "SHA256": "85F56A3330EFBCA94278988A2EBB34ADDD3B32A03C7D6EB44DC7ACB2C904DD17"
+    },
+    {
+      "Path": "tools/build_workbook/Export-Audit03VbaSnapshot.ps1",
+      "SHA256": "61C3A8C261FED85A188E392F120E721075B9A08A95BDA9F3AA5BA0553C21A142"
+    },
+    {
+      "Path": "tools/build_workbook/Export-CoreRegressionForceBounds.ps1",
+      "SHA256": "29807AF0A9553B43E7D209488EFB7B83431A17C69C917356E0DC90A3E2569056"
+    },
+    {
+      "Path": "tools/build_workbook/Export-FocusedSavedFixture.py",
+      "SHA256": "93410CA7B01885FC4C83495D602A3DD99890F87AA9FF01610AB796919F605354"
+    },
+    {
+      "Path": "tools/build_workbook/Extend-PlateauSlopeExperiment.ps1",
+      "SHA256": "D638F6E7C4995FE2A66F666D2F8CF380B49BE593FF5E458DABEA3F9F4D45B57C"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-Audit02.ps1",
+      "SHA256": "414401EAAC514C36A71C96A6EEC05F9CA781E9626EBD0A5C0603229D2DDB1535"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-Audit02Closeout.ps1",
+      "SHA256": "74A6ACDC43FF27401A86D3DD296538004345F179947A3DD710B2589480C6B8FE"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-CompleteAcceptance.py",
+      "SHA256": "6E3065606E0002ADADB52387AA40039B4B9666D4684A79BE9D12309B52260230"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-GeometrySolid.ps1",
+      "SHA256": "96A6276DA3D53EBA41C1E6C42506033A0E50418F317CA346E028A52922174A1B"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-OffsetExport.py",
+      "SHA256": "645F51B024601A750F2DF4D0B8FE78EABA2DE6EBA1EA3C23DBF817DE3A2F04CD"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-OverloadRelease.ps1",
+      "SHA256": "1C8F3994CD48F05ED6252E770051B8EDB9DEC4F53826256F549FEBB0E0224070"
+    },
+    {
+      "Path": "tools/build_workbook/Finalize-RecipeSimplification.ps1",
+      "SHA256": "F03C475C0D426A259BEEF9D3AB27E393C947ADEC7955ACFD9345B118D5CEE979"
+    },
+    {
+      "Path": "tools/build_workbook/FocusedAcceptanceProbe.bas",
+      "SHA256": "9002C26084E80B594C072EE56AC0CD30A753EBA9690888FAC9E52DA6A0860AD0"
+    },
+    {
+      "Path": "tools/build_workbook/FocusedBatch15Probe.bas",
+      "SHA256": "2170CDD335B2935DA5AEE9B2AF7A8B2C9940D7BBA47CF5FE5F68CBA828F66DDA"
+    },
+    {
+      "Path": "tools/build_workbook/FocusedForceBounds.bas",
+      "SHA256": "8BABEFBD497C6EB1F01B30B1A84B7BF7020B4BB4B34140C0AF40874A4AC2D87D"
+    },
+    {
+      "Path": "tools/build_workbook/FocusedSnapshotDiagnostic.bas",
+      "SHA256": "010F4F5792628BE9F45B64D9616D283FFCEC463F8B6E55A0D2BD2DB508DC92A7"
+    },
+    {
+      "Path": "tools/build_workbook/FocusedSpecialProbe.bas",
+      "SHA256": "70C308CD04DBA40E00E0E3E8D2C07632607BB3354F9A45572FF92108B33079A9"
+    },
+    {
+      "Path": "tools/build_workbook/GeometryExampleSupport.ps1",
+      "SHA256": "1AFB40CA4B72C58C2439C013FB09E4D3EE3A88F322C496657E710F8E21115B71"
+    },
+    {
+      "Path": "tools/build_workbook/GeometryTables.json",
+      "SHA256": "B45D2624FF5FA956D72A3D31DAF2229DB13F9C744E79272A54B385C40792F8C3"
+    },
+    {
+      "Path": "tools/build_workbook/GeometryTables.ps1",
+      "SHA256": "0DB2278EA5F5A8DAF9D5F6D9BFD281EABE8139B96BFBFB5E090F35EA5CF7BC8F"
+    },
+    {
+      "Path": "tools/build_workbook/HelpFormulaExplanations.json",
+      "SHA256": "AA76FAE577F464149144AFCC5AF20F22DBC016783ACE2072B7F80D68436609E2"
+    },
+    {
+      "Path": "tools/build_workbook/HelpOutline.ps1",
+      "SHA256": "3C384C9311A930EFFEE445D40C6F408A42C7CF976168F1E9342965E1ED9315D3"
+    },
+    {
+      "Path": "tools/build_workbook/HelpSettingsDescriptions.json",
+      "SHA256": "B5718751AB6FF8FE63588CCC9F825864E21F40E59A060E52CA28BA6CC97306B6"
+    },
+    {
+      "Path": "tools/build_workbook/IndexedResultsTable.ps1",
+      "SHA256": "02A2E75699F6DDBA2F53AFE20C8D839C50D01BB272B1632DCAFC744F7FE6FF33"
+    },
+    {
+      "Path": "tools/build_workbook/Inspect-ActiveCADContours.ps1",
+      "SHA256": "61DEDFFFA3DC954AB8124EAC616FD84CB475A473AD8DB56BFC310BACE4755596"
+    },
+    {
+      "Path": "tools/build_workbook/Inventory-GeometryEvidence.py",
+      "SHA256": "10B2D7602103B325E97F8424E58E3153AF9F97F8D592B8748349807FACE2F4AC"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-Audit02Architecture.ps1",
+      "SHA256": "5E686DB5A93984AAE1D6F60301578892DB6497CF90D0BE2D479C87593E511D6E"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-Audit02Source.py",
+      "SHA256": "0D96223BE5AB715C55D1E4135F6DD46977970494D3621B7FC6D2316CAB0A23A5"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-NativeCADPerformance.ps1",
+      "SHA256": "A4FC5B83F2D99D5B28B153282E8BB8285F9C58D91896CF81479C05E0A668735C"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-PerformanceStorage.ps1",
+      "SHA256": "260AE7DB33B1365FF2DF2981D922EB43B3CB8EF72103EA6CADB42A234B575F42"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-PostAudit03Snapshot.ps1",
+      "SHA256": "56756ADC0478B5221D17BDF88F979B5140F0B99F61D35F6B04CA80FC057F59C9"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-RecipeSimplification.py",
+      "SHA256": "F42C4BC109117D0BEA5A6DF9C05678EB5CAFBBC2DA0E79B03D2A8EBC9D0B60B1"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-SavedCADExport.ps1",
+      "SHA256": "7C675C0A406B5166E821CCC5EDB778ED8054F17AC769490913D86112D2FF44BA"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-SnapshotCodec.ps1",
+      "SHA256": "002BC1E9132AD11E7315CDF145653987E10439178B69756D2E219A3AC631392B"
+    },
+    {
+      "Path": "tools/build_workbook/Measure-SnapshotIOPhases.ps1",
+      "SHA256": "AC754EC4F076FFC551241FB6834EDF94BD81D42A3A98173324118D3A527232E2"
+    },
+    {
+      "Path": "tools/build_workbook/Merge-Audit03ConfigEvidence.ps1",
+      "SHA256": "DDA0C79152EF54A331F3E80A9CB0B7F60FA19C676EC41538206E783322FCA3A1"
+    },
+    {
+      "Path": "tools/build_workbook/Migrate-TypedResultConsumers.ps1",
+      "SHA256": "AD4F438C4039BE7CEB55997BF3189AF4EB22EAA33F91E584219B000B6220EE43"
+    },
+    {
+      "Path": "tools/build_workbook/New-Audit03PreviousSearchFixture.ps1",
+      "SHA256": "F75A3BB4A0BFCE12F67E591C95C5340B3C1984499CDE6072902938FA20D47EE6"
+    },
+    {
+      "Path": "tools/build_workbook/New-Audit03SP35Fixture.ps1",
+      "SHA256": "E9E5308DCE6FE7EFACE7574AB1A621A52CCF66D502736893C7B2981B16FD34A9"
+    },
+    {
+      "Path": "tools/build_workbook/New-Audit03SelectorMatrix.ps1",
+      "SHA256": "61DD4BAE215F2D8F8A53262078CF3D954F3BC6AD942E79D7C8997BA760CBE6BB"
+    },
+    {
+      "Path": "tools/build_workbook/New-Audit03SettingsMutationFixture.ps1",
+      "SHA256": "C9C51F8C6091A8D0ACAAB12F9134DFABE44320E8799A4511BE0FEC5C3202BBC3"
+    },
+    {
+      "Path": "tools/build_workbook/New-Audit03WriterTraceFixture.ps1",
+      "SHA256": "61AFCF1D1B37E1DF4DFE4F90CFA9B8D5366A4E870CC4F19A19389EE03B8A4972"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages.json",
+      "SHA256": "8E9A4C3A3D04FE9E2A0055D2F211AF37BD5FAD87268CDEED3662DCE80120C1B4"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages.ps1",
+      "SHA256": "D5D47E58FC14AF0C2E6D1C3D05A567366F89A80CE7A1B1322E06479D063E5AD5"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/README.md",
+      "SHA256": "A8E170A4B1DAE604DEC30C5516C6A414B67103E6A5FC92E39957649DA16CA548"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_CrackWidth.png",
+      "SHA256": "B93173A5DC8DBEB0B3D513D87FAAD192A61C3660C2C18DB97D5DB7828903BCDE"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_CrackWidth.svg",
+      "SHA256": "9658837929519A4C846AEBCB7C613B5F37DE9A3CD4A02022D8DD3E0FE602FCDB"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_DeltaMin.png",
+      "SHA256": "A15D641F0A252A4F015235543C890CA14C068C77F4871272405A716DCAC0A108"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_DeltaMin.svg",
+      "SHA256": "918D82C0AE07D495003856C1BA8EFB822704F5142298FA9F7ACBC3C0DDF3758E"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Eta.png",
+      "SHA256": "00FA8C980DBD986D81CB8BE0A0FF3B0762279D1D7AE7DF463B038132644BDD35"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Eta.svg",
+      "SHA256": "A38FA0B3A96D9885467B85E7E63801AA88CBB33293C50E83B8FEF2264DBEAA32"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_NLimit.png",
+      "SHA256": "8B29F3A156222376CF52DCF55DBFD39A738ABF4BEB3243EA3C67D42A43CAF805"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_NLimit.svg",
+      "SHA256": "069191B2CB4E5ACE92605A7BEE79461CADCD9C8524A3521258EF7CBEF72960A1"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Ncr.png",
+      "SHA256": "FA2EB8EB0E5086710EC7441DEE286F09A16CC7CB14C5324F5C5242442051EBC2"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Ncr.svg",
+      "SHA256": "8F2C1977FFE300655380CB8DEC9B20B1187446407AA1576F5DF78E4E9A29D295"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Phi.png",
+      "SHA256": "D905E06601FA61752F07C4C3E155BED1B4E75A300C39ACBEC37BCE3BF2DDD539"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Phi.svg",
+      "SHA256": "AA5FAFDC502421489024769B01E7B33C838E2FF13825B36D093763EF40CFFCEE"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_PhiL.png",
+      "SHA256": "57A352D41A193D70B19D163F304E5C287FDD99FF8B216E32EC8C58E7C4B58702"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_PhiL.svg",
+      "SHA256": "269C82C99F427A0214CE5E848926653CC0CB396F0F1CD1ED9521D67163CF230B"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Radius.png",
+      "SHA256": "DF316B722EFE61A7B477894D7DD182D20F061701F9FD4A970A9797E34E3ABC31"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP35_Radius.svg",
+      "SHA256": "24D65FE0DD56108C57E401CC8E2B2ADF9298FE194455305F267BD61D89E43AE3"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Area.png",
+      "SHA256": "577300DE099E72FE4D3082BCC8CE9979E5FBA1C0742687D93E05FF8A49951A51"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Area.svg",
+      "SHA256": "724F26EC16EFF94694F31CDC9F8F15BEA5528CEF0CAA71629B5847552E2295B5"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_CrackCondition.png",
+      "SHA256": "2D61CFE405846ADC1AAB7119700E56253CF36C987D9B3C3006419D2C626ADDEF"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_CrackCondition.svg",
+      "SHA256": "3C6EB9CC214C02BE4050C634BB1766ABBB9939D07FF6BF2C61B39C9B9D3AABF6"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_CrackSpacing.png",
+      "SHA256": "9490C80E6645D112F6683A5E28184CC941465D22B5225FE4527C49C92EE5A5D3"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_CrackSpacing.svg",
+      "SHA256": "45FA8CF424B0C798BBCC527878951C496B3FA5CB55714500C949B7291A70CEAA"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_CrackWidth.png",
+      "SHA256": "CE7792D1ECE5A1C99851DC64E55B8AA941EF885948FB2C0F9082EF98759C7FEA"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_CrackWidth.svg",
+      "SHA256": "140EFF9FFFEDCD3A92E8EE6A6269AF3E2B88A9CA1C818F73E6B1F5251F42DB5D"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_D.png",
+      "SHA256": "FB7621BB5D0A2DA6B6F3B506446E55126469966EF9E80D0F7A89B63472F5776A"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_D.svg",
+      "SHA256": "C5C051358B443878CFEC8D3119151E6E966E775ECF608C71D518F02BD3636607"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Eta.png",
+      "SHA256": "7E60EF4C5F85FA69D36A89082233D17FC0C3B192EC848FCA3C1FCA5821524479"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Eta.svg",
+      "SHA256": "A142CE1770EB1FA1E794DEDF035FBD37749AC7A88A1F3347488D51178D8B64C1"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Kb.png",
+      "SHA256": "52BC1098BEB4AC1F4A833FC4A044EA975F7C0DD66B8322A721B0260F99CBE437"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Kb.svg",
+      "SHA256": "80D259CE7F24E2DA8B5F862FB61E412118A7F1C9E0DE16F4732D8701C4C03668"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Ncr.png",
+      "SHA256": "A0C3F33F4A87371F567BFBE5BF200A920BA48DA69EDF15B6480DD2D878518196"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Ncr.svg",
+      "SHA256": "EE55D89F1D1B08616008FC0E82285E54D05C23C5D49518858EC25AAE983A07C6"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_PhiL.png",
+      "SHA256": "CAB086B6E788EC14D586C6A7FB424C7ACE1FBEB3C86AAEB00A4D23EEA49B61EA"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_PhiL.svg",
+      "SHA256": "A6EE944D765A2DF97FB4F44F7F047D8B56101F7F052CDF45D51702895C049C6A"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Psi.png",
+      "SHA256": "6CB8368FB644B7B25BAD8F7513BA24B30274475488776387FFA36DCC7CD9D6C0"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_Psi.svg",
+      "SHA256": "B5D245C4AA3D00C63E3A76F8F4BC4B18D27927DBDAAA9049DB49E0BF4664CCF9"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_TensionCondition.png",
+      "SHA256": "8D0723ED0448DE14F23C7FC97F46AE13269731F092370C9F800947A98441B8DF"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_TensionCondition.svg",
+      "SHA256": "80A66FD4B3EB1D0A26B856506355B86B83C5E2E8DFD3F31AD3674950FF4CC21E"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_TensionForce.png",
+      "SHA256": "18E90361904F2BCE0F55E9804FFCCD96617C83B6E9114F4229FBC1BE29EE9B2D"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_TensionForce.svg",
+      "SHA256": "5F256DBED9A8F87A9D44016AEE1E0BEC1519A1AE2F463D48505EDB516998FFF0"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_TensionStrain.png",
+      "SHA256": "37805E9B7A2B0CD27AAA8E2FC089B843DF9A0977C90DEB1E02E340BF8E32383E"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeFormulaImages/SP63_TensionStrain.svg",
+      "SHA256": "6900C12CC573638E8989364D9597612C2FCE521232915A99D450D5D3C694EEED"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeHelpReferences.json",
+      "SHA256": "73A869F8E114D37D40B3A487FCF2E86BEC6C524A17095B22958DDD772623D6C1"
+    },
+    {
+      "Path": "tools/build_workbook/NormativeHelpSources.json",
+      "SHA256": "0D8F92F8DE306E3CBA98C5C198D31C7325E0E34602A94ECC5E0A6C57E5566154"
+    },
+    {
+      "Path": "tools/build_workbook/OpenIssuesProbe.bas",
+      "SHA256": "98C34885E6250C91F6B43008FE27854729385423AFE5B9E640375E68BFC02126"
+    },
+    {
+      "Path": "tools/build_workbook/OverloadTimingProbe.bas",
+      "SHA256": "0E4AC354391FAD22AA9ED46934E5AE4F908175DAF0EB6B37C3854CA5B979CF74"
+    },
+    {
+      "Path": "tools/build_workbook/Pack-GeometryMilestone.py",
+      "SHA256": "79DF6D4A67B641F6C1AC0877002F44A3F2DC6C9B7FFAC7C711AAE7EC2E851F06"
+    },
+    {
+      "Path": "tools/build_workbook/Package-Audit02CloseoutEvidence.py",
+      "SHA256": "A8D49F8DC3FFCE8C48641038080A61B85B82773AF09A96326F53ED8D425DDE9E"
+    },
+    {
+      "Path": "tools/build_workbook/Package-Audit02Evidence.py",
+      "SHA256": "6F6F95CE924ACE26792FD93C4EF8756FCA72FC3D8E9BE75CD3DA41408C734D2F"
+    },
+    {
+      "Path": "tools/build_workbook/Package-GeometrySolidEvidence.py",
+      "SHA256": "EF1D462428CBB7ADD97651A65807D2E696FC4D658DAD82094DC55C87391BB24F"
+    },
+    {
+      "Path": "tools/build_workbook/Package-HelpOnly.py",
+      "SHA256": "0239D147ED351D33D25C97F273137AEEA590E1C8F226E66BF058259B97A3BB3E"
+    },
+    {
+      "Path": "tools/build_workbook/Package-OverloadRelease.py",
+      "SHA256": "368E048434D73A7B0A653911F2A1E5A8F699D8E65EC8A1699EC68CFFEEB19FC8"
+    },
+    {
+      "Path": "tools/build_workbook/Package-RecipeBoundaries.py",
+      "SHA256": "0DB5489A7F04CC95D5FEECAF831446E423297A4DAEAC81257592FE4B5B2864DE"
+    },
+    {
+      "Path": "tools/build_workbook/Package-RecipeGuideReadability.py",
+      "SHA256": "3D5E2870E4AEC2DEA73C4C82658ABD79FABB823CBCD20C96BD9BB80DD2AC7EBC"
+    },
+    {
+      "Path": "tools/build_workbook/Package-RecipeSimplification.py",
+      "SHA256": "CC4F1A47CD2AC71683B6FCFEF9E1703B05E1202B5A2530E87DD1D18D394A570C"
+    },
+    {
+      "Path": "tools/build_workbook/Package-SegmentNaming.py",
+      "SHA256": "7E241C6EE891FFF8EAC0B67180D5AECF8CDD20CE73D0838B55668CC902B03182"
+    },
+    {
+      "Path": "tools/build_workbook/PlateauFactorControlProbe.bas",
+      "SHA256": "1448C7F54DC79CD5996EBCD71CDC7201A68FE81CF7885EAA45FC70E6EC582D08"
+    },
+    {
+      "Path": "tools/build_workbook/PlateauSlopeBatchProbe.bas",
+      "SHA256": "478F0720FE8C8D6FE72442E5E6A44138155BEB19CA9DEB1F86844AF14B04DCE5"
+    },
+    {
+      "Path": "tools/build_workbook/PlateauSlopeExtendedProbe.bas",
+      "SHA256": "99A06EBFEBCA81CD6725807AEE230A68084DBD5AB156B4326C432BA8D2F69829"
+    },
+    {
+      "Path": "tools/build_workbook/PlateauSlopeProbe.bas",
+      "SHA256": "FBF642BF2EEFB5170C442A133225FA68A84A5DD8DE2D47055A797575B24F5C15"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-Audit02Baseline.ps1",
+      "SHA256": "415474EBFC15480ED494E88CA13BE4E18F6A659DED22552DF3ECDB73B1D6ED43"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-Audit02CloseoutBaseline.ps1",
+      "SHA256": "EC2CE489C806D605EEF344878AD83E8C5CF6EECE8DA3074586FD71E7456987AF"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-DependentRowsRelease.ps1",
+      "SHA256": "C95E08D0FE6C56B5534AD097F5551067A75AFC69455AE94AD1E39E6BCB98A9DF"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-FocusedAcceptance.ps1",
+      "SHA256": "16183D4FCC846ECA5A5C0B50E3131AE9466BD6E4D9825474C4CF08B66796A6F9"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-OpenIssuesRelease.ps1",
+      "SHA256": "A687C9B48F2EEEEC10554D23523ACBD28ED478F658D91C432172BE5D341D4312"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-OverloadCandidate.ps1",
+      "SHA256": "03933DA09687ACD338E036004F8EABD1348A08E8801B84C989B857BB3BDBD366"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-PerformanceRelease.ps1",
+      "SHA256": "39A79ED6554F6630461E084876F311788C00D42D7833C029C149E10708202BD6"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-PerformanceWorkbook.ps1",
+      "SHA256": "23B53BC3D8B72CBB32A1FB6A42F75CFE7A20018DF528B1487836E9850BD2DCBA"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-PlateauSlopeExperiment.ps1",
+      "SHA256": "294D72041784B39B3D47BE80B1E1C1DBF4B05FAAE7FCDE9A5B597831B729E112"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-PlateauSlopeRelease.ps1",
+      "SHA256": "095FD20B4FE06BEB5B5A0E4D8532690AE6266E1174819289C9D2D3397515F8B4"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-RecipeSimplification.ps1",
+      "SHA256": "5491ED03D6707B5195EEC91376DACE2A0E2A4BFD5F89DE1A2B7FECBD751F791A"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-SP35Publication.ps1",
+      "SHA256": "F75248C27F018AC8F46FE7A37A20ECE50FF29707AC7787480EA628239BD21F4D"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-SectionNamesRelease.ps1",
+      "SHA256": "774AD89DCA5181B8D1F62DEA2429B1E756932E275F4F1B9256BB88C00D763A1F"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-Audit02.ps1",
+      "SHA256": "3A6754BDC997C49904DE6BBC9764D42A2EB67DBD0C365F01719012E5999C831E"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-Audit02Closeout.ps1",
+      "SHA256": "8EE9604B05476E7A9C8EAE3C3A3CC5AACB31A7F7FC15B1843D1F37CEDC252588"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-AutoCADCleanupRelease.ps1",
+      "SHA256": "EF1504872A0AD1C889744F09126E8D0193FFC5AF22A50966ED25F3BE409DC0AF"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-ContourCADRelease.ps1",
+      "SHA256": "184D15AA3D0F7A70179F6A0DB2906738751994966581EC64B342DDC5F9F34CC3"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-DependentRowsRelease.ps1",
+      "SHA256": "E16C33321C537FEFD11CBCE036A0D59EAD9D8AB9B6CA642AA699701CF0552501"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-GeometryFullRelease.ps1",
+      "SHA256": "DCE156F6435E9170AA221A4D7FBC3FACE0A4C9E4CBC10ACFC45B156B05E1F864"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-GeometryRelease.ps1",
+      "SHA256": "AC518FE13CA95E0ECA50255E656B62E811DEFA9CCF9C25578C92BDA4F860E5F2"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-GeometryReview.ps1",
+      "SHA256": "F2DE1C6450131B30B1DF58914AF3BD0722D721BA90B0A96B565FA9CC9CB25EBB"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-GeometrySolid.ps1",
+      "SHA256": "5860CB8FC1C293C2E6A5C1F84EFF83BC4932B623BD32E1A74BCE5E150F624B7F"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-OffsetExport.ps1",
+      "SHA256": "F6A8DDC35A148FA17DAEBBB16F1A5BE0608C08EBC717CA6C621719D4FB3C7A88"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-OverloadRelease.ps1",
+      "SHA256": "1DB194B6E9789BC3912A9E7A5D34D2D2EB5EC72E1FD40F51DB8762DE33B4B5CE"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-PerformanceRelease.ps1",
+      "SHA256": "A6AD20B348F756CEC30383087B4E43FC38AE11066E5911FE369B0332C40ED0AF"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-PlateauFactorRelease.ps1",
+      "SHA256": "056F974A34B79694C5BA8DFD2862C14128B638B2ED87E415F87A71EB6750755D"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-PlateauSlopeRelease.ps1",
+      "SHA256": "2B72FB1A4E8E75E8FC9CF5BEC98C138E3624859790962C583C3BC6AF2D5E63B6"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-RecipeResponsibilities.ps1",
+      "SHA256": "747C62B96D7058B9E7A4042C4140216F4B4A8845B93F449A18F8E87BC17CD6EB"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-RecipeSimplification.ps1",
+      "SHA256": "563A2FAD84C4C017345DE38DAFF72F19E0015E86588F5CFC5FED0EBE1D02A861"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-RoundedEndpointRelease.ps1",
+      "SHA256": "50C19B82498808F0BEA640F415A8EBFDE84998F0FE8E16ED85B8D6B4601BA24F"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-SegmentNaming.ps1",
+      "SHA256": "E73F22E33BE07B87E678B88B21281609642E932D99FD1F851EFD4AEF9DA206D1"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-SharedRebarInput.ps1",
+      "SHA256": "27ECDF32CA60C81B1C7CD3132474EFB97E846DAD48869C183A99106E8805FF02"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-UnboundedContinuation.ps1",
+      "SHA256": "CAE1A7EA3BA4853369BCE5AC61640B840ABAADBC911DB8DBC066ACD75507D2CC"
+    },
+    {
+      "Path": "tools/build_workbook/Read-ActiveVbaSelection.ps1",
+      "SHA256": "08309C0C535DF58C9AA7BC4D7CA88BD69CDA116F56F614AABC339464BA2699E7"
+    },
+    {
+      "Path": "tools/build_workbook/RecipeArgumentText.py",
+      "SHA256": "736141F07C3D0B2E5C00AECAEE2A169D3ACF4FE0DD6064BC56596BC1B8A6AB74"
+    },
+    {
+      "Path": "tools/build_workbook/Record-GeometryFullRelease.py",
+      "SHA256": "0919B6EA2ECB7156D405037CD9259A39C927925341CAC3D6560E8181D7967D9D"
+    },
+    {
+      "Path": "tools/build_workbook/RectanglesOffsetProbe.bas",
+      "SHA256": "A271791CE2F30CD2D36BFA22FC390AF31C59183D55A87E3DF97EC25995F360C9"
+    },
+    {
+      "Path": "tools/build_workbook/Refresh-Audit02Comments.py",
+      "SHA256": "D0A6F80F7C3D1908A8BFF318DDE5904DFB77865D1476B266E361013DDACD09FA"
+    },
+    {
+      "Path": "tools/build_workbook/Refresh-Stage07.ps1",
+      "SHA256": "DCA96CAC1682D9A08704F5C4B87FAE8B9BF222027C24FC51C56D7051B7D152F9"
+    },
+    {
+      "Path": "tools/build_workbook/Refresh-Stage08.ps1",
+      "SHA256": "595F3FE8863796F98B98D5DFDBF8517743DD1E83B0F29F7FAEF6A9109B7CDA20"
+    },
+    {
+      "Path": "tools/build_workbook/Refresh-Stage09.ps1",
+      "SHA256": "22327B215F0ED4167C5ACCB3638DCAA8B33BE4FD92557B3D961A8325D931A5DE"
+    },
+    {
+      "Path": "tools/build_workbook/Refresh-VbaModules.ps1",
+      "SHA256": "CBED860C72497F5A57B7C872055F653A9E7BB85FE4180893F88A19714D38CE4B"
+    },
+    {
+      "Path": "tools/build_workbook/Refresh-Workbook.ps1",
+      "SHA256": "03EEFA9AFD1BB1B7D838B21BC2FB4E737CC6976AD89A6B3DA0604DDD61781A53"
+    },
+    {
+      "Path": "tools/build_workbook/Render-NormativeFormulas.py",
+      "SHA256": "8F44C3B8EDE4B8978ECE5030712E98A595D818B793822687D01B39753E59F48E"
+    },
+    {
+      "Path": "tools/build_workbook/Render-SP35Acceptance.ps1",
+      "SHA256": "F959E52596551048AEEC592E7024C63FF9DA8055125B9BFE36002C647CF537AD"
+    },
+    {
+      "Path": "tools/build_workbook/Repair-ConfigPresentation.ps1",
+      "SHA256": "CF472ABBD4C112825F674BD9F98CAB0279DF2F88C6F08826688C48A83D010FE4"
+    },
+    {
+      "Path": "tools/build_workbook/Restore-Audit02RefreshCells.ps1",
+      "SHA256": "22A7431ECBEB0A9D5818BB05A527D65A9BD9B89360A7D00BD88D21A9E89B7C16"
+    },
+    {
+      "Path": "tools/build_workbook/Restore-ExcelGuardGuideView.py",
+      "SHA256": "099FA42196DB076AFDEB53A5CEBE5B33859B7253CAAA0864773567CCAB0EF487"
+    },
+    {
+      "Path": "tools/build_workbook/Review-CoreRegressionNumericalFailures.py",
+      "SHA256": "9432FFFEA88476668F21BDE051836E64F5C11617087F762D4C00DD2E936820A2"
+    },
+    {
+      "Path": "tools/build_workbook/Review-FocusedNumericalFailures.py",
+      "SHA256": "1E77E1C15E08E9AA352AF5AB5ADF4D1862ABA096FDFCD5B26D834FAB34658BC8"
+    },
+    {
+      "Path": "tools/build_workbook/Review-GeneratedClassComments.py",
+      "SHA256": "744D2111F4EC247F1CD2CEAFF1BAC1DE467FD9EDC20D9BA6FCEAEE2F3C843EB9"
+    },
+    {
+      "Path": "tools/build_workbook/Run-AllTests.ps1",
+      "SHA256": "7FBF9CDFE2C1BBEEB4AF566D770B2DAA9AAD50CD402E3C2526925052B113ADE9"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02.ps1",
+      "SHA256": "B86C411ED250DF0579FA4AD1AE2F23ECA7E57EC429995312B111B53BFF95E8C9"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02Closeout.ps1",
+      "SHA256": "FCA81DE479A74715E5B60FB5B2FD1BA6A7FA670B22E3C01266AC77716567A360"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02ModeTests.ps1",
+      "SHA256": "B6C8272FCD9432B721CE5D2FFF6744D3D7E1680B6B22A0F547D1E5C3434BF325"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02PerformanceComparison.ps1",
+      "SHA256": "B394C768E556C82DD392CF26C4AEEC0480DB812D8579032143E3CF861C54AFB2"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02SavedCombinationPair.ps1",
+      "SHA256": "0E0097AE119F5E8FC2C691C68BE918FE87DFA3AC42C1B9731F87926F88D4E142"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02SnapshotReopen.ps1",
+      "SHA256": "BFBC808F9FB8B54F216312BEF5279F98E70597D2BA24AB9FD4A51AA275E739F3"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit03BroadLoadMatrix.ps1",
+      "SHA256": "E036F1F6B7D2C9AD6263F584E3CC336A4628B4C0EF1B2B78D52EA7F0F3C2A368"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit03PerformanceComparison.ps1",
+      "SHA256": "2CB5FD9D033662523EEEE54FD85C56C89B9693ADCFB99DC410035C727EA0F20F"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit03SelectorMatrix.ps1",
+      "SHA256": "D509BC70DAC113016A42A661ECEFE1CF503DD400E99AFCA9FC3450C917F6BA73"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit03Watchdog.ps1",
+      "SHA256": "526804E8B3923E76F5DB7CDBA33C639F6F4280C79086033314A81C453DDF5F00"
+    },
+    {
+      "Path": "tools/build_workbook/Run-BatchTests.ps1",
+      "SHA256": "1C1B1001E35555AFB8758E443D6A7C53AECF6E50D7AFDCDFCE1092098EFCBD44"
+    },
+    {
+      "Path": "tools/build_workbook/Run-CapacityTests.ps1",
+      "SHA256": "5E468D4FB13B63380D0AEACA88456D70B48E3D7388FD6DC51976F65164E35009"
+    },
+    {
+      "Path": "tools/build_workbook/Run-CoreRegressionComparison.ps1",
+      "SHA256": "384C1F4F8DCDA3742CDD700ED6A2BA2AC0723F47F2C67DE787FB0483BAEE4EFF"
+    },
+    {
+      "Path": "tools/build_workbook/Run-CoreRegressionTimingRepeats.ps1",
+      "SHA256": "429634AFC1F9743E270D70279D9BAD36E4757080283FD10E360F214686B28BCA"
+    },
+    {
+      "Path": "tools/build_workbook/Run-CrackTests.ps1",
+      "SHA256": "02EBB70905FA9CDC0B389C4978B78589158C2A706663C818C8BDEE747CBFF922"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FocusedAcceptance.ps1",
+      "SHA256": "1FE70882E03EDDEA764AEDC1538E30C8B157FA86E363C105C7485747F17775FA"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FocusedCorrectedTail.ps1",
+      "SHA256": "359777A2C96E8F34AA8D6304C13EF684E9DF0AAFE0E9A80D5BD90387D1A5BD2A"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FocusedLoadAcceptance.ps1",
+      "SHA256": "0F6F18435961E276A5F0F1D906AA74C8350ECECA1B6A0CB5C4A8D489BBD6D8BD"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FocusedNativeAcceptance.ps1",
+      "SHA256": "6F6030C7170835BDA399470149F0E623BE0843F01A9394CAD79D80604E1EFEFD"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FocusedSupplementaryAcceptance.ps1",
+      "SHA256": "832D48CC0A3D1F0425E0FBAAA3C91803BCDE5B6D862207BB7BC8C6FFD4C905DF"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FullExpectationsPreflight.ps1",
+      "SHA256": "A618A01B8CBB267BAAFEC97652A3F13D87E3C6F2760CD63822300DB211675CB7"
+    },
+    {
+      "Path": "tools/build_workbook/Run-FullOnOffAcceptance.ps1",
+      "SHA256": "4D6E16E23DB47DE8B4E646C9E4DD4271717F6D23BB977D385473BE1B1AC9B0AC"
+    },
+    {
+      "Path": "tools/build_workbook/Run-GeometryTests.ps1",
+      "SHA256": "B137BF53984863706D2D9419CEB1694A56D7173DC324FF2DFD006A365255CC00"
+    },
+    {
+      "Path": "tools/build_workbook/Run-LargeSnapshotPlotStressTest.ps1",
+      "SHA256": "022F0E384041D8BFBF484C73E8B97E5653D14C9D483738B9A92B0D7B73F76F6C"
+    },
+    {
+      "Path": "tools/build_workbook/Run-MaterialTests.ps1",
+      "SHA256": "8F827D14DCC6D2A2C8B337E34E6AC382F316CC3F0827A1C660B286EA153C48D7"
+    },
+    {
+      "Path": "tools/build_workbook/Run-OverloadTiming.ps1",
+      "SHA256": "7E96B6AA98A85CA92A8FAFE7FF06ABB648E5BDC821639339CC3924DE34A37527"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PerformanceDirected.ps1",
+      "SHA256": "05250927527E692ADEEA13073EEFDE98CDFD40A091CF3013C0EDFF12E81B516C"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PerformanceFinalEvidence.ps1",
+      "SHA256": "7A645DB9B33E5EB498868D60665078EAFE8B18B6D31133E9ECAA49552B411561"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PerformanceGateSeries.ps1",
+      "SHA256": "5F8466426E1746536DFFA008B479784849BA99F28D398801F031C01C0F327D7A"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PerformanceIsolation.ps1",
+      "SHA256": "DBB619F8B0B924AF4777E116224CF1934CC2C8BA38608E3BE8D0335B63B86F60"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PlateauSlopeExperiment.ps1",
+      "SHA256": "98E5DDFF563C43332B9DDDF9A4B59F031A950B8278F16814F4B8E61094F854F5"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PostAudit03Focused.ps1",
+      "SHA256": "FBA2BF7B679A391CF48FB6E89B812C44A2169DBD2AD8009E8278053FF741F717"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PostAudit03NativeCAD.ps1",
+      "SHA256": "5EF233FB1F1915D6BBDC2CA45D2BF992BE011CAE39B344D31E7E5289C4548A2F"
+    },
+    {
+      "Path": "tools/build_workbook/Run-RectanglesOffsetCheck.ps1",
+      "SHA256": "8E74A3E881A10A8E19DEB03226CF4C31679B0DA60E2650953A85C20DD94CDAD0"
+    },
+    {
+      "Path": "tools/build_workbook/Run-RegressionBaselineTests.ps1",
+      "SHA256": "7E2EF7636182E2F4F801CDEBCB886D2FE28CA7FB2AE3FBAEB5AC1B2CE8D5A47E"
+    },
+    {
+      "Path": "tools/build_workbook/Run-SP35FocusedTests.ps1",
+      "SHA256": "4A73B7EF9AFAF2939009F4B3EE1CD122755E948C8916D083DF27694A6ABF41CE"
+    },
+    {
+      "Path": "tools/build_workbook/Run-SectionSolverTests.ps1",
+      "SHA256": "397A3612B75ACACC527022BB2374FD313C34BDAD482A70AC8F6DAD1430044B78"
+    },
+    {
+      "Path": "tools/build_workbook/Run-SharedRebarChecks.ps1",
+      "SHA256": "D45A9A9EB22A7F5A7C4F4D970E3D77A244951AF7E93AEE455410FDEE9535F40C"
+    },
+    {
+      "Path": "tools/build_workbook/Run-WorkbookInterfaceTests.ps1",
+      "SHA256": "EC6E1083BB94EFA264BE8CCA2F3F0DEBD3B7C877FD8AFD74D36659CEEBEE1754"
+    },
+    {
+      "Path": "tools/build_workbook/Save-Audit02FinalWorkbookSnapshot.ps1",
+      "SHA256": "ADBF8937260D5754DE13EF98F5AABB5A47EA5717C79E4B4C4327EC42A2829F78"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations.ps1",
+      "SHA256": "99068E970B40F46D9B8F6EA0BE6A55BC5A794A1B9EB63AA0962B7B50BCBAF5D7"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/Circle.png",
+      "SHA256": "3C54988B93461F48307DFD6ED9305BCCBB39EA3FA1B5BE754A0D486EDD56696A"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/HollowRectangle.png",
+      "SHA256": "65AFD7A4278F7F98704D9C0D13E92D71308DD21A0AB8B7DEDF0523DD676E19E0"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/Illustrations.json",
+      "SHA256": "A5A239D195C8789E84300A0B02EE9E9C153358E75E050B6E90A22C3EE9DFA2CB"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/PointedSection.png",
+      "SHA256": "7494B75AB713319837C1534688B3D35B53263DCF358B7F4CEF223DE864E2512A"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/README.md",
+      "SHA256": "9A8CE1DA3E9395B842AE5D43262BFE3FA3F66680834702E41B760D9F4A877146"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/Rectangles.png",
+      "SHA256": "A3317610C77AE4B24881E23B4FCF5556C23D76FDBB5808C793EE2BFFC9998CDD"
+    },
+    {
+      "Path": "tools/build_workbook/SectionIllustrations/Общие_иллюстрации.png",
+      "SHA256": "5D42674137A6E7E771B2D5E819AF624C2C28AEF3ED124AAD871D500145AE7EBB"
+    },
+    {
+      "Path": "tools/build_workbook/SectionRecipeApiText.py",
+      "SHA256": "3EF382E95AD714D07773C82DCC0198F8A08ED2D0C485B8035F82D32BBEDA14DE"
+    },
+    {
+      "Path": "tools/build_workbook/SectionRecipeAuthorScope.py",
+      "SHA256": "EDFB3951F53B5DB9E794C67C822CEB01E660CA5DC9D8860280452319AD3EEB4B"
+    },
+    {
+      "Path": "tools/build_workbook/SectionRecipeGuide.ps1",
+      "SHA256": "6730C30CD5B852E3287FB5F073E2D7299059BA29A193B9D24D8A21E391449F6C"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "SHA256": "D53F3757389EC68FB85688886E5D97A7CC05EA48EAA3C53F18DAE6424F8D4231"
+    },
+    {
+      "Path": "tools/build_workbook/Stage-OverloadRelease.ps1",
+      "SHA256": "BA5C904C8DC13511CD1313DBCC4F24ACD3B26DE90D36D4BAE75E8C9E323642F2"
+    },
+    {
+      "Path": "tools/build_workbook/StandaloneHelpText.json",
+      "SHA256": "C622D1FD0D20EC964923B0ABEBA80300932986E8F6EFDD82B39F740772D63E07"
+    },
+    {
+      "Path": "tools/build_workbook/StandaloneHelpText.ps1",
+      "SHA256": "A8D43D9AB5E1787C587FF5ADF082733C68A51D26AD6EB3270499F372F9B699EF"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-CoreRegression.py",
+      "SHA256": "BA09BA6D51F509277E7C9FB20CEEF085D7F5BB825388B676ABA3E3808CB0BC31"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-CoreRegressionTimingRepeats.py",
+      "SHA256": "930DD91E6A167ED8B1D4A6EDC33B430E1EA5CFE06B2F907DAF974E97F7E5E65D"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-FullOnOffAcceptance.py",
+      "SHA256": "C311F0E44AC7E655575687E824759A6E49259EB9DB2BD03161F5B200BD10C37B"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-GeometryFinal.py",
+      "SHA256": "1C7E7121B70775F47584696E8AF3BFAAF496C7D7289D8E18B8DFF75B67E08E11"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-GeometryFull.py",
+      "SHA256": "42949976829B9FF130F0CE37B208F90CAFB42CAE8C88226F90026CBA867EDF95"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-GeometryFullPerformance.py",
+      "SHA256": "303334E672C98FB399D33072E2B49A77842AECE6D0107B785C1B01AEE928C51F"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-NativeCADPerformance.ps1",
+      "SHA256": "B3B8F034A2DFA563ECD275A26A1912F80EBB6EADC09716C71286F7ECC2F7A3F8"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-OverloadTiming.py",
+      "SHA256": "74981B8729CB59D7A68DB3C497A3B87FDB6AAC0975F8E189ED5BEA94E58E0A24"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-PerformanceEvidence.ps1",
+      "SHA256": "1D80110811900603570034E79F62A1861A097A0A979312A0049EFB11888412A8"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-RoundedBehaviorChanges.py",
+      "SHA256": "6B3D256E299CDE6F51D35FFB4739E3FFF845F9EE2459590F934FA904903CCDD3"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-SectionRecipeGuide.py",
+      "SHA256": "E833D32C2267118913585FF3A8B9474806D9EE3B57E0CDD5FE299C30355ADA20"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-SnapshotCodec.py",
+      "SHA256": "167441306F115DF3826F41A345B5CA2A1B7B88655D6E3C3B5FD510136D1D0513"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-SnapshotIOPhases.py",
+      "SHA256": "826880A0B7709BC4CB5F6EF1E68FD193393712BB3EAB7A577FB06B50521DB4B5"
+    },
+    {
+      "Path": "tools/build_workbook/Test-AllHelpNavigation.ps1",
+      "SHA256": "ED8C0BC9F4191BCB7ECD416711559061DCF6805996BBE523E0E64111171CC571"
+    },
+    {
+      "Path": "tools/build_workbook/Test-Audit02ExpectedPreservation.ps1",
+      "SHA256": "EDA101168AB1D8B6C66721CF89EC3A05DE0535125453814BF47D6FB3C9D02CB3"
+    },
+    {
+      "Path": "tools/build_workbook/Test-Audit02FinalSourceContracts.ps1",
+      "SHA256": "4BC1AA1A4F5353BDF0253812636E07FFA64B722ED38836054A137E578A56D827"
+    },
+    {
+      "Path": "tools/build_workbook/Test-Audit03ConfigFormatting.ps1",
+      "SHA256": "3947FA6A67BCB36A693BFF61F4E79A29701C54D34344A20046F2B9AC728CF921"
+    },
+    {
+      "Path": "tools/build_workbook/Test-Audit03ConfigMetadata.ps1",
+      "SHA256": "8DA40962AE4A633DDB1734C9BE08BE864925D3E87760197EC40E852798C3A50B"
+    },
+    {
+      "Path": "tools/build_workbook/Test-Audit03SourceContracts.ps1",
+      "SHA256": "090D795B03B63C4FADB4655441A477BF7416F58CC6F84BBBC4CD7F6F6A90F359"
+    },
+    {
+      "Path": "tools/build_workbook/Test-AutomaticMeshWorkbook.ps1",
+      "SHA256": "D9A30AAD1E64ED61C15614C9CDB26AD8C73C2154315B270844C0A97DF3EA2973"
+    },
+    {
+      "Path": "tools/build_workbook/Test-BatchSummaryLoads.ps1",
+      "SHA256": "1D742DB4C605F9EBF428AAFC63855AFE6D293EC63EEEFC0AE63DB9A3186A89C7"
+    },
+    {
+      "Path": "tools/build_workbook/Test-CADKernelRoundoff.ps1",
+      "SHA256": "E77918F4B398D19055D600F002347C710ECD3081ACE7974E4C935E2F0A82ABC3"
+    },
+    {
+      "Path": "tools/build_workbook/Test-CalculationFormatting.ps1",
+      "SHA256": "2DE8FE631C17BDB2C13D9F31D79A2F05157D14AAC5A467AA1D6F8829FD5381E0"
+    },
+    {
+      "Path": "tools/build_workbook/Test-CalculationSnapshotLifecycle.ps1",
+      "SHA256": "7DF751BE83158E917085A8194DEB90E04241EF84D2C6B851EA5E73A66D5AECDE"
+    },
+    {
+      "Path": "tools/build_workbook/Test-DependentRowsTemplate.ps1",
+      "SHA256": "8464C4D3EBAB8CF788092C113CA32DD8EBBE538687D6BFC41D91D15C3B80BF55"
+    },
+    {
+      "Path": "tools/build_workbook/Test-FocusedAcceptanceVerifier.py",
+      "SHA256": "66D4DEB4F2E3FBBC7DA326A11285B7E96D7D023E9612E06A2FEAC296FE0C499D"
+    },
+    {
+      "Path": "tools/build_workbook/Test-FullCoverageVerifier.py",
+      "SHA256": "63FCC98D5BAD05A73360754B9908EF8D5E1A1ECF76C36AC6750D1B42E6CBC272"
+    },
+    {
+      "Path": "tools/build_workbook/Test-HelpNavigation.ps1",
+      "SHA256": "687FEECD27D339CE7EB2929AFDE4CA516D3F9E8ED537DF82B57DA0D9742F2433"
+    },
+    {
+      "Path": "tools/build_workbook/Test-HelpPictures.ps1",
+      "SHA256": "A7D1430542EB6E7BCDD15BEB0618120A3A4E4724D60818810024DE7B7814CE61"
+    },
+    {
+      "Path": "tools/build_workbook/Test-MultipleSnapshotFiles.ps1",
+      "SHA256": "03635792DC5932ABEF8E014111E6C1A106C80AEC9660C171D5E853EEC83AFF94"
+    },
+    {
+      "Path": "tools/build_workbook/Test-RecipeGuideBulkWrite.ps1",
+      "SHA256": "CB3611D0AEEFE553C8428B944EEDC2F4FE772FA8B51C31C3A27658B1DCBED402"
+    },
+    {
+      "Path": "tools/build_workbook/Test-RectanglesIndependentSettings.ps1",
+      "SHA256": "31603C51A36E7A596DAAAFDFB1030CD8B52260838BFD804998077CF1BFDE04FE"
+    },
+    {
+      "Path": "tools/build_workbook/Test-SP35SourceContracts.ps1",
+      "SHA256": "A52C5F8679B4D2C731B828CB73E91FF7FA71AB8C12D444441127A7CBC7F05B73"
+    },
+    {
+      "Path": "tools/build_workbook/Test-SP35StateDisplay.ps1",
+      "SHA256": "60B1D71EBD3E90A15B16B03EFF189BA026BA38B51DBC0C0342B153543F4EC9CC"
+    },
+    {
+      "Path": "tools/build_workbook/Test-SettingsHelpStyle.ps1",
+      "SHA256": "952F108E02203C51B6A53BF4FF0A52F05C3CACE92812C00C2F04795BC3C8D055"
+    },
+    {
+      "Path": "tools/build_workbook/Test-SnapshotReleaseNative.ps1",
+      "SHA256": "A9187C8DC2F86201CDFD840DC48E3844A5C353DDB80A39EADFCB4584F3730761"
+    },
+    {
+      "Path": "tools/build_workbook/Test-StructuredGeometryWorkbook.ps1",
+      "SHA256": "AAE441271CA23ECB66BB98006980CCA60B9B3410799728185C628FFC77FDE5DC"
+    },
+    {
+      "Path": "tools/build_workbook/Test-WorkbookLayout.ps1",
+      "SHA256": "6E56E09839AC7AC8F6BD361563A11F977C5D7C76F7673A0474D1DD7D5EB53E1A"
+    },
+    {
+      "Path": "tools/build_workbook/TorsionPostprocess.ps1",
+      "SHA256": "2D9671C24663AA5209DC63F8284A4F0FB93E5C6E6B90309650152BC1CAC6CD31"
+    },
+    {
+      "Path": "tools/build_workbook/Update-Audit03SavedWorkbookConfig.ps1",
+      "SHA256": "0A8710043F05ED99A4575F1C11F10E8EAB6C0249498D1F99266125C2282C46B0"
+    },
+    {
+      "Path": "tools/build_workbook/Update-Audit03TestModule.ps1",
+      "SHA256": "4430A8E165590A61E1A0F08506B4BCCC904018C391070B133BD4F42724004C57"
+    },
+    {
+      "Path": "tools/build_workbook/Update-Audit03WorkbookHelp.ps1",
+      "SHA256": "B420BB585A97CB46DAFE22342874A47618449CB0AF03A808284EFCF2F26522AE"
+    },
+    {
+      "Path": "tools/build_workbook/Update-AutomaticMesh.ps1",
+      "SHA256": "5487CCB54712FA8EEEE4A48339A079F916DE4914BA91C074087EA52C4286BD9F"
+    },
+    {
+      "Path": "tools/build_workbook/Update-HelpPackage.py",
+      "SHA256": "DCE9346D2FB6F7832B6553F303E59B51270530D50EA93996501FBFEF67701DA1"
+    },
+    {
+      "Path": "tools/build_workbook/Update-HelpPresentation.ps1",
+      "SHA256": "C925E99564CE5553848C1A4712042957DBF77B548C929AF74AA969EF232F172C"
+    },
+    {
+      "Path": "tools/build_workbook/Update-HelpSourceLinks.py",
+      "SHA256": "FC24D9A8D622F81731D230B9DFF1912D129DB4C89C6FDC171B894BF887785090"
+    },
+    {
+      "Path": "tools/build_workbook/Update-PrivateWorkbookCode.ps1",
+      "SHA256": "CA2FEBF9C286BE03ED9DD3F2E8FC5F0E99C83D04533FEB0DEEDE3DBEDE1F7373"
+    },
+    {
+      "Path": "tools/build_workbook/Update-RecipeAuthorGuide.ps1",
+      "SHA256": "559DD2045E2D5D2DA29624D71276C6F40EB11EC8DBA8D0ECB3EEC5EEB3A986AA"
+    },
+    {
+      "Path": "tools/build_workbook/Update-ReviewHelp.ps1",
+      "SHA256": "8B80038575FC7C99BCD03ADE42C05C2CD384F5E684F27D74C74D890ED615A05C"
+    },
+    {
+      "Path": "tools/build_workbook/Update-SectionInputHelp.ps1",
+      "SHA256": "5B621612F22F670B45BB89881D6233F7964D000DBFDCBBE08F7128C00557D9F7"
+    },
+    {
+      "Path": "tools/build_workbook/Update-SectionRecipeGuide.ps1",
+      "SHA256": "7D02A595A03436EE5341EE8428E2E6D4617C19B6B22A90B83B7DD35257085D66"
+    },
+    {
+      "Path": "tools/build_workbook/Update-SectionRecipeTypes.ps1",
+      "SHA256": "2DDE6BFB643477D2274431C47BD8964E20D6F5663ABB1DF435560C815CB6154C"
+    },
+    {
+      "Path": "tools/build_workbook/Update-StandaloneWorkbookTexts.ps1",
+      "SHA256": "A1AB39FDE02FAF30F7116202C816324B172E13BB7057B0CC97D0171137807479"
+    },
+    {
+      "Path": "tools/build_workbook/Update-WorkbookHelp.ps1",
+      "SHA256": "CB8861868573F086B72AFADD1EFED3E63619B738F0407EF50D7D7AD783974ED6"
+    },
+    {
+      "Path": "tools/build_workbook/Validate-Workbook.ps1",
+      "SHA256": "E051CD7062FFED9E12282DE7FD3E536618038F5B45C8BF7B86DA05FCF9CB8055"
+    },
+    {
+      "Path": "tools/build_workbook/VbaTestNameExceptions.json",
+      "SHA256": "831A7D5E97C1F61E918D7F18C1E639BC37E1203D78958AE29C0D448F9DE8D21D"
+    },
+    {
+      "Path": "tools/build_workbook/VbeCommentText.py",
+      "SHA256": "3BB15F4D52A2B9B99B19E580E75207E316CA0D404C0B0BD54AC653EE54C03617"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-Audit02CloseoutComments.py",
+      "SHA256": "F2B14DED7EC1C28DBF1420AEA84D7FC1477253FA0CF5B0CB134935BF269C05CE"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-Audit02CloseoutEvidence.py",
+      "SHA256": "36C74B0AC5A2D9478216F69DAB4E3C0F265903FF9292C187068AD9810B1E091B"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-Audit02CloseoutWorkbook.py",
+      "SHA256": "7E2950AA87ADC3F7C42EC8D2E10CC90F1D41CC17CB8B75DFEFA0C7B7A2759045"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-Audit02Evidence.py",
+      "SHA256": "344D075152D9610A691E8158C5AA43A2D215560EA5198EBCAB377300D5F4A6E0"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-Audit02Examples.py",
+      "SHA256": "E7B9AED3165A1994CF0859B5D98F4D3490659026737C7F0C499529D37D88CF14"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-Audit02Workbook.py",
+      "SHA256": "16986773D3816F810CAD85E4FCAAD19B8280DA88BAD7C46EA40D59A596C6F3CD"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-AutomaticMesh.py",
+      "SHA256": "9ABE41C540F24CEE3BC57061F9ED08ACF6C8346B85AE0DB05F8EDE7FC10EB39A"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-BatchSummaryLoads.py",
+      "SHA256": "2D0607E6C667B2586F05CBDDFD679DFD9C9389AE442B5CD1650113953CA2ABDE"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-CalculationSnapshotRelease.py",
+      "SHA256": "DE02A8950B5EAFE062BE18E6810F6D91E3C07DCE7C814CBF93A56D4B5F13D52B"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-CollapsedGeometryMessages.py",
+      "SHA256": "C6A499EDBD887F62F0A22E16FB1A1CC40175AE9108C9483565C999EAE708F734"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-CommentOnlyChanges.py",
+      "SHA256": "209167F9E2835DDAE5398B2932833EB218D81AA168E25499967A3C74F29AA8EB"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ContactResponsibilities.py",
+      "SHA256": "0093FD7FD4005DBFE31B99A309FA619A01CAC8844E16DCFF35D7DBBF517FC62B"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ContourFormatRelease.ps1",
+      "SHA256": "85A70A20BF29750B879912C8D840A02F477DAAF73D5AF4B50785689575436CE9"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-DependentRowsRelease.py",
+      "SHA256": "43B579E7B8D575211142CE878CA6DD88315B0109DBB29470C9D0868548A26492"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ExcelGuardGuide.py",
+      "SHA256": "5A1D44D77AA998F4D0A8DBCE076080C317F0ADE1F7E2A11A544948E0889CB9C1"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-FaceDiameters.py",
+      "SHA256": "CF344323DCF1A6A0F8920F220DC0499FA10A1E0D77AFC04F29A413D80A0BFE38"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-FocusedAcceptance.py",
+      "SHA256": "25AAB7C88741D90F0A3D7BE658BE862B87DCEDEF68184F49B49E02A2D1D23C67"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometryAuxiliary.py",
+      "SHA256": "3948A317209472B6E321277EEF3034553D27D255E247260AA012D37A66F108C3"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometryBaselineCode.ps1",
+      "SHA256": "5F00E9B46334619F03CAAC5122149B7CB4B5DBCBE4E0542A3C22AA2F12A2D539"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometryFullPlots.py",
+      "SHA256": "4EBCB1E8580E9E97CF03AC17CE678CC67EF60E269C951E9B8E7A2B45DD3B7450"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometryReleaseData.py",
+      "SHA256": "0936AA81E9C1C505B4816C9DE8CA0D4888197CA7A22310DCDAF95450BEA9C1DB"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometrySolid.py",
+      "SHA256": "095704CC37F8704398967C389BE492AAB468EAD591129E0E738610C94AD58305"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometrySolidWorkbook.py",
+      "SHA256": "313FC7D9E31FEFAA93FD440711291E76C0AA1DE2D9D4C2B290174DC67124F3E7"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GuidePresentation.py",
+      "SHA256": "8D7F1345F57CBFA505004E56F700F8E1110506986EBC62341049CEC98D113F87"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-HelpPackage.py",
+      "SHA256": "20BDEC5CE1359076844C880A0F43CCA647861E2FA195544B53D8F576FE8B8E64"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-HelpPresentation.py",
+      "SHA256": "D71BA0621F10C80D05CB903D9371BF529F1CFDF1E3A0AE4D21B454720F6BE2CE"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-HollowRecipeOracle.py",
+      "SHA256": "FF73929B88C540CC7886FDD58035EFE717CC9B32C44FB974A6464DDE24FCE6B5"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-IndividualRowContours.py",
+      "SHA256": "BF9EE5C6492A40ABDCFF30FC925E33069B54D6C0AF13AAAE1DBB9AC00DAA0EF2"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-LambdaHarnessBridge.py",
+      "SHA256": "46A2509794FD8443270AD42FE2A0967B8EBAF53062C2C3137DC3FA6D8B4041D1"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-MultipleSnapshotFiles.py",
+      "SHA256": "23E450C01C384D9554752B4506A9F8392BF0A667426DA9F94625BA6ED3182404"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-NativeHarnessBridge.py",
+      "SHA256": "72261D375AA277AAD35103B91BE0720047997E3B85BBB8F3C3C6FC3F3D923B96"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-PlateauFactorCode.ps1",
+      "SHA256": "93FCFFFD2558459F8D82F23C7EAA8B0DAD40894FEFBFC9C7352A302FC5BF5EA8"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-PlateauFactorWorkbook.py",
+      "SHA256": "98EA6D9D4929552D593E817B285E891F47FB36A93BEDFFA9EFABCF2FD4E4C7C6"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-PlateauSlopeRelease.ps1",
+      "SHA256": "D179D2B7F07C3E5B90DEB931F407984947F2BA6A606C4B5FA8D945BBDEC7BAB0"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-PostAudit03Preservation.ps1",
+      "SHA256": "042F88215B37BE452E50E1C7845B22B7C9E28B4A2370374A90B6994C62580ACF"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-PostAudit03VbaEquality.ps1",
+      "SHA256": "EF951ADF8C077E3009C3454CA8B7A025176E0DC23E506312C5055A24361ADBAC"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ProfileSnapshotBridge.py",
+      "SHA256": "9F08B9AC06C90A7AC3356EB19C04CE675021D888FD5552320488CAF37525C7E1"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ProgramMessages.py",
+      "SHA256": "2BD086B68D18BBE10971EBF98B5FF57ED86C3E964459F9EE405CD8B2870EAAEE"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RebarContactBuilder.py",
+      "SHA256": "349D5E9AF33983C3601923CD93320714DE2FBBA2D2F706D28439F0C1695805A4"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RecipeBoundaries.py",
+      "SHA256": "763C565E014750F34FDA1D61DD9C076926AA5676BED2287E665972B609F00B41"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RecipeComments.py",
+      "SHA256": "65961BB082CBCB5DBE2D84E707C87CE5C6C5EC496E7E98E70BFBDED492A54571"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RecipeConfigPreservation.py",
+      "SHA256": "5D6EFDE7EC33A8924D3CDB125EABF5108DAECD54E99A237CB16D8539A7ABE4AB"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RecipeResponsibilities.py",
+      "SHA256": "E00C6293C11070CCE003E2C6FB74F55E2004FDCDFE5FE92377B9CF2D4D3F71F6"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RecipeSimplification.py",
+      "SHA256": "BF7D11AB4E065E224A55546E8C5D3754C6033F1C1A36944000FCDA0164D8133D"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ReviewWorkbook.py",
+      "SHA256": "EE678DFDCE9827624972F88ACE310C98725F94802CBE279FCACE3344F9249440"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RoundedRecipeOracle.py",
+      "SHA256": "5EAFAE34E5A5F511C48B0AD53E0FFA1BD3552DBDFB1150261A8988A1F8B3F637"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SectionNamesGeometry.py",
+      "SHA256": "5798AF943E73A7353215FD82F5DB41D15C6DC16CCCCC972BDECC260AAA741510"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SectionNamesRelease.py",
+      "SHA256": "7A5621E490CE16D2EA8EEABAA0ED8215E22CA5EAE8AB465B56C2017E77FE2BC0"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SectionRecipeGuide.py",
+      "SHA256": "0091A2B447A3F4F7410BF1EE3EA184F620CF91543CF1A836F69C78117370FFCB"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SectionsSheetPreservation.py",
+      "SHA256": "CB6BB026708C2EB009BF1B31EEF2F2E5A4D06C94E3ECE6B544B1BD64DAC74716"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SegmentNaming.py",
+      "SHA256": "A6E7CF2FD17728600981F7AE217449D80AC46E9E93F7CA02DD677DCC1A4A2EC2"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SegmentNamingScope.py",
+      "SHA256": "7B83E695C8227E9BA72E03EA86D43EF8913667B318A37B844866A22B8D3A071E"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SharedRebarPreservation.py",
+      "SHA256": "A38D7DB2575C2F095ABA07F3BF3F8EDC3AF7273E7607A59D19598E1B16280B8D"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-SharedRebarRelease.py",
+      "SHA256": "BB8C7F0A301F8AF2117B543AF283C069C7E8413407B4EB3D15B1747ABD53674D"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-StabilityDurationMatching.py",
+      "SHA256": "EC2CD8897401C30883F9581CCFE23D9BF0D3C5019CF9B44C3E676FF9D069F818"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-StandaloneHelp.py",
+      "SHA256": "369A1185F83649BBEF9EAEF045DFCE013B571DEF5A4EC03E5272B5CDCDF7F78F"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-UnboundedContinuation.py",
+      "SHA256": "DB36F7664D693572A09E9C389F4365905FAE75FD2F7AF89FBB69F7995B2DD3D5"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-ValidationPlanCoverage.py",
+      "SHA256": "37D46CB727CB79FFA714E425EE8C9B2271B1568884ACB8FA5C9AAD5F533C3DE1"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-WorkbookLayout.py",
+      "SHA256": "B46AB25B1ABBC52E9142B04B2F8CF9EE58FB6DE8215947BDD006CE9B6BE47697"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookHelpEvents.vba",
+      "SHA256": "6EED9FDA89164136CBC9A9EC3862951AFA47526EC0AC4251581198E21D29CB07"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookLayout.json",
+      "SHA256": "ADB23E1EE5E1CC7E95CB26CB12D6EB8F39C9B425ECDEC8C009925FC874C7DECA"
+    },
+    {
+      "Path": "tools/build_workbook/WorkbookLayout.ps1",
+      "SHA256": "99B3431F0BA45CCD422DBDA1A25752B86E0DE6266A0D7BC9D9379A30489E7CA9"
+    },
+    {
+      "Path": "tools/build_workbook/fixtures/FocusedSavedSection.json",
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "tools/build_workbook/fixtures/NativeCADConnection.dwg",
+      "SHA256": "D5C98576F42C3F9DCA2B7604935310DDBDA90CA10D42414A35D6FE72D7102BB5"
+    }
+  ],
+  "PrecedingDirectedFocused": "docs/regression/FocusedAcceptance_2026-11-20_AxialTorsion_Precheck"
+}

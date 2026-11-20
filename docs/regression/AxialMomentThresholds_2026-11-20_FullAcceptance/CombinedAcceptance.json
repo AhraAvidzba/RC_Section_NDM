@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "08C71B70BDC5D8298220B64D17A39F7B14D457903BD9CCA63AB225C3D91D5E16",
+  "CoreSuites": 202,
+  "CorePassedAssertions": 905898,
+  "FocusedSingleCases": 122,
+  "FocusedPassedAssertions": 14010,
+  "IndependentIntegrals": 563,
+  "IndependentlyReviewedNumFailStates": 7,
+  "SameWorkbookBytes": true,
+  "SingleInvocation": true,
+  "CoreDirectory": "docs\\regression\\FullOnOff_2026-11-20_AxialTorsion_Run02",
+  "FocusedDirectory": "docs\\regression\\FullOnOff_2026-11-20_AxialTorsion_Run02\\Focused",
+  "FocusedRunSHA256": "8362B6E83449C35959BD9A81B9449D2DF64A7DE28A33678194048F90B1DC7DFD",
+  "IndependentSHA256": "091625BCFADACE704DBBC5749344708FCC2E487EC67281A0D3FC35D6F2122100",
+  "Meaning": "All current acceptance groups use exactly the same production workbook; invocation is recorded above."
+}
