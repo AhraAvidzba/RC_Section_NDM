@@ -1,0 +1,160 @@
+﻿{
+    "Status":  "PASS",
+    "Assertions":  99,
+    "SourceSHA256":  "48D9873EBE5BB5A36C87E32FD627BA896DE5A82729BFD7770FAC988EC7EC7B1E",
+    "SignCases":  [
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$Q$44",
+                          "Value":  1.234567,
+                          "Tension":  true,
+                          "Color":  6737151,
+                          "Text":  "1.2"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$Q$44",
+                          "Value":  -1.234567,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "-1.2"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$Q$44",
+                          "Value":  0,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "0.0"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$T$44",
+                          "Value":  1.234567,
+                          "Tension":  true,
+                          "Color":  6737151,
+                          "Text":  "1.2"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$T$44",
+                          "Value":  -1.234567,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "-1.2"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$T$44",
+                          "Value":  0,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "0.0"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$Y$44",
+                          "Value":  1.234567,
+                          "Tension":  true,
+                          "Color":  6737151,
+                          "Text":  "1.2"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$Y$44",
+                          "Value":  -1.234567,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "-1.2"
+                      },
+                      {
+                          "Sign":  "Tension",
+                          "Cell":  "$Y$44",
+                          "Value":  0,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "0.0"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$Q$44",
+                          "Value":  1.234567,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "1.2"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$Q$44",
+                          "Value":  -1.234567,
+                          "Tension":  true,
+                          "Color":  6737151,
+                          "Text":  "-1.2"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$Q$44",
+                          "Value":  0,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "0.0"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$T$44",
+                          "Value":  1.234567,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "1.2"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$T$44",
+                          "Value":  -1.234567,
+                          "Tension":  true,
+                          "Color":  6737151,
+                          "Text":  "-1.2"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$T$44",
+                          "Value":  0,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "0.0"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$Y$44",
+                          "Value":  1.234567,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "1.2"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$Y$44",
+                          "Value":  -1.234567,
+                          "Tension":  true,
+                          "Color":  6737151,
+                          "Text":  "-1.2"
+                      },
+                      {
+                          "Sign":  "Compression",
+                          "Cell":  "$Y$44",
+                          "Value":  0,
+                          "Tension":  false,
+                          "Color":  14083324,
+                          "Text":  "0.0"
+                      }
+                  ],
+    "InitialFormulaErrors":  [
+
+                             ],
+    "NoWorstFormulaErrors":  [
+
+                             ],
+    "PID":  52424,
+    "StartTicksUTC":  639307681698660669,
+    "FreshDefaults":  true
+}

@@ -469,7 +469,7 @@ End Sub
 Private Sub PutPointLoadHeaders(ByRef data() As Variant, ByVal forceUnit As String, ByVal momentUnit As String)
     data(GROUP_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Нагрузки в точке приложения"
     data(COLUMN_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Исходные заданные нагрузки"
-    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного" & vbLf & "изгиба (если применимо)"
     data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_N) = "N, " & forceUnit
     data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MX) = "Mx, " & momentUnit
     data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MY) = "My, " & momentUnit
@@ -1216,7 +1216,7 @@ Private Function SummaryForDisplay(ByVal snapshot As Object, ByRef saved() As Va
     End If
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
-    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного" & vbLf & "изгиба (если применимо)"
     mTorsionWriter.ApplyBatchSummary data, snapshot
     SummaryForDisplay = data
 End Function

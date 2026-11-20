@@ -1,0 +1,29 @@
+{
+  "Status": "PASS_WITH_USER_CONFIRMED_DROPDOWN",
+  "CandidateAssertions": 97,
+  "CleanAssertions": 99,
+  "RuntimeHeaderStages": [
+    "Calculation Excel",
+    "Calculation File",
+    "File snapshot restore"
+  ],
+  "PreservedInputCells": 3504,
+  "PrintedBorderEdges": 4034,
+  "PrintedPages": 4,
+  "IllustrationsExact": 5,
+  "NativeVBAComponents": 203,
+  "WorkingVBADelta": "Two heading string literals only",
+  "DropdownReview": "User confirmed: выпадающий список работает; automated screenshot capture unavailable",
+  "WorkingSHA256": "AC804DAEA17B41C4D1CAA96499C9C16D4D550689ECCF5EFAB95EAD19A1974417",
+  "CleanSHA256": "48D9873EBE5BB5A36C87E32FD627BA896DE5A82729BFD7770FAC988EC7EC7B1E",
+  "EvidenceSHA256": {
+    "CandidateNativeReview.json": "A516FA715F7A8FB639B1B850F4945E3E1928394FAC517C58B0A320689D2DF39B",
+    "CleanNativeReview.json": "E4CAA3614A3096F66202D0FC870317C583BD3CA9A174808F79B3ED54E934BC5C",
+    "RuntimeHeaderReview.json": "E4FDCC9DEA66E96E9A7DF15349EE2AF379067A172CD08BED49BA4C0E24A158BF",
+    "PackageReview.json": "7D78D1A6ADE4509838B6C6ED766BA6887D57B2F792E7B5BA7BAAED40F43472A7",
+    "VBAFidelityReview.json": "B2537A17C29E9C8E86ECC1A7A7B09FA0D1504DE58B606FC56FFC2676CD75DFB0",
+    "PublicationReview.json": "10EE6DBF11C91A0F4AA040833677E3FA7C20602DFBA1EF4D621B7BAD0697DF66",
+    "RadiusUIReview.json": "FB9F8473860C9E993F58BC811036AD6982C6EDF1FD1A242266E87716A9734838",
+    "InitialFileTestSetupFailure.json": "30BBF4DB1D384F0DCACB2AC0B2AD187F229D6BD3E5EF8FD155DEE57105297585"
+  }
+}

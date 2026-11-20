@@ -447,7 +447,7 @@ def capture(source, baseline, destination):
                 require(cell.get('t') == 's' and cell.find(M + 'f') is None,
                         f'Config!{address} должен содержать буквенный выбор')
                 value = ''.join(strings[int(cell.findtext(M + 'v'))].itertext())
-                links[name][address] = ['literal', value]
+                links[name][address] = ['literal', 'SP35' if address == crack_value else value]  # Штатная методика новой сборки — СП35; в книге-образце может быть выбран СП63.
         for address in example_addresses(name, cells, strings, xml(parts, 'xl/workbook.xml').find(M + 'definedNames')):
             # Отступы и укладка воспроизводят арматуру примера, а параметры подписей — его схему.
             links[name][address] = example_input(cells[address], strings)

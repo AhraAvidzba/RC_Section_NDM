@@ -1,0 +1,6 @@
+{
+  "Status": "FAILED_TEST_SETUP",
+  "PID": 34940,
+  "StartTicksUTC": "639307681973539798",
+  "Reason": "The private test switched Excel geometry to File before creating the File GeometryPreview; the missing-file diagnostic was correct. Test setup fixed to form geometry separately for each storage mode."
+}

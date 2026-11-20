@@ -1,0 +1,7 @@
+{
+  "Status": "USER_CONFIRMED",
+  "UserMessage": "выпадающий список работает",
+  "AutomatedUIComplete": false,
+  "Reason": "User confirmed the dropdown after the window capture timed out. Probe was closed/disconnected; no automated full-UI PASS is claimed.",
+  "ConfirmedUTC": "2026-11-20T10:55:23.4499445Z"
+}

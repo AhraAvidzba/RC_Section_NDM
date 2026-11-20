@@ -1,6 +1,5 @@
 VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-11-20 01:22:35
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -64,7 +63,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal target As Hy
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     Set targetCell = helpSheet.range(addressText)
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.Goto targetCell, True
+    Application.GoTo targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -102,6 +101,7 @@ Private Sub RevealHelpOutlineGroup(ByVal helpSheet As Worksheet, ByVal targetRow
 SafeExit:
 End Sub
 
+
 ====================================================================================================
 COMPONENT: Лист1
 TYPE: 100
@@ -110,6 +110,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист2
 TYPE: 100
@@ -118,6 +119,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист3
 TYPE: 100
@@ -126,6 +128,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист4
 TYPE: 100
@@ -134,6 +137,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: Лист5
 TYPE: 100
@@ -142,6 +146,7 @@ LINES: 3
 Option Explicit
 
 ' Лист книги: отображение пользовательских данных и результатов.
+
 ====================================================================================================
 COMPONENT: CLoadPathDescriptor
 TYPE: 2
@@ -437,6 +442,7 @@ Public Function vector() As CLoadPathVector
     result.Initialize nOffset, nBase, mxOffset, mxBase, myOffset, myBase
     Set vector = result
 End Function
+
 
 
 ====================================================================================================
@@ -751,6 +757,7 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CLoadPathVector
 TYPE: 2
@@ -847,6 +854,7 @@ End Property
 Public Property Get myBase() As Double
     myBase = mMyBase
 End Property
+
 
 
 ====================================================================================================
@@ -1078,6 +1086,7 @@ Public Property Get DiagnosticText() As String
         ResultInternalStatusToText(mInternalStatus) & " / " & ResultCodeToText(mResultCode)
     If Len(Trim$(mResultComment)) > 0 Then DiagnosticText = DiagnosticText & "; " & mResultComment
 End Property
+
 
 
 ====================================================================================================
@@ -1341,6 +1350,7 @@ Public Function StatusPriority(ByVal statusText As String) As Long
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CSectionLoadState
 TYPE: 2
@@ -1508,6 +1518,7 @@ Private Function NormalizeMy(ByVal momentValue As Double) As Double
         NormalizeMy = mMomentFilter.NormalizeMoment(momentValue, mConcreteDepthForMy)
     End If
 End Function
+
 
 
 ====================================================================================================
@@ -1845,6 +1856,7 @@ Public Function IsStateBasePurpose(ByVal purpose As ECalculationPurpose) As Bool
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modGeometryPrimitives
 TYPE: 1
@@ -2133,6 +2145,7 @@ Private Sub GeometryError(ByVal reason As String)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modGeometryTypes
 TYPE: 1
@@ -2330,6 +2343,7 @@ End Function
 
 
 
+
 ====================================================================================================
 COMPONENT: modResultStatus
 TYPE: 1
@@ -2468,6 +2482,7 @@ Public Function ResultKindToText(ByVal value As EResultKind) As String
         Case Else: ResultKindToText = "Generic"
     End Select
 End Function
+
 
 ====================================================================================================
 COMPONENT: modSectionRecipeApiGuide
@@ -6206,6 +6221,7 @@ LINES: 3732
 '
 
 
+
 ====================================================================================================
 COMPONENT: modSectionRecipeTypes
 TYPE: 1
@@ -6547,6 +6563,7 @@ Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal SourceReferen
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modSolverWorkStats
 TYPE: 1
@@ -6612,6 +6629,7 @@ End Sub
 Public Function UltimateStrainIterationCount() As Long
     UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Function
+
 
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
@@ -6887,6 +6905,7 @@ Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason 
         ByVal transitionMessage As String, ByVal successMessage As String, _
         Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
+
 
 
 ====================================================================================================
@@ -7200,6 +7219,7 @@ Public Property Get TestBuildSeconds() As Double
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CGeometryDiagnostic
 TYPE: 2
@@ -7239,6 +7259,7 @@ Public Property Get detail1() As Double: detail1 = mDetail1: End Property
 Public Property Get detail2() As Double: detail2 = mDetail2: End Property
 ' Возвращает адрес исходного параметра или текстовую ссылку на место его задания.
 Public Property Get SourceReference() As String: SourceReference = mSource: End Property
+
 
 
 ====================================================================================================
@@ -7862,6 +7883,7 @@ Private Sub PathError(ByVal description As String, Optional ByVal code As String
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CGeometryRegion
 TYPE: 2
@@ -7992,6 +8014,7 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
     contours.Clear
     contours.AddMaterialRegion mRegion, "REGION", "Достоверный контур бетонной области."
 End Sub
+
 
 
 ====================================================================================================
@@ -8233,6 +8256,7 @@ Private Sub Fail(ByVal reason As String, ByVal SourceReference As String)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CPolygonSpec
 TYPE: 2
@@ -8394,6 +8418,7 @@ Private Sub SpecError(ByVal reason As String, Optional ByVal SourceReference As 
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipeCircle
 TYPE: 2
@@ -8523,6 +8548,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByVal diam
     If rebar.count > 0 And rebar.diameter > 0# Then facade.RebarLabel "Circle", "Circle.Axis", 0#, 1# ' Общая подпись всех круговых рядов над сечением.
     facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionRecipeHollowRectangle
@@ -8830,6 +8856,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipePointedSection
 TYPE: 2
@@ -9088,6 +9115,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     If sizes.widths(1) > 0# And -sizes.b / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.b / 2#, sizes.h / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1# ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
     If sizes.widths(2) > 0# And maxX - sizes.b / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.b / 2#, maxX, sizes.h / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1# ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
 End Sub
+
 
 
 ====================================================================================================
@@ -9368,6 +9396,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CConcreteElement
 TYPE: 2
@@ -9589,6 +9618,7 @@ Friend Sub RememberGeometryHash(ByVal value As String)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CConcreteRegion
 TYPE: 2
@@ -9777,6 +9807,7 @@ Friend Function MatchesPreparedProperties(ByVal x As Double, ByVal y As Double, 
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CRebarContactBuilder
 TYPE: 2
@@ -9885,6 +9916,7 @@ Failed:
     Err.Raise number, owner, reason
 End Function
 
+
 ====================================================================================================
 COMPONENT: CRebarGroupAnnotationBuilder
 TYPE: 2
@@ -9970,6 +10002,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     If right$(textValue, 1) = "." Then textValue = left$(textValue, Len(textValue) - 1)
     FormatNumberInvariant = textValue
 End Function
+
 
 
 ====================================================================================================
@@ -10257,6 +10290,7 @@ End Property
 Private Sub RequireMutable()
     If mReadOnly Then Err.Raise vbObjectError + 3110, "CRebarLayout", "Опубликованную арматурную раскладку нельзя изменять. Создайте новую раскладку."
 End Sub
+
 
 
 ====================================================================================================
@@ -10716,6 +10750,7 @@ End Function
 Private Sub Fail(ByVal reason As String, ByVal SourceReference As String)
     SectionRecipeError "CRebarOffsetContours", reason, SourceReference
 End Sub
+
 
 
 ====================================================================================================
@@ -11833,6 +11868,7 @@ Friend Sub TestCopyTransfer(ByVal positionIndex As Long, ByRef source As TRebarP
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CRebarRuleOptions
 TYPE: 2
@@ -11962,6 +11998,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.AnnotationGroup = AnnotationGroup: rule.comment = comment
     rule.SourceReference = SourceReference
 End Sub
+
 
 
 ====================================================================================================
@@ -12394,6 +12431,7 @@ Private Function ApproxSign() As String
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CSectionAnnotations
 TYPE: 2
@@ -12588,6 +12626,7 @@ Private Sub CheckIndex(ByVal index As Long)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CSectionBuilder
 TYPE: 2
@@ -12675,6 +12714,7 @@ Private Sub RequireCurrentModel()
     If mModel Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной модели."
     If mModel.revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; сохранённые сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
 End Sub
+
 
 
 ====================================================================================================
@@ -12854,6 +12894,7 @@ End Property
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionContours", "Индекс сегмента контура вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
+
 
 
 ====================================================================================================
@@ -13287,6 +13328,7 @@ Private Sub DefinitionError(ByVal reason As String, Optional ByVal entityID As S
     mDiagnostic.Initialize code, entityID, relatedEntityID, reason, 0#, 0#, reference
     SectionRecipeError "CSectionDefinition", "Определение '" & mTypeID & "': " & reason, reference
 End Sub
+
 
 
 ====================================================================================================
@@ -13871,6 +13913,7 @@ End Sub
 Private Sub RequireOpen()
     If mDefinition Is Nothing Or mFinished Then SectionRecipeError "CSectionDefinitionBuilder", "Фасад не открыт для описания сечения."
 End Sub
+
 
 
 ====================================================================================================
@@ -16144,6 +16187,7 @@ Friend Property Get TestDomainBuildCount() As Long
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CSectionInputReader
 TYPE: 2
@@ -16386,6 +16430,7 @@ End Function
 Private Sub InvalidCell(ByVal row As Long, ByVal column As Long, ByVal reason As String)
     Err.Raise vbObjectError + 5525, "CSectionInputReader", mTable.SourceReference(row, column) & " (" & mTable.name & "): " & reason
 End Sub
+
 
 ====================================================================================================
 COMPONENT: CSectionInputTable
@@ -16663,6 +16708,7 @@ Private Sub inputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
     End If
     Err.Raise vbObjectError + 5525, "CSectionInputTable", SectionRecipeErrorText(reason, location)
 End Sub
+
 
 
 ====================================================================================================
@@ -17854,6 +17900,7 @@ Public Property Get TestForceProbeCount() As Long
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CSectionModelBuilder
 TYPE: 2
@@ -17920,6 +17967,7 @@ Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiber
             localIx, localIy, localIxy, False, region ' Точная граница и её A/c/I публикуются одной атомарной операцией.
     Next i
 End Sub
+
 
 
 ====================================================================================================
@@ -18723,6 +18771,7 @@ End Property
 
 
 
+
 ====================================================================================================
 COMPONENT: CSectionRecipeContext
 TYPE: 2
@@ -18790,6 +18839,7 @@ Public Property Get units() As CUnitSystem
     Set units = mUnits
 End Property
 
+
 ====================================================================================================
 COMPONENT: ISectionRecipe
 TYPE: 2
@@ -18808,6 +18858,7 @@ Option Explicit
 ' по входным таблицам и системе единиц переданного контекста.
 Public Function CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
 End Function
+
 
 ====================================================================================================
 COMPONENT: CConcreteMaterialParameters
@@ -19004,6 +19055,7 @@ Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
     mEbt2 = ebt2
     Validate
 End Sub
+
 
 
 ====================================================================================================
@@ -19552,6 +19604,7 @@ Public Sub TestInitialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal e
         TestInitializeFromTwoCompressionPoints eps1, stress1, eps2, CDbl(stress2)
     End If
 End Sub
+
 
 
 ====================================================================================================
@@ -20531,6 +20584,7 @@ Public Sub TestInitializeFromParameters(ByVal concreteParameters As CConcreteMat
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CMaterialModelSpec
 TYPE: 2
@@ -20633,6 +20687,7 @@ End Property
 Public Property Get SteelDiagramText() As String
     SteelDiagramText = SteelDiagramKindToText(mSteelDiagram)
 End Property
+
 
 
 ====================================================================================================
@@ -20804,6 +20859,7 @@ Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CTestLinearConcreteMaterial
 TYPE: 2
@@ -20863,6 +20919,7 @@ End Function
 
 
 
+
 ====================================================================================================
 COMPONENT: CTestLinearSteelMaterial
 TYPE: 2
@@ -20915,6 +20972,7 @@ End Function
 Public Function GetSecantModulus(ByVal strain As Double) As Double
     GetSecantModulus = mElasticModulus
 End Function
+
 
 
 
@@ -21246,6 +21304,7 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
 
     Set CreateConfiguredSolver = cap
 End Function
+
 
 
 ====================================================================================================
@@ -21780,6 +21839,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CCapacityResult
 TYPE: 2
@@ -22206,6 +22266,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCapacityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 
 ====================================================================================================
@@ -24384,6 +24445,7 @@ Public Property Get TestCriticalStrainUtilization() As Double
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CCrackLimitSearchProblem
 TYPE: 2
@@ -24804,6 +24866,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CDiscreteForceIntegrator
 TYPE: 2
@@ -24958,6 +25021,7 @@ Public Function TryForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double
     Loop
     TryForces = True
 End Function
+
 
 
 ====================================================================================================
@@ -25253,6 +25317,7 @@ Private Function NormalizeStrategy(ByVal value As String) As String
             NormalizeStrategy = Trim$(value)
     End Select
 End Function
+
 
 
 ====================================================================================================
@@ -25587,6 +25652,7 @@ Private Sub ClearLoadPathSelection()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
@@ -25820,6 +25886,7 @@ Public Property Get PointState() As CSectionStateResult
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CLinearSystem3x3
 TYPE: 2
@@ -26025,6 +26092,7 @@ End Property
 Public Property Get TestAbsoluteResidual() As Double
     TestAbsoluteResidual = mAbsoluteResidual
 End Property
+
 
 
 
@@ -26844,6 +26912,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CSectionNumericalFrame
 TYPE: 2
@@ -26955,6 +27024,7 @@ End Property
 Friend Property Get lengthScale() As Double
     lengthScale = mLength
 End Property
+
 
 
 ====================================================================================================
@@ -28725,6 +28795,7 @@ Public Property Get TestMatrixRestartCount() As Long
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CSectionStrainLimits
 TYPE: 2
@@ -28861,6 +28932,7 @@ End Property
 Public Property Get description() As String
     description = mDescription
 End Property
+
 
 
 ====================================================================================================
@@ -29529,6 +29601,7 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
+
 
 
 ====================================================================================================
@@ -30361,6 +30434,7 @@ End Function
 Friend Property Get TestRetryAttemptCount() As Long
     If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.count
 End Property
+
 
 
 ====================================================================================================
@@ -31383,6 +31457,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modLimitSearchRequestFactory
 TYPE: 1
@@ -31430,6 +31505,7 @@ Public Sub InitializeCrackFormationSearchRequest(ByVal request As CLimitSearchRe
         solutionStrategy, crackFormationPath, targetN, targetMx, targetMy, _
         momentMxAtReference, momentMyAtReference, referenceX, referenceY
 End Sub
+
 
 
 ====================================================================================================
@@ -31482,6 +31558,7 @@ Public Function NonlinearMaterialTransitions(ByVal section As CSectionModel, _
     Next i
     NonlinearMaterialTransitions = first > 0#
 End Function
+
 
 
 ====================================================================================================
@@ -33641,6 +33718,7 @@ Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
@@ -33891,6 +33969,7 @@ Private Sub AssertWritable()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CCrackResult
 TYPE: 2
@@ -34082,6 +34161,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCrackResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 
 ====================================================================================================
@@ -35701,6 +35781,7 @@ Friend Sub TestRefinalizeWithSpacingText(ByVal text As String)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CCrackWidthResult
 TYPE: 2
@@ -36021,6 +36102,7 @@ Private Sub AssertWritable()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CLongitudinalCrackCalculator
 TYPE: 2
@@ -36110,6 +36192,7 @@ Public Function BlockedByDependency(ByVal dependencyName As String, ByVal reason
         0#, rbMc2, 0#
     Set BlockedByDependency = result
 End Function
+
 
 
 ====================================================================================================
@@ -36208,6 +36291,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CLongitudinalCrackResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 
 ====================================================================================================
@@ -36873,6 +36957,7 @@ End Sub
 Private Function minValue(ByVal first As Double, ByVal second As Double) As Double
     If first < second Then minValue = first Else minValue = second
 End Function
+
 
 
 ====================================================================================================
@@ -38625,6 +38710,7 @@ Public Property Get PlanePassed2() As Boolean
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CStabilityResult
 TYPE: 2
@@ -39370,6 +39456,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CStabilityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 
 ====================================================================================================
@@ -41669,6 +41756,7 @@ Public Function TestRepeatCrackCalculation(ByVal index As Long) As CCrackResult
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CCalculationProfile
 TYPE: 2
@@ -42018,6 +42106,7 @@ Private Function ParseVisualizationPrecision(ByVal valueText As String, ByVal se
             settingName & " должен быть целым числом от 0 до 10."
     ParseVisualizationPrecision = CLng(numericValue)
 End Function
+
 
 
 ====================================================================================================
@@ -42387,6 +42476,7 @@ Public Property Get ProfileAt(ByVal index As Long) As CCalculationProfile
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     Set ProfileAt = mProfiles(index)
 End Property
+
 
 
 ====================================================================================================
@@ -42808,6 +42898,7 @@ Private Sub AssertWritable()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CDirectStateResult
 TYPE: 2
@@ -42972,6 +43063,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CDirectStateResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 
 ====================================================================================================
@@ -43608,6 +43700,7 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CStateProvider
 TYPE: 2
@@ -43858,6 +43951,7 @@ Public Property Let diagnosticsEnabled(ByVal value As Boolean)
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CStateRepository
 TYPE: 2
@@ -44051,6 +44145,7 @@ Private Sub AssertWritable()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CStateRequest
 TYPE: 2
@@ -44158,6 +44253,7 @@ End Property
 Public Property Get allowRetryStarts() As Boolean
     allowRetryStarts = mAllowRetryStarts
 End Property
+
 
 
 ====================================================================================================
@@ -44293,6 +44389,7 @@ Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CStrengthResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."
 End Sub
+
 
 
 ====================================================================================================
@@ -44610,6 +44707,7 @@ Private Sub HoopError(ByVal reason As String)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CTorsionLongitudinalDemand
 TYPE: 2
@@ -44815,6 +44913,7 @@ End Sub
 Private Sub AllocationError(ByVal description As String)
     Err.Raise vbObjectError + 4505, TypeName(Me), description
 End Sub
+
 
 
 ====================================================================================================
@@ -45036,6 +45135,7 @@ Private Sub ModelError(ByVal reason As String)
     Err.Raise vbObjectError + 5670, TypeName(Me), reason
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CTorsionPostResult
 TYPE: 2
@@ -45089,6 +45189,7 @@ Public Property Get StateFailureReason() As String
     StateFailureReason = mStateFailureReason
 End Property
 
+
 ====================================================================================================
 COMPONENT: modTorsionPostTypes
 TYPE: 1
@@ -45140,6 +45241,7 @@ Public Function TorsionPostCheckStatus(ByVal reserve As Double) As String
     End If
     TorsionPostCheckStatus = policy.ExternalStatus(meta)
 End Function
+
 
 ====================================================================================================
 COMPONENT: CAutoCADContourReader
@@ -45321,6 +45423,7 @@ Private Sub CleanupTemporary(ByVal temporary As Object, ByVal pieces As Variant)
     If Not temporary Is Nothing Then temporary.Delete
     On Error GoTo 0
 End Sub
+
 
 
 ====================================================================================================
@@ -46400,6 +46503,7 @@ Public Property Get TestDebugEdgeProbeCount() As Long
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CBatchResultWriter
 TYPE: 2
@@ -46867,7 +46971,7 @@ End Sub
 Private Sub PutPointLoadHeaders(ByRef data() As Variant, ByVal forceUnit As String, ByVal momentUnit As String)
     data(GROUP_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Нагрузки в точке приложения"
     data(COLUMN_HEADER_ROW, SUM_COL_ORIGINAL_N) = "Исходные заданные нагрузки"
-    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного" & vbLf & "изгиба (если применимо)"
     data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_N) = "N, " & forceUnit
     data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MX) = "Mx, " & momentUnit
     data(COLUMN_HEADER_LAST_ROW, SUM_COL_ORIGINAL_MY) = "My, " & momentUnit
@@ -47614,7 +47718,7 @@ Private Function SummaryForDisplay(ByVal snapshot As Object, ByRef saved() As Va
     End If
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MX) = WorkingMomentComment("Mx")
     data(COMMENT_HEADER_ROW, SUM_COL_DESIGN_MY) = WorkingMomentComment("My")
-    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного изгиба" & vbLf & "(если применимо)"
+    data(COLUMN_HEADER_ROW, SUM_COL_DESIGN_N) = "Нагрузки с учётом продольного" & vbLf & "изгиба (если применимо)"
     mTorsionWriter.ApplyBatchSummary data, snapshot
     SummaryForDisplay = data
 End Function
@@ -47634,6 +47738,7 @@ Private Function SavedSummaryUnit(ByVal snapshot As Object, ByVal key As String)
     Next row
     Err.Raise 5, "CBatchResultWriter", "В снимке отсутствует единица " & key
 End Function
+
 
 
 ====================================================================================================
@@ -47934,6 +48039,7 @@ End Property
 Public Property Get ReadCalls() As Long
     ReadCalls = mReadCalls
 End Property
+
 
 ====================================================================================================
 COMPONENT: CCalculationSnapshot
@@ -48321,6 +48427,7 @@ Private Function IsCaseProperty(ByRef values As Variant, ByVal row As Long) As B
     Dim key As String: key = CStr(values(row, 3))
     IsCaseProperty = CStr(values(row, 2)) <> "ALL" Or key = "LoadReferenceX" Or key = "LoadReferenceY" Or left$(key, Len("SP35.Slenderness")) = "SP35.Slenderness"
 End Function
+
 
 
 ====================================================================================================
@@ -48891,6 +48998,7 @@ Private Function FileIdentity(ByVal path As String) As String
         Dim digest As New CFileChecksum: FileIdentity = digest.FileSHA256(path)
     End If
 End Function
+
 
 
 ====================================================================================================
@@ -50035,6 +50143,7 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CExcelAppStateGuard
 TYPE: 2
@@ -50156,6 +50265,7 @@ End Sub
 Private Sub Class_Terminate()
     Restore
 End Sub
+
 
 
 ====================================================================================================
@@ -50828,6 +50938,7 @@ Private Function JoinReportParts(ByRef parts() As String, ByVal count As Long) A
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CFileChecksum
 TYPE: 2
@@ -51097,6 +51208,7 @@ End Function
 Public Sub CancelDigest()
     If mStreamHash <> 0 Then CryptDestroyHash mStreamHash: mStreamHash = 0
 End Sub
+
 
 
 ====================================================================================================
@@ -51548,6 +51660,7 @@ Public Sub CloseFile()
     If Not mFile Is Nothing Then mFile.CloseFile
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CLoadCombinationReader
 TYPE: 2
@@ -51765,6 +51878,7 @@ Private Sub AppendError(ByRef errorText As String, ByRef hasError As Boolean, By
     If Len(errorText) > 0 Then errorText = errorText & "; "
     errorText = errorText & item
 End Sub
+
 
 
 ====================================================================================================
@@ -53939,6 +54053,7 @@ NextBaseTable:
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CPlotAnnotationLayout
 TYPE: 2
@@ -54493,6 +54608,7 @@ Public Property Get dimensionsEnabled() As Boolean: dimensionsEnabled = mDimensi
 Public Property Get rebarLabelsEnabled() As Boolean: rebarLabelsEnabled = mRebarLabelsEnabled: End Property
 
 
+
 ====================================================================================================
 COMPONENT: CResultBlockIndex
 TYPE: 2
@@ -54680,6 +54796,7 @@ Friend Sub AppendPreparedBlock(ByRef values() As Variant, ByVal first As Long, B
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CResultReadSource
 TYPE: 2
@@ -54854,6 +54971,7 @@ Public Function LoadAll() As CCalculationSnapshot
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CSectionInputSnapshotReader
 TYPE: 2
@@ -54909,6 +55027,7 @@ Private Function columnName(ByVal column As Long) As String
         column = column \ 26
     Loop
 End Function
+
 
 
 ====================================================================================================
@@ -56393,6 +56512,7 @@ Public Property Get AnnotationNormalY(ByVal index As Long) As Double: Annotation
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
 ' Возвращает прочитанный и проверенный угол без повторного разбора текстовых значений Results.
 Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property
+
 
 
 ====================================================================================================
@@ -58736,6 +58856,7 @@ Public Function TestDrawConcreteRegionShape(ByVal chart As Object, ByVal region 
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CSectionTypeRegistry
 TYPE: 2
@@ -58810,6 +58931,7 @@ Public Function CreateDefinition(ByVal typeID As String, ByVal context As CSecti
     Set recipe = CreateRecipe(typeID)
     Set CreateDefinition = recipe.CreateDefinition(context)
 End Function
+
 
 ====================================================================================================
 COMPONENT: CStabilitySummaryWriter
@@ -59928,6 +60050,7 @@ Private Sub OrderSavedSP35Plane(ByRef labels As Variant, ByRef data As Variant, 
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CStrengthSummaryWriter
 TYPE: 2
@@ -60790,6 +60913,7 @@ Private Sub RestoreSummaryTables(ByVal Workbook As Object, ByVal snapshot As Obj
     target.offset(HEADER_ROWS, 0).Resize(UBound(data, 1), TOTAL_COLUMNS).value2 = data
     FormatTable target, Nothing, data
 End Sub
+
 
 
 ====================================================================================================
@@ -61717,6 +61841,7 @@ End Function
 
 
 
+
 ====================================================================================================
 COMPONENT: CUnitSystem
 TYPE: 2
@@ -62205,6 +62330,7 @@ Private Function ValidMySign(ByVal value As String, ByVal settingKey As String, 
         Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", settings.InputErrorMessage(settingKey, "Правило знака момента My не распознано.", "Выберите +X tension или -X tension: знак X обозначает сторону растяжения при положительном My.")
     End Select
 End Function
+
 
 
 ====================================================================================================
@@ -64542,6 +64668,7 @@ Public Function TestReadStateMetadataForTests(ByVal Workbook As Object, ByVal co
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modCalculationSnapshot
 TYPE: 1
@@ -64965,6 +65092,7 @@ Failed:
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modIndexedExcelResults
 TYPE: 1
@@ -65196,6 +65324,7 @@ Public Function TestIndexedExcelReadCounters(Optional ByVal reset As Boolean = F
     If reset Then mTestRowsRead = 0#: mTestBlocksRead = 0: mTestBootstrapRows = 0#
 End Function
 
+
 ====================================================================================================
 COMPONENT: modMeshConfiguration
 TYPE: 1
@@ -65311,6 +65440,7 @@ Public Function ReadMeshBoundarySubdivisions(ByVal settings As CSystemSettingsRe
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modResultsFormatting
 TYPE: 1
@@ -65375,6 +65505,7 @@ Public Sub WriteResultDataSlice(ByVal target As Object, ByRef data() As Variant,
     Next row
     target.offset(firstRow - 1, firstColumn - 1).Resize(rows, columns).value2 = output
 End Sub
+
 
 
 ====================================================================================================
@@ -65689,6 +65820,7 @@ Unrelated:
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modSectionOptionalData
 TYPE: 1
@@ -65845,6 +65977,7 @@ Private Sub JsonSpace(ByVal text As String, ByRef position As Long)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modSectionRecipeSetup
 TYPE: 1
@@ -65905,6 +66038,7 @@ Private Function RequiredTable(ByVal name As String) As Object
     On Error GoTo 0
     If RequiredTable Is Nothing Then SectionRecipeError "modSectionRecipeSetup", "Не найден диапазон '" & name & "'. Восстановите именованный диапазон Config."
 End Function
+
 
 
 ====================================================================================================
@@ -67307,6 +67441,7 @@ Public Function TestSavedBoundaryReadCounts(Optional ByVal reset As Boolean = Fa
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modSnapshotTables
 TYPE: 1
@@ -67443,6 +67578,7 @@ Public Sub ValidateSnapshotRunID(ByRef values As Variant, ByVal key As String, B
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modStatusFormatting
 TYPE: 1
@@ -67568,6 +67704,7 @@ Private Function StatusPolicy() As CResultStatusPolicy
     If policy Is Nothing Then Set policy = New CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
+
 
 
 ====================================================================================================
@@ -67833,6 +67970,7 @@ Private Function TorsionValueBlank(ByVal value As Variant) As Boolean
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTorsionPostTables
 TYPE: 1
@@ -67856,6 +67994,7 @@ Public Sub InitializeTorsionPostOutput()
     Dim warning As String: warning = writer.RestoreSummary(ThisWorkbook, snapshot)
     If Len(warning) > 0 Then Err.Raise 5, , warning
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
@@ -69223,6 +69362,7 @@ Private Function FinishWorkbookAction(ByVal Workbook As Object, ByVal message As
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
@@ -69781,6 +69921,7 @@ Public Function TestWorkbookDrawingPending(ByVal Workbook As Object) As Boolean
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CTestExcelApplicationState
 TYPE: 2
@@ -69921,6 +70062,7 @@ Public Property Get WorksheetFunction() As Object
     If TestNativeApplication Is Nothing Then Err.Raise 5, "CTestExcelApplicationState", "Для WorksheetFunction требуется приватный native Excel."
     Set WorksheetFunction = TestNativeApplication.WorksheetFunction
 End Property
+
 
 ====================================================================================================
 COMPONENT: CTestFakeAcadContour
@@ -70139,6 +70281,7 @@ End Function
 Public Sub Delete()
     mDeleted = True
 End Sub
+
 
 
 ====================================================================================================
@@ -70376,6 +70519,7 @@ Public Sub GetXData(ByVal appName As String, ByRef codes As Variant, ByRef value
     codes = mCodes: values = mValues
 End Sub
 
+
 ====================================================================================================
 COMPONENT: CTestFakeAcadDocument
 TYPE: 2
@@ -70455,6 +70599,7 @@ Public Property Get TestVariableReads() As Long
     TestVariableReads = mVariableReads
 End Property
 
+
 ====================================================================================================
 COMPONENT: CTestFakeAcadLine
 TYPE: 2
@@ -70524,6 +70669,7 @@ End Property
 Public Property Get TestDeleted() As Boolean
     TestDeleted = mDeleted
 End Property
+
 
 
 ====================================================================================================
@@ -70716,6 +70862,7 @@ End Sub
 Public Property Get TestDeleted() As Boolean
     TestDeleted = mDeleted
 End Property
+
 
 
 ====================================================================================================
@@ -71597,6 +71744,7 @@ Private Function TestMultiplierFaultReason() As String
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CTestWorkflowWorkbook
 TYPE: 2
@@ -71669,6 +71817,7 @@ End Property
 Public Property Get Windows() As Object
     Set Windows = mWorkbook.Windows
 End Property
+
 
 ====================================================================================================
 COMPONENT: modTestAudit02Api
@@ -73784,6 +73933,7 @@ Private Sub TestGeometryWarningParagraphs()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestAudit02Snapshots
 TYPE: 1
@@ -74090,6 +74240,7 @@ Private Function TestRecipeRuleFields(ByVal definition As CSectionDefinition) As
     Next index
     TestRecipeRuleFields = result
 End Function
+
 
 
 ====================================================================================================
@@ -75423,6 +75574,7 @@ Private Sub TestCheckNativeColors(ByRef stats As TCadStats, ByVal doc As Object,
         End If
     Next entity
 End Sub
+
 
 
 ====================================================================================================
@@ -78140,6 +78292,7 @@ Private Sub TestSetGeometryExportSetting(ByVal system As Object, ByVal key As St
     Next row
     Err.Raise 5, "modTestAutoCADContours", "В частной книге отсутствует настройка " & key
 End Sub
+
 
 
 ====================================================================================================
@@ -89631,6 +89784,7 @@ Restore:
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
@@ -92088,6 +92242,7 @@ Private Sub TestSnapshotWriteLegacy(ByVal path As String, ByVal snapshot As CCal
     file.OpenUpdate path: file.position = file.size
     file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
 End Sub
+
 
 
 ====================================================================================================
@@ -96540,6 +96695,7 @@ Private Sub TestRequestReinitialization(ByRef stats As TCapacityTestStats)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestConfiguration
 TYPE: 1
@@ -99461,6 +99617,7 @@ Public Function RunExplicitInputOutcomeTests() As String
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestContourMesh
 TYPE: 1
@@ -100537,6 +100694,7 @@ End Function
 Private Function TestAdaptiveNumber(ByVal value As Double) As String
     TestAdaptiveNumber = Replace$(format$(value, "0.000000000"), ",", ".")
 End Function
+
 
 
 ====================================================================================================
@@ -102711,6 +102869,7 @@ Private Sub TestCrackStopReasonContract(ByRef stats As TCrackTestStats)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestDeclarativeExamples
 TYPE: 1
@@ -102855,6 +103014,7 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000000001 * (1# + Abs(expected))
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestDeclarativeGeometry
@@ -103734,6 +103894,7 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestDiscreteForces
 TYPE: 1
@@ -103905,6 +104066,7 @@ Private Sub TestForceCheck(ByVal label As String, ByVal condition As Boolean)
         mTestFailed = mTestFailed + 1: mTestReport = mTestReport & "FAIL: " & label & vbCrLf
     End If
 End Sub
+
 
 
 ====================================================================================================
@@ -104793,6 +104955,7 @@ Private Sub TestTrue(ByRef stats As TTestStats, ByVal checkLabel As String, ByVa
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestElementGeometryViews
 TYPE: 1
@@ -105053,6 +105216,7 @@ End Sub
 Private Sub TestNear(ByVal label As String, ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
     TestCheck label & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= tolerance
 End Sub
+
 
 
 ====================================================================================================
@@ -105686,6 +105850,7 @@ Private Sub TestLogLine(ByRef stats As TGeneralConfigStats, ByVal line As String
     Print #fileNumber, stats.report;
     Close #fileNumber
 End Sub
+
 
 
 ====================================================================================================
@@ -109488,6 +109653,7 @@ Private Sub TestGeometryReviewJointSample(ByRef stats As TTestStats, ByVal path 
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryConfig
 TYPE: 1
@@ -111237,6 +111403,7 @@ Finished:
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryFixtures
 TYPE: 1
@@ -111829,6 +111996,7 @@ Public Function TestFixtureRunSectionWorkflow(ByVal Workbook As Object, Optional
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryPublication
 TYPE: 1
@@ -112124,6 +112292,7 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
 
 
 ====================================================================================================
@@ -113081,6 +113250,7 @@ Private Sub TestCheckGeneratedContoursEqual(ByVal prefix As String, ByVal expect
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestGeometryReview
 TYPE: 1
@@ -113942,6 +114112,7 @@ Private Sub TestRecipeErrorParagraphs()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestGeometrySolidSnapshots
 TYPE: 1
@@ -114078,6 +114249,7 @@ Private Function TestBits(ByVal value As Double) As String
     number.value = value: LSet words = number
     TestBits = right$("00000000" & Hex$(words.High), 8) & right$("00000000" & Hex$(words.Low), 8)
 End Function
+
 
 
 ====================================================================================================
@@ -114956,6 +115128,7 @@ End Sub
 Private Sub TestNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     TestCheck name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= GEOM_BOUNDARY_TOLERANCE
 End Sub
+
 
 
 ====================================================================================================
@@ -115958,6 +116131,7 @@ Finished:
     On Error GoTo 0
     RunTestMultiAreaLoadValidation = stats.report & "TOTAL_MULTI_AREA_LOAD: passed=" & stats.passed & "; failed=" & stats.Failed
 End Function
+
 
 
 ====================================================================================================
@@ -117620,6 +117794,7 @@ ExpectedError:
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestPerformance
 TYPE: 1
@@ -118947,6 +119122,7 @@ Public Function TestCADRoundoffFields(ByVal prefix As String, ByVal target As Ob
         TestCADRoundoffFields = TestCADRoundoffFields & prefix & "|" & CStr(name) & "|" & kind & "|" & text & vbLf
     Next name
 End Function
+
 
 
 ====================================================================================================
@@ -122011,6 +122187,7 @@ Private Function TestPlotBandThickness(ByVal shape As Object) As Double
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestPolygonSpec
 TYPE: 1
@@ -122366,6 +122543,7 @@ Private Sub TestCheck(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
 
 
 ====================================================================================================
@@ -124330,6 +124508,7 @@ Public Function RunExplicitDurationOutcomeTests() As String
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestRecipeAnnotations
 TYPE: 1
@@ -124701,6 +124880,7 @@ Private Sub TestPhysicalLabelOwnership()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestRecipeApiCatalogue
 TYPE: 1
@@ -125001,6 +125181,7 @@ Private Sub TestCheck(ByVal name As String, ByVal passed As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestRecipeOperations
@@ -125674,6 +125855,7 @@ Private Sub TestPrepareSavedOffsetCalculationLoad()
     values(1, 7) = "ДЛЯ ТЕСТОВ: сохранённые смещения, собственное сочетание"
     loads.offset(1, 0).Resize(UBound(values, 1), UBound(values, 2)).value2 = values
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestRecipeSetbacks
@@ -126835,6 +127017,7 @@ Private Sub TestDirectionCurves()
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestRegressionBaseline
 TYPE: 1
@@ -127244,6 +127427,7 @@ End Function
 
 
 
+
 ====================================================================================================
 COMPONENT: modTestSectionInputReader
 TYPE: 1
@@ -127433,6 +127617,7 @@ Failed:
 Finished:
     RunSectionInputReaderTests = mReport & "TOTAL_SECTION_INPUT_READER: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
 
 ====================================================================================================
 COMPONENT: modTestSectionRecipes
@@ -129440,6 +129625,7 @@ Private Sub TestJoinedRoundedPaths()
     On Error GoTo 0
     TestCheck "joined.disconnected.rejected", code <> 0 And InStr(reason, "связную") > 0
 End Sub
+
 
 
 ====================================================================================================
@@ -131663,6 +131849,7 @@ Failed:
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestSectionWorkflow
 TYPE: 1
@@ -132154,6 +132341,7 @@ Public Function RunCompactAcceptanceTests() As String
     report = report & RunAnnotationSectionScaleTests()
     RunCompactAcceptanceTests = report
 End Function
+
 
 
 ====================================================================================================
@@ -133011,6 +133199,7 @@ Private Sub TestSetSetting(ByVal key As String, ByVal value As Variant)
     Next name
     Err.Raise vbObjectError + 5291, "modTestShapeArchitecture", "Нет ключа fixture: " & key
 End Sub
+
 
 
 ====================================================================================================
@@ -134452,6 +134641,7 @@ Restore:
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: modTestTorsionPost
 TYPE: 1
@@ -135189,6 +135379,7 @@ Private Function TestTorsionTransformedRectangle(ByVal sizeFactor As Double, ByV
     Next i
     Set TestTorsionTransformedRectangle = section
 End Function
+
 
 
 ====================================================================================================
@@ -145241,6 +145432,7 @@ CleanUp:
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modTestZeroContourParity
 TYPE: 1
@@ -145336,6 +145528,7 @@ Private Function TestBits(ByVal value As Double) As String
         right$("0" & Hex$(bytes.Byte5), 2) & right$("0" & Hex$(bytes.Byte6), 2) & _
         right$("0" & Hex$(bytes.Byte7), 2) & right$("0" & Hex$(bytes.Byte8), 2)
 End Function
+
 
 
 ====================================================================================================
@@ -145902,6 +146095,7 @@ Private Function LogicalTorsionHeaders(ByVal units As CUnitSystem) As Variant
 End Function
 
 
+
 ====================================================================================================
 COMPONENT: CTorsionProjectionStations
 TYPE: 2
@@ -146063,6 +146257,7 @@ End Sub
 Private Sub ProjectionError(ByVal description As String)
     Err.Raise vbObjectError + 4505, TypeName(Me), description
 End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestTorsionProjections
@@ -146408,6 +146603,7 @@ Private Sub TestProjectionAssert(ByVal label As String, ByVal passed As Boolean)
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: CGeometryDistance
 TYPE: 2
@@ -146503,6 +146699,7 @@ End Function
 Private Function IsArc(ByRef edge As TRegionEdge) As Boolean
     IsArc = Abs(edge.sweep) > GEOM_PARAMETER_TOLERANCE
 End Function
+
 
 
 
@@ -146675,6 +146872,7 @@ Public Property Get FailureSettingKeys() As String: FailureSettingKeys = mFailur
 Private Sub CheckError(ByVal reason As String)
     Err.Raise vbObjectError + 5670, TypeName(Me), reason
 End Sub
+
 
 
 ====================================================================================================
@@ -146949,6 +147147,7 @@ Private Sub TestConcreteSet(ByVal table As Object, ByVal key As String, ByVal va
 End Sub
 
 
+
 ====================================================================================================
 COMPONENT: modWorkbookPrintLayout
 TYPE: 1
@@ -147008,6 +147207,7 @@ Private Function DeclaredAreaName(ByVal sheet As Worksheet) As name
         End If
     Next item
 End Function
+
 
 
 ====================================================================================================
@@ -147123,6 +147323,7 @@ Public Property Get MomentPerDepth() As Double
 End Property
 
 
+
 ====================================================================================================
 COMPONENT: CResultsLayoutValidator
 TYPE: 2
@@ -147188,5 +147389,6 @@ Private Function RowsWord(ByVal count As Long) As String
         End Select
     End If
 End Function
+
 
 

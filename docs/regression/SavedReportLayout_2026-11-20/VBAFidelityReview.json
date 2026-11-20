@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "ComparedNativeComponents": 203,
+  "ChangedComponents": [
+    "CBatchResultWriter"
+  ],
+  "UnexpectedChanges": [],
+  "OnlyWorkingChange": "Two Results load-heading string literals in CBatchResultWriter",
+  "NativeExportSHA256": "406CE05C578637CE5EF4CD306E22E586A84EFDA3ABCFC101B3820CC0AF8FE86A",
+  "ReferenceCommit": "23b1a73166a4312dc284acd547e296ad6340b5b2"
+}
