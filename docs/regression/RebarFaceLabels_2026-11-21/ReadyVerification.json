@@ -1,0 +1,19 @@
+﻿{
+    "Status":  "PASS",
+    "Checks":  [
+                   {
+                       "Workbook":  "Ready",
+                       "Compiled":  true,
+                       "ComponentCount":  203,
+                       "RecipeSourcesMatch":  true,
+                       "SHA256":  "394859824B2C3CB2EDAA9C57932C09D9346C2EB6BD31274C28F52C2183EFE720"
+                   },
+                   {
+                       "Workbook":  "CleanReady",
+                       "Compiled":  true,
+                       "ComponentCount":  203,
+                       "RecipeSourcesMatch":  true,
+                       "SHA256":  "B1B8BA19F2836044D4F43E5A2B67BEB8FFEEA5F667A921267555F691C5376942"
+                   }
+               ]
+}

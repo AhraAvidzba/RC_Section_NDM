@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\RebarFaceLabels_2026-11-21\\Clean.xlsm",
+    "WorkbookSHA256":  "92C19BDBCD0A928E0E86BC216575672B3C8307B8F17DF4AE987ABE116E338DAB",
+    "ProductionSHA256":  "3A7C105311C7F12D73EF8B98A82230AEBEA78EE675257AFCB351DCFBAC32A13B",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionRecipeHollowRectangle"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

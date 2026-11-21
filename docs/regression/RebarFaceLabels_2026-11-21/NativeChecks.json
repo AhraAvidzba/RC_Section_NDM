@@ -1,0 +1,25 @@
+﻿{
+    "Status":  "PASS",
+    "Checks":  [
+                   {
+                       "Stage":  "Before",
+                       "MatrixSaved":  true
+                   },
+                   {
+                       "Stage":  "After",
+                       "MatrixSaved":  true
+                   },
+                   {
+                       "Stage":  "Input",
+                       "Result":  "PASS: hollow.input.0\r\nPASS: hollow.input.1\r\nPASS: hollow.input.2\r\nPASS: hollow.input.3\r\nPASS: hollow.input.4\r\nPASS: hollow.input.5\r\nPASS: hollow.input.6\r\nPASS: hollow.input.7\r\nPASS: hollow.input.8\r\nPASS: hollow.input.9\r\nPASS: hollow.input.10\r\nPASS: hollow.input.11\r\nPASS: hollow.input.12\r\nPASS: hollow.input.13\r\nPASS: hollow.input.14\r\nPASS: hollow.input.15\r\nPASS: hollow.input.16\r\nPASS: hollow.input.17\r\nPASS: hollow.input.18\r\nPASS: hollow.input.19\r\nPASS: hollow.input.20\r\nPASS: hollow.input.21\r\nTOTAL HOLLOW INPUT: passed=22; failed=0\r\n"
+                   },
+                   {
+                       "Stage":  "Excel",
+                       "Result":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nВремя расчёта: 2.09 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+                   },
+                   {
+                       "Stage":  "File",
+                       "Result":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена из файла «FaceLabelsFixture.ndm».\r\n\r\nВремя расчёта: 2.64 с.\r\n\r\nДанные сохранены в файле «FaceLabelsFixture.ndm»."
+                   }
+               ]
+}

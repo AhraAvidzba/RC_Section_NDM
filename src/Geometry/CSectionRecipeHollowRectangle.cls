@@ -103,16 +103,18 @@ End Sub
 ' Пустой as выключенной стороны равен нулю; её параметры дополнительных рядов не читаются.
 ' Служебные n/endMode сторон отверстия не читаются: позиции определяет проекция наружного ряда.
 Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As THollowFace)
-    Dim ids As Variant, captions As Variant, keys As Variant, key As String, i As Long, base As Long, annotationSign As Double
+    Dim ids As Variant, captions As Variant, placementCaptions As Variant, keys As Variant, key As String, i As Long, base As Long, annotationSign As Double
     Dim rowNumber As Long, suffix As String
     keys = Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
     captions = Array("у верхней наружной стороны", "у нижней наружной стороны", "у левой наружной стороны", "у правой наружной стороны", _
         "у верхней стороны отверстия", "у нижней стороны отверстия", "у левой стороны отверстия", "у правой стороны отверстия")
+    placementCaptions = Array("B - верхняя внешняя грань", "B - нижняя внешняя грань", "H - левая внешняя грань", "H - правая внешняя грань", _
+        "Bo - верхняя внутренняя грань", "Bo - нижняя внутренняя грань", "Ho - левая внутренняя грань", "Ho - правая внутренняя грань") ' B/H — наружные размеры, Bo/Ho — размеры отверстия, как в таблице геометрии.
     For i = 1 To 8
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' faces нумеруется с 1, а массивы Array — с 0; поля таблицы читаются по ключам.
-            .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
+            .RowComment = "Пустотелый прямоугольник: " & CStr(placementCaptions(i - 1)) & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
             If i <= 4 Then .Count = reader.Count("Main", key, "n")
