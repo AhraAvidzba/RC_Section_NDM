@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "26E0681EEF90CD62C1527F266C17E34C9122974B22418703A9A13F89212944A0",
+  "CandidateSHA256": "FB6E11090DECAFCF42C82AF52E739D55ED6B2C1092F4E9373581F47416A4A8EC",
+  "ChangedParts": [
+    "xl/worksheets/sheet4.xml",
+    "xl/worksheets/sheet1.xml",
+    "xl/vbaProject.bin",
+    "xl/sharedStrings.xml",
+    "xl/styles.xml"
+  ],
+  "AX10": "шаг вдоль оси сечения",
+  "Torsion.BarBand": 190,
+  "NumberFormat": "0.0",
+  "ConditionalRulesChanged": false,
+  "VBAComponentsUpdated": [
+    "modWorkbookCalculation"
+  ],
+  "TemplateSHA256": "854B49504F01A4938F45CDF2BFF77A3BA929FF5D9C23365C6F2F1A394C22AA83"
+}

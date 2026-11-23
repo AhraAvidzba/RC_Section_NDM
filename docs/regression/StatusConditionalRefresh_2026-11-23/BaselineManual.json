@@ -1,0 +1,40 @@
+﻿{
+    "Phase":  "AfterCalculation",
+    "Message":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nПостпроверка T: строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nВремя расчёта: 1.56 с.\r\n\r\nДанные сохранены на листе Results текущей книги.",
+    "Values":  [
+                   {
+                       "Address":  "AN20",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "AN34",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "AN42",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "AN58",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "AO58",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "BB30",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "BB37",
+                       "Value":  "-"
+                   },
+                   {
+                       "Address":  "BB44",
+                       "Value":  "-"
+                   }
+               ],
+    "Calculation":  -4135,
+    "ScreenUpdating":  true
+}

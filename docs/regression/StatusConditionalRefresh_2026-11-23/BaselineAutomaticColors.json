@@ -1,0 +1,42 @@
+﻿[
+    {
+        "Address":  "AN20",
+        "Value":  "-",
+        "Color":  5296274
+    },
+    {
+        "Address":  "AN34",
+        "Value":  "-",
+        "Color":  5296274
+    },
+    {
+        "Address":  "AN42",
+        "Value":  "-",
+        "Color":  5296274
+    },
+    {
+        "Address":  "AN58",
+        "Value":  "-",
+        "Color":  5296274
+    },
+    {
+        "Address":  "AO58",
+        "Value":  "-",
+        "Color":  5296274
+    },
+    {
+        "Address":  "BB30",
+        "Value":  "FAIL",
+        "Color":  255
+    },
+    {
+        "Address":  "BB37",
+        "Value":  "FAIL",
+        "Color":  255
+    },
+    {
+        "Address":  "BB44",
+        "Value":  "FAIL",
+        "Color":  255
+    }
+]

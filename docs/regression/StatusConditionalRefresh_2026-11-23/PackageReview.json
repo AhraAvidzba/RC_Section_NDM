@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "NativeVBAComponents": 203,
+  "OnlyChangedComponent": "modWorkbookCalculation",
+  "OtherWorkbookCellsPreserved": true,
+  "FormulaAndConditionalRulesPreserved": true,
+  "NamedRangesAndPrintSettingsPreserved": true,
+  "BuilderManifestPreserved": true,
+  "CandidateSHA256": "FB6E11090DECAFCF42C82AF52E739D55ED6B2C1092F4E9373581F47416A4A8EC",
+  "ExportSHA256": "27271BF0A25B3A37CB7AC1F1BEBF9B301C7D75675C7AF62330856D1C63F46764"
+}

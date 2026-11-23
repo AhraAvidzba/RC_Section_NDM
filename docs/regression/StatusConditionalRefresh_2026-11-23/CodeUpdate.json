@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\StatusConditionalRefresh_2026-11-23\\Compiled.xlsm",
+    "WorkbookSHA256":  "1BFA189A27891C5CF3B777BC501262F0DCA2D335F6CA1A6CF4FEC94D179469BB",
+    "ProductionSHA256":  "26E0681EEF90CD62C1527F266C17E34C9122974B22418703A9A13F89212944A0",
+    "Compiled":  true,
+    "Modules":  [
+                    "modWorkbookCalculation"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

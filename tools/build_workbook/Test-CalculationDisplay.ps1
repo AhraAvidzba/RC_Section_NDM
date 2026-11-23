@@ -40,7 +40,7 @@ try{
  $beforeErrors=@(Test-DisplayErrors $calc);Test-DisplayAssert ($beforeErrors.Count -eq 0) ('Initial formula errors: '+($beforeErrors -join ';'))
  Test-DisplayAssert ([string]$results.Range('AL8').Value2 -ceq "Нагрузки с учётом продольного`nизгиба (если применимо)") 'Wrong Results header line break'
  foreach($address in @('Q44:V58','Y44:AA58','AS8:AS22','AI7:AK7','AH27:AJ27','AH39:AJ39','AY18:BB18','AH48:AJ49','AH53:AJ54')){
-  Test-DisplayAssert ([string]$calc.Range($address).NumberFormat -ceq '0.0;-0.0;0.0;@') ('Wrong precision: '+$address)
+  Test-DisplayAssert ([string]$calc.Range($address).NumberFormat -ceq '0.0') ('Wrong precision: '+$address)
  }
  $ids=$results.Range('G12:R12');$savedIDs=$ids.Formula;$ids.ClearContents();$app.CalculateFull()
  foreach($address in @('AH7','AG27','AG39','AX18','AU35','AU42','BI26','BI27','BI31','BI32','BI47','BI52')){

@@ -304,7 +304,7 @@ Private Function FormSectionCore(ByVal workbook As Object, Optional ByVal starte
         requiresAttention = True
         FormSectionCore = WorkbookMessageParagraph(FormSectionCore, containerNotice)
     End If
-    CalculateResultsSheet workbook
+    CalculateResultSheets workbook
     Dim plotErrorNumber As Long, plotError As String, previewNotice As String
     On Error Resume Next
     Err.Clear
@@ -535,7 +535,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
         CalculateSectionCore = WorkbookMessageParagraph(CalculateSectionCore, _
             "Пошаговый отчет сохранен:" & vbCrLf & report.FilePath)
     End If
-    CalculateResultsSheet workbook
+    CalculateResultSheets workbook
     excelGuard.Restore True
     savedDestination = "на листе Results текущей книги"
     If snapshotStore.StorageMode(workbook) = "File" Then savedDestination = "в файле «" & snapshotStore.SelectedFileName(workbook) & "»"
@@ -903,13 +903,13 @@ Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
     If a > b Then MaxLong = a Else MaxLong = b
 End Function
 
-' Пересчитывает только лист Results после блочной записи формул.
-' Во время расчета Excel работает в ручном режиме, поэтому точечный пересчет
-' нужен, чтобы пользователь сразу видел актуальные коэффициенты запаса, но
-' чужие открытые книги не пересчитывались на каждом шаге вывода.
-Private Sub CalculateResultsSheet(ByVal workbook As Object)
+' Пересчитывает Results и зависимые формулы листа «Расчет» после записи результатов.
+' Явный порядок обновляет значения и условную заливку до возврата из макроса,
+' в том числе при исходном ручном режиме; другие открытые книги не затрагиваются.
+Private Sub CalculateResultSheets(ByVal workbook As Object)
     On Error GoTo SafeExit
     workbook.Worksheets.Item("Results").Calculate
+    workbook.Worksheets.Item("Расчет").Calculate
 SafeExit:
 End Sub
 

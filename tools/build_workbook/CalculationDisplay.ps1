@@ -127,13 +127,14 @@ function Set-CalculationStatusDashFormat([object]$Sheet) {
 # Округляет лишь представление нагрузок; ID, деформации и напряжения сохраняют собственную точность.
 function Set-CalculationLoadPrecision([object]$Sheet) {
     foreach($address in @('Q44:V58','Y44:AA58','AS8:AS22','AI7:AK7','AH27:AJ27','AH39:AJ39','AY18:BB18','AH48:AJ49','AH53:AJ54')){
-        $Sheet.Range($address).NumberFormat='0.0;-0.0;0.0;@'
+        $Sheet.Range($address).NumberFormat='0.0'
     }
 }
 
 # Настраивает сохранённую книгу перед захватом шаблона; данные пользователя не округляет.
 function Set-CalculationDisplay([object]$Workbook) {
     $sheet=$Workbook.Worksheets.Item('Расчет')
+    $sheet.Range('AX10').Value2='шаг вдоль оси сечения'
     $formulas=@(Set-CalculationMissingCombinationFormulas $sheet)
     $formulas+=@(Set-CalculationTorsionResultFormulas $Workbook)
     Set-CalculationLoadPrecision $sheet

@@ -21,7 +21,7 @@ function Test-HeaderSetting([string]$Key,[string]$Value){
 function Test-HeaderValue([string]$Stage){
  $value=[string]$book.Worksheets.Item('Results').Range('AL8').Value2
  if($value -cne "Нагрузки с учётом продольного`nизгиба (если применимо)"){throw ('Wrong header after '+$Stage+': '+$value)}
- foreach($address in @('Q44:V58','Y44:AA58')){if([string]$book.Worksheets.Item('Расчет').Range($address).NumberFormat -cne '0.0;-0.0;0.0;@'){throw ('Calculation reformatted inputs: '+$address)}}
+ foreach($address in @('Q44:V58','Y44:AA58')){if([string]$book.Worksheets.Item('Расчет').Range($address).NumberFormat -cne '0.0'){throw ('Calculation reformatted inputs: '+$address)}}
  return [ordered]@{Stage=$Stage;Header=$value;InputNumberFormatPreserved=$true}
 }
 Add-Type 'using System;using System.Runtime.InteropServices;public static class LoadHeaderTestWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);}'
