@@ -1,0 +1,98 @@
+{
+  "Status": "PASS",
+  "Assertions": 23,
+  "Checks": [
+    {
+      "Name": "Example.worstID.numeric",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.AY18",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB41",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB26",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.AV35",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.AZ18",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB25",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB27",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.AU23",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB35",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BA18",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB28",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB18",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.AV42",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB42",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.BB34",
+      "Passed": true
+    },
+    {
+      "Name": "Example.value.AY21",
+      "Passed": true
+    },
+    {
+      "Name": "Example.blank.dash",
+      "Passed": true
+    },
+    {
+      "Name": "Example.zero.numeric",
+      "Passed": true
+    },
+    {
+      "Name": "Example.badReference.visible",
+      "Passed": true
+    },
+    {
+      "Name": "Example.textID.lookup",
+      "Passed": true
+    },
+    {
+      "Name": "Example.alphanumericID.lookup",
+      "Passed": true
+    },
+    {
+      "Name": "Example.missingID.dash",
+      "Passed": true
+    }
+  ]
+}

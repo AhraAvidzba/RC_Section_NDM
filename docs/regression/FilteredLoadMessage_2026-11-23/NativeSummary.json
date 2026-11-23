@@ -1,0 +1,7 @@
+﻿{
+    "Status":  "PASS",
+    "Assertions":  23,
+    "DirectedRepeat":  "Error injection uses INDEX outside the range, independent of Excel UI language",
+    "PID":  26780,
+    "StartTicksUTC":  639310443313041401
+}

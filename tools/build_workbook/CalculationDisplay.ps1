@@ -51,6 +51,24 @@ function Set-CalculationMissingCombinationFormulas([object]$Sheet) {
     return $changed
 }
 
+# При подготовке шаблона ищет текстовый ID кручения и отличает пустой результат от числового нуля.
+# IFNA обрабатывает отсутствие ID; ошибки ссылок и некорректные значения остаются видимыми.
+function Set-CalculationTorsionResultFormulas([object]$Workbook) {
+    $sheet=$Workbook.Worksheets.Item('Расчет');$changed=@()
+    $anchor=$Workbook.Names.Item('rngTorsionSummaryAnchor').RefersToRange
+    $rows=$Workbook.Names.Item('rngLoadCombinations').RefersToRange.Rows.Count-1
+    $ids='Results!'+$anchor.Resize($rows,1).Address($true,$true)
+    foreach($cell in $sheet.Range('AR1:BD59').SpecialCells(-4123)){
+        $formula=[string]$cell.Formula
+        $matches=[regex]::Matches($formula,'INDEX\((Results!\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?\d+),MATCH\((\$[A-Z]+\$\d+)(?:&"")?,([^,]+),0\)\)')
+        if($matches.Count -ne 2 -or $matches[0].Value -cne $matches[1].Value -or $matches[0].Groups[3].Value -cne $ids){continue}
+        $lookup=$matches[0].Value.Replace('MATCH('+$matches[0].Groups[2].Value+',','MATCH('+$matches[0].Groups[2].Value+'&"",')
+        $replacement='=IFNA(IF(ISBLANK('+$lookup+'),"-",'+$lookup+'),"-")'
+        $cell.Formula=$replacement;$changed+=$cell.Address($false,$false)
+    }
+    return $changed
+}
+
 # Условная заливка зависит от INPUT-знака N и обновляется без событий VBA.
 function Set-CalculationAxialTensionFormat([object]$Workbook) {
     $sheet=$Workbook.Worksheets.Item('Расчет');$rules=@()
@@ -117,6 +135,7 @@ function Set-CalculationLoadPrecision([object]$Sheet) {
 function Set-CalculationDisplay([object]$Workbook) {
     $sheet=$Workbook.Worksheets.Item('Расчет')
     $formulas=@(Set-CalculationMissingCombinationFormulas $sheet)
+    $formulas+=@(Set-CalculationTorsionResultFormulas $Workbook)
     Set-CalculationLoadPrecision $sheet
     $rules=@(Set-CalculationAxialTensionFormat $Workbook)
     $statuses=@(Set-CalculationStatusDashFormat $sheet)

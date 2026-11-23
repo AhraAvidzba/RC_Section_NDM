@@ -460,7 +460,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook workbook, batch, units
-    report.AddValue "Пропущено нулевых сочетаний без T", CStr(reader.SkippedZeroCount)
+    report.AddValue "Пропущено сочетаний ниже порогов фильтрации N и M (без T)", CStr(reader.SkippedZeroCount)
     If reader.SkippedZeroCount > 0 Then report.AddValue "ID пропущенных сочетаний", reader.SkippedZeroIDs
     report.AddValue "Прочитано сочетаний", CStr(batch.Count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
@@ -525,7 +525,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     If batch.Count = 0 Then CalculateSectionCore = "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена."
     If batch.Count > 0 And batch.NormalLoadCombinationCount = 0 Then CalculateSectionCore = "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю."
     If reader.SkippedZeroCount > 0 Then CalculateSectionCore = WorkbookMessageParagraph(CalculateSectionCore, _
-        "Пропущено нулевых сочетаний без T: " & CStr(reader.SkippedZeroCount) & "." & vbCrLf & "ID: " & reader.SkippedZeroIDs & ".")
+        "Пропущено сочетаний ниже порогов фильтрации N и M (без T): " & CStr(reader.SkippedZeroCount) & "." & vbCrLf & "ID: " & reader.SkippedZeroIDs & ".")
     CalculateSectionCore = WorkbookMessageAfterOutcome(CalculateSectionCore, dataOrigin)
     requiresAttention = requiresAttention Or plotHasWarning
     If Len(plotWarning) > 0 Then CalculateSectionCore = CalculateSectionCore & vbCrLf & vbCrLf & plotWarning

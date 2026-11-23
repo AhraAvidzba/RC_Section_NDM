@@ -1,0 +1,19 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FilteredLoadMessage_2026-11-23\\User.xlsm",
+    "WorkbookSHA256":  "CBA225926F0D89D44D1F66C98AB56D09653010CBE5B66663F37595747C746F11",
+    "ProductionSHA256":  "394859824B2C3CB2EDAA9C57932C09D9346C2EB6BD31274C28F52C2183EFE720",
+    "Compiled":  true,
+    "Modules":  [
+                    "CLoadCombinationReader",
+                    "modWorkbookCalculation",
+                    "modTestBatchCalculation"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

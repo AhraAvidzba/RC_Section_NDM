@@ -59,12 +59,17 @@ try{
   [void]$torque.Offset(1,0).Resize($torque.Rows.Count-1,2).ClearContents()
   $ids=@('ZERO_N','ZERO_M','ONLY_T','FILTERED_T','KEEP')
   for($i=0;$i -lt $ids.Count;$i++){$loads.Cells.Item($i+2,1).Value2=$ids[$i];$loads.Cells.Item($i+2,5).Value2='PR1'}
+  $loads.Cells.Item(7,1).Value2='NO_LOAD';$loads.Cells.Item(8,1).Value2='EXPLICIT_ZERO'
+  $loads.Cells.Item(8,2).Resize(1,3).Value2=0.0
   $loads.Cells.Item(2,2).Value2=0.0001;$loads.Cells.Item(3,3).Value2=0.0001
   $loads.Cells.Item(5,2).Value2=0.0001;$loads.Cells.Item(5,3).Value2=0.0001;$loads.Cells.Item(6,2).Value2=-10.0
   $torque.Cells.Item(2,1).Value2='ONLY_T';$torque.Cells.Item(2,2).Value2=1.0
   $torque.Cells.Item(3,1).Value2='FILTERED_T';$torque.Cells.Item(3,2).Value2=1.0
   $message=[string]$app.Run($prefix+'modWorkbookCalculation.RunSectionCalculationForWorkbook',$book)
-  Test-ZeroAssert ($storage+'.mixed.message') ($message -match 'Пропущено нулевых сочетаний без T: 2') $message
+  Test-ZeroAssert ($storage+'.mixed.message') ($message -match 'Пропущено сочетаний ниже порогов фильтрации N и M \(без T\): 2') $message
+  Test-ZeroAssert ($storage+'.mixed.filteredIDs') ($message -match '(?m)^ID: ZERO_N, ZERO_M\.\r?$') $message
+  Test-ZeroAssert ($storage+'.mixed.emptyLoads.notReported') ($message -notmatch 'NO_LOAD|EXPLICIT_ZERO') $message
+  Test-ZeroAssert ($storage+'.mixed.emptyLoads.notCalculated') ([string]$summary.Offset(17,0).Value2 -eq '' -and [string]$summary.Offset(18,0).Value2 -eq '') @($summary.Offset(17,0).Value2,$summary.Offset(18,0).Value2)
   Test-ZeroAssert ($storage+'.skipped.N') ([string]$summary.Offset(12,0).Value2 -eq '') $summary.Offset(12,0).Value2
   Test-ZeroAssert ($storage+'.skipped.M') ([string]$summary.Offset(13,0).Value2 -eq '') $summary.Offset(13,0).Value2
   Test-ZeroAssert ($storage+'.T.ID') ([string]$summary.Offset(14,0).Value2 -ceq 'ONLY_T') $summary.Offset(14,0).Value2

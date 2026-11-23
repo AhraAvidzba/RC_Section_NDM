@@ -11460,7 +11460,7 @@ Restore:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет ранний отбор NM после фильтра, сохранение T и отсутствие решения НДС для отдельного этапа.
+' Проверяет ранний отбор NM, учёт только ненулевых исходных нагрузок в сообщении и сохранение отдельного T без решения НДС.
 Public Function RunZeroLoadCombinationTests() As String
     Dim stats As TBatchTestStats, savedSystem As Variant, system As Object, sheet As Object
     Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, reader As New CLoadCombinationReader
@@ -11489,7 +11489,8 @@ Public Function RunZeroLoadCombinationTests() As String
     Set ids = CreateObject("Scripting.Dictionary"): ids.CompareMode = vbTextCompare
     ids.Add "LC6", 1: ids.Add "LC7", 1
     reader.LoadFromRange sheet.Range("A1:G10"), batch, Nothing, ids
-    TestAssertClose stats, "reader.skipped", reader.SkippedZeroCount, 4#, 0#
+    TestAssertClose stats, "reader.skipped", reader.SkippedZeroCount, 3#, 0#
+    TestAssertTrue stats, "reader.skipped.IDs.onlyFiltered", reader.SkippedZeroIDs = "LC3, LC4, LC5"
     TestAssertClose stats, "reader.retained", batch.Count, 5#, 0#
     TestAssertTrue stats, "reader.Traw.only", batch.IsAdditionalLoadOnly(1)
     TestAssertTrue stats, "reader.Tfiltered.only", batch.IsAdditionalLoadOnly(2)
@@ -11498,6 +11499,17 @@ Public Function RunZeroLoadCombinationTests() As String
     TestAssertClose stats, "reader.M.above", batch.UserMx(4), 200000.001, 0#
     TestAssertClose stats, "reader.sourceOffset", batch.SourceDataOffset(3), 7#, 0#
     TestAssertTrue stats, "reader.invalid.retained", Not batch.IsAdditionalLoadOnly(5)
+    sheet.Range("B2:D2").Value2 = 0#
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    reader.LoadFromRange sheet.Range("A1:G2"), batch
+    TestAssertClose stats, "reader.explicitZeros.notReported", reader.SkippedZeroCount, 0#, 0#
+    TestAssertTrue stats, "reader.explicitZeros.noIDs", Len(reader.SkippedZeroIDs) = 0
+    TestAssertClose stats, "reader.explicitZeros.notCalculated", batch.Count, 0#, 0#
+    sheet.Range("B2:D2").Formula = "="""""
+    Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
+    reader.LoadFromRange sheet.Range("A1:G2"), batch
+    TestAssertClose stats, "reader.emptyFormulas.notReported", reader.SkippedZeroCount, 0#, 0#
+    TestAssertClose stats, "reader.emptyFormulas.notCalculated", batch.Count, 0#, 0#
     Set batch = TestBuildBatchCalculator(): batch.ApplySettings settings
     reader.LoadFromRange sheet.Range("A1:G7"), batch, Nothing, ids
     batch.Execute

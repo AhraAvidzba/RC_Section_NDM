@@ -1,0 +1,11 @@
+﻿{
+    "Status":  "PASS",
+    "LookupCells":  121,
+    "Assertions":  363,
+    "Failed":  0,
+    "Scenarios":  [
+                      "Numeric",
+                      "Text",
+                      "NoSelection"
+                  ]
+}

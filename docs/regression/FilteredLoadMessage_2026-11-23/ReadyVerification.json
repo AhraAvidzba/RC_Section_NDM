@@ -1,0 +1,32 @@
+﻿{
+    "Status":  "PASS",
+    "Checks":  [
+                   {
+                       "Workbook":  "User",
+                       "Compiled":  true,
+                       "Components":  203,
+                       "CounterFix":  true,
+                       "FormulaCount":  16,
+                       "ExampleValuesPresent":  false,
+                       "SHA256":  "E96FABE99F9DDB1CF05115EFC78337B022185B99E602500D5638672EA4FD86C0"
+                   },
+                   {
+                       "Workbook":  "Clean",
+                       "Compiled":  true,
+                       "Components":  203,
+                       "CounterFix":  true,
+                       "FormulaCount":  16,
+                       "ExampleValuesPresent":  false,
+                       "SHA256":  "75C16DF6A6EAA60E8E8338EDB58A017BF064987A20314C0D7CDD23D97813C1BD"
+                   },
+                   {
+                       "Workbook":  "Example",
+                       "Compiled":  true,
+                       "Components":  203,
+                       "CounterFix":  true,
+                       "FormulaCount":  16,
+                       "ExampleValuesPresent":  true,
+                       "SHA256":  "1E756CE5D32E13B0595D8248DE2A134FC5410A8C00EFD85764265CA173FE1686"
+                   }
+               ]
+}

@@ -1,0 +1,241 @@
+﻿[
+    {
+        "Name":  "Excel.mixed.message",
+        "Passed":  true,
+        "Actual":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 2.\r\nID: ZERO_N, ZERO_M.\r\n\r\nВремя расчёта: 1.32 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.mixed.filteredIDs",
+        "Passed":  true,
+        "Actual":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 2.\r\nID: ZERO_N, ZERO_M.\r\n\r\nВремя расчёта: 1.32 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.mixed.emptyLoads.notReported",
+        "Passed":  true,
+        "Actual":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 2.\r\nID: ZERO_N, ZERO_M.\r\n\r\nВремя расчёта: 1.32 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.mixed.emptyLoads.notCalculated",
+        "Passed":  true,
+        "Actual":  [
+                       null,
+                       null
+                   ]
+    },
+    {
+        "Name":  "Excel.skipped.N",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "Excel.skipped.M",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "Excel.T.ID",
+        "Passed":  true,
+        "Actual":  "ONLY_T"
+    },
+    {
+        "Name":  "Excel.filteredT.ID",
+        "Passed":  true,
+        "Actual":  "FILTERED_T"
+    },
+    {
+        "Name":  "Excel.remaining.N",
+        "Passed":  true,
+        "Actual":  "KEEP"
+    },
+    {
+        "Name":  "Excel.T.NMzero.0",
+        "Passed":  true,
+        "Actual":  0
+    },
+    {
+        "Name":  "Excel.T.sum.0",
+        "Passed":  true,
+        "Actual":  [
+                       4.99960542850963,
+                       4.99960542850963
+                   ]
+    },
+    {
+        "Name":  "Excel.T.NMzero.1",
+        "Passed":  true,
+        "Actual":  0
+    },
+    {
+        "Name":  "Excel.T.sum.1",
+        "Passed":  true,
+        "Actual":  [
+                       4.99960542850963,
+                       4.99960542850963
+                   ]
+    },
+    {
+        "Name":  "Excel.Tonly.message",
+        "Passed":  true,
+        "Actual":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 3.\r\nID: ZERO_N, ZERO_M, KEEP.\r\n\r\nВремя расчёта: 1.32 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.Tonly.noNMstates",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "Excel.allZero.message",
+        "Passed":  true,
+        "Actual":  "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 4.\r\nID: ZERO_N, ZERO_M, FILTERED_T, KEEP.\r\n\r\nВремя расчёта: 1.20 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.allZero.noOldID",
+        "Passed":  true,
+        "Actual":  [
+                       null,
+                       null
+                   ]
+    },
+    {
+        "Name":  "Excel.invalidT.reasonInMessage",
+        "Passed":  true,
+        "Actual":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 4.\r\nID: ZERO_N, ZERO_M, FILTERED_T, KEEP.\r\n\r\nПостпроверка T: строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nПервая причина:\r\nАдреса ячеек:\r\nConfig!V71\r\n\r\nПостпроверка T, ID «ONLY_T»\r\n\r\nВведённое значение: «bad T».\r\nМомент T должен быть числом.\r\n\r\nВозможное решение:\r\nИсправьте значение в указанной ячейке.\r\n\r\nВремя расчёта: 1.26 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.invalidT.reasonInResult",
+        "Passed":  true,
+        "Actual":  "Адреса ячеек:; Config!V71; ; Постпроверка T (кручение), ID «ONLY_T»; ; Введённое значение: «bad T».; Момент T должен быть числом.; ; Возможное решение:; Исправьте значение в указанной ячейке."
+    },
+    {
+        "Name":  "Excel.orphanT.reasonInMessage",
+        "Passed":  true,
+        "Actual":  "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 4.\r\nID: ZERO_N, ZERO_M, FILTERED_T, KEEP.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nПервая причина:\r\nАдреса ячеек:\r\nConfig!U71\r\n\r\nПостпроверка T, ID «UNKNOWN»\r\n\r\nВведённое значение: «UNKNOWN».\r\nID не найден в rngLoadCombinations.\r\n\r\nВозможное решение:\r\nВыберите ID существующего сочетания.\r\n\r\nВремя расчёта: 1.13 с.\r\n\r\nДанные сохранены на листе Results текущей книги."
+    },
+    {
+        "Name":  "Excel.invalidNM.notAssumedZero",
+        "Passed":  true,
+        "Actual":  "N/A"
+    },
+    {
+        "Name":  "File.mixed.message",
+        "Passed":  true,
+        "Actual":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 2.\r\nID: ZERO_N, ZERO_M.\r\n\r\nВремя расчёта: 1.34 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.mixed.filteredIDs",
+        "Passed":  true,
+        "Actual":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 2.\r\nID: ZERO_N, ZERO_M.\r\n\r\nВремя расчёта: 1.34 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.mixed.emptyLoads.notReported",
+        "Passed":  true,
+        "Actual":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nОбработано сочетаний: 3.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 2.\r\nID: ZERO_N, ZERO_M.\r\n\r\nВремя расчёта: 1.34 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.mixed.emptyLoads.notCalculated",
+        "Passed":  true,
+        "Actual":  [
+                       null,
+                       null
+                   ]
+    },
+    {
+        "Name":  "File.skipped.N",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "File.skipped.M",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "File.T.ID",
+        "Passed":  true,
+        "Actual":  "ONLY_T"
+    },
+    {
+        "Name":  "File.filteredT.ID",
+        "Passed":  true,
+        "Actual":  "FILTERED_T"
+    },
+    {
+        "Name":  "File.remaining.N",
+        "Passed":  true,
+        "Actual":  "KEEP"
+    },
+    {
+        "Name":  "File.T.NMzero.0",
+        "Passed":  true,
+        "Actual":  0
+    },
+    {
+        "Name":  "File.T.sum.0",
+        "Passed":  true,
+        "Actual":  [
+                       4.99960542850963,
+                       4.99960542850963
+                   ]
+    },
+    {
+        "Name":  "File.T.NMzero.1",
+        "Passed":  true,
+        "Actual":  0
+    },
+    {
+        "Name":  "File.T.sum.1",
+        "Passed":  true,
+        "Actual":  [
+                       4.99960542850963,
+                       4.99960542850963
+                   ]
+    },
+    {
+        "Name":  "File.Tonly.message",
+        "Passed":  true,
+        "Actual":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 3.\r\nID: ZERO_N, ZERO_M, KEEP.\r\n\r\nВремя расчёта: 1.52 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.Tonly.noNMstates",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "File.allZero.message",
+        "Passed":  true,
+        "Actual":  "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 4.\r\nID: ZERO_N, ZERO_M, FILTERED_T, KEEP.\r\n\r\nВремя расчёта: 1.52 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.allZero.noOldID",
+        "Passed":  true,
+        "Actual":  [
+                       null,
+                       null
+                   ]
+    },
+    {
+        "Name":  "File.invalidT.reasonInMessage",
+        "Passed":  true,
+        "Actual":  "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 4.\r\nID: ZERO_N, ZERO_M, FILTERED_T, KEEP.\r\n\r\nПостпроверка T: строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nПервая причина:\r\nАдреса ячеек:\r\nConfig!V71\r\n\r\nПостпроверка T, ID «ONLY_T»\r\n\r\nВведённое значение: «bad T».\r\nМомент T должен быть числом.\r\n\r\nВозможное решение:\r\nИсправьте значение в указанной ячейке.\r\n\r\nВремя расчёта: 1.26 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.invalidT.reasonInResult",
+        "Passed":  true,
+        "Actual":  "Адреса ячеек:; Config!V71; ; Постпроверка T (кручение), ID «ONLY_T»; ; Введённое значение: «bad T».; Момент T должен быть числом.; ; Возможное решение:; Исправьте значение в указанной ячейке."
+    },
+    {
+        "Name":  "File.orphanT.reasonInMessage",
+        "Passed":  true,
+        "Actual":  "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена.\r\n\r\nГеометрия для расчёта загружена из файла «ZeroActions.ndm».\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 4.\r\nID: ZERO_N, ZERO_M, FILTERED_T, KEEP.\r\n\r\nПостпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — 1. Причины указаны в блоке NMT на Results.\r\n\r\nПервая причина:\r\nАдреса ячеек:\r\nConfig!U71\r\n\r\nПостпроверка T, ID «UNKNOWN»\r\n\r\nВведённое значение: «UNKNOWN».\r\nID не найден в rngLoadCombinations.\r\n\r\nВозможное решение:\r\nВыберите ID существующего сочетания.\r\n\r\nВремя расчёта: 1.40 с.\r\n\r\nДанные сохранены в файле «ZeroActions.ndm»."
+    },
+    {
+        "Name":  "File.invalidNM.notAssumedZero",
+        "Passed":  true,
+        "Actual":  "N/A"
+    },
+    {
+        "Name":  "File.reopen.restoredWithoutOldResults",
+        "Passed":  true,
+        "Actual":  "Restored"
+    }
+]

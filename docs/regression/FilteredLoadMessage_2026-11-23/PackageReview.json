@@ -1,0 +1,100 @@
+{
+  "Status": "PASS",
+  "ComponentCount": 203,
+  "VBAChanges": {
+    "User": [
+      "CLoadCombinationReader",
+      "modTestBatchCalculation",
+      "modWorkbookCalculation"
+    ],
+    "Clean": [
+      "CLoadCombinationReader",
+      "modTestBatchCalculation",
+      "modWorkbookCalculation"
+    ],
+    "Example": []
+  },
+  "Books": {
+    "User": {
+      "ChangedParts": [
+        "xl/vbaProject.bin",
+        "xl/worksheets/sheet4.xml"
+      ],
+      "FormulaCells": [
+        "AU23",
+        "AV35",
+        "AV42",
+        "AY18",
+        "AY21",
+        "AZ18",
+        "BA18",
+        "BB18",
+        "BB25",
+        "BB26",
+        "BB27",
+        "BB28",
+        "BB34",
+        "BB35",
+        "BB41",
+        "BB42"
+      ],
+      "OtherCellsStylesObjectsNamesAndDataByteExact": true,
+      "SHA256": "E96FABE99F9DDB1CF05115EFC78337B022185B99E602500D5638672EA4FD86C0"
+    },
+    "Clean": {
+      "ChangedParts": [
+        "xl/worksheets/sheet4.xml",
+        "xl/vbaProject.bin"
+      ],
+      "FormulaCells": [
+        "AU23",
+        "AV35",
+        "AV42",
+        "AY18",
+        "AY21",
+        "AZ18",
+        "BA18",
+        "BB18",
+        "BB25",
+        "BB26",
+        "BB27",
+        "BB28",
+        "BB34",
+        "BB35",
+        "BB41",
+        "BB42"
+      ],
+      "OtherCellsStylesObjectsNamesAndDataByteExact": true,
+      "SHA256": "75C16DF6A6EAA60E8E8338EDB58A017BF064987A20314C0D7CDD23D97813C1BD"
+    },
+    "Example": {
+      "ChangedParts": [
+        "xl/vbaProject.bin",
+        "xl/worksheets/sheet4.xml"
+      ],
+      "FormulaCells": [
+        "AU23",
+        "AV35",
+        "AV42",
+        "AY18",
+        "AY21",
+        "AZ18",
+        "BA18",
+        "BB18",
+        "BB25",
+        "BB26",
+        "BB27",
+        "BB28",
+        "BB34",
+        "BB35",
+        "BB41",
+        "BB42"
+      ],
+      "OtherCellsStylesObjectsNamesAndDataByteExact": true,
+      "SHA256": "1E756CE5D32E13B0595D8248DE2A134FC5410A8C00EFD85764265CA173FE1686"
+    }
+  },
+  "TemplateChangedParts": [
+    "xl/worksheets/sheet4.xml"
+  ]
+}

@@ -1,0 +1,13 @@
+﻿{
+    "Status":  "PASS",
+    "Installed":  [
+                      {
+                          "Name":  "User",
+                          "Path":  "workbook/output/RC_Section_NDM.xlsm",
+                          "SHA256":  "E96FABE99F9DDB1CF05115EFC78337B022185B99E602500D5638672EA4FD86C0",
+                          "BackupSHA256":  "394859824B2C3CB2EDAA9C57932C09D9346C2EB6BD31274C28F52C2183EFE720"
+                      }
+                  ],
+    "CleanSHA256":  "75C16DF6A6EAA60E8E8338EDB58A017BF064987A20314C0D7CDD23D97813C1BD",
+    "VBAExportSHA256":  "5C3957625444DB84978D4B323FE4BF6B7E3A5BE25100140B6BD41532298C0DFB"
+}

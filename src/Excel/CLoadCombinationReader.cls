@@ -20,7 +20,7 @@ Option Explicit
 ' Если передан CUnitSystem, усилия сразу переводятся из INPUT-единиц и
 ' пользовательской системы знаков во внутреннюю систему расчетного ядра.
 
-Private mSkippedZeroCount As Long ' Число корректных строк, полностью обнулённых до запуска НДС.
+Private mSkippedZeroCount As Long ' Число ненулевых исходных нагрузок без T, полностью обнулённых фильтром.
 Private mSkippedZeroIDs As String ' ID пропусков для отчёта без создания строк Results.
 
 ' Загружает сочетания из именованного диапазона книги.
@@ -113,6 +113,8 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText, hasError)
     myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText, hasError)
     If Not hasError Then ' Инженерный ноль не использует профиль, путь и комментарий; ошибочный ввод нагрузки не скрывается.
+        Dim hadNonzeroLoad As Boolean
+        hadNonzeroLoad = (nValue <> 0# Or mxValue <> 0# Or myValue <> 0#) ' Пустые строки и явно заданные нули не считаются потерянной при фильтрации нагрузкой.
         ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, hasError, source, rowIndex
         If Not hasError Then
             If batch.IsInputLoadZero(nValue, mxValue, myValue) Then
@@ -120,7 +122,7 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
                 If Not additionalLoadIDs Is Nothing Then hasAdditionalLoad = additionalLoadIDs.Exists(combinationID)
                 If hasAdditionalLoad Then
                     batch.AddAdditionalLoadOnlyCombination combinationID, nValue, mxValue, myValue, rowIndex - 1, RowLocation(source, rowIndex)
-                Else
+                ElseIf hadNonzeroLoad Then
                     mSkippedZeroCount = mSkippedZeroCount + 1
                     If Len(mSkippedZeroIDs) > 0 Then mSkippedZeroIDs = mSkippedZeroIDs & ", "
                     mSkippedZeroIDs = mSkippedZeroIDs & combinationID
@@ -156,12 +158,12 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     End If
 End Sub
 
-' Возвращает количество строк, исключённых общим фильтром до решения и вывода.
+' Возвращает число ненулевых исходных нагрузок без T, исключённых общим фильтром до решения и вывода.
 Public Property Get SkippedZeroCount() As Long
     SkippedZeroCount = mSkippedZeroCount
 End Property
 
-' Возвращает номера исключённых строк для отдельного пояснения в отчёте.
+' Возвращает ID нагрузок, обнулённых фильтром; исходно пустые и нулевые строки не перечисляются.
 Public Property Get SkippedZeroIDs() As String
     SkippedZeroIDs = mSkippedZeroIDs
 End Property
