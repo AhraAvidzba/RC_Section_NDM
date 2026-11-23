@@ -1,0 +1,36 @@
+{
+  "Status": "PASS",
+  "RemovedBooks": [
+    {
+      "Path": "RC_Section_NDM — копия.xlsm",
+      "SHA256": "3144AD8C645BA3F03B27EDBD9C404E88D31CDC5699D068EC423504F55CF097D2",
+      "Bytes": 13949378
+    },
+    {
+      "Path": "NDM_HeavyCircle_1232_30_2026-11-01/RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "B75EB9FC8A901CB72A87DE1C49EA222210BF37A44A165BF7C5CD696D7CC89ACF",
+      "Bytes": 17718470
+    },
+    {
+      "Path": "NDM_HeavyCircle_1232_30_ResultsHelp_2026-11-01/RC_Section_NDM_HeavyCircle_1232_30.xlsm",
+      "SHA256": "58E2EBC26475EA9291CB822BAF57A67A073350139EA1813C688C81C68E309D50",
+      "Bytes": 17682849
+    },
+    {
+      "Path": "NDM_Test_1232_30/RC_Section_NDM.xlsm",
+      "SHA256": "1A24FCFAF51AF3A4A3D54E522BF459D2C8E08F2412170D7310C2871B4B20DF34",
+      "Bytes": 16027857
+    },
+    {
+      "Path": "NDM_Test_1232_30/RC_Section_NDM_ok.xlsm",
+      "SHA256": "31F188692A01CC421A37CF962598778A5AD1FE6D9AB5D96DD41C29389C0919F7",
+      "Bytes": 10437731
+    },
+    {
+      "Path": "PlanarTorsionReserve02/RC_Section_NDM.xlsm",
+      "SHA256": "A775A2D790C160BAA27E0581381F50B3BEE4D789E7475CB8E8521108D6E5FCC9",
+      "Bytes": 12875657
+    }
+  ],
+  "BackupArchive": "outputs/Presentation1300_2026-11-23/ExtraBooks.zip"
+}

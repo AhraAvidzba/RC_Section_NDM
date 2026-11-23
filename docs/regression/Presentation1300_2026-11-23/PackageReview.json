@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "MatchedPrintCellStyles": 3272,
+  "MergedCellsMatch": true,
+  "PreservedResultFormulas": 275,
+  "PromptsMatch": true,
+  "AddedLinks": 42,
+  "BuiltSHA256": "26E0681EEF90CD62C1527F266C17E34C9122974B22418703A9A13F89212944A0",
+  "NativeVBAComponents": 203,
+  "CalculationCodeUnchanged": true
+}

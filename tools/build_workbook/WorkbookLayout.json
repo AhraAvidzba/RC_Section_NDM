@@ -10368,8 +10368,9 @@
                            "LinkSize":  12
                        },
     "Provenance":  {
-                       "Workbook":  "Candidate.xlsm",
-                       "SHA256":  "AC804DAEA17B41C4D1CAA96499C9C16D4D550689ECCF5EFAB95EAD19A1974417",
-                       "Captured":  "2026-11-20T13:32:52"
+                       "Workbook": "RC_Section_NDM — копия.xlsm",
+                       "SHA256": "3144AD8C645BA3F03B27EDBD9C404E88D31CDC5699D068EC423504F55CF097D2",
+                       "Captured": "2026-11-23",
+                       "Scope": "Approved Calculation sheet layout; input prompts added after capture without geometry changes"
                    }
 }

@@ -1,0 +1,12 @@
+{
+  "Status": "PASS",
+  "Pages": 4,
+  "NonEmptyPages": 4,
+  "MatchesVerifiedPrintCandidate": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "PDFSHA256": "82FA32CAC44886ACBC0631EADCA0DAA3597BA5A5090B96CC05CF36AA851AECD3"
+}

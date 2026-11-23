@@ -1,0 +1,87 @@
+﻿[
+    {
+        "Name":  "VBA.compiled",
+        "Passed":  true,
+        "Actual":  203
+    },
+    {
+        "Name":  "VBA.components",
+        "Passed":  true,
+        "Actual":  203
+    },
+    {
+        "Name":  "J37.prompt",
+        "Passed":  true,
+        "Actual":  "Отступ первого стержня арматуры от точки разделения зон армирования (красный ромб на схеме). Порядок задания: слева направо, сверху вниз. Подробную схему см. на листе «Сечения»."
+    },
+    {
+        "Name":  "J37.promptVisible",
+        "Passed":  true,
+        "Actual":  true
+    },
+    {
+        "Name":  "K37.prompt",
+        "Passed":  true,
+        "Actual":  "Отступ последнего стержня арматуры от точки разделения зон армирования (красный ромб на схеме). Порядок задания: слева направо, сверху вниз. Подробную схему см. на листе «Сечения»."
+    },
+    {
+        "Name":  "K37.promptVisible",
+        "Passed":  true,
+        "Actual":  true
+    },
+    {
+        "Name":  "scale.editableFormula",
+        "Passed":  true,
+        "Actual":  "=IFERROR(IF(COUNT(Results!$V$193:$V$196)=4,MAX(1,MAX(Results!$V$194-Results!$V$193,Results!$V$196-Results!$V$195)*CHOOSE(MATCH(Results!$W$193,{\"mm\",\"cm\",\"m\"},0),1,10,1000)/1300),1),1)"
+    },
+    {
+        "Name":  "clean.noResultID",
+        "Passed":  true,
+        "Actual":  null
+    },
+    {
+        "Name":  "S0.link",
+        "Passed":  true,
+        "Actual":  12.5
+    },
+    {
+        "Name":  "S1.link",
+        "Passed":  true,
+        "Actual":  17.25
+    },
+    {
+        "Name":  "scale.mm.1000",
+        "Passed":  true,
+        "Actual":  1
+    },
+    {
+        "Name":  "scale.mm.1300",
+        "Passed":  true,
+        "Actual":  1
+    },
+    {
+        "Name":  "scale.mm.2600",
+        "Passed":  true,
+        "Actual":  2
+    },
+    {
+        "Name":  "scale.mm.3900",
+        "Passed":  true,
+        "Actual":  3
+    },
+    {
+        "Name":  "scale.cm.260",
+        "Passed":  true,
+        "Actual":  2
+    },
+    {
+        "Name":  "scale.m.2.6",
+        "Passed":  true,
+        "Actual":  2
+    },
+    {
+        "Name":  "readOnly.noChanges",
+        "Passed":  true,
+        "Actual":  "26E0681EEF90CD62C1527F266C17E34C9122974B22418703A9A13F89212944A0"
+    }
+]
