@@ -7820,9 +7820,39 @@ Public Function RunAudit03ExcelGuardTests() As String
     TestExcelGuardLocalCancellation stats
     TestAudit03ExcelGuardContracts stats
     TestExcelGuardFaultRecovery stats
+    TestExcelGuardDeferredScreen stats
     TestAppendLine stats, "TOTAL_AUDIT03_EXCEL_GUARD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExcelGuardTests = stats.Report
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отложенную остановку показа и восстановление исходного экрана, включая отказ его записи.
+Private Sub TestExcelGuardDeferredScreen(ByRef stats As TUiTestStats)
+    Dim app As CTestExcelApplicationState, guard As CExcelAppStateGuard, screen As Variant, code As Long
+    On Error GoTo Failed
+    For Each screen In Array(False, True)
+        Set app = New CTestExcelApplicationState: app.ScreenUpdating = CBool(screen)
+        Set guard = New CExcelAppStateGuard: guard.Enter app, True
+        TestAssertTrue stats, "excelGuard.deferred.preserved." & CStr(screen), app.ScreenUpdating = CBool(screen)
+        guard.SuspendScreenUpdating: guard.SuspendScreenUpdating
+        TestAssertTrue stats, "excelGuard.deferred.suspended." & CStr(screen), Not app.ScreenUpdating
+        guard.Restore True
+        TestAssertTrue stats, "excelGuard.deferred.restored." & CStr(screen), app.ScreenUpdating = CBool(screen) And app.EnableEvents And app.DisplayAlerts And app.Calculation = xlCalculationAutomatic
+    Next screen
+    Set app = New CTestExcelApplicationState: Set guard = New CExcelAppStateGuard
+    guard.Enter app, True
+    app.FaultProperty = "ScreenUpdating": app.FaultsRemaining = 1
+    On Error Resume Next
+    Err.Clear: guard.SuspendScreenUpdating: code = Err.Number
+    On Error GoTo Failed
+    TestAssertTrue stats, "excelGuard.deferred.writeFailure", code <> 0
+    guard.Restore True
+    TestAssertTrue stats, "excelGuard.deferred.failureRestored", TestFakeExcelRestored(app)
+    Exit Sub
+Failed:
+    TestAssertTrue stats, "excelGuard.deferred.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    If Not guard Is Nothing Then guard.Restore
+End Sub
 
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -9248,10 +9278,11 @@ End Function
 ' Проверяет одну явную актуализацию до любых имён и при выключенных событиях.
 ' Режим и остальные свойства должны совпасть с исходными после возврата из действия.
 Private Sub TestFreshnessAssertAction(ByRef stats As TUiTestStats, ByVal proxy As CTestWorkflowWorkbook, _
-        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String, ByVal form As Boolean)
+        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String, ByVal form As Boolean, _
+        Optional ByVal completedCalculation As Boolean = False)
     TestAssertTrue stats, label & ".oneApplicationCalculate", observed.TestCalculateCalls = 1
     TestAssertTrue stats, label & ".calculateInsideGuard", observed.TestCalculateGuarded
-    TestAssertTrue stats, label & ".screenWrites", observed.TestScreenWrites = IIf(form, 2, 0)
+    TestAssertTrue stats, label & ".screenWrites", observed.TestScreenWrites = IIf(form Or completedCalculation, 2, 0) ' Успешный расчёт приостанавливает финальные перерисовки и возвращает исходный экран; ошибки до вывода его не переключают.
     TestAssertTrue stats, label & ".noInputBeforeCalculate", proxy.TestNamesBeforeCalculate = 0
     TestFreshnessAssertState stats, observed.TestNativeApplication, expected, label & ".restored"
 End Sub
@@ -9325,7 +9356,7 @@ Public Function RunTestCalculationFreshnessWorkflow() As String
         code = TestFreshnessInvoke(False, proxy, message, informationEnabled)
         label = "freshness.calculate." & CStr(mode)
         TestAssertTrue stats, label & ".success." & message, code = 0 And InStr(message, "Расчет завершен") > 0
-        TestFreshnessAssertAction stats, proxy, observed, expected, label, False
+        TestFreshnessAssertAction stats, proxy, observed, expected, label, False, True
         TestAssertClose stats, label & ".freshLoad", CDbl(TestResultsPropertyValue("LC1", "N")), -19000#, 0.000001
         TestAssertTrue stats, label & ".freshProfileSolved", SectionEquilibriumSolveCount() > 0 ' Execute сбрасывает счётчики перед текущим пакетом; сравнение с предыдущим пакетом неверно.
         TestAssertTrue stats, label & ".directStateFinished", TestResultsPropertyValue("LC1", "DirectStateStatus") = "OK"

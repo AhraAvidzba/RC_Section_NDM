@@ -1,0 +1,13 @@
+{
+  "Status": "PASS",
+  "Components": 203,
+  "ChangedComponents": [
+    "CExcelAppStateGuard",
+    "modTestWorkbookInterface",
+    "modWorkbookCalculation"
+  ],
+  "OtherWorkbookPartsUnchanged": true,
+  "RuntimeComponentsIdenticalTo12CaseDisplayCheck": true,
+  "SourceBookEquality": true,
+  "CompilerNumericLiteralNormalization": "Two existing test tolerances 0.000000000000000001 rendered as 1E-18; exact decimal value preserved"
+}

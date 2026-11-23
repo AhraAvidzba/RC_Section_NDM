@@ -1,0 +1,29 @@
+﻿[
+    {
+        "Repeat":  1,
+        "WallSeconds":  7.0051893,
+        "Trace":  "Core.Start|0.0078\nResults.Calculate.Start|3.1563\nResults.Calculate.End|3.6016\nCalculation.Calculate.Start|3.6016\nCalculation.Calculate.End|5.0547\nGuard.Restore.Start|5.0547\nGuard.Restore.End|6.5313\nCore.Locals.Release.Start|6.5391\nCore.Returned|6.5547\nFinish.Drawing.Start|6.5547\nFinish.Drawing.End|6.5547\nFinish.SavedTime.Start|6.5547\nFinish.SavedTime.End|6.5547\nFinish.CellTime.Start|6.5547\nFinish.CellTime.End|7.0078\nWrapper.End|7.0078\n",
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 23.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 1.\r\nID: 17.\r\n\r\nВремя расчёта: 7.00 с.\r\n\r\nДанные сохранены на листе Results текущей книги.",
+        "Calculation":  -4105,
+        "EnableEvents":  true,
+        "ScreenUpdating":  true
+    },
+    {
+        "Repeat":  2,
+        "WallSeconds":  6.3651955,
+        "Trace":  "Core.Start|0.0000\nResults.Calculate.Start|2.4922\nResults.Calculate.End|2.9375\nCalculation.Calculate.Start|2.9375\nCalculation.Calculate.End|4.3984\nGuard.Restore.Start|4.3984\nGuard.Restore.End|5.9141\nCore.Locals.Release.Start|5.9219\nCore.Returned|5.9297\nFinish.Drawing.Start|5.9297\nFinish.Drawing.End|5.9297\nFinish.SavedTime.Start|5.9297\nFinish.SavedTime.End|5.9375\nFinish.CellTime.Start|5.9375\nFinish.CellTime.End|6.3672\nWrapper.End|6.3672\n",
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 23.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 1.\r\nID: 17.\r\n\r\nВремя расчёта: 6.37 с.\r\n\r\nДанные сохранены на листе Results текущей книги.",
+        "Calculation":  -4105,
+        "EnableEvents":  true,
+        "ScreenUpdating":  true
+    },
+    {
+        "Repeat":  3,
+        "WallSeconds":  6.5695063,
+        "Trace":  "Core.Start|0.1797\nResults.Calculate.Start|2.7344\nResults.Calculate.End|3.1875\nCalculation.Calculate.Start|3.1875\nCalculation.Calculate.End|4.6641\nGuard.Restore.Start|4.6641\nGuard.Restore.End|6.1250\nCore.Locals.Release.Start|6.1328\nCore.Returned|6.1406\nFinish.Drawing.Start|6.1406\nFinish.Drawing.End|6.1406\nFinish.SavedTime.Start|6.1406\nFinish.SavedTime.End|6.1484\nFinish.CellTime.Start|6.1484\nFinish.CellTime.End|6.5703\nWrapper.End|6.5703\n",
+        "Message":  "Расчет завершен.\r\n\r\nГеометрия для расчёта загружена с листа Results текущей книги.\r\n\r\nОбработано сочетаний: 23.\r\n\r\nРезультаты и пояснения всех проверок — на листе Results.\r\n\r\nПропущено сочетаний ниже порогов фильтрации N и M (без T): 1.\r\nID: 17.\r\n\r\nВремя расчёта: 6.39 с.\r\n\r\nДанные сохранены на листе Results текущей книги.",
+        "Calculation":  -4105,
+        "EnableEvents":  true,
+        "ScreenUpdating":  true
+    }
+]

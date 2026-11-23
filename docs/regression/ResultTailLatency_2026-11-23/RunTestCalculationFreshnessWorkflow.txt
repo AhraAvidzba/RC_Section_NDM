@@ -1,0 +1,444 @@
+OK: freshness.form.-4105.success.Сечение сформировано и сохранено на листе Results.
+
+Геометрия сформирована по параметрам Config и листа «Сечения».
+
+Бетонных элементов: 36.
+Стержней арматуры: 8.
+
+Данные T (кручение) не очищены: rngTorsionSummaryAnchor должен ссылаться на одну ячейку листа Results текущей книги.
+
+Время формирования сечения: 0.43 с.
+OK: freshness.form.-4105.oneApplicationCalculate
+OK: freshness.form.-4105.calculateInsideGuard
+OK: freshness.form.-4105.screenWrites
+OK: freshness.form.-4105.noInputBeforeCalculate
+OK: freshness.form.-4105.restored.cancel
+OK: freshness.form.-4105.restored.screen
+OK: freshness.form.-4105.restored.events
+OK: freshness.form.-4105.restored.alerts
+OK: freshness.form.-4105.restored.calculation
+OK: freshness.form.-4105.geometryFormula; actual=360.; expected=360.
+OK: freshness.form.-4105.sameFreshUiFlag
+OK: freshness.form.-4105.noSolver
+OK: freshness.calculate.-4105.success.Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Не удалось вывести T (кручение) / NMT. rngTorsionSummaryAnchor должен ссылаться на одну ячейку листа Results текущей книги.
+Результаты НДМ не изменялись.
+
+Постпроверка T завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены.
+
+Время расчёта: 0.71 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: freshness.calculate.-4105.oneApplicationCalculate
+OK: freshness.calculate.-4105.calculateInsideGuard
+OK: freshness.calculate.-4105.screenWrites
+OK: freshness.calculate.-4105.noInputBeforeCalculate
+OK: freshness.calculate.-4105.restored.cancel
+OK: freshness.calculate.-4105.restored.screen
+OK: freshness.calculate.-4105.restored.events
+OK: freshness.calculate.-4105.restored.alerts
+OK: freshness.calculate.-4105.restored.calculation
+OK: freshness.calculate.-4105.freshLoad; actual=-19000.; expected=-19000.
+OK: freshness.calculate.-4105.freshProfileSolved
+OK: freshness.calculate.-4105.directStateFinished
+OK: freshness.calculate.-4105.savedStrainPresent
+OK: freshness.calculate.-4105.compressionStrain
+OK: freshness.calculate.-4105.savedEquilibriumPresent
+OK: freshness.calculate.-4105.savedEquilibrium; actual=-19000.; expected=-19000.
+OK: freshness.calculate.-4105.savedGeometryUnchanged
+OK: freshness.calculate.-4105.manualUpdateNoScreenWrite
+OK: freshness.calculate.-4105.disabledPlotNoCalculate
+OK: freshness.calculate.-4105.exportPlotNoCalculate
+OK: freshness.calculate.-4105.exportPlotNoSolve
+OK: freshness.calculate.-4105.exportPlotRestored.cancel
+OK: freshness.calculate.-4105.exportPlotRestored.screen
+OK: freshness.calculate.-4105.exportPlotRestored.events
+OK: freshness.calculate.-4105.exportPlotRestored.alerts
+OK: freshness.calculate.-4105.exportPlotRestored.calculation
+OK: freshness.expectedError.-4105.True.addressedReason
+OK: freshness.expectedError.-4105.True.oneApplicationCalculate
+OK: freshness.expectedError.-4105.True.calculateInsideGuard
+OK: freshness.expectedError.-4105.True.screenWrites
+OK: freshness.expectedError.-4105.True.noInputBeforeCalculate
+OK: freshness.expectedError.-4105.True.restored.cancel
+OK: freshness.expectedError.-4105.True.restored.screen
+OK: freshness.expectedError.-4105.True.restored.events
+OK: freshness.expectedError.-4105.True.restored.alerts
+OK: freshness.expectedError.-4105.True.restored.calculation
+OK: freshness.unexpectedError.-4105.True.9.originalNumber
+OK: freshness.unexpectedError.-4105.True.9.noInputRead
+OK: freshness.unexpectedError.-4105.True.9.oneApplicationCalculate
+OK: freshness.unexpectedError.-4105.True.9.calculateInsideGuard
+OK: freshness.unexpectedError.-4105.True.9.screenWrites
+OK: freshness.unexpectedError.-4105.True.9.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4105.True.9.restored.cancel
+OK: freshness.unexpectedError.-4105.True.9.restored.screen
+OK: freshness.unexpectedError.-4105.True.9.restored.events
+OK: freshness.unexpectedError.-4105.True.9.restored.alerts
+OK: freshness.unexpectedError.-4105.True.9.restored.calculation
+OK: freshness.unexpectedError.-4105.True.18.originalNumber
+OK: freshness.unexpectedError.-4105.True.18.noInputRead
+OK: freshness.unexpectedError.-4105.True.18.oneApplicationCalculate
+OK: freshness.unexpectedError.-4105.True.18.calculateInsideGuard
+OK: freshness.unexpectedError.-4105.True.18.screenWrites
+OK: freshness.unexpectedError.-4105.True.18.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4105.True.18.restored.cancel
+OK: freshness.unexpectedError.-4105.True.18.restored.screen
+OK: freshness.unexpectedError.-4105.True.18.restored.events
+OK: freshness.unexpectedError.-4105.True.18.restored.alerts
+OK: freshness.unexpectedError.-4105.True.18.restored.calculation
+OK: freshness.expectedError.-4105.False.addressedReason
+OK: freshness.expectedError.-4105.False.oneApplicationCalculate
+OK: freshness.expectedError.-4105.False.calculateInsideGuard
+OK: freshness.expectedError.-4105.False.screenWrites
+OK: freshness.expectedError.-4105.False.noInputBeforeCalculate
+OK: freshness.expectedError.-4105.False.restored.cancel
+OK: freshness.expectedError.-4105.False.restored.screen
+OK: freshness.expectedError.-4105.False.restored.events
+OK: freshness.expectedError.-4105.False.restored.alerts
+OK: freshness.expectedError.-4105.False.restored.calculation
+OK: freshness.unexpectedError.-4105.False.9.originalNumber
+OK: freshness.unexpectedError.-4105.False.9.noInputRead
+OK: freshness.unexpectedError.-4105.False.9.oneApplicationCalculate
+OK: freshness.unexpectedError.-4105.False.9.calculateInsideGuard
+OK: freshness.unexpectedError.-4105.False.9.screenWrites
+OK: freshness.unexpectedError.-4105.False.9.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4105.False.9.restored.cancel
+OK: freshness.unexpectedError.-4105.False.9.restored.screen
+OK: freshness.unexpectedError.-4105.False.9.restored.events
+OK: freshness.unexpectedError.-4105.False.9.restored.alerts
+OK: freshness.unexpectedError.-4105.False.9.restored.calculation
+OK: freshness.unexpectedError.-4105.False.18.originalNumber
+OK: freshness.unexpectedError.-4105.False.18.noInputRead
+OK: freshness.unexpectedError.-4105.False.18.oneApplicationCalculate
+OK: freshness.unexpectedError.-4105.False.18.calculateInsideGuard
+OK: freshness.unexpectedError.-4105.False.18.screenWrites
+OK: freshness.unexpectedError.-4105.False.18.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4105.False.18.restored.cancel
+OK: freshness.unexpectedError.-4105.False.18.restored.screen
+OK: freshness.unexpectedError.-4105.False.18.restored.events
+OK: freshness.unexpectedError.-4105.False.18.restored.alerts
+OK: freshness.unexpectedError.-4105.False.18.restored.calculation
+OK: freshness.nullWorkbook.rejected.-4105.True
+OK: freshness.nullWorkbook.-4105.True.cancel
+OK: freshness.nullWorkbook.-4105.True.screen
+OK: freshness.nullWorkbook.-4105.True.events
+OK: freshness.nullWorkbook.-4105.True.alerts
+OK: freshness.nullWorkbook.-4105.True.calculation
+OK: freshness.nullWorkbook.rejected.-4105.False
+OK: freshness.nullWorkbook.-4105.False.cancel
+OK: freshness.nullWorkbook.-4105.False.screen
+OK: freshness.nullWorkbook.-4105.False.events
+OK: freshness.nullWorkbook.-4105.False.alerts
+OK: freshness.nullWorkbook.-4105.False.calculation
+OK: freshness.clearNoCalculate.-4105
+OK: freshness.clearRestored.-4105.cancel
+OK: freshness.clearRestored.-4105.screen
+OK: freshness.clearRestored.-4105.events
+OK: freshness.clearRestored.-4105.alerts
+OK: freshness.clearRestored.-4105.calculation
+OK: freshness.form.-4135.success.Сечение сформировано и сохранено на листе Results.
+
+Геометрия сформирована по параметрам Config и листа «Сечения».
+
+Бетонных элементов: 36.
+Стержней арматуры: 8.
+
+Данные T (кручение) не очищены: rngTorsionSummaryAnchor должен ссылаться на одну ячейку листа Results текущей книги.
+
+Время формирования сечения: 0.28 с.
+OK: freshness.form.-4135.oneApplicationCalculate
+OK: freshness.form.-4135.calculateInsideGuard
+OK: freshness.form.-4135.screenWrites
+OK: freshness.form.-4135.noInputBeforeCalculate
+OK: freshness.form.-4135.restored.cancel
+OK: freshness.form.-4135.restored.screen
+OK: freshness.form.-4135.restored.events
+OK: freshness.form.-4135.restored.alerts
+OK: freshness.form.-4135.restored.calculation
+OK: freshness.form.-4135.geometryFormula; actual=360.; expected=360.
+OK: freshness.form.-4135.sameFreshUiFlag
+OK: freshness.form.-4135.noSolver
+OK: freshness.calculate.-4135.success.Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Не удалось вывести T (кручение) / NMT. rngTorsionSummaryAnchor должен ссылаться на одну ячейку листа Results текущей книги.
+Результаты НДМ не изменялись.
+
+Постпроверка T завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены.
+
+Время расчёта: 0.63 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: freshness.calculate.-4135.oneApplicationCalculate
+OK: freshness.calculate.-4135.calculateInsideGuard
+OK: freshness.calculate.-4135.screenWrites
+OK: freshness.calculate.-4135.noInputBeforeCalculate
+OK: freshness.calculate.-4135.restored.cancel
+OK: freshness.calculate.-4135.restored.screen
+OK: freshness.calculate.-4135.restored.events
+OK: freshness.calculate.-4135.restored.alerts
+OK: freshness.calculate.-4135.restored.calculation
+OK: freshness.calculate.-4135.freshLoad; actual=-19000.; expected=-19000.
+OK: freshness.calculate.-4135.freshProfileSolved
+OK: freshness.calculate.-4135.directStateFinished
+OK: freshness.calculate.-4135.savedStrainPresent
+OK: freshness.calculate.-4135.compressionStrain
+OK: freshness.calculate.-4135.savedEquilibriumPresent
+OK: freshness.calculate.-4135.savedEquilibrium; actual=-19000.; expected=-19000.
+OK: freshness.calculate.-4135.savedGeometryUnchanged
+OK: freshness.calculate.-4135.manualUpdateNoScreenWrite
+OK: freshness.calculate.-4135.disabledPlotNoCalculate
+OK: freshness.calculate.-4135.exportPlotNoCalculate
+OK: freshness.calculate.-4135.exportPlotNoSolve
+OK: freshness.calculate.-4135.exportPlotRestored.cancel
+OK: freshness.calculate.-4135.exportPlotRestored.screen
+OK: freshness.calculate.-4135.exportPlotRestored.events
+OK: freshness.calculate.-4135.exportPlotRestored.alerts
+OK: freshness.calculate.-4135.exportPlotRestored.calculation
+OK: freshness.expectedError.-4135.True.addressedReason
+OK: freshness.expectedError.-4135.True.oneApplicationCalculate
+OK: freshness.expectedError.-4135.True.calculateInsideGuard
+OK: freshness.expectedError.-4135.True.screenWrites
+OK: freshness.expectedError.-4135.True.noInputBeforeCalculate
+OK: freshness.expectedError.-4135.True.restored.cancel
+OK: freshness.expectedError.-4135.True.restored.screen
+OK: freshness.expectedError.-4135.True.restored.events
+OK: freshness.expectedError.-4135.True.restored.alerts
+OK: freshness.expectedError.-4135.True.restored.calculation
+OK: freshness.unexpectedError.-4135.True.9.originalNumber
+OK: freshness.unexpectedError.-4135.True.9.noInputRead
+OK: freshness.unexpectedError.-4135.True.9.oneApplicationCalculate
+OK: freshness.unexpectedError.-4135.True.9.calculateInsideGuard
+OK: freshness.unexpectedError.-4135.True.9.screenWrites
+OK: freshness.unexpectedError.-4135.True.9.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4135.True.9.restored.cancel
+OK: freshness.unexpectedError.-4135.True.9.restored.screen
+OK: freshness.unexpectedError.-4135.True.9.restored.events
+OK: freshness.unexpectedError.-4135.True.9.restored.alerts
+OK: freshness.unexpectedError.-4135.True.9.restored.calculation
+OK: freshness.unexpectedError.-4135.True.18.originalNumber
+OK: freshness.unexpectedError.-4135.True.18.noInputRead
+OK: freshness.unexpectedError.-4135.True.18.oneApplicationCalculate
+OK: freshness.unexpectedError.-4135.True.18.calculateInsideGuard
+OK: freshness.unexpectedError.-4135.True.18.screenWrites
+OK: freshness.unexpectedError.-4135.True.18.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4135.True.18.restored.cancel
+OK: freshness.unexpectedError.-4135.True.18.restored.screen
+OK: freshness.unexpectedError.-4135.True.18.restored.events
+OK: freshness.unexpectedError.-4135.True.18.restored.alerts
+OK: freshness.unexpectedError.-4135.True.18.restored.calculation
+OK: freshness.expectedError.-4135.False.addressedReason
+OK: freshness.expectedError.-4135.False.oneApplicationCalculate
+OK: freshness.expectedError.-4135.False.calculateInsideGuard
+OK: freshness.expectedError.-4135.False.screenWrites
+OK: freshness.expectedError.-4135.False.noInputBeforeCalculate
+OK: freshness.expectedError.-4135.False.restored.cancel
+OK: freshness.expectedError.-4135.False.restored.screen
+OK: freshness.expectedError.-4135.False.restored.events
+OK: freshness.expectedError.-4135.False.restored.alerts
+OK: freshness.expectedError.-4135.False.restored.calculation
+OK: freshness.unexpectedError.-4135.False.9.originalNumber
+OK: freshness.unexpectedError.-4135.False.9.noInputRead
+OK: freshness.unexpectedError.-4135.False.9.oneApplicationCalculate
+OK: freshness.unexpectedError.-4135.False.9.calculateInsideGuard
+OK: freshness.unexpectedError.-4135.False.9.screenWrites
+OK: freshness.unexpectedError.-4135.False.9.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4135.False.9.restored.cancel
+OK: freshness.unexpectedError.-4135.False.9.restored.screen
+OK: freshness.unexpectedError.-4135.False.9.restored.events
+OK: freshness.unexpectedError.-4135.False.9.restored.alerts
+OK: freshness.unexpectedError.-4135.False.9.restored.calculation
+OK: freshness.unexpectedError.-4135.False.18.originalNumber
+OK: freshness.unexpectedError.-4135.False.18.noInputRead
+OK: freshness.unexpectedError.-4135.False.18.oneApplicationCalculate
+OK: freshness.unexpectedError.-4135.False.18.calculateInsideGuard
+OK: freshness.unexpectedError.-4135.False.18.screenWrites
+OK: freshness.unexpectedError.-4135.False.18.noInputBeforeCalculate
+OK: freshness.unexpectedError.-4135.False.18.restored.cancel
+OK: freshness.unexpectedError.-4135.False.18.restored.screen
+OK: freshness.unexpectedError.-4135.False.18.restored.events
+OK: freshness.unexpectedError.-4135.False.18.restored.alerts
+OK: freshness.unexpectedError.-4135.False.18.restored.calculation
+OK: freshness.nullWorkbook.rejected.-4135.True
+OK: freshness.nullWorkbook.-4135.True.cancel
+OK: freshness.nullWorkbook.-4135.True.screen
+OK: freshness.nullWorkbook.-4135.True.events
+OK: freshness.nullWorkbook.-4135.True.alerts
+OK: freshness.nullWorkbook.-4135.True.calculation
+OK: freshness.nullWorkbook.rejected.-4135.False
+OK: freshness.nullWorkbook.-4135.False.cancel
+OK: freshness.nullWorkbook.-4135.False.screen
+OK: freshness.nullWorkbook.-4135.False.events
+OK: freshness.nullWorkbook.-4135.False.alerts
+OK: freshness.nullWorkbook.-4135.False.calculation
+OK: freshness.clearNoCalculate.-4135
+OK: freshness.clearRestored.-4135.cancel
+OK: freshness.clearRestored.-4135.screen
+OK: freshness.clearRestored.-4135.events
+OK: freshness.clearRestored.-4135.alerts
+OK: freshness.clearRestored.-4135.calculation
+OK: freshness.form.2.success.Сечение сформировано и сохранено на листе Results.
+
+Геометрия сформирована по параметрам Config и листа «Сечения».
+
+Бетонных элементов: 36.
+Стержней арматуры: 8.
+
+Данные T (кручение) не очищены: rngTorsionSummaryAnchor должен ссылаться на одну ячейку листа Results текущей книги.
+
+Время формирования сечения: 0.24 с.
+OK: freshness.form.2.oneApplicationCalculate
+OK: freshness.form.2.calculateInsideGuard
+OK: freshness.form.2.screenWrites
+OK: freshness.form.2.noInputBeforeCalculate
+OK: freshness.form.2.restored.cancel
+OK: freshness.form.2.restored.screen
+OK: freshness.form.2.restored.events
+OK: freshness.form.2.restored.alerts
+OK: freshness.form.2.restored.calculation
+OK: freshness.form.2.geometryFormula; actual=360.; expected=360.
+OK: freshness.form.2.sameFreshUiFlag
+OK: freshness.form.2.noSolver
+OK: freshness.calculate.2.success.Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Не удалось вывести T (кручение) / NMT. rngTorsionSummaryAnchor должен ссылаться на одну ячейку листа Results текущей книги.
+Результаты НДМ не изменялись.
+
+Постпроверка T завершена с ошибкой ввода; причина выведена в отдельном блоке Results. Результаты НДМ сохранены.
+
+Время расчёта: 0.59 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: freshness.calculate.2.oneApplicationCalculate
+OK: freshness.calculate.2.calculateInsideGuard
+OK: freshness.calculate.2.screenWrites
+OK: freshness.calculate.2.noInputBeforeCalculate
+OK: freshness.calculate.2.restored.cancel
+OK: freshness.calculate.2.restored.screen
+OK: freshness.calculate.2.restored.events
+OK: freshness.calculate.2.restored.alerts
+OK: freshness.calculate.2.restored.calculation
+OK: freshness.calculate.2.freshLoad; actual=-19000.; expected=-19000.
+OK: freshness.calculate.2.freshProfileSolved
+OK: freshness.calculate.2.directStateFinished
+OK: freshness.calculate.2.savedStrainPresent
+OK: freshness.calculate.2.compressionStrain
+OK: freshness.calculate.2.savedEquilibriumPresent
+OK: freshness.calculate.2.savedEquilibrium; actual=-19000.; expected=-19000.
+OK: freshness.calculate.2.savedGeometryUnchanged
+OK: freshness.calculate.2.manualUpdateNoScreenWrite
+OK: freshness.calculate.2.disabledPlotNoCalculate
+OK: freshness.calculate.2.exportPlotNoCalculate
+OK: freshness.calculate.2.exportPlotNoSolve
+OK: freshness.calculate.2.exportPlotRestored.cancel
+OK: freshness.calculate.2.exportPlotRestored.screen
+OK: freshness.calculate.2.exportPlotRestored.events
+OK: freshness.calculate.2.exportPlotRestored.alerts
+OK: freshness.calculate.2.exportPlotRestored.calculation
+OK: freshness.expectedError.2.True.addressedReason
+OK: freshness.expectedError.2.True.oneApplicationCalculate
+OK: freshness.expectedError.2.True.calculateInsideGuard
+OK: freshness.expectedError.2.True.screenWrites
+OK: freshness.expectedError.2.True.noInputBeforeCalculate
+OK: freshness.expectedError.2.True.restored.cancel
+OK: freshness.expectedError.2.True.restored.screen
+OK: freshness.expectedError.2.True.restored.events
+OK: freshness.expectedError.2.True.restored.alerts
+OK: freshness.expectedError.2.True.restored.calculation
+OK: freshness.unexpectedError.2.True.9.originalNumber
+OK: freshness.unexpectedError.2.True.9.noInputRead
+OK: freshness.unexpectedError.2.True.9.oneApplicationCalculate
+OK: freshness.unexpectedError.2.True.9.calculateInsideGuard
+OK: freshness.unexpectedError.2.True.9.screenWrites
+OK: freshness.unexpectedError.2.True.9.noInputBeforeCalculate
+OK: freshness.unexpectedError.2.True.9.restored.cancel
+OK: freshness.unexpectedError.2.True.9.restored.screen
+OK: freshness.unexpectedError.2.True.9.restored.events
+OK: freshness.unexpectedError.2.True.9.restored.alerts
+OK: freshness.unexpectedError.2.True.9.restored.calculation
+OK: freshness.unexpectedError.2.True.18.originalNumber
+OK: freshness.unexpectedError.2.True.18.noInputRead
+OK: freshness.unexpectedError.2.True.18.oneApplicationCalculate
+OK: freshness.unexpectedError.2.True.18.calculateInsideGuard
+OK: freshness.unexpectedError.2.True.18.screenWrites
+OK: freshness.unexpectedError.2.True.18.noInputBeforeCalculate
+OK: freshness.unexpectedError.2.True.18.restored.cancel
+OK: freshness.unexpectedError.2.True.18.restored.screen
+OK: freshness.unexpectedError.2.True.18.restored.events
+OK: freshness.unexpectedError.2.True.18.restored.alerts
+OK: freshness.unexpectedError.2.True.18.restored.calculation
+OK: freshness.expectedError.2.False.addressedReason
+OK: freshness.expectedError.2.False.oneApplicationCalculate
+OK: freshness.expectedError.2.False.calculateInsideGuard
+OK: freshness.expectedError.2.False.screenWrites
+OK: freshness.expectedError.2.False.noInputBeforeCalculate
+OK: freshness.expectedError.2.False.restored.cancel
+OK: freshness.expectedError.2.False.restored.screen
+OK: freshness.expectedError.2.False.restored.events
+OK: freshness.expectedError.2.False.restored.alerts
+OK: freshness.expectedError.2.False.restored.calculation
+OK: freshness.unexpectedError.2.False.9.originalNumber
+OK: freshness.unexpectedError.2.False.9.noInputRead
+OK: freshness.unexpectedError.2.False.9.oneApplicationCalculate
+OK: freshness.unexpectedError.2.False.9.calculateInsideGuard
+OK: freshness.unexpectedError.2.False.9.screenWrites
+OK: freshness.unexpectedError.2.False.9.noInputBeforeCalculate
+OK: freshness.unexpectedError.2.False.9.restored.cancel
+OK: freshness.unexpectedError.2.False.9.restored.screen
+OK: freshness.unexpectedError.2.False.9.restored.events
+OK: freshness.unexpectedError.2.False.9.restored.alerts
+OK: freshness.unexpectedError.2.False.9.restored.calculation
+OK: freshness.unexpectedError.2.False.18.originalNumber
+OK: freshness.unexpectedError.2.False.18.noInputRead
+OK: freshness.unexpectedError.2.False.18.oneApplicationCalculate
+OK: freshness.unexpectedError.2.False.18.calculateInsideGuard
+OK: freshness.unexpectedError.2.False.18.screenWrites
+OK: freshness.unexpectedError.2.False.18.noInputBeforeCalculate
+OK: freshness.unexpectedError.2.False.18.restored.cancel
+OK: freshness.unexpectedError.2.False.18.restored.screen
+OK: freshness.unexpectedError.2.False.18.restored.events
+OK: freshness.unexpectedError.2.False.18.restored.alerts
+OK: freshness.unexpectedError.2.False.18.restored.calculation
+OK: freshness.nullWorkbook.rejected.2.True
+OK: freshness.nullWorkbook.2.True.cancel
+OK: freshness.nullWorkbook.2.True.screen
+OK: freshness.nullWorkbook.2.True.events
+OK: freshness.nullWorkbook.2.True.alerts
+OK: freshness.nullWorkbook.2.True.calculation
+OK: freshness.nullWorkbook.rejected.2.False
+OK: freshness.nullWorkbook.2.False.cancel
+OK: freshness.nullWorkbook.2.False.screen
+OK: freshness.nullWorkbook.2.False.events
+OK: freshness.nullWorkbook.2.False.alerts
+OK: freshness.nullWorkbook.2.False.calculation
+OK: freshness.clearNoCalculate.2
+OK: freshness.clearRestored.2.cancel
+OK: freshness.clearRestored.2.screen
+OK: freshness.clearRestored.2.events
+OK: freshness.clearRestored.2.alerts
+OK: freshness.clearRestored.2.calculation
+OK: freshness.testCleanup.cancel
+OK: freshness.testCleanup.screen
+OK: freshness.testCleanup.events
+OK: freshness.testCleanup.alerts
+OK: freshness.testCleanup.calculation
+TOTAL_FRESHNESS_WORKFLOW: passed=371; failed=0

@@ -1,0 +1,10 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "FB6E11090DECAFCF42C82AF52E739D55ED6B2C1092F4E9373581F47416A4A8EC",
+  "CandidateSHA256": "09089FD15A233FB8A34BA79C1E03CAC35CB2CF569E798BC125FC3D1D675F07A5",
+  "ChangedParts": [
+    "xl/vbaProject.bin"
+  ],
+  "DisplayCheckedCandidateSHA256": "B84FA6EFB4B8ED856518C40D82EC1310E25E6A061AE9DEABB74A1BB5C23ADB66",
+  "FinalDifferenceFromDisplayCandidate": "Test-only expected screen write count for completed calculation; production code unchanged"
+}

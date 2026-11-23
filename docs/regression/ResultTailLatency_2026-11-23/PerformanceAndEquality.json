@@ -1,0 +1,12 @@
+{
+  "Status": "PASS",
+  "ComparedPopulatedResultCells": 78532,
+  "RunIDCells": 8198,
+  "OnlyOtherDifference": "A4, elapsed seconds",
+  "AllPhysicalResultsAndStatusesIdentical": true,
+  "MedianBeforeSeconds": 6.5695063,
+  "MedianAfterSeconds": 3.4352418,
+  "DecreasePercent": 47.709285247203425,
+  "SampleCountBefore": 3,
+  "SampleCountAfter": 3
+}

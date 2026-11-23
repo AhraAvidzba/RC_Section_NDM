@@ -535,6 +535,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
         CalculateSectionCore = WorkbookMessageParagraph(CalculateSectionCore, _
             "Пошаговый отчет сохранен:" & vbCrLf & report.FilePath)
     End If
+    excelGuard.SuspendScreenUpdating ' Готовая схема сохраняется; оба пересчёта завершаются до единственного возврата исходного показа.
     CalculateResultSheets workbook
     excelGuard.Restore True
     savedDestination = "на листе Results текущей книги"

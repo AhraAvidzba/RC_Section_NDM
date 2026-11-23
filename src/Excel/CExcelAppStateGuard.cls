@@ -7,6 +7,7 @@ Option Explicit
 ' Сохраняет настройки приложения, отключает обновления на время работы
 ' и восстанавливает исходные значения при выходе, в том числе после ошибки.
 ' В режиме preserveScreenUpdating сохраняет управление экраном у вызывающего кода без записи этого свойства.
+' SuspendScreenUpdating откладывает показ финальных пересчётов; Restore возвращает состояние, сохранённое Enter.
 ' Настройки Application общие для всех книг одного экземпляра Excel.
 ' Esc/Ctrl+Break передаются обработчику как ошибка 18; команда End, сброс
 ' проекта в VBE и завершение процесса обходят обычное восстановление VBA.
@@ -44,6 +45,14 @@ Failed:
     errorNumber = Err.Number: errorSource = Err.Source: errorDescription = Err.Description
     Restore
     Err.Raise errorNumber, errorSource, errorDescription
+End Sub
+
+' Приостанавливает промежуточную отрисовку после подготовки данных и схемы.
+' Исходное состояние уже сохранено Enter; признак восстановления ставится до записи на случай COM-отказа.
+Public Sub SuspendScreenUpdating()
+    If Not mActive Then Err.Raise vbObjectError + 4182, "CExcelAppStateGuard.SuspendScreenUpdating", "Состояние Excel не сохранено: сначала вызовите Enter."
+    mPending(1) = True
+    WriteProperty 1, False
 End Sub
 
 ' Пробует вернуть каждое свойство независимо от ошибок остальных. При

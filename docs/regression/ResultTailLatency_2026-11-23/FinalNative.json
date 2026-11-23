@@ -1,0 +1,18 @@
+﻿{
+    "Status":  "PASS",
+    "CandidateSHA256":  "09089FD15A233FB8A34BA79C1E03CAC35CB2CF569E798BC125FC3D1D675F07A5",
+    "Components":  203,
+    "Compiled":  true,
+    "Reports":  [
+                    {
+                        "Macro":  "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                        "Passed":  true
+                    },
+                    {
+                        "Macro":  "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow",
+                        "Passed":  true
+                    }
+                ],
+    "PID":  27188,
+    "StartTicksUTC":  639310509958265128
+}
