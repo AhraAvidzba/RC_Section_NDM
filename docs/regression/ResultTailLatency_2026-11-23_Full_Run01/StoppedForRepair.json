@@ -1,0 +1,21 @@
+{
+  "Reason": "Full_Off has 22 failed assertions; stop further old-source groups for diagnosis and a complete repeat",
+  "ControllerPID": 27676,
+  "StartTicksUTC": 639310512459245710,
+  "StoppedUTC": "2026-11-23T19:18:31.3403704+00:00",
+  "CurrentChildren": [
+    {
+      "ProcessId": 6776,
+      "ParentProcessId": 27676,
+      "CreationDate": "2026-11-23T20:20:45.941293+03:00",
+      "CommandLine": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+      "ProcessId": 4976,
+      "ParentProcessId": 27676,
+      "CreationDate": "2026-11-23T22:16:01.637946+03:00",
+      "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit03Watchdog.ps1 -SourceWorkbook C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-23_Full_Run01\\Source\\RC_Section_NDM.xlsm -ReportPath docs/regression/ResultTailLatency_2026-11-23_Full_Run01/Geometry_Off.txt -Mode No -TimeoutSeconds 3600 -FixtureGeometryType Rectangles -Macro modTestDeclarativeGeometry.RunCoreGeometryTests,modTestPolygonSpec.RunPolygonSpecTests,modTestSectionRecipes.RunRecipeDefinitionTests,modTestSectionRecipes.RunRecipeRuleTests,modTestSectionRecipes.RunRecipeMeshBoundaryTests,modTestSectionRecipes.RunRecipeAnnotationCountTests,modTestGeometryPublication.RunAnnotationIsolationTests,modTestGeometryPublication.RunRecipeContextFreezeTests,modTestGeometryPublication.RunPublishedBuildTests,modTestGeometryPublication.RunDefinitionLifecycleTests,modTestRecipeOperations.RunRecipeOperationTests,modTestRecipeOperations.RunRecipeDiagnosticTests,modTestRecipeOperations.RunResolveAnchorTests,modTestGeometryQuery.RunGeometryQueryTests,modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests,modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests,modTestAutoCADContours.RunImportedDimensionTests,modTestAutoCADContours.RunAnnotationSectionScaleTests,modTestContourMesh.RunContourMeshTests,modTestAudit02Api.RunAudit02PolygonApiTests,modTestAudit02Api.RunAudit02OptionsTests,modTestAudit02Api.RunAudit02InputTests,modTestAudit02Api.RunAudit02AnnotationTests,modTestAudit02Api.RunAudit02GuideExamplesTests,modTestAudit02Api.RunAudit02CloseoutContactTests,modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests,modTestGeometryReview.RunGeometryReviewTests,modTestGeometryReview.RunPointedWidthInputTests,modTestRecipeOperations.RunCollapsingOffsetTests,modTestRecipeOperations.RunFullBoundaryOffsetTests,modTestIndividualContours.RunIndividualContourTests,modTestIndividualContours.RunIndividualContourFailureTests,modTestIndividualContours.RunIndividualContourWorkbookTests,modTestIndividualContours.RunUserRoundedContourTests,modTestIndividualContours.RunOffsetNeighborMergeTests,modTestIndividualContours.RunIndividualContourPerformanceTests"
+    }
+  ],
+  "ChildProcessesNotStopped": true
+}

@@ -174,7 +174,7 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Failed = stats.Failed + presentationFailed
     TestAppendLine stats, "RUN: TestBlankCombinationIDSkipsCalculation"
     TestBlankCombinationIDSkipsCalculation stats
-    TestNoActiveLoadsPreserveResults stats
+    TestZeroLoadQueueClearsResults stats
     TestInvalidProfileIdDoesNotRunPlot stats
     TestCalculationRequiresFormedSection stats
     TestResultsFormatting stats
@@ -774,7 +774,7 @@ Private Sub TestBlankCombinationIDSkipsCalculation(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.loads.disabled.readerNoSolve", batch.SolverCallCount = 0
     Dim solves As Long: solves = SectionEquilibriumSolveCount()
     Dim message As String: message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
-    TestAssertTrue stats, "ui.loads.disabled.message", InStr(1, message, "Расчёт не запускался", vbBinaryCompare) > 0 And _
+    TestAssertTrue stats, "ui.loads.disabled.message", InStr(1, message, "Расчёт НДМ не запускался", vbBinaryCompare) > 0 And _
         InStr(1, message, "InputErr", vbBinaryCompare) = 0
     TestAssertTrue stats, "ui.loads.disabled.commandNoSolve", SectionEquilibriumSolveCount() = solves
     TestAssertTrue stats, "ui.loads.disabled.inputsKept", TestWorkflowSameTable(original, loads.Formula)
@@ -6728,7 +6728,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", _
-        "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
+        "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngTorsionCombinations")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -6747,6 +6747,8 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             TestPrepareCircleInput
             TestSetSystemSetting "General.ExecutionReportEnabled", "No"
             TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+            Dim torque As Object: Set torque = ThisWorkbook.Names("rngTorsionCombinations").RefersToRange
+            torque.Offset(1, 1).Resize(torque.Rows.Count - 1, 1).Value2 = 0# ' Проверка сохранённого NM-сечения не задаёт кручения и не требует контура хомута.
             TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
             TestSetSystemSetting "Load.ReferenceOffsetX", "0": TestSetSystemSetting "Load.ReferenceOffsetY", "0"
             TestSetSystemSetting "Solver.ToleranceN", "0.001"
@@ -8779,7 +8781,7 @@ Public Function RunSectionWorkflowCalculationTests() As String
     TestRectanglesWorkbookRunWritesResults stats
     TestWorkflowFrozenGeometry stats
     TestWorkflowOptionalAnnotations stats
-    TestNoActiveLoadsPreserveResults stats
+    TestZeroLoadQueueClearsResults stats
 Done:
     TestFixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
     TestAppendLine stats, "TOTAL_WORKFLOW_CALCULATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -9470,30 +9472,34 @@ Public Function RunLoadActivationWorkflowTests() As String
     Dim stats As TUiTestStats
     TestUniqueCombinationIDs stats
     TestBlankCombinationIDSkipsCalculation stats
-    TestNoActiveLoadsPreserveResults stats
+    TestZeroLoadQueueClearsResults stats
     RunLoadActivationWorkflowTests = stats.Report & "TOTAL LOAD ACTIVATION WORKFLOW: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет штатную команду без активных LC; входит также в общий workbook-набор.
-Private Sub TestNoActiveLoadsPreserveResults(ByRef stats As TUiTestStats)
+' Проверяет очистку прежних состояний без активных NM/T и сохранение геометрии в Excel/File.
+Private Sub TestZeroLoadQueueClearsResults(ByRef stats As TUiTestStats)
     Dim saved As Object, names As Variant, name As Variant, mode As Variant
     Set saved = CreateObject("Scripting.Dictionary")
     names = Array("rngSystemSettings", "rngCalculationProfiles", "rngUnitSettings", "rngSignConventionSettings", _
-        "rngLoadCombinations", "rngStabilityDurationLoads", "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
+        "rngLoadCombinations", "rngStabilityDurationLoads", "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngTorsionCombinations")
     On Error GoTo Failed
     For Each name In names: saved.Add CStr(name), ThisWorkbook.Names(CStr(name)).RefersToRange.Formula: Next name
     Dim store As CCalculationSnapshotStore: Set store = New CCalculationSnapshotStore
     Dim checksum As CFileChecksum: Set checksum = New CFileChecksum
-    Dim file As String, oldHash As String, message As String, before As String, testCase As Long, loads As Object
+    Dim file As String, oldHash As String, message As String, testCase As Long, loads As Object
+    Dim geometryBefore As Variant, geometryAfter As Variant, snapshot As CCalculationSnapshot, solveCount As Long, torque As Object
+    Dim fileProperties As Variant, propertyRow As Long, noCombinationProperties As Boolean
     For Each mode In Array("Excel", "File")
         TestPrepareCircleInput
+        Set torque = ThisWorkbook.Names("rngTorsionCombinations").RefersToRange
+        torque.Offset(1, 1).Resize(torque.Rows.Count - 1, 1).Value2 = 0# ' Без отдельного T нулевая очередь должна очистить прежние расчётные состояния.
         TestSetSystemSetting "General.ExecutionReportEnabled", "No"
         TestSetSystemSetting "Results.SnapshotStorage", CStr(mode)
         TestSetSystemSetting "Results.SnapshotName", "TestLoadActivation_" & Format$(Now, "yyyymmdd_hhnnss") & ".ndm"
         message = FormSectionForWorkbook(ThisWorkbook)
         message = RunSectionCalculationForWorkbook(ThisWorkbook)
-        before = modTestPerformance.TestPerformanceResultsFingerprint()
+        geometryBefore = TestResultTable("rngNDMSectionGeometry")
         If CStr(mode) = "File" Then file = store.SnapshotPath(ThisWorkbook): oldHash = checksum.FileSHA256(file)
         Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
         For testCase = 0 To 1
@@ -9503,11 +9509,26 @@ Private Sub TestNoActiveLoadsPreserveResults(ByRef stats As TUiTestStats)
                 loads.Cells(2, 1).Value2 = "ZERO": loads.Cells(2, 2).Resize(1, 3).Value2 = 0#
                 loads.Cells(2, 5).Value2 = CVErr(xlErrNA): loads.Cells(2, 6).Value2 = "unknown"
             End If
+            solveCount = SectionEquilibriumSolveCount()
             message = RunSectionCalculationForWorkbook(ThisWorkbook)
-            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".message." & testCase, InStr(1, message, "Расчёт не запускался", vbBinaryCompare) > 0
-            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".resultsPreserved." & testCase, before = modTestPerformance.TestPerformanceResultsFingerprint()
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".message." & testCase, InStr(1, message, "Расчёт НДМ не запускался", vbBinaryCompare) > 0
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".noSolve." & testCase, SectionEquilibriumSolveCount() = solveCount
+            TestAssertTrue stats, "loadActivation." & CStr(mode) & ".statesCleared." & testCase, TestResultTableRowCount("rngNDMElementResults") = 1
+            geometryAfter = TestResultTable("rngNDMSectionGeometry")
+            TestAudit03ComparePlainSnapshot stats, "loadActivation." & CStr(mode) & ".geometryPreserved." & testCase, geometryBefore, geometryAfter, 2
             TestAssertTrue stats, "loadActivation." & CStr(mode) & ".scopeReleased." & testCase, TestCalculationSnapshotReadReleased()
-            If CStr(mode) = "File" Then TestAssertTrue stats, "loadActivation.File.bytesPreserved." & testCase, oldHash = checksum.FileSHA256(file)
+            If CStr(mode) = "File" Then
+                TestAssertTrue stats, "loadActivation.File.replacedStaleSnapshot." & testCase, oldHash <> checksum.FileSHA256(file)
+                Set snapshot = store.LoadFile(ThisWorkbook)
+                TestAppendLine stats, "EMPTY_QUEUE_FILE_TABLES: elements=" & snapshot.TableRowCount("rngNDMElementResults") & "; properties=" & snapshot.TableRowCount("LoadCase.Properties")
+                fileProperties = snapshot.Table("LoadCase.Properties"): noCombinationProperties = True
+                For propertyRow = 2 To UBound(fileProperties, 1)
+                    If CStr(fileProperties(propertyRow, 2)) <> "ALL" Then noCombinationProperties = False ' Общая точка приложения и параметры запуска остаются допустимыми без сочетаний.
+                Next propertyRow
+                TestAssertTrue stats, "loadActivation.File.noSavedStates." & testCase, snapshot.TableRowCount("rngNDMElementResults") = 1 And noCombinationProperties
+                geometryAfter = snapshot.Table("rngNDMSectionGeometry")
+                TestAudit03ComparePlainSnapshot stats, "loadActivation.File.savedGeometry." & testCase, geometryBefore, geometryAfter, 2
+            End If
         Next testCase
         If Len(file) > 0 Then Kill file: file = vbNullString
     Next mode

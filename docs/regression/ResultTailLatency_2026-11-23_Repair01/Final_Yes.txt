@@ -1,0 +1,1468 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ResultTailLatency_2026-11-23_Repair01\Ready.xlsm
+SOURCE_SHA256: D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_479eaa3aab77433f806a828d395234dc\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=27728; startTicks=639310590002236275
+===== modTestLoadTableConfig.RunLoadActivationTests =====
+SUITE_STARTED: modTestLoadTableConfig.RunLoadActivationTests; 2026-11-23T22:30:09
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=27728; workingSet=148213760; privateBytes=118026240; cpu=11.828125
+OK: loadActivation.allDisabled.count
+OK: loadActivation.allDisabled.keepsRow.2
+OK: loadActivation.allDisabled.keepsRow.3
+OK: loadActivation.allDisabled.keepsRow.4
+OK: loadActivation.allDisabled.keepsRow.5
+OK: loadActivation.allDisabled.keepsRow.6
+OK: loadActivation.allDisabled.keepsRow.7
+OK: loadActivation.allDisabled.keepsRow.8
+OK: loadActivation.allDisabled.keepsRow.9
+OK: loadActivation.allDisabled.keepsRow.10
+OK: loadActivation.allDisabled.keepsRow.11
+OK: loadActivation.allDisabled.keepsRow.12
+OK: loadActivation.allDisabled.keepsRow.13
+OK: loadActivation.allDisabled.keepsRow.14
+OK: loadActivation.allDisabled.keepsRow.15
+OK: loadActivation.allDisabled.keepsRow.16
+OK: loadActivation.allDisabled.keepsRow.17
+OK: loadActivation.allDisabled.keepsRow.18
+OK: loadActivation.allDisabled.keepsRow.19
+OK: loadActivation.allDisabled.keepsRow.20
+OK: loadActivation.allDisabled.keepsRow.21
+OK: loadActivation.allDisabled.keepsRow.22
+OK: loadActivation.allDisabled.keepsRow.23
+OK: loadActivation.allDisabled.keepsRow.24
+OK: loadActivation.allDisabled.keepsRow.25
+OK: loadActivation.allDisabled.keepsRow.26
+OK: loadActivation.allDisabled.keepsRow.27
+OK: loadActivation.allDisabled.keepsRow.28
+OK: loadActivation.allDisabled.keepsRow.29
+OK: loadActivation.allDisabled.keepsRow.30
+OK: loadActivation.allDisabled.keepsRow.31
+OK: loadActivation.blankID.0
+OK: loadActivation.keepsLoads.0
+OK: loadActivation.blankID.1
+OK: loadActivation.keepsLoads.1
+OK: loadActivation.blankID.2
+OK: loadActivation.keepsLoads.2
+OK: loadActivation.keepsFormula
+OK: loadActivation.zeroNoValidation
+OK: loadActivation.sparse.count
+OK: loadActivation.sparse.first
+OK: loadActivation.sparse.last
+OK: loadActivation.numericZeroID
+OK: loadActivation.nonzeroNotDiscarded
+TOTAL LOAD ACTIVATION: passed=44; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_479eaa3aab77433f806a828d395234dc\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestLoadTableConfig.RunLoadActivationTests; 2026-11-23T22:30:11
+===== modTestWorkbookInterface.RunLoadActivationWorkflowTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunLoadActivationWorkflowTests; 2026-11-23T22:30:13
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=27728; workingSet=356900864; privateBytes=325734400; cpu=38.078125
+OK: uniqueIDs.case0.result
+OK: uniqueIDs.case0.count
+OK: uniqueIDs.case0.noSolve
+OK: uniqueIDs.case0.inputsPreserved
+OK: uniqueIDs.case1.result
+OK: uniqueIDs.case1.noPartialBatch
+OK: uniqueIDs.case1.rangeName
+OK: uniqueIDs.case1.firstAddress
+OK: uniqueIDs.case1.secondAddress
+OK: uniqueIDs.case1.action
+OK: uniqueIDs.case1.noSolve
+OK: uniqueIDs.case1.inputsPreserved
+OK: uniqueIDs.case2.result
+OK: uniqueIDs.case2.noPartialBatch
+OK: uniqueIDs.case2.rangeName
+OK: uniqueIDs.case2.firstAddress
+OK: uniqueIDs.case2.secondAddress
+OK: uniqueIDs.case2.action
+OK: uniqueIDs.case2.noSolve
+OK: uniqueIDs.case2.inputsPreserved
+OK: uniqueIDs.case3.result
+OK: uniqueIDs.case3.noPartialBatch
+OK: uniqueIDs.case3.rangeName
+OK: uniqueIDs.case3.firstAddress
+OK: uniqueIDs.case3.secondAddress
+OK: uniqueIDs.case3.action
+OK: uniqueIDs.case3.noSolve
+OK: uniqueIDs.case3.inputsPreserved
+OK: uniqueIDs.case4.result
+OK: uniqueIDs.case4.noPartialBatch
+OK: uniqueIDs.case4.rangeName
+OK: uniqueIDs.case4.firstAddress
+OK: uniqueIDs.case4.secondAddress
+OK: uniqueIDs.case4.action
+OK: uniqueIDs.case4.noSolve
+OK: uniqueIDs.case4.inputsPreserved
+OK: uniqueIDs.case5.result
+OK: uniqueIDs.case5.count
+OK: uniqueIDs.case5.noSolve
+OK: uniqueIDs.case5.inputsPreserved
+OK: uniqueIDs.case6.result
+OK: uniqueIDs.case6.noPartialBatch
+OK: uniqueIDs.case6.rangeName
+OK: uniqueIDs.case6.firstAddress
+OK: uniqueIDs.case6.secondAddress
+OK: uniqueIDs.case6.action
+OK: uniqueIDs.case6.noSolve
+OK: uniqueIDs.case6.inputsPreserved
+OK: uniqueIDs.case7.result
+OK: uniqueIDs.case7.count
+OK: uniqueIDs.case7.noSolve
+OK: uniqueIDs.case7.inputsPreserved
+OK: uniqueIDs.case8.result
+OK: uniqueIDs.case8.count
+OK: uniqueIDs.case8.noSolve
+OK: uniqueIDs.case8.inputsPreserved
+OK: uniqueIDs.workflow.stopped
+OK: uniqueIDs.workflow.noSolve
+OK: uniqueIDs.workflow.resultsPreserved
+OK: ui.loads.disabled.count
+OK: ui.loads.disabled.readerNoSolve
+OK: ui.loads.disabled.message
+OK: ui.loads.disabled.commandNoSolve
+OK: ui.loads.disabled.inputsKept
+OK: loadActivation.Excel.message.0
+OK: loadActivation.Excel.noSolve.0
+OK: loadActivation.Excel.statesCleared.0
+OK: loadActivation.Excel.geometryPreserved.0.equivalent; 
+OK: loadActivation.Excel.scopeReleased.0
+OK: loadActivation.Excel.message.1
+OK: loadActivation.Excel.noSolve.1
+OK: loadActivation.Excel.statesCleared.1
+OK: loadActivation.Excel.geometryPreserved.1.equivalent; 
+OK: loadActivation.Excel.scopeReleased.1
+OK: loadActivation.File.message.0
+OK: loadActivation.File.noSolve.0
+OK: loadActivation.File.statesCleared.0
+OK: loadActivation.File.geometryPreserved.0.equivalent; 
+OK: loadActivation.File.scopeReleased.0
+OK: loadActivation.File.replacedStaleSnapshot.0
+EMPTY_QUEUE_FILE_TABLES: elements=1; properties=5
+OK: loadActivation.File.noSavedStates.0
+OK: loadActivation.File.savedGeometry.0.equivalent; 
+OK: loadActivation.File.message.1
+OK: loadActivation.File.noSolve.1
+OK: loadActivation.File.statesCleared.1
+OK: loadActivation.File.geometryPreserved.1.equivalent; 
+OK: loadActivation.File.scopeReleased.1
+OK: loadActivation.File.replacedStaleSnapshot.1
+EMPTY_QUEUE_FILE_TABLES: elements=1; properties=5
+OK: loadActivation.File.noSavedStates.1
+OK: loadActivation.File.savedGeometry.1.equivalent; 
+TOTAL LOAD ACTIVATION WORKFLOW: passed=90; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_479eaa3aab77433f806a828d395234dc\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunLoadActivationWorkflowTests; 2026-11-23T22:30:34
+===== modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests; 2026-11-23T22:30:36
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=27728; workingSet=199602176; privateBytes=172515328; cpu=96.453125
+OK: audit03.importUnits.before0.after0.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after0.previewArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after0.previewHeader; actual=X, mm
+OK: audit03.importUnits.before0.after0.previewAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after0.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after0.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after0.source; actual=AutoCADImport
+OK: audit03.importUnits.before0.after0.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after0.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after0.restoreNoSolve
+OK: audit03.importUnits.before0.after0.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before0.after0.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after0.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before0.after0|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.98 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before0.after0.run
+OK: audit03.importUnits.before0.after0.noImportNotice
+OK: audit03.importUnits.before0.after0.directState; actual=OK
+OK: audit03.importUnits.before0.after0.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after0.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before0.after0.hasState
+OK: audit03.importUnits.before0.after0.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after0.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after0.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after0.savedHeader; actual=X, mm
+OK: audit03.importUnits.before0.after0.savedAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after0.savedX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after0.geometryPreservedAfterSolve.equivalent; 
+IMPORTED_UNIT_CHANGE: before=mm|after=mm|inputForce=N|inputStress=MPa|source=AutoCADImport
+OK: audit03.importUnits.before0.after1.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after1.previewArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after1.previewHeader; actual=X, mm
+OK: audit03.importUnits.before0.after1.previewAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after1.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after1.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after1.source; actual=AutoCADImport
+OK: audit03.importUnits.before0.after1.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after1.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after1.restoreNoSolve
+OK: audit03.importUnits.before0.after1.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before0.after1.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after1.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before0.after1|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 1.00 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before0.after1.run
+OK: audit03.importUnits.before0.after1.noImportNotice
+OK: audit03.importUnits.before0.after1.directState; actual=OK
+OK: audit03.importUnits.before0.after1.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after1.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before0.after1.hasState
+OK: audit03.importUnits.before0.after1.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after1.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after1.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after1.savedHeader; actual=X, mm
+OK: audit03.importUnits.before0.after1.savedAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after1.savedX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after1.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before0.after1.elements.equivalent; 
+OK: audit03.importUnits.before0.after1.geometry.equivalent; 
+OK: audit03.importUnits.before0.after1.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=mm|after=cm|inputForce=kN|inputStress=kPa|source=AutoCADImport
+OK: audit03.importUnits.before0.after2.previewX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after2.previewArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after2.previewHeader; actual=X, mm
+OK: audit03.importUnits.before0.after2.previewAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after2.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after2.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after2.source; actual=AutoCADImport
+OK: audit03.importUnits.before0.after2.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after2.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before0.after2.restoreNoSolve
+OK: audit03.importUnits.before0.after2.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before0.after2.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after2.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before0.after2|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.90 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before0.after2.run
+OK: audit03.importUnits.before0.after2.noImportNotice
+OK: audit03.importUnits.before0.after2.directState; actual=OK
+OK: audit03.importUnits.before0.after2.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after2.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before0.after2.hasState
+OK: audit03.importUnits.before0.after2.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before0.after2.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before0.after2.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before0.after2.savedHeader; actual=X, mm
+OK: audit03.importUnits.before0.after2.savedAreaHeader; actual=Area, mm2
+OK: audit03.importUnits.before0.after2.savedX; actual=950.; expected=950.
+OK: audit03.importUnits.before0.after2.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before0.after2.elements.equivalent; 
+OK: audit03.importUnits.before0.after2.geometry.equivalent; 
+OK: audit03.importUnits.before0.after2.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=mm|after=m|inputForce=tf|inputStress=Pa|source=AutoCADImport
+OK: audit03.importUnits.before1.after0.previewX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after0.previewArea; actual=100.; expected=100.
+OK: audit03.importUnits.before1.after0.previewHeader; actual=X, cm
+OK: audit03.importUnits.before1.after0.previewAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after0.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after0.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after0.source; actual=AutoCADImport
+OK: audit03.importUnits.before1.after0.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after0.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before1.after0.restoreNoSolve
+OK: audit03.importUnits.before1.after0.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before1.after0.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after0.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before1.after0|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.78 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before1.after0.run
+OK: audit03.importUnits.before1.after0.noImportNotice
+OK: audit03.importUnits.before1.after0.directState; actual=OK
+OK: audit03.importUnits.before1.after0.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after0.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before1.after0.hasState
+OK: audit03.importUnits.before1.after0.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after0.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after0.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after0.savedHeader; actual=X, cm
+OK: audit03.importUnits.before1.after0.savedAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after0.savedX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after0.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before1.after0.elements.equivalent; 
+OK: audit03.importUnits.before1.after0.geometry.equivalent; 
+OK: audit03.importUnits.before1.after0.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=cm|after=mm|inputForce=N|inputStress=MPa|source=AutoCADImport
+OK: audit03.importUnits.before1.after1.previewX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after1.previewArea; actual=100.; expected=100.
+OK: audit03.importUnits.before1.after1.previewHeader; actual=X, cm
+OK: audit03.importUnits.before1.after1.previewAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after1.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after1.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after1.source; actual=AutoCADImport
+OK: audit03.importUnits.before1.after1.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after1.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before1.after1.restoreNoSolve
+OK: audit03.importUnits.before1.after1.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before1.after1.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after1.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before1.after1|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.88 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before1.after1.run
+OK: audit03.importUnits.before1.after1.noImportNotice
+OK: audit03.importUnits.before1.after1.directState; actual=OK
+OK: audit03.importUnits.before1.after1.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after1.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before1.after1.hasState
+OK: audit03.importUnits.before1.after1.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after1.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after1.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after1.savedHeader; actual=X, cm
+OK: audit03.importUnits.before1.after1.savedAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after1.savedX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after1.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before1.after1.elements.equivalent; 
+OK: audit03.importUnits.before1.after1.geometry.equivalent; 
+OK: audit03.importUnits.before1.after1.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=cm|after=cm|inputForce=kN|inputStress=kPa|source=AutoCADImport
+OK: audit03.importUnits.before1.after2.previewX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after2.previewArea; actual=100.; expected=100.
+OK: audit03.importUnits.before1.after2.previewHeader; actual=X, cm
+OK: audit03.importUnits.before1.after2.previewAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after2.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after2.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after2.source; actual=AutoCADImport
+OK: audit03.importUnits.before1.after2.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before1.after2.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before1.after2.restoreNoSolve
+OK: audit03.importUnits.before1.after2.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before1.after2.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after2.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before1.after2|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 1.05 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before1.after2.run
+OK: audit03.importUnits.before1.after2.noImportNotice
+OK: audit03.importUnits.before1.after2.directState; actual=OK
+OK: audit03.importUnits.before1.after2.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after2.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before1.after2.hasState
+OK: audit03.importUnits.before1.after2.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before1.after2.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before1.after2.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before1.after2.savedHeader; actual=X, cm
+OK: audit03.importUnits.before1.after2.savedAreaHeader; actual=Area, cm2
+OK: audit03.importUnits.before1.after2.savedX; actual=95.; expected=95.
+OK: audit03.importUnits.before1.after2.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before1.after2.elements.equivalent; 
+OK: audit03.importUnits.before1.after2.geometry.equivalent; 
+OK: audit03.importUnits.before1.after2.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=cm|after=m|inputForce=tf|inputStress=Pa|source=AutoCADImport
+OK: audit03.importUnits.before2.after0.previewX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after0.previewArea; actual=0.01; expected=0.01
+OK: audit03.importUnits.before2.after0.previewHeader; actual=X, m
+OK: audit03.importUnits.before2.after0.previewAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after0.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after0.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after0.source; actual=AutoCADImport
+OK: audit03.importUnits.before2.after0.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after0.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before2.after0.restoreNoSolve
+OK: audit03.importUnits.before2.after0.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before2.after0.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after0.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before2.after0|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.80 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before2.after0.run
+OK: audit03.importUnits.before2.after0.noImportNotice
+OK: audit03.importUnits.before2.after0.directState; actual=OK
+OK: audit03.importUnits.before2.after0.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after0.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before2.after0.hasState
+OK: audit03.importUnits.before2.after0.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after0.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after0.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after0.savedHeader; actual=X, m
+OK: audit03.importUnits.before2.after0.savedAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after0.savedX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after0.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before2.after0.elements.equivalent; 
+OK: audit03.importUnits.before2.after0.geometry.equivalent; 
+OK: audit03.importUnits.before2.after0.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=m|after=mm|inputForce=N|inputStress=MPa|source=AutoCADImport
+OK: audit03.importUnits.before2.after1.previewX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after1.previewArea; actual=0.01; expected=0.01
+OK: audit03.importUnits.before2.after1.previewHeader; actual=X, m
+OK: audit03.importUnits.before2.after1.previewAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after1.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after1.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after1.source; actual=AutoCADImport
+OK: audit03.importUnits.before2.after1.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after1.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before2.after1.restoreNoSolve
+OK: audit03.importUnits.before2.after1.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before2.after1.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after1.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before2.after1|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.79 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before2.after1.run
+OK: audit03.importUnits.before2.after1.noImportNotice
+OK: audit03.importUnits.before2.after1.directState; actual=OK
+OK: audit03.importUnits.before2.after1.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after1.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before2.after1.hasState
+OK: audit03.importUnits.before2.after1.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after1.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after1.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after1.savedHeader; actual=X, m
+OK: audit03.importUnits.before2.after1.savedAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after1.savedX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after1.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before2.after1.elements.equivalent; 
+OK: audit03.importUnits.before2.after1.geometry.equivalent; 
+OK: audit03.importUnits.before2.after1.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=m|after=cm|inputForce=kN|inputStress=kPa|source=AutoCADImport
+OK: audit03.importUnits.before2.after2.previewX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after2.previewArea; actual=0.01; expected=0.01
+OK: audit03.importUnits.before2.after2.previewHeader; actual=X, m
+OK: audit03.importUnits.before2.after2.previewAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after2.beforeChange.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after2.beforeChange.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after2.source; actual=AutoCADImport
+OK: audit03.importUnits.before2.after2.restoredX; actual=950.; expected=950.
+OK: audit03.importUnits.before2.after2.restoredArea; actual=10000.; expected=10000.
+OK: audit03.importUnits.before2.after2.restoreNoSolve
+OK: audit03.importUnits.before2.after2.snapshotUnchangedBeforeSolve.equivalent; 
+OK: audit03.importUnits.before2.after2.afterChangeBeforeSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after2.afterChangeBeforeSolve.autoCADDoesNotSolve
+IMPORTED_CALCULATION_MESSAGE: audit03.importUnits.before2.after2|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.94 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.before2.after2.run
+OK: audit03.importUnits.before2.after2.noImportNotice
+OK: audit03.importUnits.before2.after2.directState; actual=OK
+OK: audit03.importUnits.before2.after2.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after2.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.before2.after2.hasState
+OK: audit03.importUnits.before2.after2.loadN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.before2.after2.afterSolve.autoCADGeometryMm; 
+OK: audit03.importUnits.before2.after2.afterSolve.autoCADDoesNotSolve
+OK: audit03.importUnits.before2.after2.savedHeader; actual=X, m
+OK: audit03.importUnits.before2.after2.savedAreaHeader; actual=Area, m2
+OK: audit03.importUnits.before2.after2.savedX; actual=0.95; expected=0.95
+OK: audit03.importUnits.before2.after2.geometryPreservedAfterSolve.equivalent; 
+OK: audit03.importUnits.before2.after2.elements.equivalent; 
+OK: audit03.importUnits.before2.after2.geometry.equivalent; 
+OK: audit03.importUnits.before2.after2.properties.equivalent; 
+IMPORTED_UNIT_CHANGE: before=m|after=m|inputForce=tf|inputStress=Pa|source=AutoCADImport
+OK: audit03.importUnits.rawUnchanged.oldN; actual=-100.; expected=-100.
+IMPORTED_RAW_LOAD: stage=N; epsilon0=-6.29733456994993E-08; kappaX=2.93959686625826E-24; kappaY=2.93959686625826E-24; Nint=-1.01971621297793E-02
+OK: audit03.importUnits.rawUnchanged.number; actual=-100.; expected=-100.
+OK: audit03.importUnits.rawUnchanged.newN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.rawUnchanged.equilibrium; actual=-100000.; expected=-100000.
+IMPORTED_RAW_LOAD: stage=kN; epsilon0=-6.2973345699516E-05; kappaX=2.93959686625958E-21; kappaY=2.93959686625958E-21; Nint=-10.1971621297793
+OK: audit03.importUnits.rawUnchanged.compression
+OK: audit03.importUnits.rawUnchanged.strainRatio; actual=1000.00000000027; expected=1000.
+OK: audit03.importUnits.rawUnchanged.geometry.autoCADGeometryMm; 
+OK: audit03.importUnits.rawUnchanged.geometry.autoCADDoesNotSolve
+OK: audit03.importUnits.invalidOutput.rejected
+OK: audit03.importUnits.invalidOutput.address
+OK: audit03.importUnits.invalidOutput.noSolve
+OK: audit03.importUnits.invalidOutput.snapshotPreserved.equivalent; 
+IMPORTED_CALCULATION_MESSAGE: invalidOutput.recovery|Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 0.91 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: audit03.importUnits.invalidOutput.recovery
+OK: audit03.importUnits.invalidOutput.noImportNotice
+OK: audit03.importUnits.invalidOutput.directState; actual=OK
+OK: audit03.importUnits.invalidOutput.equilibriumN; actual=-100000.; expected=-100000.
+OK: audit03.importUnits.invalidOutput.savedSource; actual=AutoCADImport
+OK: audit03.importUnits.invalidOutput.recoveredGeometry.autoCADGeometryMm; 
+OK: audit03.importUnits.invalidOutput.recoveredGeometry.autoCADDoesNotSolve
+TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES: passed=277; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_479eaa3aab77433f806a828d395234dc\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests; 2026-11-23T22:31:19
+===== modTestGeometryReview.RunGeometryReviewTests =====
+SUITE_STARTED: modTestGeometryReview.RunGeometryReviewTests; 2026-11-23T22:31:21
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=27728; workingSet=330891264; privateBytes=299384832; cpu=157.890625
+OK: F01.n3.reverseFalse.unique.1
+OK: F01.n3.reverseFalse.unique.2
+OK: F01.n3.reverseFalse.unique.3
+OK: F01.n3.reverseFalse.unique.4
+OK: F01.n3.reverseFalse.unique.5
+OK: F01.n3.reverseFalse.unique.6
+OK: F01.n3.reverseFalse.unique.7
+OK: F01.n3.reverseFalse.unique.8
+OK: F01.n3.reverseFalse.unique.9
+OK: F01.n3.reverseFalse.unique.10
+OK: F01.n3.reverseFalse.P1
+OK: F01.n3.reverseFalse.P2
+OK: F01.n3.reverseFalse.physical
+PER_PATH: F01.n3.reverseFalse; extra=2+2; physical=10
+OK: F01.n3.reverseTrue.unique.1
+OK: F01.n3.reverseTrue.unique.2
+OK: F01.n3.reverseTrue.unique.3
+OK: F01.n3.reverseTrue.unique.4
+OK: F01.n3.reverseTrue.unique.5
+OK: F01.n3.reverseTrue.unique.6
+OK: F01.n3.reverseTrue.unique.7
+OK: F01.n3.reverseTrue.unique.8
+OK: F01.n3.reverseTrue.unique.9
+OK: F01.n3.reverseTrue.unique.10
+OK: F01.n3.reverseTrue.P1
+OK: F01.n3.reverseTrue.P2
+OK: F01.n3.reverseTrue.physical
+PER_PATH: F01.n3.reverseTrue; extra=2+2; physical=10
+OK: F01.n15.reverseFalse.unique.1
+OK: F01.n15.reverseFalse.unique.2
+OK: F01.n15.reverseFalse.unique.3
+OK: F01.n15.reverseFalse.unique.4
+OK: F01.n15.reverseFalse.unique.5
+OK: F01.n15.reverseFalse.unique.6
+OK: F01.n15.reverseFalse.unique.7
+OK: F01.n15.reverseFalse.unique.8
+OK: F01.n15.reverseFalse.unique.9
+OK: F01.n15.reverseFalse.unique.10
+OK: F01.n15.reverseFalse.unique.11
+OK: F01.n15.reverseFalse.unique.12
+OK: F01.n15.reverseFalse.unique.13
+OK: F01.n15.reverseFalse.unique.14
+OK: F01.n15.reverseFalse.unique.15
+OK: F01.n15.reverseFalse.unique.16
+OK: F01.n15.reverseFalse.unique.17
+OK: F01.n15.reverseFalse.unique.18
+OK: F01.n15.reverseFalse.unique.19
+OK: F01.n15.reverseFalse.unique.20
+OK: F01.n15.reverseFalse.unique.21
+OK: F01.n15.reverseFalse.unique.22
+OK: F01.n15.reverseFalse.unique.23
+OK: F01.n15.reverseFalse.unique.24
+OK: F01.n15.reverseFalse.unique.25
+OK: F01.n15.reverseFalse.unique.26
+OK: F01.n15.reverseFalse.unique.27
+OK: F01.n15.reverseFalse.unique.28
+OK: F01.n15.reverseFalse.unique.29
+OK: F01.n15.reverseFalse.unique.30
+OK: F01.n15.reverseFalse.unique.31
+OK: F01.n15.reverseFalse.unique.32
+OK: F01.n15.reverseFalse.unique.33
+OK: F01.n15.reverseFalse.unique.34
+OK: F01.n15.reverseFalse.unique.35
+OK: F01.n15.reverseFalse.unique.36
+OK: F01.n15.reverseFalse.unique.37
+OK: F01.n15.reverseFalse.unique.38
+OK: F01.n15.reverseFalse.unique.39
+OK: F01.n15.reverseFalse.unique.40
+OK: F01.n15.reverseFalse.unique.41
+OK: F01.n15.reverseFalse.unique.42
+OK: F01.n15.reverseFalse.unique.43
+OK: F01.n15.reverseFalse.unique.44
+OK: F01.n15.reverseFalse.unique.45
+OK: F01.n15.reverseFalse.unique.46
+OK: F01.n15.reverseFalse.P1
+OK: F01.n15.reverseFalse.P2
+OK: F01.n15.reverseFalse.physical
+PER_PATH: F01.n15.reverseFalse; extra=8+8; physical=46
+OK: F01.n15.reverseTrue.unique.1
+OK: F01.n15.reverseTrue.unique.2
+OK: F01.n15.reverseTrue.unique.3
+OK: F01.n15.reverseTrue.unique.4
+OK: F01.n15.reverseTrue.unique.5
+OK: F01.n15.reverseTrue.unique.6
+OK: F01.n15.reverseTrue.unique.7
+OK: F01.n15.reverseTrue.unique.8
+OK: F01.n15.reverseTrue.unique.9
+OK: F01.n15.reverseTrue.unique.10
+OK: F01.n15.reverseTrue.unique.11
+OK: F01.n15.reverseTrue.unique.12
+OK: F01.n15.reverseTrue.unique.13
+OK: F01.n15.reverseTrue.unique.14
+OK: F01.n15.reverseTrue.unique.15
+OK: F01.n15.reverseTrue.unique.16
+OK: F01.n15.reverseTrue.unique.17
+OK: F01.n15.reverseTrue.unique.18
+OK: F01.n15.reverseTrue.unique.19
+OK: F01.n15.reverseTrue.unique.20
+OK: F01.n15.reverseTrue.unique.21
+OK: F01.n15.reverseTrue.unique.22
+OK: F01.n15.reverseTrue.unique.23
+OK: F01.n15.reverseTrue.unique.24
+OK: F01.n15.reverseTrue.unique.25
+OK: F01.n15.reverseTrue.unique.26
+OK: F01.n15.reverseTrue.unique.27
+OK: F01.n15.reverseTrue.unique.28
+OK: F01.n15.reverseTrue.unique.29
+OK: F01.n15.reverseTrue.unique.30
+OK: F01.n15.reverseTrue.unique.31
+OK: F01.n15.reverseTrue.unique.32
+OK: F01.n15.reverseTrue.unique.33
+OK: F01.n15.reverseTrue.unique.34
+OK: F01.n15.reverseTrue.unique.35
+OK: F01.n15.reverseTrue.unique.36
+OK: F01.n15.reverseTrue.unique.37
+OK: F01.n15.reverseTrue.unique.38
+OK: F01.n15.reverseTrue.unique.39
+OK: F01.n15.reverseTrue.unique.40
+OK: F01.n15.reverseTrue.unique.41
+OK: F01.n15.reverseTrue.unique.42
+OK: F01.n15.reverseTrue.unique.43
+OK: F01.n15.reverseTrue.unique.44
+OK: F01.n15.reverseTrue.unique.45
+OK: F01.n15.reverseTrue.unique.46
+OK: F01.n15.reverseTrue.P1
+OK: F01.n15.reverseTrue.P2
+OK: F01.n15.reverseTrue.physical
+PER_PATH: F01.n15.reverseTrue; extra=8+8; physical=46
+OK: F02.H1000.length.H.Left
+OK: F02.H1000.length.H.Right
+OK: F02.H1000.tenBars
+OK: F02.H1000.contour
+OK: F02.H1000.noDisabledLabel.1
+OK: F02.H1000.noDisabledLabel.2
+OK: F02.H1000.noDisabledLabel.3
+OK: F02.H1000.noDisabledLabel.4
+PASS: equilibrium.F02.H1000.1.0.converged
+PASS: equilibrium.F02.H1000.1.0.sum.N
+PASS: equilibrium.F02.H1000.1.0.sum.Mx
+PASS: equilibrium.F02.H1000.1.0.sum.My
+PASS: equilibrium.F02.H1000.1.0.residual.N; actual=-4.19095158576965E-09; expected=-4.19095158576965E-09
+PASS: equilibrium.F02.H1000.1.0.residual.Mx; actual=9.84542339210744E-07; expected=9.84542339210744E-07
+PASS: equilibrium.F02.H1000.1.0.residual.My; actual=9.57663814915688E-09; expected=9.57663814915688E-09
+PASS: equilibrium.F02.H1000.1.1.converged
+PASS: equilibrium.F02.H1000.1.1.sum.N
+PASS: equilibrium.F02.H1000.1.1.sum.Mx
+PASS: equilibrium.F02.H1000.1.1.sum.My
+PASS: equilibrium.F02.H1000.1.1.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.F02.H1000.1.1.residual.Mx; actual=-7.45058059692383E-08; expected=-7.45058059692383E-08
+PASS: equilibrium.F02.H1000.1.1.residual.My; actual=9.26070242712777E-09; expected=9.26070242712777E-09
+PASS: equilibrium.F02.H1000.1.2.converged
+PASS: equilibrium.F02.H1000.1.2.sum.N
+PASS: equilibrium.F02.H1000.1.2.sum.Mx
+PASS: equilibrium.F02.H1000.1.2.sum.My
+PASS: equilibrium.F02.H1000.1.2.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H1000.1.2.residual.Mx; actual=8.01422174845356E-07; expected=8.01422174845356E-07
+PASS: equilibrium.F02.H1000.1.2.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.H1000.1.3.converged
+PASS: equilibrium.F02.H1000.1.3.sum.N
+PASS: equilibrium.F02.H1000.1.3.sum.Mx
+PASS: equilibrium.F02.H1000.1.3.sum.My
+PASS: equilibrium.F02.H1000.1.3.residual.N; actual=-1.16415321826935E-09; expected=-1.16415321826935E-09
+PASS: equilibrium.F02.H1000.1.3.residual.Mx; actual=5.66244125366211E-07; expected=5.66244125366211E-07
+PASS: equilibrium.F02.H1000.1.3.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.H1000.2.0.converged
+PASS: equilibrium.F02.H1000.2.0.sum.N
+PASS: equilibrium.F02.H1000.2.0.sum.Mx
+PASS: equilibrium.F02.H1000.2.0.sum.My
+PASS: equilibrium.F02.H1000.2.0.residual.N; actual=6.40284270048141E-09; expected=6.40284270048141E-09
+PASS: equilibrium.F02.H1000.2.0.residual.Mx; actual=7.80154095991754E-07; expected=7.80154095991754E-07
+PASS: equilibrium.F02.H1000.2.0.residual.My; actual=-1.94083042970322E-08; expected=-1.94083042970322E-08
+PASS: equilibrium.F02.H1000.2.1.converged
+PASS: equilibrium.F02.H1000.2.1.sum.N
+PASS: equilibrium.F02.H1000.2.1.sum.Mx
+PASS: equilibrium.F02.H1000.2.1.sum.My
+PASS: equilibrium.F02.H1000.2.1.residual.N; actual=-2.3283064365387E-09; expected=-2.3283064365387E-09
+PASS: equilibrium.F02.H1000.2.1.residual.Mx; actual=7.45058059692383E-08; expected=7.45058059692383E-08
+PASS: equilibrium.F02.H1000.2.1.residual.My; actual=-2.18282707464817E-08; expected=-2.18282707464817E-08
+PASS: equilibrium.F02.H1000.2.2.converged
+PASS: equilibrium.F02.H1000.2.2.sum.N
+PASS: equilibrium.F02.H1000.2.2.sum.Mx
+PASS: equilibrium.F02.H1000.2.2.sum.My
+PASS: equilibrium.F02.H1000.2.2.residual.N; actual=3.49245965480804E-10; expected=3.49245965480804E-10
+PASS: equilibrium.F02.H1000.2.2.residual.Mx; actual=8.12050416243438E-07; expected=8.12050416243438E-07
+PASS: equilibrium.F02.H1000.2.2.residual.My; actual=2.23517417907715E-08; expected=2.23517417907715E-08
+PASS: equilibrium.F02.H1000.2.3.converged
+PASS: equilibrium.F02.H1000.2.3.sum.N
+PASS: equilibrium.F02.H1000.2.3.sum.Mx
+PASS: equilibrium.F02.H1000.2.3.sum.My
+PASS: equilibrium.F02.H1000.2.3.residual.N; actual=-1.74622982740402E-09; expected=-1.74622982740402E-09
+PASS: equilibrium.F02.H1000.2.3.residual.Mx; actual=5.36441802978516E-07; expected=5.36441802978516E-07
+PASS: equilibrium.F02.H1000.2.3.residual.My; actual=0; expected=0
+PASS: equilibrium.F02.H1000.3.0.converged
+PASS: equilibrium.F02.H1000.3.0.sum.N
+PASS: equilibrium.F02.H1000.3.0.sum.Mx
+PASS: equilibrium.F02.H1000.3.0.sum.My
+PASS: equilibrium.F02.H1000.3.0.residual.N; actual=-4.54019755125046E-09; expected=-4.54019755125046E-09
+PASS: equilibrium.F02.H1000.3.0.residual.Mx; actual=8.58929524838454E-07; expected=8.58929524838454E-07
+PASS: equilibrium.F02.H1000.3.0.residual.My; actual=-1.98448333321709E-08; expected=-1.98448333321709E-08
+PASS: equilibrium.F02.H1000.3.1.converged
+PASS: equilibrium.F02.H1000.3.1.sum.N
+PASS: equilibrium.F02.H1000.3.1.sum.Mx
+PASS: equilibrium.F02.H1000.3.1.sum.My
+PASS: equilibrium.F02.H1000.3.1.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.H1000.3.1.residual.Mx; actual=1.63912773132324E-07; expected=1.63912773132324E-07
+PASS: equilibrium.F02.H1000.3.1.residual.My; actual=-2.34189201364647E-08; expected=-2.34189201364647E-08
+PASS: equilibrium.F02.H1000.3.2.converged
+PASS: equilibrium.F02.H1000.3.2.sum.N
+PASS: equilibrium.F02.H1000.3.2.sum.Mx
+PASS: equilibrium.F02.H1000.3.2.sum.My
+PASS: equilibrium.F02.H1000.3.2.residual.N; actual=1.51339918375015E-09; expected=1.51339918375015E-09
+PASS: equilibrium.F02.H1000.3.2.residual.Mx; actual=7.6085348155175E-07; expected=7.6085348155175E-07
+PASS: equilibrium.F02.H1000.3.2.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.F02.H1000.3.3.converged
+PASS: equilibrium.F02.H1000.3.3.sum.N
+PASS: equilibrium.F02.H1000.3.3.sum.Mx
+PASS: equilibrium.F02.H1000.3.3.sum.My
+PASS: equilibrium.F02.H1000.3.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.H1000.3.3.residual.Mx; actual=8.04662704467773E-07; expected=8.04662704467773E-07
+PASS: equilibrium.F02.H1000.3.3.residual.My; actual=2.23517417907715E-08; expected=2.23517417907715E-08
+OK: F02.H1000.workbook.run
+OK: F02.H1000.workbook.state
+WORKBOOK_RUN: F02.H1000; Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 2.80 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: F02.H600.length.H.Left
+OK: F02.H600.length.H.Right
+OK: F02.H600.tenBars
+OK: F02.H600.contour
+OK: F02.H600.noDisabledLabel.1
+OK: F02.H600.noDisabledLabel.2
+OK: F02.H600.noDisabledLabel.3
+OK: F02.H600.noDisabledLabel.4
+PASS: equilibrium.F02.H600.1.0.converged
+PASS: equilibrium.F02.H600.1.0.sum.N
+PASS: equilibrium.F02.H600.1.0.sum.Mx
+PASS: equilibrium.F02.H600.1.0.sum.My
+PASS: equilibrium.F02.H600.1.0.residual.N; actual=1.04773789644241E-09; expected=1.04773789644241E-09
+PASS: equilibrium.F02.H600.1.0.residual.Mx; actual=1.05083927337546E-07; expected=1.05083927337546E-07
+PASS: equilibrium.F02.H600.1.0.residual.My; actual=-7.41351868782605E-09; expected=-7.41351868782605E-09
+PASS: equilibrium.F02.H600.1.1.converged
+PASS: equilibrium.F02.H600.1.1.sum.N
+PASS: equilibrium.F02.H600.1.1.sum.Mx
+PASS: equilibrium.F02.H600.1.1.sum.My
+PASS: equilibrium.F02.H600.1.1.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H600.1.1.residual.Mx; actual=1.04308128356934E-07; expected=1.04308128356934E-07
+PASS: equilibrium.F02.H600.1.1.residual.My; actual=-7.26652160665264E-09; expected=-7.26652160665264E-09
+PASS: equilibrium.F02.H600.1.2.converged
+PASS: equilibrium.F02.H600.1.2.sum.N
+PASS: equilibrium.F02.H600.1.2.sum.Mx
+PASS: equilibrium.F02.H600.1.2.sum.My
+PASS: equilibrium.F02.H600.1.2.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.H600.1.2.residual.Mx; actual=9.71197096077958E-08; expected=9.71197096077958E-08
+PASS: equilibrium.F02.H600.1.2.residual.My; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H600.1.3.converged
+PASS: equilibrium.F02.H600.1.3.sum.N
+PASS: equilibrium.F02.H600.1.3.sum.Mx
+PASS: equilibrium.F02.H600.1.3.sum.My
+PASS: equilibrium.F02.H600.1.3.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H600.1.3.residual.Mx; actual=1.34110450744629E-07; expected=1.34110450744629E-07
+PASS: equilibrium.F02.H600.1.3.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.H600.2.0.converged
+PASS: equilibrium.F02.H600.2.0.sum.N
+PASS: equilibrium.F02.H600.2.0.sum.Mx
+PASS: equilibrium.F02.H600.2.0.sum.My
+PASS: equilibrium.F02.H600.2.0.residual.N; actual=5.82076609134674E-10; expected=5.82076609134674E-10
+PASS: equilibrium.F02.H600.2.0.residual.Mx; actual=1.51003916926129E-07; expected=1.51003916926129E-07
+PASS: equilibrium.F02.H600.2.0.residual.My; actual=-8.44849523673448E-09; expected=-8.44849523673448E-09
+PASS: equilibrium.F02.H600.2.1.converged
+PASS: equilibrium.F02.H600.2.1.sum.N
+PASS: equilibrium.F02.H600.2.1.sum.Mx
+PASS: equilibrium.F02.H600.2.1.sum.My
+PASS: equilibrium.F02.H600.2.1.residual.N; actual=-5.82076609134674E-10; expected=-5.82076609134674E-10
+PASS: equilibrium.F02.H600.2.1.residual.Mx; actual=1.86264514923096E-07; expected=1.86264514923096E-07
+PASS: equilibrium.F02.H600.2.1.residual.My; actual=-6.84485712554338E-09; expected=-6.84485712554338E-09
+PASS: equilibrium.F02.H600.2.2.converged
+PASS: equilibrium.F02.H600.2.2.sum.N
+PASS: equilibrium.F02.H600.2.2.sum.Mx
+PASS: equilibrium.F02.H600.2.2.sum.My
+PASS: equilibrium.F02.H600.2.2.residual.N; actual=1.51339918375015E-09; expected=1.51339918375015E-09
+PASS: equilibrium.F02.H600.2.2.residual.Mx; actual=1.3352661198951E-07; expected=1.3352661198951E-07
+PASS: equilibrium.F02.H600.2.2.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.H600.2.3.converged
+PASS: equilibrium.F02.H600.2.3.sum.N
+PASS: equilibrium.F02.H600.2.3.sum.Mx
+PASS: equilibrium.F02.H600.2.3.sum.My
+PASS: equilibrium.F02.H600.2.3.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.F02.H600.2.3.residual.Mx; actual=1.34110450744629E-07; expected=1.34110450744629E-07
+PASS: equilibrium.F02.H600.2.3.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.H600.3.0.converged
+PASS: equilibrium.F02.H600.3.0.sum.N
+PASS: equilibrium.F02.H600.3.0.sum.Mx
+PASS: equilibrium.F02.H600.3.0.sum.My
+PASS: equilibrium.F02.H600.3.0.residual.N; actual=8.14907252788544E-10; expected=8.14907252788544E-10
+PASS: equilibrium.F02.H600.3.0.residual.Mx; actual=1.32405261865643E-07; expected=1.32405261865643E-07
+PASS: equilibrium.F02.H600.3.0.residual.My; actual=-6.22975449004983E-09; expected=-6.22975449004983E-09
+PASS: equilibrium.F02.H600.3.1.converged
+PASS: equilibrium.F02.H600.3.1.sum.N
+PASS: equilibrium.F02.H600.3.1.sum.Mx
+PASS: equilibrium.F02.H600.3.1.sum.My
+PASS: equilibrium.F02.H600.3.1.residual.N; actual=-8.14907252788544E-10; expected=-8.14907252788544E-10
+PASS: equilibrium.F02.H600.3.1.residual.Mx; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H600.3.1.residual.My; actual=-4.7385810830751E-09; expected=-4.7385810830751E-09
+PASS: equilibrium.F02.H600.3.2.converged
+PASS: equilibrium.F02.H600.3.2.sum.N
+PASS: equilibrium.F02.H600.3.2.sum.Mx
+PASS: equilibrium.F02.H600.3.2.sum.My
+PASS: equilibrium.F02.H600.3.2.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.H600.3.2.residual.Mx; actual=1.51715312313172E-07; expected=1.51715312313172E-07
+PASS: equilibrium.F02.H600.3.2.residual.My; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H600.3.3.converged
+PASS: equilibrium.F02.H600.3.3.sum.N
+PASS: equilibrium.F02.H600.3.3.sum.Mx
+PASS: equilibrium.F02.H600.3.3.sum.My
+PASS: equilibrium.F02.H600.3.3.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.H600.3.3.residual.Mx; actual=8.19563865661621E-08; expected=8.19563865661621E-08
+PASS: equilibrium.F02.H600.3.3.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+OK: F02.H600.workbook.run
+OK: F02.H600.workbook.state
+WORKBOOK_RUN: F02.H600; Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 2.39 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: F02.H600.001.length.H.Left
+OK: F02.H600.001.length.H.Right
+OK: F02.H600.001.tenBars
+OK: F02.H600.001.contour
+OK: F02.H600.001.noDisabledLabel.1
+OK: F02.H600.001.noDisabledLabel.2
+OK: F02.H600.001.noDisabledLabel.3
+OK: F02.H600.001.noDisabledLabel.4
+PASS: equilibrium.F02.H600.001.1.0.converged
+PASS: equilibrium.F02.H600.001.1.0.sum.N
+PASS: equilibrium.F02.H600.001.1.0.sum.Mx
+PASS: equilibrium.F02.H600.001.1.0.sum.My
+PASS: equilibrium.F02.H600.001.1.0.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.H600.001.1.0.residual.Mx; actual=-1.06415427580725E-07; expected=-1.06415427580725E-07
+PASS: equilibrium.F02.H600.001.1.0.residual.My; actual=6.43206021777576E-09; expected=6.43206021777576E-09
+PASS: equilibrium.F02.H600.001.1.1.converged
+PASS: equilibrium.F02.H600.001.1.1.sum.N
+PASS: equilibrium.F02.H600.001.1.1.sum.Mx
+PASS: equilibrium.F02.H600.001.1.1.sum.My
+PASS: equilibrium.F02.H600.001.1.1.residual.N; actual=1.51339918375015E-09; expected=1.51339918375015E-09
+PASS: equilibrium.F02.H600.001.1.1.residual.Mx; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H600.001.1.1.residual.My; actual=9.24796950130321E-09; expected=9.24796950130321E-09
+PASS: equilibrium.F02.H600.001.1.2.converged
+PASS: equilibrium.F02.H600.001.1.2.sum.N
+PASS: equilibrium.F02.H600.001.1.2.sum.Mx
+PASS: equilibrium.F02.H600.001.1.2.sum.My
+PASS: equilibrium.F02.H600.001.1.2.residual.N; actual=-5.82076609134674E-10; expected=-5.82076609134674E-10
+PASS: equilibrium.F02.H600.001.1.2.residual.Mx; actual=-6.2753315432278E-08; expected=-6.2753315432278E-08
+PASS: equilibrium.F02.H600.001.1.2.residual.My; actual=1.11758708953857E-08; expected=1.11758708953857E-08
+PASS: equilibrium.F02.H600.001.1.3.converged
+PASS: equilibrium.F02.H600.001.1.3.sum.N
+PASS: equilibrium.F02.H600.001.1.3.sum.Mx
+PASS: equilibrium.F02.H600.001.1.3.sum.My
+PASS: equilibrium.F02.H600.001.1.3.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.H600.001.1.3.residual.Mx; actual=-3.72529029846191E-08; expected=-3.72529029846191E-08
+PASS: equilibrium.F02.H600.001.1.3.residual.My; actual=1.86264514923096E-08; expected=1.86264514923096E-08
+PASS: equilibrium.F02.H600.001.2.0.converged
+PASS: equilibrium.F02.H600.001.2.0.sum.N
+PASS: equilibrium.F02.H600.001.2.0.sum.Mx
+PASS: equilibrium.F02.H600.001.2.0.sum.My
+PASS: equilibrium.F02.H600.001.2.0.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H600.001.2.0.residual.Mx; actual=6.70871713747984E-09; expected=6.70871713747984E-09
+PASS: equilibrium.F02.H600.001.2.0.residual.My; actual=5.25497512171564E-09; expected=5.25497512171564E-09
+PASS: equilibrium.F02.H600.001.2.1.converged
+PASS: equilibrium.F02.H600.001.2.1.sum.N
+PASS: equilibrium.F02.H600.001.2.1.sum.Mx
+PASS: equilibrium.F02.H600.001.2.1.sum.My
+PASS: equilibrium.F02.H600.001.2.1.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H600.001.2.1.residual.Mx; actual=-2.01165676116943E-07; expected=-2.01165676116943E-07
+PASS: equilibrium.F02.H600.001.2.1.residual.My; actual=6.98372559781996E-09; expected=6.98372559781996E-09
+PASS: equilibrium.F02.H600.001.2.2.converged
+PASS: equilibrium.F02.H600.001.2.2.sum.N
+PASS: equilibrium.F02.H600.001.2.2.sum.Mx
+PASS: equilibrium.F02.H600.001.2.2.sum.My
+PASS: equilibrium.F02.H600.001.2.2.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.F02.H600.001.2.2.residual.Mx; actual=-1.55027919383115E-08; expected=-1.55027919383115E-08
+PASS: equilibrium.F02.H600.001.2.2.residual.My; actual=-1.11758708953857E-08; expected=-1.11758708953857E-08
+PASS: equilibrium.F02.H600.001.2.3.converged
+PASS: equilibrium.F02.H600.001.2.3.sum.N
+PASS: equilibrium.F02.H600.001.2.3.sum.Mx
+PASS: equilibrium.F02.H600.001.2.3.sum.My
+PASS: equilibrium.F02.H600.001.2.3.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H600.001.2.3.residual.Mx; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.H600.001.2.3.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.H600.001.3.0.converged
+PASS: equilibrium.F02.H600.001.3.0.sum.N
+PASS: equilibrium.F02.H600.001.3.0.sum.Mx
+PASS: equilibrium.F02.H600.001.3.0.sum.My
+PASS: equilibrium.F02.H600.001.3.0.residual.N; actual=-3.49245965480804E-10; expected=-3.49245965480804E-10
+PASS: equilibrium.F02.H600.001.3.0.residual.Mx; actual=-2.06542495106554E-07; expected=-2.06542495106554E-07
+PASS: equilibrium.F02.H600.001.3.0.residual.My; actual=3.30777538692912E-09; expected=3.30777538692912E-09
+PASS: equilibrium.F02.H600.001.3.1.converged
+PASS: equilibrium.F02.H600.001.3.1.sum.N
+PASS: equilibrium.F02.H600.001.3.1.sum.Mx
+PASS: equilibrium.F02.H600.001.3.1.sum.My
+PASS: equilibrium.F02.H600.001.3.1.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.H600.001.3.1.residual.Mx; actual=-2.08616256713867E-07; expected=-2.08616256713867E-07
+PASS: equilibrium.F02.H600.001.3.1.residual.My; actual=7.00663349562102E-09; expected=7.00663349562102E-09
+PASS: equilibrium.F02.H600.001.3.2.converged
+PASS: equilibrium.F02.H600.001.3.2.sum.N
+PASS: equilibrium.F02.H600.001.3.2.sum.Mx
+PASS: equilibrium.F02.H600.001.3.2.sum.My
+PASS: equilibrium.F02.H600.001.3.2.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.H600.001.3.2.residual.Mx; actual=-1.65758820002706E-07; expected=-1.65758820002706E-07
+PASS: equilibrium.F02.H600.001.3.2.residual.My; actual=-1.11758708953857E-08; expected=-1.11758708953857E-08
+PASS: equilibrium.F02.H600.001.3.3.converged
+PASS: equilibrium.F02.H600.001.3.3.sum.N
+PASS: equilibrium.F02.H600.001.3.3.sum.Mx
+PASS: equilibrium.F02.H600.001.3.3.sum.My
+PASS: equilibrium.F02.H600.001.3.3.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.H600.001.3.3.residual.Mx; actual=-2.23517417907715E-07; expected=-2.23517417907715E-07
+PASS: equilibrium.F02.H600.001.3.3.residual.My; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+OK: F02.H600.001.workbook.run
+OK: F02.H600.001.workbook.state
+WORKBOOK_RUN: F02.H600.001; Расчет завершен.
+
+Геометрия для расчёта загружена с листа Results текущей книги.
+
+Обработано сочетаний: 1.
+
+Результаты и пояснения всех проверок — на листе Results.
+
+Время расчёта: 2.41 с.
+
+Данные сохранены на листе Results текущей книги.
+OK: disabledSide.Rectangle.H1.as_1.column3.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column3.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.off
+OK: disabledSide.Rectangle.H1.as_1.column3.dimensions
+OK: disabledSide.Rectangle.H1.as_1.column3.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.quantity.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column3.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column3.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.quantity.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column4.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.off
+OK: disabledSide.Rectangle.H1.as_1.column4.dimensions
+OK: disabledSide.Rectangle.H1.as_1.column4.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.quantity.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column4.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column4.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.quantity.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column3.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column3.off
+OK: disabledSide.Rectangle.H1.as_2.column3.dimensions
+OK: disabledSide.Rectangle.H1.as_2.column3.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.quantity.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column3.quantity.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column4.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column4.off
+OK: disabledSide.Rectangle.H1.as_2.column4.dimensions
+OK: disabledSide.Rectangle.H1.as_2.column4.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.quantity.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column4.quantity.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column3.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.off
+OK: disabledSide.Rectangle.B1.as_1.column3.dimensions
+OK: disabledSide.Rectangle.B1.as_1.column3.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column3.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column3.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.quantity.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column4.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.off
+OK: disabledSide.Rectangle.B1.as_1.column4.dimensions
+OK: disabledSide.Rectangle.B1.as_1.column4.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column4.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column4.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.quantity.B1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.off
+OK: disabledSide.Rectangle.B1.as_2.column3.dimensions
+OK: disabledSide.Rectangle.B1.as_2.column3.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.quantity.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column4.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.off
+OK: disabledSide.Rectangle.B1.as_2.column4.dimensions
+OK: disabledSide.Rectangle.B1.as_2.column4.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column4.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column4.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.quantity.B1.as_1
+OK: disabledSide.RoundedSimple.H.Left.column3.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column3.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column3.off
+OK: disabledSide.RoundedSimple.H.Left.column3.dimensions
+OK: disabledSide.RoundedSimple.H.Left.column3.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column3.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column3.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column3.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column3.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column3.quantity.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column4.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column4.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column4.off
+OK: disabledSide.RoundedSimple.H.Left.column4.dimensions
+OK: disabledSide.RoundedSimple.H.Left.column4.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column4.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column4.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column4.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column4.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column4.quantity.H.Right
+OK: disabledSide.RoundedSimple.H.Right.column3.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column3.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column3.off
+OK: disabledSide.RoundedSimple.H.Right.column3.dimensions
+OK: disabledSide.RoundedSimple.H.Right.column3.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column3.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column3.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column3.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column3.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column3.quantity.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column4.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column4.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column4.off
+OK: disabledSide.RoundedSimple.H.Right.column4.dimensions
+OK: disabledSide.RoundedSimple.H.Right.column4.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column4.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column4.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column4.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column4.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column4.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column3.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column3.off
+OK: disabledSide.RoundedSimple.B.Top.column3.dimensions
+OK: disabledSide.RoundedSimple.B.Top.column3.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column3.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column3.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column3.quantity.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column4.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column4.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column4.off
+OK: disabledSide.RoundedSimple.B.Top.column4.dimensions
+OK: disabledSide.RoundedSimple.B.Top.column4.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column4.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column4.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column4.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column4.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column4.quantity.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column3.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column3.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column3.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column3.off
+OK: disabledSide.RoundedSimple.B.Bottom.column3.dimensions
+OK: disabledSide.RoundedSimple.B.Bottom.column3.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column3.quantity.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column3.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column3.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column3.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column3.quantity.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column4.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column4.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column4.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column4.off
+OK: disabledSide.RoundedSimple.B.Bottom.column4.dimensions
+OK: disabledSide.RoundedSimple.B.Bottom.column4.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column4.quantity.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column4.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column4.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column4.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.off
+OK: disabledSide.HollowCentered.H.Left.column3.dimensions
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.off
+OK: disabledSide.HollowCentered.H.Left.column4.dimensions
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.off
+OK: disabledSide.HollowCentered.H.Right.column3.dimensions
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.off
+OK: disabledSide.HollowCentered.H.Right.column4.dimensions
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.off
+OK: disabledSide.HollowCentered.B.Top.column3.dimensions
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.off
+OK: disabledSide.HollowCentered.B.Top.column4.dimensions
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.off
+OK: disabledSide.HollowCentered.B.Bottom.column3.dimensions
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.off
+OK: disabledSide.HollowCentered.B.Bottom.column4.dimensions
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.Opening.H.Right
+TOTAL_GEOMETRY_REVIEW: passed=742; failed=0
+OK: collapsed.0.0.inputError
+OK: collapsed.0.0.cause
+OK: collapsed.0.0.side
+OK: collapsed.0.0.geometrySource
+OK: collapsed.0.0.rebarSource
+OK: collapsed.0.0.action
+OK: collapsed.0.1.accepted
+OK: collapsed.0.2.accepted
+OK: collapsed.0.3.accepted
+OK: collapsed.0.4.accepted
+OK: collapsed.1.0.inputError
+OK: collapsed.1.0.cause
+OK: collapsed.1.0.side
+OK: collapsed.1.0.geometrySource
+OK: collapsed.1.0.rebarSource
+OK: collapsed.1.0.action
+OK: collapsed.1.1.accepted
+OK: collapsed.1.2.accepted
+OK: collapsed.1.3.accepted
+OK: collapsed.1.4.accepted
+OK: collapsed.2.0.inputError
+OK: collapsed.2.0.cause
+OK: collapsed.2.0.side
+OK: collapsed.2.0.geometrySource
+OK: collapsed.2.0.rebarSource
+OK: collapsed.2.0.action
+OK: collapsed.2.1.accepted
+OK: collapsed.2.2.accepted
+OK: collapsed.2.3.accepted
+OK: collapsed.2.4.accepted
+OK: collapsed.3.0.inputError
+OK: collapsed.3.0.cause
+OK: collapsed.3.0.side
+OK: collapsed.3.0.geometrySource
+OK: collapsed.3.0.rebarSource
+OK: collapsed.3.0.action
+OK: collapsed.3.1.accepted
+OK: collapsed.3.2.accepted
+OK: collapsed.3.3.accepted
+OK: collapsed.3.4.accepted
+OK: collapsed.4.0.inputError
+OK: collapsed.4.0.cause
+OK: collapsed.4.0.side
+OK: collapsed.4.0.geometrySource
+OK: collapsed.4.0.rebarSource
+OK: collapsed.4.0.action
+OK: collapsed.4.1.accepted
+OK: collapsed.4.2.accepted
+OK: collapsed.4.3.accepted
+OK: collapsed.4.4.accepted
+OK: collapsed.5.0.inputError
+OK: collapsed.5.0.cause
+OK: collapsed.5.0.side
+OK: collapsed.5.0.geometrySource
+OK: collapsed.5.0.rebarSource
+OK: collapsed.5.0.action
+OK: collapsed.5.1.accepted
+OK: collapsed.5.2.accepted
+OK: collapsed.5.3.accepted
+OK: collapsed.5.4.accepted
+OK: collapsed.extra.inputError
+OK: collapsed.extra.row
+OK: collapsed.extra.cause
+OK: collapsed.extra.values
+OK: collapsed.extra.source
+OBSERVED_COLLAPSED_EXTRA: INPUT_ERROR: Не удалось построить допустимый контур для 2-го ряда арматуры. |  | Источник данных: | rngCircleGeometry[16,3]; rngCircleGeometry[16,4]; rngCircleGeometry[16,5]; rngCircleGeometry[16,6] |  | При заданных отступах проверочный контур исчез целиком. Исходный радиус первой дуги: 150 мм; полный нормальный отступ внутрь этой дуги: 240 мм. |  | Возможное решение: | Уменьшите отступы рядов.
+TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0
+OK: collapsed.address.0.0.inputError
+OK: collapsed.address.0.0.cause
+OK: collapsed.address.0.0.included.as
+OK: collapsed.address.0.0.included.d
+OK: collapsed.address.0.0.excluded.s0
+OK: collapsed.address.0.0.excluded.s1
+OK: collapsed.address.0.0.included.n
+OK: collapsed.address.0.0.geometry.B
+OK: collapsed.address.0.0.geometry.H
+OK: collapsed.address.0.0.geometry.R
+OK: collapsed.address.0.1.inputError
+OK: collapsed.address.0.1.cause
+OK: collapsed.address.0.1.included.as
+OK: collapsed.address.0.1.included.d
+OK: collapsed.address.0.1.excluded.s0
+OK: collapsed.address.0.1.excluded.s1
+OK: collapsed.address.0.1.excluded.n
+OK: collapsed.address.0.1.geometry.Bo
+OK: collapsed.address.0.1.geometry.Ho
+OK: collapsed.address.0.1.geometry.Ro
+OK: collapsed.address.1.0.inputError
+OK: collapsed.address.1.0.cause
+OK: collapsed.address.1.0.included.as
+OK: collapsed.address.1.0.included.d
+OK: collapsed.address.1.0.excluded.s0
+OK: collapsed.address.1.0.excluded.s1
+OK: collapsed.address.1.0.included.n
+OK: collapsed.address.1.0.geometry.B
+OK: collapsed.address.1.0.geometry.H
+OK: collapsed.address.1.0.geometry.R
+OK: collapsed.address.1.1.inputError
+OK: collapsed.address.1.1.cause
+OK: collapsed.address.1.1.included.as
+OK: collapsed.address.1.1.included.d
+OK: collapsed.address.1.1.excluded.s0
+OK: collapsed.address.1.1.excluded.s1
+OK: collapsed.address.1.1.excluded.n
+OK: collapsed.address.1.1.geometry.Bo
+OK: collapsed.address.1.1.geometry.Ho
+OK: collapsed.address.1.1.geometry.Ro
+TOTAL_COLLAPSED_INPUT_ADDRESSES: passed=40; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_479eaa3aab77433f806a828d395234dc\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestGeometryReview.RunGeometryReviewTests; 2026-11-23T22:32:16
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

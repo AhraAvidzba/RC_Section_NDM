@@ -695,9 +695,9 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет штатный расчёт одного сочетания и проверяет запись НДС при заданной
-' нагрузке. Профиль не включает поиск несущей способности и расчёт трещин.
+' нагрузке NM без T. Профиль не включает поиск несущей способности и расчёт трещин.
 Private Sub TestCheckRoundedWorkbookRun(ByVal label As String, ByVal units As CUnitSystem, ByVal model As CSectionModel)
-    Dim loads As Object, profiles As Object, settings As Object, row As Long, key As String, message As String
+    Dim loads As Object, profiles As Object, settings As Object, row As Long, key As String, message As String, torque As Object
     Dim properties As CSectionPropertiesCalculator
     Set properties = New CSectionPropertiesCalculator: properties.CalculateConcrete model
     Set settings = ThisWorkbook.Names("rngSystemSettings").RefersToRange
@@ -714,6 +714,8 @@ Private Sub TestCheckRoundedWorkbookRun(ByVal label As String, ByVal units As CU
         End Select
     Next row
     Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
+    Set torque = ThisWorkbook.Names("rngTorsionCombinations").RefersToRange
+    torque.Offset(1, 1).Resize(torque.Rows.Count - 1, 1).Value2 = 0# ' Геометрический NM-тест не проверяет возможность смещения отдельного хомута при кручении.
     loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
     loads.Cells(2, 1).Value2 = label: loads.Cells(2, 2).Value2 = -2# * properties.Area / units.InputForceToInternal(1#)
     loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#: loads.Cells(2, 5).Value2 = "PR1"

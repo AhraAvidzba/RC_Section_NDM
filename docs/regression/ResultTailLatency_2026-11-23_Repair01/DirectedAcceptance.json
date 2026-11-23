@@ -1,0 +1,19 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+  "Results": [
+    {
+      "Mode": "No",
+      "Status": "PASS",
+      "Suites": 4,
+      "SHA256": "3301091A4169C15C0DE1EAFFE2A72AA525EEA928CD5C9D3AC6B177ED55032CF1"
+    },
+    {
+      "Mode": "Yes",
+      "Status": "PASS",
+      "Suites": 4,
+      "SHA256": "C1C355676B5CCF16C801AB55BCF88E64F9D02FD048CBE30C28FA082E5BA24DA6"
+    }
+  ],
+  "WorkingCodeUnchanged": true
+}

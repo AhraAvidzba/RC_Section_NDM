@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "Components": 203,
+  "ChangedModules": [
+    "modTestGeometryReview",
+    "modTestLoadTableConfig",
+    "modTestWorkbookInterface"
+  ],
+  "WorkingCodeUnchanged": true,
+  "SourceBookEquality": true,
+  "ReadySHA256": "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+  "BeforeSHA256": "09089FD15A233FB8A34BA79C1E03CAC35CB2CF569E798BC125FC3D1D675F07A5",
+  "FailedAssertionsInFullOff": 22,
+  "FailedAssertionsInGeometryOff": 1,
+  "Diagnosis": {
+    "UnrelatedTInPureNMFixtures": 12,
+    "OutdatedZeroQueueMessageAndPreservationExpectations": 11
+  },
+  "PhysicalTolerancesUnchanged": true
+}

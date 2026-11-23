@@ -32,10 +32,12 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Выполняет тот же контракт включения LC внутри основного набора таблицы сочетаний.
 Private Sub TestLoadActivationRows(ByRef stats As TLoadTableStats)
-    Dim source As Object, saved As Variant, data As Variant, blank As Variant
+    Dim source As Object, saved As Variant, data As Variant, blank As Variant, torque As Object, savedTorque As Variant
     Dim batch As CBatchSectionCalculator, reader As CLoadCombinationReader, row As Long, column As Long, testCase As Long
     Set source = ThisWorkbook.Names("rngLoadCombinations").RefersToRange: saved = source.Formula
     On Error GoTo Failed
+    Set torque = ThisWorkbook.Names("rngTorsionCombinations").RefersToRange: savedTorque = torque.Formula
+    torque.Offset(1, 1).Resize(torque.Rows.Count - 1, 1).Value2 = 0# ' Контракт нулевых NM проверяется без отдельного ненулевого T.
     data = source.Value2
     For row = 2 To UBound(data, 1)
         For column = 1 To UBound(data, 2): data(row, column) = vbNullString: Next column
@@ -76,6 +78,7 @@ Failed:
     stats.Failed = stats.Failed + 1: TestLogLine stats, "FAIL: loadActivation.runtime; " & Err.Description
 Restore:
     source.Formula = saved
+    If IsArray(savedTorque) Then torque.Formula = savedTorque
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
