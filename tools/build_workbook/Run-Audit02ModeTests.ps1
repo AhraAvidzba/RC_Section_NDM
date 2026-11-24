@@ -14,7 +14,8 @@ param(
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [switch]$FailFast,
-    [switch]$Visible
+    [switch]$Visible,
+    [switch]$NormativeCoreGuard
 )
 $ErrorActionPreference = "Stop"
 Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
@@ -270,7 +271,34 @@ try {
         $lines.Add('TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only')
         $excel.DisplayAlerts = $false
         $lines.Add("TEST_MACRO_DISPLAY_ALERTS: $($excel.DisplayAlerts); isolated Excel instance only")
-        if ($MacroArgument2) { $result = [string]$excel.Run($macroName, $MacroArgument1, $MacroArgument2) }
+        if ($NormativeCoreGuard) {
+            if ($MacroArgument1 -or $MacroArgument2) {throw 'Normative core guard does not accept macro arguments.'}
+            $stateProperties=@('Calculation','ScreenUpdating','EnableEvents','DisplayAlerts')
+            $stateBefore=@()
+            foreach($property in $stateProperties){
+                $value=$excel.GetType().InvokeMember($property,[Reflection.BindingFlags]::GetProperty,$null,$excel,$null)
+                if($null -eq $value){throw ('Native Excel state unavailable before core test: '+$property)}
+                $stateBefore+=,$value
+            }
+            $lines.Add('NORMATIVE_CORE_GUARD: production CExcelAppStateGuard; numeric assertions unchanged; not an Excel event/UI test')
+            $result=[string]$excel.Run("'RC_Section_NDM.xlsm'!modTestBatchCalculation.RunNormativeGuardedTest",[string]$macro)
+            # EnableCancelKey Excel сам сбрасывает при возврате из VBA в idle; остальные свойства сохраняются.
+            $stateAfter=@()
+            foreach($property in $stateProperties){
+                $value=$excel.GetType().InvokeMember($property,[Reflection.BindingFlags]::GetProperty,$null,$excel,$null)
+                if($null -eq $value){throw ('Native Excel state unavailable after core test: '+$property)}
+                $stateAfter+=,$value
+            }
+            $lines.Add('NORMATIVE_CORE_STATE_BEFORE: '+($stateBefore -join '|'))
+            $lines.Add('NORMATIVE_CORE_STATE_AFTER: '+($stateAfter -join '|'))
+            if (($stateBefore -join '|') -cne ($stateAfter -join '|')) {
+                foreach($resultLine in ($result -split "`r?`n")){$lines.Add($resultLine)}
+                Save-Progress
+                throw 'Normative core guard did not restore Excel state.'
+            }
+            $lines.Add('NORMATIVE_CORE_GUARD_RESTORED: True')
+        }
+        elseif ($MacroArgument2) { $result = [string]$excel.Run($macroName, $MacroArgument1, $MacroArgument2) }
         elseif ($MacroArgument1) { $result = [string]$excel.Run($macroName, $MacroArgument1) }
         else { $result = [string]$excel.Run($macroName) }
         foreach ($process in @(Get-Process EXCEL -ErrorAction SilentlyContinue)) {

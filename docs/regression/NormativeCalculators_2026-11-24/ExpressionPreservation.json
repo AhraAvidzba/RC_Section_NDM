@@ -1,0 +1,1205 @@
+{
+  "Status": "PASS",
+  "BaselineRef": "6e8442d2",
+  "Methods": 239,
+  "Checks": [
+    {
+      "Component": "CCrackWidthSP35Calculator",
+      "Method": "CalculateSP35",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP35Calculator",
+      "Method": "SP35ReinforcementRadiusFromData",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP35Calculator",
+      "Method": "SP35PsiFromData",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP35Calculator",
+      "Method": "SP35CrackWidthFromData",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "CalculateCentralTension",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "CalculateGeneralBending",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "CompleteCrackFormula",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "FinalizeWithPsiMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "AutomaticPsiComment",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "ResolveAutoPsiIfPossible",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "CaptureSigmaSCrcIfAvailable",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "FinalizeWidth",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "CrackWidthFromData",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "SelectAllTensionRebars",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "FindMostTensionRebarProjection",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "CoverDistanceForRebar",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "LocalConcreteCoverForRebar",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "TensionZoneLowerBound",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "ConcreteAreaInZone",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "SelectRebarsInZone",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "ProjectionBoundsByConcreteContour",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "AverageSelectedSteelStress",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "IncludeCompressedStressForSigmaSCrc",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "SelectedRebarArea",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "SelectedRebarIds",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "EquivalentDiameter",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "LimitedCrackSpacing",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "AutoPsi",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "TotalConcreteArea",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "ConcreteStrain",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "RebarStrain",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "Projection",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "TrackMaxSteel",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "ResolvePhi3",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "IsTensionLoad",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthSP63Calculator",
+      "Method": "TestRefinalizeWithSpacingText",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackStrainAtConcreteCenter",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackUtilizationFromData",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackSetWidthResult",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackUserStopReason",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackSetWidthInvalidInput",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackFinishNoCrack",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackAppendDiagnostic",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackFormatNumberInvariant",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackMinDouble",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modCrackWidthSupport",
+      "Method": "CrackMaxDouble",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Class_Initialize",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "ClearResult",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "InitializeForFormation",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Calculate",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "FormationResult",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "ApplySettings",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "ResultMeta",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "ValidateSettings",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "ValidateSP35Settings",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "RaiseInvalidSetting",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "ValidateInputs",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Converged",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "StopReason",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CrackWidthInternalStatus",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CrackWidthResultCode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CrackFormed",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "TensionRebarCount",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "MaxSteelStrain",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "MaxSteelStress",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CrackWidth",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "AllowableCrackWidth",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Utilization",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "DiagnosticLog",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "PsiMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SigmaSCrcAveragingMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "TensionZoneMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CoverMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi3",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "PsiS",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SigmaS",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SigmaSCrc",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "InteractionRegion",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35Data",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35CriticalCandidate",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35ReinforcementRadius",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35PsiCm",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "StandardCode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "StandardCode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35GroupGapTolerance",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35RowTolerance",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35NeighborRatioLimit",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35RadiusDiameterMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35InteractionRadiusMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SP35RebarProfile",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SteelEs",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "AsTension",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Abt",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "DsEquivalent",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CrackSpacingRaw",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CrackSpacing",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "TensionRebarIds",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SectionDepthH",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CoverA",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "TensionDepth",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "EffectiveZoneDepth",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CentralTensionBranch",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "AllowableCrackWidth",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "PsiMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "SigmaSCrcAveragingMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi3Mode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Phi3",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "PsiS",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "TensionZoneMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "CoverMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "DiagnosticsEnabled",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CCrackWidthCalculator",
+      "Method": "Audit02AutoPsiForTests",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "CalculateSP35",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "CombinedSP35Branch",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "CalculateSP35Plane",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "CalculateSP35TablePlane",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "SP35ConcreteAreaForTableNult",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "CalculateSP35EtaPlane",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "SP35EtaReserveByLimit",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "PhiForSustainedCompression",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "PhiLSP35Eta",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "CoreDistanceForEccentricity",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "InterpolateSP35Table",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "TryValidateSP35Table721",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "SP35TableNumber",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "SP35TableColumnName",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "FindBoundingRows",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP35Calculator",
+      "Method": "InterpolatePhiMByQ",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP63Calculator",
+      "Method": "RebarProjectionForMoment",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP63Calculator",
+      "Method": "PhiLSP63",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP63Calculator",
+      "Method": "CalculateSP63",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilitySP63Calculator",
+      "Method": "CalculateSP63Plane",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityConcreteFaceProjectionForMoment",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityMomentAboutProjection",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityEnsurePositivePlaneGeometry",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityStabilityNumber",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilitySignForEccentricity",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityInitialEccentricity",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityPhiLByMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityPhiLFromMomentRatio",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityEtaByCriticalForce",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityReserveByCriticalForce",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "modStabilityPlane",
+      "Method": "StabilityDesignMomentWithEta",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "UseMechanicalPreparation",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ValidateSettings",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ValidateEffectiveLengthRange",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Calculate",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Clear",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PreparePlanes",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "NormalizePlaneMoments",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "FillAccidentalAndInitialEccentricity",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "StoreConcreteProjectionBounds",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "StorePlaneResults",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "TransformDesignMoments",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "AccidentalEccentricity",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PositiveMinValue",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlanePassedOrInactive",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "NormalizeAccidentalMode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "NormalizeAccidentalPlanes",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "NormalizeCode",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "RaiseSettingInput",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "RaiseInput",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Code",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Branch",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Applicable",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "InputValid",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "CheckPassed",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "StopReason",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "StabilityCheckComment",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ResultMeta",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "DesignN",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "DesignMx",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "DesignMy",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PrincipalAngleRad",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "SustainedN",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Moment1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Moment2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "SustainedMoment1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "SustainedMoment2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "DesignMoment1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "DesignMoment2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "CriticalForce",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ReserveFactor",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Ncr1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Ncr2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Nultimate1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Nultimate2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Reserve1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Reserve2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Eta1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Eta2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiL1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiL2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiLTable1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiLTable2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiM1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiM2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiValue1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiValue2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiP1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PhiP2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Eccentricity1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Eccentricity2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "AccidentalEccentricity1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "AccidentalEccentricity2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "EffectiveLength1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "EffectiveLength2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Slenderness1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Slenderness2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Depth1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Depth2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Radius1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Radius2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ConcreteElasticModulus",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "SteelElasticModulus",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ConcreteInertia1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "ConcreteInertia2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "SteelInertia1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "SteelInertia2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "CoreDistance1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "CoreDistance2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Delta1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Delta2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Kb1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Kb2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Ks1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "Ks2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "StiffnessD1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "StiffnessD2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlaneBranch1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlaneBranch2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlaneApplicable1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlaneApplicable2",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlanePassed1",
+      "ExpressionsAndLiteralsUnchanged": true
+    },
+    {
+      "Component": "CStabilityCalculator",
+      "Method": "PlanePassed2",
+      "ExpressionsAndLiteralsUnchanged": true
+    }
+  ],
+  "ExistingBatchTestMethodsUnchanged": 274,
+  "NewTestEntrypointsOnly": true,
+  "Limit": "Expression preservation; native calculations and diagnostics require directed acceptance."
+}

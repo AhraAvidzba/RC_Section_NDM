@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -17,64 +17,12 @@ Option Explicit
 ' Проверяет допустимость своих настроек до расчёта. Адрес ошибки Config
 ' может быть добавлен по уже прочитанным настройкам без нового чтения листов.
 ' Геометрические характеристики получает через CSectionPropertiesCalculator.
+' Нормативные формулы выполняют CStabilitySP35Calculator и CStabilitySP63Calculator;
+' подготовка главных плоскостей, итоговые статусы и перевод моментов остаются общими.
 
-Private Const CODE_SP63 As String = "SP63" ' Расчет по СП 63.
-Private Const CODE_SP35 As String = "SP35" ' Расчет по СП 35.
-Private Const SYSTEM_DETERMINATE As String = "Determinate" ' Статически определимая схема.
-Private Const SYSTEM_INDETERMINATE As String = "Indeterminate" ' Статически неопределимая схема.
-Private Const PHIL_AUTO As String = "Auto" ' phi_l считается по отношению длительного момента к полному.
-Private Const PHIL_2 As String = "PhiL2" ' Консервативно принимается phi_l = 2.
-Private Const ACC_AUTO_L As String = "AutoWithL" ' Случайный эксцентриситет по геометрической длине L.
-Private Const ACC_AUTO_MUL As String = "AutoWithMuL" ' Случайный эксцентриситет по расчетной длине mu*L.
-Private Const ACC_USER As String = "User" ' Пользователь задает модуль случайного эксцентриситета.
-Private Const ACC_PLANES_ONLY_MOMENT As String = "OnlyMomentPlane" ' Случайный эксцентриситет только в плоскости исходного момента.
-Private Const ACC_PLANES_BOTH As String = "BothPlanes" ' Случайный эксцентриситет в обеих главных плоскостях.
-Private Const SMALL_FORCE As Double = 0.000001 ' Малый допуск по силе, Н.
-Private Const SMALL_VALUE As Double = 0.000000001 ' Общий малый допуск для безразмерных величин.
+Private mSP35 As New CStabilitySP35Calculator ' Нормативные ветви СП 35.
+Private mSP63 As New CStabilitySP63Calculator ' Нормативная ветвь СП 63.
 
-Private Const PASS_TOLERANCE As Double = 0.000000001 ' Малый допуск для граничного PASS.
-Private Const SP35_REBAR_AREA_LIMIT_RATIO As Double = 0.03 ' Порог 3% площади арматуры по СП 35.
-
-Private Type TPlaneResult
-    Moment As Double ' Исходный момент в рассматриваемой главной плоскости, Н*мм.
-    SustainedMoment As Double ' Постоянная и длительная часть момента, Н*мм.
-    DesignMoment As Double ' Момент после учёта устойчивости, Н*мм.
-    InertiaConcrete As Double ' Момент инерции бетона относительно расчётной оси, мм4.
-    InertiaSteel As Double ' Момент инерции арматуры относительно расчётной оси, мм4.
-    Radius As Double ' Радиус инерции приведённого сечения, мм.
-    CoreDistancePositive As Double ' Ядровое расстояние в положительном направлении нормали, мм.
-    CoreDistanceNegative As Double ' Ядровое расстояние в отрицательном направлении нормали, мм.
-    Depth As Double ' Высота сечения в рассматриваемой плоскости, мм.
-    GeometricLength As Double ' Геометрическая длина элемента, мм.
-    EffectiveLength As Double ' Расчётная длина элемента, мм.
-    Slenderness As Double ' Гибкость как отношение расчётной длины к радиусу инерции.
-    NormalX As Double ' Компонента X положительной нормали к оси изгиба.
-    NormalY As Double ' Компонента Y положительной нормали к оси изгиба.
-    CentroidX As Double ' Координата X центра приведённого сечения, мм.
-    CentroidY As Double ' Координата Y центра приведённого сечения, мм.
-    ConcreteMinProjection As Double ' Наименьшая координата бетонной границы вдоль нормали, мм.
-    ConcreteMaxProjection As Double ' Наибольшая координата бетонной границы вдоль нормали, мм.
-    AccidentalEccentricity As Double ' Случайный эксцентриситет, мм.
-    Eccentricity As Double ' Принятый расчётный эксцентриситет, мм.
-    CoreDistance As Double ' Ядровое расстояние со стороны рассматриваемого эксцентриситета, мм.
-    PhiL As Double ' Коэффициент влияния длительности нагрузки.
-    PhiLTable As Double ' Табличный коэффициент phil по СП 35.
-    PhiM As Double ' Табличный коэффициент phim по СП 35.
-    PhiValue As Double ' Итоговый коэффициент phi табличной проверки СП 35.
-    PhiP As Double ' Коэффициент phip по СП 35.
-    DeltaValue As Double ' Принятое относительное значение эксцентриситета для выбранной нормативной ветви.
-    Kb As Double ' Коэффициент вклада бетона в жёсткость по СП 63.
-    Ks As Double ' Коэффициент вклада арматуры в жёсткость по СП 63.
-    Eta As Double ' Коэффициент увеличения момента из-за прогиба.
-    StiffnessD As Double ' Условная изгибная жёсткость D, Н*мм2.
-    CriticalForce As Double ' Контрольная сила выбранной нормативной проверки, Н.
-    NcrForce As Double ' Критическая сила Ncr для расчёта увеличения момента, Н.
-    NultimateForce As Double ' Предельная сжимающая сила табличной проверки СП 35, Н.
-    ReserveFactor As Double ' Коэффициент запаса в рассматриваемой плоскости.
-    CheckPassed As Boolean ' Выполнена ли проверка в рассматриваемой плоскости.
-    Applicable As Boolean ' Требуется ли проверка для рассматриваемой плоскости.
-    BranchName As String ' Название применённой нормативной расчётной ветви.
-End Type
 
 Private mCode As String ' Нормативная ветвь, выбранная настройкой Stability.Code.
 Private mBranch As String ' Название применённого способа проверки устойчивости для отчёта и диагностики.
@@ -173,7 +121,7 @@ Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Dou
         Optional ByVal settings As CSystemSettingsReader = Nothing)
     Dim code As String, mode As String
     code = NormalizeCode(codeText)
-    If code <> CODE_SP63 And code <> CODE_SP35 Then RaiseSettingInput "Stability.Code", _
+    If code <> STABILITY_CODE_SP63 And code <> STABILITY_CODE_SP35 Then RaiseSettingInput "Stability.Code", _
         "Неизвестная методика устойчивости.", "Выберите SP63 или SP35.", settings
     If elementLength <= 0# Then RaiseSettingInput "Stability.ElementLength", _
         "Длина элемента должна быть положительной.", "Введите число больше нуля в единицах INPUT Length.", settings
@@ -183,23 +131,23 @@ Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Dou
         "Коэффициент расчетной длины плоскости 2 должен быть положительным.", "Задайте число больше нуля.", settings
     ValidateEffectiveLengthRange elementLength, mu1, "Stability.Mu1", settings
     ValidateEffectiveLengthRange elementLength, mu2, "Stability.Mu2", settings
-    If StrComp(Trim$(systemType), SYSTEM_DETERMINATE, vbTextCompare) <> 0 And _
-            StrComp(Trim$(systemType), SYSTEM_INDETERMINATE, vbTextCompare) <> 0 Then _
+    If StrComp(Trim$(systemType), STABILITY_SYSTEM_DETERMINATE, vbTextCompare) <> 0 And _
+            StrComp(Trim$(systemType), STABILITY_SYSTEM_INDETERMINATE, vbTextCompare) <> 0 Then _
         RaiseSettingInput "Stability.SystemType", "Неизвестная расчетная схема.", _
             "Выберите Determinate или Indeterminate.", settings
     If zeroMomentSign1 <> 1# And zeroMomentSign1 <> -1# Then RaiseSettingInput "Stability.ZeroMomentEccentricitySign1", _
         "Направление задается только знаком.", "Введите 1 или -1 для главной плоскости 1.", settings
     If zeroMomentSign2 <> 1# And zeroMomentSign2 <> -1# Then RaiseSettingInput "Stability.ZeroMomentEccentricitySign2", _
         "Направление задается только знаком.", "Введите 1 или -1 для главной плоскости 2.", settings
-    If StrComp(Trim$(phiLMode), PHIL_AUTO, vbTextCompare) <> 0 And _
-            StrComp(Trim$(phiLMode), PHIL_2, vbTextCompare) <> 0 Then _
+    If StrComp(Trim$(phiLMode), STABILITY_PHIL_AUTO, vbTextCompare) <> 0 And _
+            StrComp(Trim$(phiLMode), STABILITY_PHIL_2, vbTextCompare) <> 0 Then _
         RaiseSettingInput "Stability.PhiLMode", "Неизвестный режим учета длительности.", "Выберите Auto или PhiL2.", settings
     mode = NormalizeAccidentalMode(accidentalMode, settings)
     Call NormalizeAccidentalPlanes(accidentalPlanes, settings)
-    If accidentalUserValue1 < 0# Or (mode = ACC_USER And accidentalUserValue1 <= SMALL_VALUE) Then _
+    If accidentalUserValue1 < 0# Or (mode = STABILITY_ACC_USER And accidentalUserValue1 <= STABILITY_SMALL_VALUE) Then _
         RaiseSettingInput "Stability.AccidentalEccentricityUser1", "Требуется модуль, а не знаковый эксцентриситет.", _
             "Введите положительное значение для User; в автоматическом режиме допустим также 0.", settings
-    If accidentalUserValue2 < 0# Or (mode = ACC_USER And accidentalUserValue2 <= SMALL_VALUE) Then _
+    If accidentalUserValue2 < 0# Or (mode = STABILITY_ACC_USER And accidentalUserValue2 <= STABILITY_SMALL_VALUE) Then _
         RaiseSettingInput "Stability.AccidentalEccentricityUser2", "Требуется модуль, а не знаковый эксцентриситет.", _
             "Введите положительное значение для User; в автоматическом режиме допустим также 0.", settings
     If sp63Ks <= 0# Then RaiseSettingInput "Stability.SP63.Ks", _
@@ -301,8 +249,8 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         GoTo Failed
     End If
     Dim nCompression As Double
-    nCompression = totalLoad.CompressionMagnitude(SMALL_FORCE)
-    If nCompression <= SMALL_FORCE Then
+    nCompression = totalLoad.CompressionMagnitude(STABILITY_SMALL_FORCE)
+    If nCompression <= STABILITY_SMALL_FORCE Then
         mApplicable = False
         mCheckPassed = True
         mBranch = "NoCompression"
@@ -333,14 +281,14 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     End If
     concreteProps.EnsureConcrete section
 
-    Dim plane1 As TPlaneResult
-    Dim plane2 As TPlaneResult
+    Dim plane1 As TStabilityPlane
+    Dim plane2 As TStabilityPlane
     PreparePlanes section, props, mDesignMx, mDesignMy, sustainedLoad.InternalMx, sustainedLoad.InternalMy, _
         elementLength, mu1, mu2, systemType, zeroMomentSign1, zeroMomentSign2, _
         accidentalMode, accidentalPlanes, accidentalUserValue1, accidentalUserValue2, _
         momentFilter, plane1, plane2
 
-    If mCode = CODE_SP63 Then
+    If mCode = STABILITY_CODE_SP63 Then
         CalculateSP63 section, ebForGeometry, esForGeometry, nCompression, sustainedLoad.SignedCompression, _
             systemType, phiLMode, sp63Ks, sp63DeltaEMin, sp63DeltaEMax, plane1, plane2
     Else
@@ -423,7 +371,7 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
         ByVal zeroMomentSign2 As Double, ByVal accidentalMode As String, _
         ByVal accidentalPlanes As String, ByVal accidentalUserValue1 As Double, _
         ByVal accidentalUserValue2 As Double, ByVal momentFilter As CLoadZeroFilter, _
-        ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
+        ByRef plane1 As TStabilityPlane, ByRef plane2 As TStabilityPlane)
     Dim axis1X As Double
     Dim axis1Y As Double
     Dim axis2X As Double
@@ -461,8 +409,8 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     plane2.GeometricLength = elementLength
     plane1.EffectiveLength = elementLength * mu1
     plane2.EffectiveLength = elementLength * mu2
-    If plane1.Radius > SMALL_VALUE Then plane1.Slenderness = plane1.EffectiveLength / plane1.Radius
-    If plane2.Radius > SMALL_VALUE Then plane2.Slenderness = plane2.EffectiveLength / plane2.Radius
+    If plane1.Radius > STABILITY_SMALL_VALUE Then plane1.Slenderness = plane1.EffectiveLength / plane1.Radius
+    If plane2.Radius > STABILITY_SMALL_VALUE Then plane2.Slenderness = plane2.EffectiveLength / plane2.Radius
     plane1.Applicable = True
     plane2.Applicable = True
 
@@ -471,20 +419,20 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     ' При чистом сжатии без моментов в обоих режимах применяются направления +1/-1.
     Dim hasMomentVector As Boolean
     Dim applyBothPlanes As Boolean
-    hasMomentVector = (Abs(plane1.Moment) > SMALL_VALUE Or Abs(plane2.Moment) > SMALL_VALUE)
-    applyBothPlanes = (NormalizeAccidentalPlanes(accidentalPlanes) = ACC_PLANES_BOTH)
+    hasMomentVector = (Abs(plane1.Moment) > STABILITY_SMALL_VALUE Or Abs(plane2.Moment) > STABILITY_SMALL_VALUE)
+    applyBothPlanes = (NormalizeAccidentalPlanes(accidentalPlanes) = STABILITY_ACC_PLANES_BOTH)
     FillAccidentalAndInitialEccentricity plane1, zeroMomentSign1, systemType, _
         accidentalMode, accidentalUserValue1, "Stability.AccidentalEccentricityUser1", _
-        (applyBothPlanes Or Not hasMomentVector Or Abs(plane1.Moment) > SMALL_VALUE)
+        (applyBothPlanes Or Not hasMomentVector Or Abs(plane1.Moment) > STABILITY_SMALL_VALUE)
     FillAccidentalAndInitialEccentricity plane2, zeroMomentSign2, systemType, _
         accidentalMode, accidentalUserValue2, "Stability.AccidentalEccentricityUser2", _
-        (applyBothPlanes Or Not hasMomentVector Or Abs(plane2.Moment) > SMALL_VALUE)
+        (applyBothPlanes Or Not hasMomentVector Or Abs(plane2.Moment) > STABILITY_SMALL_VALUE)
 End Sub
 
 ' Применяет общий инженерный фильтр к моментам одной главной плоскости.
 ' Сравнение выполняется по бетонному габариту именно этой плоскости, поэтому
 ' после поворота осей случайный остаток M1/M2 не меняет ветвь устойчивости.
-Private Sub NormalizePlaneMoments(ByRef plane As TPlaneResult, ByVal momentFilter As CLoadZeroFilter)
+Private Sub NormalizePlaneMoments(ByRef plane As TStabilityPlane, ByVal momentFilter As CLoadZeroFilter)
     If momentFilter Is Nothing Then Exit Sub
     plane.Moment = momentFilter.NormalizeMoment(plane.Moment, plane.Depth)
     plane.SustainedMoment = momentFilter.NormalizeMoment(plane.SustainedMoment, plane.Depth)
@@ -493,30 +441,30 @@ End Sub
 ' Назначает случайный и начальный эксцентриситет одной главной плоскости.
 ' Здесь сходятся пользовательский режим Auto/User, выбор L или mu*L и правило
 ' OnlyMomentPlane/BothPlanes для нулевых исходных моментов.
-Private Sub FillAccidentalAndInitialEccentricity(ByRef plane As TPlaneResult, _
+Private Sub FillAccidentalAndInitialEccentricity(ByRef plane As TStabilityPlane, _
         ByVal zeroMomentSign As Double, ByVal systemType As String, _
         ByVal accidentalMode As String, ByVal accidentalUserValue As Double, _
         ByVal accidentalUserSettingName As String, _
         ByVal allowZeroMomentAccidental As Boolean)
-    If Abs(plane.Moment) <= SMALL_VALUE And Not allowZeroMomentAccidental Then
+    If Abs(plane.Moment) <= STABILITY_SMALL_VALUE And Not allowZeroMomentAccidental Then
         plane.AccidentalEccentricity = 0#
         plane.Eccentricity = 0#
         Exit Sub
     End If
 
     Dim signValue As Double
-    signValue = SignForEccentricity(plane.Moment, zeroMomentSign)
+    signValue = StabilitySignForEccentricity(plane.Moment, zeroMomentSign)
     plane.AccidentalEccentricity = signValue * AccidentalEccentricity( _
         accidentalMode, accidentalUserValue, accidentalUserSettingName, _
         plane.GeometricLength, plane.EffectiveLength, plane.Depth)
-    plane.Eccentricity = InitialEccentricity(plane.Moment, 1#, plane.AccidentalEccentricity, systemType)
+    plane.Eccentricity = StabilityInitialEccentricity(plane.Moment, 1#, plane.AccidentalEccentricity, systemType)
 End Sub
 
 ' Сохраняет крайние точки бетонного контура относительно центра приведенного
 ' сечения. Эти значения нужны для h и ядрового расстояния: арматура не должна
 ' расширять внешний габарит сжатого элемента.
 Private Sub StoreConcreteProjectionBounds(ByVal section As CSectionModel, _
-        ByVal props As CSectionPropertiesCalculator, ByRef plane As TPlaneResult)
+        ByVal props As CSectionPropertiesCalculator, ByRef plane As TStabilityPlane)
     Dim minProjection As Double
     Dim maxProjection As Double
     props.CalculateProjection section, plane.NormalX, plane.NormalY, False, minProjection, maxProjection
@@ -527,67 +475,6 @@ Private Sub StoreConcreteProjectionBounds(ByVal section As CSectionModel, _
     plane.ConcreteMaxProjection = maxProjection - centroidProjection
 End Sub
 
-' Выбирает центр стержня, относительно которого СП 63 требует считать M1 и Ml1:
-' наиболее растянутый или наименее сжатый стержень для текущего направления
-' эксцентриситета. При отсутствии арматуры используется край бетонного контура,
-' чтобы расчет не падал, но такая модель требует отдельной инженерной проверки.
-Private Function RebarProjectionForMoment(ByVal section As CSectionModel, ByRef plane As TPlaneResult) As Double
-    If section Is Nothing Then
-        RebarProjectionForMoment = ConcreteFaceProjectionForMoment(plane)
-        Exit Function
-    End If
-    If section.RebarCount <= 0 Then
-        RebarProjectionForMoment = ConcreteFaceProjectionForMoment(plane)
-        Exit Function
-    End If
-
-    Dim chooseNegativeSide As Boolean
-    chooseNegativeSide = (plane.Eccentricity >= 0#)
-
-    Dim i As Long
-    Dim projectionValue As Double
-    For i = 1 To section.RebarCount
-        projectionValue = plane.NormalX * (section.RebarX(i) - plane.CentroidX) + _
-            plane.NormalY * (section.RebarY(i) - plane.CentroidY)
-        If i = 1 Then
-            RebarProjectionForMoment = projectionValue
-        ElseIf chooseNegativeSide Then
-            If projectionValue < RebarProjectionForMoment Then RebarProjectionForMoment = projectionValue
-        Else
-            If projectionValue > RebarProjectionForMoment Then RebarProjectionForMoment = projectionValue
-        End If
-    Next i
-End Function
-
-' Возвращает край бетонного сечения на стороне, противоположной направлению
-' сжатой равнодействующей. Для СП 35 это грань, относительно которой считается
-' момент в коэффициенте длительности.
-Private Function ConcreteFaceProjectionForMoment(ByRef plane As TPlaneResult) As Double
-    If plane.Eccentricity >= 0# Then
-        ConcreteFaceProjectionForMoment = plane.ConcreteMinProjection
-    Else
-        ConcreteFaceProjectionForMoment = plane.ConcreteMaxProjection
-    End If
-End Function
-
-' Пересчитывает момент из центра приведенного сечения к точке с проекцией p.
-' Сжатая сила nCompression передается положительным числом.
-Private Function MomentAboutProjection(ByVal momentValue As Double, ByVal nCompression As Double, _
-        ByVal projectionFromCentroid As Double) As Double
-    MomentAboutProjection = momentValue - nCompression * projectionFromCentroid
-End Function
-
-' Коэффициент длительности СП 63 считается не по моменту в центре сечения, а по
-' моментам M1 и Ml1 относительно центра выбранного стержня арматуры.
-Private Function PhiLSP63(ByVal phiLMode As String, ByVal section As CSectionModel, _
-        ByVal nCompression As Double, ByVal sustainedCompression As Double, _
-        ByRef plane As TPlaneResult) As Double
-    Dim rebarProjection As Double
-    rebarProjection = RebarProjectionForMoment(section, plane)
-    PhiLSP63 = PhiLFromMomentRatio(phiLMode, _
-        MomentAboutProjection(plane.Moment, nCompression, rebarProjection), _
-        MomentAboutProjection(plane.SustainedMoment, sustainedCompression, rebarProjection))
-End Function
 
 ' ----------------------------- СП 63 --------------------------------------
 
@@ -598,50 +485,11 @@ Private Sub CalculateSP63(ByVal section As CSectionModel, ByVal eb As Double, By
         ByVal nCompression As Double, _
         ByVal sustainedCompression As Double, ByVal systemType As String, _
         ByVal phiLMode As String, ByVal ksValue As Double, ByVal deltaEMin As Double, _
-        ByVal deltaEMax As Double, ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
-    CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane1, "1"
-    CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane2, "2"
-    mBranch = CODE_SP63
+        ByVal deltaEMax As Double, ByRef plane1 As TStabilityPlane, ByRef plane2 As TStabilityPlane)
+    mSP63.CalculateSP63 section, eb, es, nCompression, sustainedCompression, systemType, phiLMode, ksValue, deltaEMin, deltaEMax, plane1, plane2
+    mBranch = STABILITY_CODE_SP63
 End Sub
 
-' Считает одну главную плоскость по формулам СП 63.
-Private Sub CalculateSP63Plane(ByVal section As CSectionModel, ByVal nCompression As Double, _
-        ByVal sustainedCompression As Double, ByVal eb As Double, ByVal es As Double, _
-        ByVal ksValue As Double, ByVal systemType As String, ByVal phiLMode As String, ByVal deltaEMin As Double, _
-        ByVal deltaEMax As Double, ByRef plane As TPlaneResult, ByVal planeLabel As String)
-    EnsurePositivePlaneGeometry plane, CODE_SP63, planeLabel
-
-    plane.Eccentricity = InitialEccentricity(plane.Moment, nCompression, _
-        plane.AccidentalEccentricity, systemType)
-    plane.PhiL = PhiLSP63(phiLMode, section, nCompression, sustainedCompression, plane)
-
-    Dim deltaE As Double
-    deltaE = Abs(plane.Eccentricity) / plane.Depth
-    If deltaEMin > 0# Then deltaE = GeomMax(deltaE, deltaEMin)
-    If deltaEMax > 0# Then deltaE = GeomMin(deltaE, deltaEMax)
-
-    Dim kb As Double
-    kb = 0.15 / (plane.PhiL * (0.3 + deltaE))
-    plane.DeltaValue = deltaE
-    plane.Kb = kb
-    plane.Ks = ksValue
-    plane.StiffnessD = kb * eb * plane.InertiaConcrete + ksValue * es * plane.InertiaSteel
-    plane.NcrForce = GEOM_PI * GEOM_PI * plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
-    plane.CriticalForce = plane.NcrForce
-    plane.ReserveFactor = ReserveByCriticalForce(plane.NcrForce, nCompression)
-    If plane.Slenderness <= 14# Then
-        plane.Eta = 1#
-    Else
-        plane.Eta = EtaByCriticalForce(plane.NcrForce, nCompression)
-    End If
-    plane.DesignMoment = DesignMomentWithEta(nCompression, plane.Eccentricity, plane.Eta)
-    If plane.Slenderness <= 14# Then
-        plane.CheckPassed = True
-    Else
-        plane.CheckPassed = (plane.ReserveFactor > 1# And plane.Eta > 0#)
-    End If
-    plane.BranchName = CODE_SP63
-End Sub
 
 ' ----------------------------- СП 35 --------------------------------------
 
@@ -652,245 +500,15 @@ Private Sub CalculateSP35(ByVal section As CSectionModel, ByVal materialProvider
         ByVal nCompression As Double, ByVal sustainedCompression As Double, _
         ByVal eb As Double, ByVal es As Double, ByVal systemType As String, ByVal phiLMode As String, ByVal phiP As Double, _
         ByVal nOverNcrLimit As Double, ByVal table721 As Variant, _
-        ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult)
-    Dim rb As Double
-    Dim rsc As Double
-    rb = materialProvider.ConcreteCompressionResistanceFromValueSet(valueSet)
-    rsc = materialProvider.SteelCompressionResistanceFromValueSet(valueSet)
-    If rb <= 0# Or rsc <= 0# Then RaiseInput "Для расчета устойчивости СП 35 нужны положительные Eb, Es, Rb и Rsc."
-    CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane1, "1"
-    CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane2, "2"
-    mBranch = CombinedSP35Branch(plane1, plane2)
+        ByRef plane1 As TStabilityPlane, ByRef plane2 As TStabilityPlane)
+    mSP35.CalculateSP35 mBranch, mSP35TableInputError, section, materialProvider, valueSet, concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane1, plane2
 End Sub
 
-' Возвращает общий диагностический признак СП 35 без потери смысла, когда две
-' главные плоскости попали в разные нормативные ветви расчета.
-Private Function CombinedSP35Branch(ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult) As String
-    Dim branch1 As String
-    Dim branch2 As String
-    branch1 = plane1.BranchName
-    branch2 = plane2.BranchName
-
-    If Not plane1.Applicable Then branch1 = vbNullString
-    If Not plane2.Applicable Then branch2 = vbNullString
-
-    If Len(branch1) = 0 And Len(branch2) = 0 Then
-        CombinedSP35Branch = CODE_SP35
-    ElseIf Len(branch1) = 0 Then
-        CombinedSP35Branch = branch2
-    ElseIf Len(branch2) = 0 Then
-        CombinedSP35Branch = branch1
-    ElseIf StrComp(branch1, branch2, vbTextCompare) = 0 Then
-        CombinedSP35Branch = branch1
-    Else
-        CombinedSP35Branch = "SP35-mixed"
-    End If
-End Function
-
-' Проверяет положительность обязательных геометрических величин главной плоскости.
-' При ошибке записывает фактические значения, в том числе
-' для размеров элементов, восстановленных при импорте AutoCAD.
-Private Sub EnsurePositivePlaneGeometry(ByRef plane As TPlaneResult, _
-        ByVal codeText As String, ByVal planeLabel As String)
-    If plane.EffectiveLength > 0# And plane.InertiaConcrete > 0# And _
-            plane.Depth > 0# And plane.Radius > 0# Then Exit Sub
-
-    RaiseInput "Для расчета устойчивости " & codeText & " в главной плоскости " & _
-        planeLabel & " нужны положительные l0, h, I и i. Сейчас: l0=" & _
-        StabilityNumber(plane.EffectiveLength) & " мм; h=" & _
-        StabilityNumber(plane.Depth) & " мм; I=" & _
-        StabilityNumber(plane.InertiaConcrete) & " мм4; i=" & _
-        StabilityNumber(plane.Radius) & " мм."
-End Sub
-
-' Форматирует диагностические числа без длинных хвостов, чтобы popup с причиной
-' InputErr оставался читаемым для пользователя.
-Private Function StabilityNumber(ByVal value As Double) As String
-    StabilityNumber = Replace$(Format$(value, "0.############"), ",", ".")
-End Function
-
-' Считает одну главную плоскость по СП 35: табличная ветвь при |ec|/r <= 1,
-' иначе eta/Ncr. Таблица 7.21 передается с Config и не зашита в код.
-Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
-        ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal eb As Double, ByVal es As Double, _
-        ByVal rb As Double, ByVal rsc As Double, ByVal systemType As String, ByVal phiLMode As String, _
-        ByVal phiP As Double, ByVal nOverNcrLimit As Double, ByVal table721 As Variant, _
-        ByRef plane As TPlaneResult, ByVal planeLabel As String)
-    EnsurePositivePlaneGeometry plane, CODE_SP35, planeLabel
-
-    plane.Eccentricity = InitialEccentricity(plane.Moment, nCompression, _
-        plane.AccidentalEccentricity, systemType)
-
-    Dim coreDistance As Double
-    coreDistance = CoreDistanceForEccentricity(plane)
-    If coreDistance <= SMALL_VALUE Then RaiseInput "Для расчета устойчивости СП 35 нужно положительное ядровое расстояние r."
-    plane.CoreDistance = coreDistance
-
-    Dim q As Double
-    q = Abs(plane.Eccentricity) / coreDistance ' Модуль эксцентриситета делится на ядровое расстояние выбранной стороны.
-    If q <= 1# Then
-        CalculateSP35TablePlane concreteArea, totalSteelArea, nCompression, sustainedCompression, rb, rsc, table721, q, plane
-    Else
-        CalculateSP35EtaPlane nCompression, sustainedCompression, eb, es, rb, phiLMode, phiP, nOverNcrLimit, plane
-    End If
-End Sub
-
-' Табличная ветвь СП 35 для |ec|/r <= 1.
-Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSteelArea As Double, _
-        ByVal nCompression As Double, ByVal sustainedCompression As Double, ByVal rb As Double, ByVal rsc As Double, _
-        ByVal table721 As Variant, ByVal q As Double, _
-        ByRef plane As TPlaneResult)
-    Dim slenderness As Double
-    slenderness = plane.Slenderness
-
-    Dim phiM As Double
-    Dim phiLTable As Double
-    InterpolateSP35Table table721, slenderness, q, phiM, phiLTable
-    plane.PhiL = phiLTable
-    plane.PhiM = phiM
-    plane.PhiLTable = phiLTable
-
-    Dim nUltimate As Double
-    Dim phiValue As Double
-    phiValue = PhiForSustainedCompression(phiM, plane.PhiL, nCompression, sustainedCompression)
-    plane.PhiValue = phiValue
-    nUltimate = phiValue * (rb * SP35ConcreteAreaForTableNult(concreteArea, totalSteelArea) + _
-        rsc * totalSteelArea)
-
-    plane.NultimateForce = nUltimate
-    plane.CriticalForce = plane.NultimateForce
-    plane.ReserveFactor = ReserveByCriticalForce(nUltimate, nCompression)
-    plane.Eta = 1#
-    plane.StiffnessD = 0#
-    plane.DesignMoment = nCompression * plane.Eccentricity
-    plane.CheckPassed = (plane.ReserveFactor + PASS_TOLERANCE >= 1#)
-    mBranch = "SP35-table"
-    plane.BranchName = "SP35-table"
-End Sub
-
-' Возвращает бетонную площадь для формулы Nult табличной ветви СП 35.
-' Приведенное сечение уже строится через (n - 1)As и этим определяет центр,
-' оси и ядровое расстояние. Здесь работает другая нормативная поправка:
-' если суммарная площадь стали больше 3% gross-площади бетона, бетонный
-' вклад в Nult уменьшается на As, чтобы не завышать сжатую бетонную часть.
-Private Function SP35ConcreteAreaForTableNult(ByVal concreteArea As Double, _
-        ByVal totalSteelArea As Double) As Double
-    If concreteArea <= SMALL_VALUE Then RaiseInput "Для табличной ветви СП 35 нужна положительная площадь бетона."
-
-    SP35ConcreteAreaForTableNult = concreteArea
-    If totalSteelArea <= SMALL_VALUE Then Exit Function
-
-    If totalSteelArea / concreteArea > SP35_REBAR_AREA_LIMIT_RATIO Then
-        SP35ConcreteAreaForTableNult = concreteArea - totalSteelArea
-        If SP35ConcreteAreaForTableNult <= SMALL_VALUE Then _
-            RaiseInput "Суммарная площадь арматуры не меньше общей площади сечения до вычитания арматуры. Формула Nult СП 35 неприменима; проверьте геометрию, диаметры и единицы."
-    End If
-End Function
-
-' Рассчитывает ветвь СП 35 для |ec|/r > 1: phi_l по моментам относительно
-' требуемой грани, delta, D, Ncr, eta и запас по условию N <= k*Ncr.
-Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedCompression As Double, _
-        ByVal eb As Double, ByVal es As Double, _
-        ByVal rb As Double, ByVal phiLMode As String, ByVal phiP As Double, _
-        ByVal nOverNcrLimit As Double, ByRef plane As TPlaneResult)
-    Dim faceProjection As Double
-    faceProjection = ConcreteFaceProjectionForMoment(plane)
-    plane.PhiL = PhiLSP35Eta(phiLMode, MomentAboutProjection(plane.Moment, nCompression, faceProjection), _
-        MomentAboutProjection(plane.SustainedMoment, sustainedCompression, faceProjection), _
-        plane.Eccentricity, plane.Depth)
-
-    Dim deltaValue As Double
-    deltaValue = Abs(plane.Eccentricity) / plane.Depth
-    Dim deltaMin As Double
-    deltaMin = 0.5 - 0.01 * (plane.EffectiveLength / plane.Depth) - 0.01 * rb
-    deltaValue = GeomMax(deltaValue, deltaMin)
-
-    Dim phiPValue As Double
-    phiPValue = phiP
-    plane.PhiP = phiPValue
-    Dim stiffnessFactor As Double
-    stiffnessFactor = 0.11 / (0.1 + deltaValue / phiPValue) + 0.1
-    plane.DeltaValue = deltaValue
-    plane.StiffnessD = 6.4 * eb * (plane.InertiaConcrete / plane.PhiL * stiffnessFactor + _
-        (es / eb) * plane.InertiaSteel)
-    plane.NcrForce = plane.StiffnessD / (plane.EffectiveLength * plane.EffectiveLength)
-    plane.CriticalForce = plane.NcrForce
-    plane.ReserveFactor = SP35EtaReserveByLimit(plane.NcrForce, nCompression, nOverNcrLimit)
-    plane.Eta = EtaByCriticalForce(plane.NcrForce, nCompression)
-    plane.DesignMoment = DesignMomentWithEta(nCompression, plane.Eccentricity, plane.Eta)
-    plane.CheckPassed = (plane.ReserveFactor + PASS_TOLERANCE >= 1# And plane.Eta > 0#)
-    mBranch = "SP35-eta"
-    plane.BranchName = "SP35-eta"
-End Sub
-
-' Вычисляет запас для условия СП 35 N/Ncr <= Stability.SP35.NOverNcrLimit.
-' В Results показывается запас limit*Ncr/N, соответствующий
-' проверяемому условию, а не простое отношение Ncr/N.
-Private Function SP35EtaReserveByLimit(ByVal ncrForce As Double, ByVal nCompression As Double, _
-        ByVal nOverNcrLimit As Double) As Double
-    If nOverNcrLimit <= 0# Then Exit Function
-    SP35EtaReserveByLimit = ReserveByCriticalForce(ncrForce, nCompression) * nOverNcrLimit
-End Function
-
-' Для табличной ветви СП 35 учитывает долю постоянной нагрузки в полном
-' сжимающем усилии по формуле (7.15). Если длительная часть равна нулю,
-' остается кратковременный коэффициент phi_m; если вся сила длительная,
-' результат переходит к phi_l.
-Private Function PhiForSustainedCompression(ByVal phiM As Double, ByVal phiL As Double, _
-        ByVal nCompression As Double, ByVal sustainedCompression As Double) As Double
-    If phiM <= 0# Then Exit Function
-    If phiL <= 0# Then
-        PhiForSustainedCompression = phiM
-        Exit Function
-    End If
-    If nCompression <= SMALL_FORCE Then
-        PhiForSustainedCompression = phiM
-        Exit Function
-    End If
-
-    Dim sustainedRatio As Double
-    sustainedRatio = sustainedCompression / nCompression ' Доля длительного сжатия в полном; используется только в табличной ветви СП 35.
-
-    Dim shortRatio As Double
-    shortRatio = 1# - sustainedRatio
-
-    Dim denominator As Double
-    denominator = sustainedRatio * (phiM / phiL) + shortRatio ' Смешиваем кратковременное и длительное влияние по долям силы, а не линейно по самим коэффициентам phi.
-    If denominator > SMALL_VALUE Then
-        PhiForSustainedCompression = phiM / denominator
-    Else
-        RaiseInput "Для СП 35 получен некорректный знаменатель при учете постоянной/длительной продольной силы."
-    End If
-End Function
-
-' Возвращает phi_l для ветви eta/Ncr по СП 35. В Auto обычно используется
-' отношение длительного момента к полному, но при противоположных знаках
-' полного и длительного моментов применяются специальные правила п. 7.54.
-Private Function PhiLSP35Eta(ByVal phiLMode As String, ByVal totalMoment As Double, _
-        ByVal sustainedMoment As Double, ByVal eccentricity As Double, ByVal depthValue As Double) As Double
-    If UCase$(Trim$(phiLMode)) = UCase$(PHIL_2) Then
-        PhiLSP35Eta = 2#
-        Exit Function
-    End If
-
-    If Abs(totalMoment) > SMALL_VALUE And Abs(sustainedMoment) > SMALL_VALUE Then
-        If Sgn(totalMoment) <> Sgn(sustainedMoment) And depthValue > SMALL_VALUE Then
-            If Abs(eccentricity) >= 0.1 * depthValue Then
-                PhiLSP35Eta = 1#
-            Else
-                PhiLSP35Eta = 1.05
-            End If
-            Exit Function
-        End If
-    End If
-
-    PhiLSP35Eta = PhiLByMode(phiLMode, totalMoment, sustainedMoment)
-End Function
 
 ' -------------------------- Общие методы ----------------------------------
 
 ' Собирает итог по двум главным плоскостям и выбирает минимальный запас.
-Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPlaneResult, ByVal eb As Double, ByVal es As Double)
+Private Sub StorePlaneResults(ByRef plane1 As TStabilityPlane, ByRef plane2 As TStabilityPlane, ByVal eb As Double, ByVal es As Double)
     mApplicable = (plane1.Applicable Or plane2.Applicable)
     If Not mApplicable Then
         mCheckPassed = True
@@ -982,158 +600,27 @@ Private Function AccidentalEccentricity(ByVal modeText As String, ByVal userValu
         ByVal effectiveLength As Double, ByVal depthValue As Double) As Double
     Dim normalizedMode As String
     normalizedMode = NormalizeAccidentalMode(modeText)
-    If normalizedMode = ACC_USER Then
+    If normalizedMode = STABILITY_ACC_USER Then
         AccidentalEccentricity = Abs(userValue)
-        If AccidentalEccentricity <= SMALL_VALUE Then RaiseInput "На листе Config в строке " & userSettingName & " введите положительный случайный эксцентриситет в единицах INPUT Length для режима User."
+        If AccidentalEccentricity <= STABILITY_SMALL_VALUE Then RaiseInput "На листе Config в строке " & userSettingName & " введите положительный случайный эксцентриситет в единицах INPUT Length для режима User."
         Exit Function
     End If
 
     Dim lengthForAccidental As Double
-    If normalizedMode = ACC_AUTO_MUL Then
+    If normalizedMode = STABILITY_ACC_AUTO_MUL Then
         lengthForAccidental = effectiveLength
     Else
         lengthForAccidental = geometricLength
     End If
-    If lengthForAccidental <= SMALL_VALUE Then RaiseInput "На листе Config проверьте Stability.ElementLength и коэффициент расчетной длины: длина для случайного эксцентриситета должна быть больше нуля."
+    If lengthForAccidental <= STABILITY_SMALL_VALUE Then RaiseInput "На листе Config проверьте Stability.ElementLength и коэффициент расчетной длины: длина для случайного эксцентриситета должна быть больше нуля."
 
-    If mCode = CODE_SP35 Then
+    If mCode = STABILITY_CODE_SP35 Then
         AccidentalEccentricity = lengthForAccidental / 400#
     Else
         AccidentalEccentricity = GeomMax(GeomMax(lengthForAccidental / 600#, depthValue / 30#), 10#)
     End If
 End Function
 
-' Определяет знак случайного эксцентриситета: при ненулевом моменте добавляет
-' его в ту же сторону, при нулевом моменте использует пользовательские +1/-1.
-Private Function SignForEccentricity(ByVal momentValue As Double, ByVal userSign As Double) As Double
-    If Abs(momentValue) > SMALL_VALUE Then
-        SignForEccentricity = Sgn(momentValue)
-    ElseIf userSign < 0# Then
-        SignForEccentricity = -1#
-    Else
-        SignForEccentricity = 1#
-    End If
-End Function
-
-' Начальный эксцентриситет по типу расчетной схемы. Для статически определимой
-' схемы складываются расчетный момент и случайный эксцентриситет; для
-' неопределимой берется не меньше случайного эксцентриситета.
-Private Function InitialEccentricity(ByVal momentValue As Double, ByVal nCompression As Double, _
-        ByVal accidentalEccentricity As Double, ByVal systemType As String) As Double
-    Dim staticEccentricity As Double
-    If nCompression > SMALL_FORCE Then staticEccentricity = momentValue / nCompression
-
-    If UCase$(Trim$(systemType)) = UCase$(SYSTEM_INDETERMINATE) Then
-        InitialEccentricity = SignForEccentricity(momentValue, accidentalEccentricity) * _
-            GeomMax(Abs(staticEccentricity), Abs(accidentalEccentricity))
-    Else
-        InitialEccentricity = staticEccentricity + accidentalEccentricity
-    End If
-End Function
-
-' Возвращает phi_l. В Auto используется отношение длительного момента к
-' полному, но не больше 2. При PhiL2 сразу принимается консервативное значение 2.
-Private Function PhiLByMode(ByVal phiLMode As String, ByVal totalMoment As Double, ByVal sustainedMoment As Double) As Double
-    PhiLByMode = PhiLFromMomentRatio(phiLMode, totalMoment, sustainedMoment)
-End Function
-
-' Общая реализация формулы phi_l = 1 + Ml/M с верхним ограничением 2.
-' Отношение берется со знаком. Нижняя граница 1 оставлена как защитное
-' инженерное ограничение, чтобы длительная часть не повышала расчетную жесткость.
-Private Function PhiLFromMomentRatio(ByVal phiLMode As String, ByVal totalMoment As Double, _
-        ByVal sustainedMoment As Double) As Double
-    Dim normalizedMode As String
-    normalizedMode = UCase$(Trim$(phiLMode))
-    If normalizedMode = UCase$(PHIL_2) Then
-        PhiLFromMomentRatio = 2#
-    ElseIf normalizedMode <> UCase$(PHIL_AUTO) Then
-        RaiseInput "На листе Config в строке Stability.PhiLMode выберите Auto или PhiL2."
-    ElseIf Abs(totalMoment) <= SMALL_VALUE Then
-        If Abs(sustainedMoment) <= SMALL_VALUE Then PhiLFromMomentRatio = 1# Else PhiLFromMomentRatio = 2#
-    Else
-        PhiLFromMomentRatio = 1# + sustainedMoment / totalMoment
-        If PhiLFromMomentRatio > 2# Then PhiLFromMomentRatio = 2#
-        If PhiLFromMomentRatio < 1# Then PhiLFromMomentRatio = 1#
-    End If
-End Function
-
-' Коэффициент eta по критической силе. Если N >= Ncr, eta не имеет физически
-' корректного положительного значения, поэтому возвращается 0 и статус станет FAIL.
-Private Function EtaByCriticalForce(ByVal criticalForce As Double, ByVal nCompression As Double) As Double
-    If criticalForce <= nCompression + SMALL_FORCE Then Exit Function
-    EtaByCriticalForce = 1# / (1# - nCompression / criticalForce)
-End Function
-
-' Запас как отношение критической/предельной силы к действующей сжимающей.
-Private Function ReserveByCriticalForce(ByVal criticalForce As Double, ByVal nCompression As Double) As Double
-    If criticalForce > 0# And nCompression > SMALL_FORCE Then ReserveByCriticalForce = criticalForce / nCompression
-End Function
-
-' Расчетный момент после учета eta.
-Private Function DesignMomentWithEta(ByVal nCompression As Double, ByVal eccentricity As Double, ByVal etaValue As Double) As Double
-    If etaValue > 0# Then
-        DesignMomentWithEta = nCompression * eccentricity * etaValue
-    Else
-        DesignMomentWithEta = nCompression * eccentricity
-    End If
-End Function
-
-' Выбирает ядровое расстояние с той стороны сечения, куда направлен
-' расчетный эксцентриситет. Для несимметричного сечения положительная и
-' отрицательная стороны могут иметь разные r.
-Private Function CoreDistanceForEccentricity(ByRef plane As TPlaneResult) As Double
-    If plane.Eccentricity < 0# Then
-        CoreDistanceForEccentricity = plane.CoreDistanceNegative
-    Else
-        CoreDistanceForEccentricity = plane.CoreDistancePositive
-    End If
-End Function
-
-' Интерполирует таблицу 7.21 СП 35, переданную с листа Config. В книге
-' таблица содержит l0/i, четыре phi_m для |ec|/r = 0; 0.25; 0.5; 1 и phi_l.
-Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
-        ByRef phiM As Double, ByRef phiL As Double)
-    If Len(mSP35TableInputError) > 0 Then RaiseInput mSP35TableInputError
-
-    Dim invalidRow As Long, invalidColumn As Long, reason As String
-    If Not TryValidateSP35Table721(table721, invalidRow, invalidColumn, reason) Then
-        If invalidRow > 0 Then reason = "Строка " & CStr(invalidRow) & ", колонка " & _
-            CStr(invalidColumn) & ": " & reason
-        RaiseInput "Таблица 7.21 СП 35: " & reason
-    End If
-
-    Dim rowCount As Long, numericRow As Long, numericColumn As Long, numericValue As Double
-    rowCount = UBound(table721, 1)
-    For numericRow = 2 To rowCount
-        For numericColumn = 1 To 6
-            If Not TryReadStrictDouble(table721(numericRow, numericColumn), numericValue) Then RaiseInput "Таблица 7.21 СП 35 содержит неверное число."
-            table721(numericRow, numericColumn) = numericValue ' Только локальная копия проверенной таблицы: интерполяция получает однозначные Double независимо от написания десятичного знака.
-        Next numericColumn
-    Next numericRow
-
-    Dim lowerRow As Long
-    Dim upperRow As Long
-    FindBoundingRows table721, rowCount, slenderness, lowerRow, upperRow
-
-    Dim phiMLower As Double
-    Dim phiMUpper As Double
-    Dim phiLLower As Double
-    Dim phiLUpper As Double
-    phiMLower = InterpolatePhiMByQ(table721, lowerRow, q)
-    phiMUpper = InterpolatePhiMByQ(table721, upperRow, q)
-    phiLLower = CDbl(table721(lowerRow, 6))
-    phiLUpper = CDbl(table721(upperRow, 6))
-
-    Dim t As Double
-    If lowerRow = upperRow Then
-        t = 0#
-    Else
-        t = (slenderness - CDbl(table721(lowerRow, 1))) / _
-            (CDbl(table721(upperRow, 1)) - CDbl(table721(lowerRow, 1)))
-    End If
-    phiM = phiMLower + t * (phiMUpper - phiMLower)
-    phiL = phiLLower + t * (phiLUpper - phiLLower)
-End Sub
 
 ' Проверяет расчетные колонки таблицы без обращения к Excel и без скрытых
 ' нормативных defaults. Возвращает первую неверную строку/колонку для адресной
@@ -1142,117 +629,9 @@ End Sub
 ' силу; дополнительные ограничения вроде phi <= 1 здесь не навязываются.
 Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalidRow As Long, _
         ByRef invalidColumn As Long, ByRef reason As String) As Boolean
-    invalidRow = 0: invalidColumn = 0: reason = vbNullString
-    If Not IsArray(table721) Then
-        reason = "Не передана таблица. Восстановите именованный диапазон rngSP35Table721 на Config."
-        Exit Function
-    End If
-    On Error GoTo InvalidStructure
-    Dim rowCount As Long, columnCount As Long, firstValue As Variant
-    rowCount = UBound(table721, 1): columnCount = UBound(table721, 2)
-    If LBound(table721, 1) <> 1 Or LBound(table721, 2) <> 1 Or _
-            rowCount < 2 Or columnCount <> 6 Then GoTo InvalidStructure
-    firstValue = table721(2, 1)
-    On Error GoTo 0
-
-    Dim row As Long, column As Long, value As Double, previousNode As Double
-    For row = 2 To rowCount
-        For column = 1 To 6
-            invalidRow = row: invalidColumn = column
-            If Not SP35TableNumber(table721(row, column), value, column = 1) Then
-                If column = 1 Then
-                    reason = "Гибкость l0/i должна быть числом не меньше нуля. Исправьте значение в таблице."
-                Else
-                    reason = "Коэффициент " & SP35TableColumnName(column) & _
-                        " должен быть числом больше нуля. Заполните ячейку корректным коэффициентом."
-                End If
-                Exit Function
-            End If
-            If column = 1 Then
-                If row > 2 And value <= previousNode Then
-                    reason = "Узлы l0/i должны строго возрастать сверху вниз. Исправьте эту строку или предыдущий узел."
-                    Exit Function
-                End If
-                previousNode = value
-            End If
-        Next column
-    Next row
-    invalidRow = 0: invalidColumn = 0
-    TryValidateSP35Table721 = True
-    Exit Function
-InvalidStructure:
-    invalidRow = 0: invalidColumn = 0
-    reason = "Нужен единый прямоугольный диапазон с заголовком, строками данных и шестью колонками: " & _
-        "l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l. Восстановите структуру таблицы."
+    TryValidateSP35Table721 = mSP35.TryValidateSP35Table721(table721, invalidRow, invalidColumn, reason)
 End Function
 
-' Отличает пустоту, ошибку формулы и нечисловое значение от допустимого
-' числа: ноль допускается только для узла гибкости. Числовые строки допустимы;
-' логические значения и даты не трактуются как инженерные числа.
-Private Function SP35TableNumber(ByVal rawValue As Variant, ByRef value As Double, ByVal allowZero As Boolean) As Boolean
-    On Error GoTo InvalidValue
-    If IsError(rawValue) Or IsEmpty(rawValue) Or IsNull(rawValue) Then Exit Function
-    If IsObject(rawValue) Or IsArray(rawValue) Then Exit Function
-    If VarType(rawValue) = vbBoolean Or VarType(rawValue) = vbDate Then Exit Function
-    If Not TryReadStrictDouble(rawValue, value) Then Exit Function
-    SP35TableNumber = (value > 0# Or (allowZero And value = 0#))
-    Exit Function
-InvalidValue:
-End Function
-
-' Называет неверный коэффициент по заголовку таблицы, чтобы сообщение
-' оставалось понятным и при автономном расчете без Excel-адреса.
-Private Function SP35TableColumnName(ByVal column As Long) As String
-    Select Case column
-        Case 2: SP35TableColumnName = "phi_m при ec/r = 0"
-        Case 3: SP35TableColumnName = "phi_m при ec/r = 0.25"
-        Case 4: SP35TableColumnName = "phi_m при ec/r = 0.5"
-        Case 5: SP35TableColumnName = "phi_m при ec/r = 1"
-        Case 6: SP35TableColumnName = "phi_l"
-    End Select
-End Function
-
-' Находит соседние строки таблицы по гибкости.
-Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long, ByVal slenderness As Double, _
-        ByRef lowerRow As Long, ByRef upperRow As Long)
-    lowerRow = 2
-    upperRow = rowCount
-    Dim r As Long
-    For r = 2 To rowCount
-        If CDbl(tableData(r, 1)) <= slenderness Then lowerRow = r
-        If CDbl(tableData(r, 1)) >= slenderness Then
-            upperRow = r
-            Exit For
-        End If
-    Next r
-    If slenderness <= CDbl(tableData(2, 1)) Then lowerRow = 2: upperRow = 2
-    If slenderness >= CDbl(tableData(rowCount, 1)) Then lowerRow = rowCount: upperRow = rowCount
-End Sub
-
-' Интерполяция phi_m по отношению |ec|/r.
-Private Function InterpolatePhiMByQ(ByVal tableData As Variant, ByVal rowIndex As Long, ByVal q As Double) As Double
-    Dim qValues(1 To 4) As Double
-    qValues(1) = 0#: qValues(2) = 0.25: qValues(3) = 0.5: qValues(4) = 1#
-    If q <= qValues(1) Then
-        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 2))
-        Exit Function
-    End If
-    If q >= qValues(4) Then
-        InterpolatePhiMByQ = CDbl(tableData(rowIndex, 5))
-        Exit Function
-    End If
-
-    Dim i As Long
-    For i = 1 To 3
-        If q >= qValues(i) And q <= qValues(i + 1) Then
-            Dim t As Double
-            t = (q - qValues(i)) / (qValues(i + 1) - qValues(i))
-            InterpolatePhiMByQ = CDbl(tableData(rowIndex, i + 1)) + _
-                t * (CDbl(tableData(rowIndex, i + 2)) - CDbl(tableData(rowIndex, i + 1)))
-            Exit Function
-        End If
-    Next i
-End Function
 
 ' Минимальное положительное значение. Нули трактуются как отсутствие величины.
 Private Function PositiveMinValue(ByVal firstValue As Double, ByVal secondValue As Double) As Double
@@ -1267,7 +646,7 @@ End Function
 
 ' Плоскость считается пройденной, если она применима и дала запас, либо если
 ' она была безопасно признана неактивной.
-Private Function PlanePassedOrInactive(ByRef plane As TPlaneResult) As Boolean
+Private Function PlanePassedOrInactive(ByRef plane As TStabilityPlane) As Boolean
     PlanePassedOrInactive = (Not plane.Applicable Or plane.CheckPassed)
 End Function
 
@@ -1283,11 +662,11 @@ Private Function NormalizeAccidentalMode(ByVal value As String, _
 
     Select Case normalized
         Case "USER"
-            NormalizeAccidentalMode = ACC_USER
+            NormalizeAccidentalMode = STABILITY_ACC_USER
         Case "AUTOWITHMUL"
-            NormalizeAccidentalMode = ACC_AUTO_MUL
+            NormalizeAccidentalMode = STABILITY_ACC_AUTO_MUL
         Case "AUTOWITHL"
-            NormalizeAccidentalMode = ACC_AUTO_L
+            NormalizeAccidentalMode = STABILITY_ACC_AUTO_L
         Case Else
             RaiseSettingInput "Stability.AccidentalEccentricityMode", "Неизвестный режим случайного эксцентриситета.", _
                 "Выберите AutoWithL, AutoWithMuL или User.", settings
@@ -1298,10 +677,10 @@ End Function
 Private Function NormalizeAccidentalPlanes(ByVal value As String, _
         Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Select Case UCase$(Trim$(value))
-        Case UCase$(ACC_PLANES_BOTH)
-            NormalizeAccidentalPlanes = ACC_PLANES_BOTH
-        Case UCase$(ACC_PLANES_ONLY_MOMENT)
-            NormalizeAccidentalPlanes = ACC_PLANES_ONLY_MOMENT
+        Case UCase$(STABILITY_ACC_PLANES_BOTH)
+            NormalizeAccidentalPlanes = STABILITY_ACC_PLANES_BOTH
+        Case UCase$(STABILITY_ACC_PLANES_ONLY_MOMENT)
+            NormalizeAccidentalPlanes = STABILITY_ACC_PLANES_ONLY_MOMENT
         Case Else
             RaiseSettingInput "Stability.AccidentalEccentricityPlanes", "Неизвестный выбор главных плоскостей.", _
                 "Выберите OnlyMomentPlane или BothPlanes.", settings
@@ -1312,9 +691,9 @@ End Function
 Private Function NormalizeCode(ByVal value As String) As String
     Select Case UCase$(Trim$(value))
         Case "SP35", "СП35", "СП 35"
-            NormalizeCode = CODE_SP35
+            NormalizeCode = STABILITY_CODE_SP35
         Case "SP63", "СП63", "СП 63"
-            NormalizeCode = CODE_SP63
+            NormalizeCode = STABILITY_CODE_SP63
         Case Else
             NormalizeCode = Trim$(value)
     End Select
@@ -1377,7 +756,7 @@ End Property
 ' запас/eta; физические условия остаются в CalculateSP63/CalculateSP35.
 Private Function StabilityCheckComment() As String
     If mCheckPassed Then
-        If mCode = CODE_SP35 Then
+        If mCode = STABILITY_CODE_SP35 Then
             StabilityCheckComment = "Проверка устойчивости по СП 35 выполнена."
         Else
             StabilityCheckComment = "Проверка устойчивости по СП 63 выполнена."

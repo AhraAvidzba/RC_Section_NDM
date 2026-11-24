@@ -11,6 +11,7 @@ param(
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [switch]$FailFast,
+    [switch]$NormativeCoreGuard,
     [ValidateSet("Yes", "No")][string]$Mode = "No",
     [ValidateRange(10, 172800)][int]$TimeoutSeconds = 120
 )
@@ -100,6 +101,7 @@ if (-not [string]::IsNullOrWhiteSpace($Macro)) {
 }
 if ($MacroArgument1) { $arguments += @("-MacroArgument1", (Quote-ProcessArgument $MacroArgument1)) }
 if ($MacroArgument2) { $arguments += @("-MacroArgument2", (Quote-ProcessArgument $MacroArgument2)) }
+if ($NormativeCoreGuard) { $arguments += '-NormativeCoreGuard' }
 if ($FixtureGeometryType) { $arguments += @("-FixtureGeometryType", (Quote-ProcessArgument $FixtureGeometryType)) }
 if ($VerifyResultsReopen) { $arguments += "-VerifyResultsReopen" }
 if ($VerifyStatusReopen) { $arguments += "-VerifyStatusReopen" }

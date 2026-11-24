@@ -8966,6 +8966,131 @@ Public Function RunAudit03StabilityCommentTests() As String
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Выполняет существующие проверки обеих методик устойчивости отдельно от
+' прочих стадий batch; настройки тестового профиля возвращаются при любом исходе.
+Public Function RunNormativeStabilityTests() As String
+    Dim stats As TBatchTestStats, oldStability As String, oldWidth As String, oldCode As String
+    oldStability = TestGetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldWidth = TestGetProfileValue("Calculation.Crack.Width", "PR1")
+    oldCode = TestGetSystemSetting("SLS.Crack.Code")
+    On Error GoTo Failed
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    TestSetSystemSetting "SLS.Crack.Code", "SP63"
+    TestStabilityZeroMomentFilterUsesZeroMomentSigns stats
+    TestStabilityProfileEnablesSP63ForCompression stats
+    TestStabilitySkippedForTension stats
+    TestStabilitySP35UsesConfigTableAndProfileValueSet stats
+    TestStabilitySP35TableSeparatesNcrAndNult stats
+    TestStabilitySP35TableIgnoresPhiL2 stats
+    TestStabilitySP35TableRebarAreaCorrection stats
+    TestStabilitySP35TableInterpolationIntermediate stats
+    TestStabilitySP35TableBoundaryReservePasses stats
+    TestStabilityFailContinuesDownstream stats
+    TestStabilitySP63ShortSlendernessEtaIsOne stats
+    TestStabilityInvalidMuReportsInputErr stats
+    TestStabilityInvalidSettingsReportInputErr stats
+    TestStabilitySP35MixedBranchReportsMixed stats
+    TestStabilityCircleMxDoesNotCreateMy stats
+    TestStabilityAccidentalBothPlanes stats
+    TestStabilityUsesTransformedCentroidForEccentricity stats
+    TestStabilityAccidentalUsesGeometricLength stats
+    TestStabilityAccidentalUserMode stats
+    TestStabilitySP35UsesCoreDistanceNotRadius stats
+    TestStabilityDepthUsesConcreteContourOnly stats
+    TestStabilityPhiLUsesSignedSustainedMoment stats
+    TestStabilitySustainedNNotClamped stats
+    TestStabilitySP35OppositeMomentSigns stats
+    TestAudit03StabilityComments stats
+    TestPrincipalStabilityAxisMapping stats
+    TestPrincipalKernelDirections stats
+Restore:
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    TestSetProfileValue "Calculation.Crack.Width", "PR1", oldWidth
+    TestSetSystemSetting "SLS.Crack.Code", oldCode
+    TestAppendLine stats, "TOTAL_NORMATIVE_STABILITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunNormativeStabilityTests = stats.Report
+    Exit Function
+Failed:
+    stats.Failed = stats.Failed + 1
+    TestAppendLine stats, "FAIL: normative.stability; " & Err.Description
+    Resume Restore
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает вычислительный набор в том же состоянии Excel, что штатный расчёт.
+' Не предназначен для UI-тестов событий; исходный режим возвращается и при ошибке.
+Public Function RunNormativeGuardedTest(ByVal entryPoint As String) As String
+    Dim guard As CExcelAppStateGuard, number As Long, source As String, description As String
+    Set guard = New CExcelAppStateGuard
+    On Error GoTo Failed
+    guard.Enter Application
+    Application.EnableCancelKey = 0 ' Только собственный тестовый Excel: Escape в другом приложении не прерывает suite.
+    RunNormativeGuardedTest = CStr(Application.Run("'" & ThisWorkbook.Name & "'!" & entryPoint))
+    guard.Restore True
+    Exit Function
+Failed:
+    number = Err.Number: source = Err.Source: description = Err.Description
+    On Error Resume Next
+    guard.Restore True
+    If Err.Number <> 0 Then description = description & "; восстановление Excel: " & Err.Description
+    On Error GoTo 0
+    RunNormativeGuardedTest = "RUNTIME ERROR: " & CStr(number) & "; source=" & source & "; description=" & description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет сохранность ветви первой плоскости при отказе таблицы во второй
+' и отсутствие остаточной ошибки при следующем расчёте тем же объектом.
+Public Function RunNormativePartialBranchFailureTest() As String
+    Dim stats As TBatchTestStats, section As CSectionModel, materials As CMaterialModelProvider
+    Dim concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
+    Dim calc As CStabilityCalculator, table As Variant, x As Variant, y As Variant, damaged As Variant
+    On Error GoTo Failed
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, 0#, 120000#, 1, "", "", "Rectangle", 600#, 200#, 0#
+    For Each x In Array(-200#, 200#)
+        For Each y In Array(-50#, 50#)
+            section.AddRebarElement CDbl(x), CDbl(y), 20#, GEOM_PI * 100#, "A400", 1
+        Next y
+    Next x
+    Set concrete = New CConcreteMaterialParameters
+    concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Set steel = New CSteelMaterialParameters
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Set materials = New CMaterialModelProvider: materials.TestInitializeFromParameters concrete, steel
+    table = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    Set calc = New CStabilityCalculator
+    calc.Calculate section, materials, mvsULS, "SP35", -10000#, 100000000#, 0#, _
+        0#, 0#, 0#, 6000#, 1#, 1#, "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", _
+        1#, 1#, 0.7, 0.15, 1.5, 1#, 0.7, table, sp35TableInputError:="TEST_SECOND_PLANE_TABLE"
+    TestAssertTrue stats, "normative.partialBranch.invalidInput", Not calc.InputValid
+    TestAssertTrue stats, "normative.partialBranch.firstPlanePreserved", calc.Branch = "SP35-eta"
+    TestAssertTrue stats, "normative.partialBranch.reason", InStr(calc.StopReason, "TEST_SECOND_PLANE_TABLE") > 0
+    TestAssertTrue stats, "normative.partialBranch.noPassedCheck", Not calc.CheckPassed
+    calc.Calculate section, materials, mvsULS, "SP35", -10000#, 100000000#, 0#, _
+        0#, 0#, 0#, 6000#, 1#, 1#, "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", _
+        1#, 1#, 0.7, 0.15, 1.5, 1#, 0.7, table
+    TestAssertTrue stats, "normative.partialBranch.recovered", calc.InputValid
+    TestAssertTrue stats, "normative.partialBranch.mixed", calc.Branch = "SP35-mixed"
+    TestAssertTrue stats, "normative.partialBranch.noStaleReason", Len(calc.StopReason) = 0
+    TestAssertTrue stats, "normative.partialBranch.etaForce", calc.Ncr1 > 0#
+    TestAssertTrue stats, "normative.partialBranch.tableForce", calc.Nultimate2 > 0#
+    damaged = table: damaged(2, 2) = "bad"
+    calc.Calculate section, materials, mvsULS, "SP35", -10000#, 0#, 0#, _
+        0#, 0#, 0#, 6000#, 1#, 1#, "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", _
+        1#, 1#, 0.7, 0.15, 1.5, 1#, 0.7, damaged
+    TestAssertTrue stats, "normative.partialBranch.firstPlaneError", Not calc.InputValid
+    TestAssertTrue stats, "normative.partialBranch.noPreviousBranch", Len(calc.Branch) = 0
+    GoTo Finished
+Failed:
+    stats.Failed = stats.Failed + 1
+    TestAppendLine stats, "FAIL: normative.partialBranch; " & CStr(Err.Number) & "; " & Err.Description
+Finished:
+    TestAppendLine stats, "TOTAL_NORMATIVE_PARTIAL_BRANCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunNormativePartialBranchFailureTest = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет обе нормативные цепочки на широком прямоугольнике. Разные l0,
 ' знаки и эксцентриситеты выявляют обмен плоскостей даже при одинаковом статусе.
 Private Sub TestPrincipalStabilityAxisMapping(ByRef stats As TBatchTestStats)

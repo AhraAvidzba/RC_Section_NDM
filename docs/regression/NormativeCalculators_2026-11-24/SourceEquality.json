@@ -1,0 +1,24 @@
+{
+  "Passed": true,
+  "NativeComponents": 209,
+  "AddedComponents": [
+    "CCrackWidthSP35Calculator",
+    "CCrackWidthSP63Calculator",
+    "CStabilitySP35Calculator",
+    "CStabilitySP63Calculator",
+    "modCrackWidthSupport",
+    "modStabilityPlane"
+  ],
+  "ChangedComponents": [
+    "CCrackWidthCalculator",
+    "CStabilityCalculator",
+    "modTestBatchCalculation"
+  ],
+  "UnrelatedComponentsUnchanged": true,
+  "BuildImports": "Build-Workbook.ps1 imports src/Crack and src/Stability recursively.",
+  "EditorLiteral": {
+    "Source": "1.797693134862315E+308",
+    "SavedByVBE": "1.79769313486231E+308",
+    "SameInOriginalNativeCode": true
+  }
+}
