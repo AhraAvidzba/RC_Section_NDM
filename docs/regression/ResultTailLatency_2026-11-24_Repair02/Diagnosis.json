@@ -1,0 +1,23 @@
+{
+  "Status": "DIAGNOSED",
+  "OriginalSourceSHA256": "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+  "CoreExecutions": 202,
+  "FailedAssertions": {
+    "CurrentFeatures_Off.txt": [
+      "FAIL loads.summary.lineBreak"
+    ],
+    "CurrentFeatures_On.txt": [
+      "FAIL loads.summary.lineBreak"
+    ]
+  },
+  "SupplementExecutions": 8,
+  "SupplementStatus": "PASS",
+  "FocusedStatus": "NOT_EXECUTED_PREPARATION_FAILED",
+  "FocusedReason": "Calculation capture target mismatch.",
+  "RepairScope": [
+    "Exact approved Results header assertion",
+    "Capture after the guarded batch.Execute statement in isolated Focused probe"
+  ],
+  "WorkingCalculationCodeChanged": false,
+  "PhysicalTolerancesChanged": false
+}

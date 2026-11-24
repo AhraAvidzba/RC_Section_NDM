@@ -1,0 +1,11 @@
+{
+  "Status": "CONFIRMED_STALE_TEST_EXPECTATION",
+  "SourceSHA256": "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+  "ActualResultsAL8": "Нагрузки с учётом продольного\nизгиба (если применимо)",
+  "Builder": "tools/build_workbook/CalculationDisplay.ps1:144",
+  "BuilderAcceptance": "tools/build_workbook/Test-CalculationDisplay.ps1:41",
+  "ExistingTest": "tests/modTestCalculationSnapshot.bas:2034",
+  "ExistingExpectation": "newline immediately before (если применимо)",
+  "RequiredExpectation": "Нагрузки с учётом продольного\nизгиба (если применимо)",
+  "Action": "After current complete run, update the test to exact approved string; do not change workbook or builder"
+}

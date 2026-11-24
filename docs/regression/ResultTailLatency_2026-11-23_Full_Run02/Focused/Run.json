@@ -1,0 +1,27 @@
+﻿{
+    "Schema":  "NDM.FocusedAcceptance/1",
+    "Status":  "INCOMPLETE_OR_FAILED",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-23_Full_Run02\\Source\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+    "SourceCommit":  "f53b32e3410f5c2b7f7d9f4d06971cb96902f931",
+    "StartedUTC":  "2026-11-24T00:16:33.3206712+00:00",
+    "DeadlineUTC":  "2026-11-24T01:16:33.3206712+00:00",
+    "MaxSeconds":  3600,
+    "Records":  [
+
+                ],
+    "ProtectedInputs":  [
+                            {
+                                "SHA256":  "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+                                "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-23_Full_Run02\\Source\\RC_Section_NDM.xlsm"
+                            },
+                            {
+                                "SHA256":  "353F1765C2509D827C7130BB4DDFAEF8C3620B69FCBE62568A8A7EC13AA8F8DA",
+                                "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\VBA_All_Code.txt"
+                            }
+                        ],
+    "Error":  "Calculation capture target mismatch.",
+    "FinishedUTC":  "2026-11-24T00:16:59.9351521+00:00",
+    "ElapsedSeconds":  26.6144809,
+    "ProtectedInputsUnchanged":  true
+}

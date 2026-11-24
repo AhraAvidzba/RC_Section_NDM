@@ -1,0 +1,16 @@
+﻿{
+    "Created":  "2026-11-24T03:28:47.2717722+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Repair02\\Ready.xlsm",
+    "SourceSHA256":  "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+    "ProbeWorkbookSHA256":  "1A0CC6E0C279F741313AEB88033411DA48163EA7B32078C751DD9F069056C7CB",
+    "HelperSHA256":  "9002C26084E80B594C072EE56AC0CD30A753EBA9690888FAC9E52DA6A0860AD0",
+    "ExtraHelperSHA256":  "B5193222EAF4BB68CD1C9BD0B6C507A826A501E1AC97DAA34D4E6BED3FFD74E5",
+    "SavedFixtureSHA256":  "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "Compiled":  true,
+    "ModifiedComponents":  [
+                               "modWorkbookCalculation",
+                               "modTestBatchCalculation"
+                           ],
+    "CalculationExecuted":  false,
+    "ProductionChanged":  false
+}

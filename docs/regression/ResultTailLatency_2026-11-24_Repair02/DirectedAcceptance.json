@@ -1,0 +1,22 @@
+﻿{
+    "Status":  "PASS",
+    "SourceSHA256":  "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+    "Results":  [
+                    {
+                        "Mode":  "No",
+                        "Passed":  1056,
+                        "Failed":  0,
+                        "Report":  "docs/regression/ResultTailLatency_2026-11-24_Repair02/Snapshot_No.txt",
+                        "ReportSHA256":  "79CE6FEE031B1FAEA71E16F8AB7EEFEF098472C6609B5966C25C38D5658BB5AD"
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "Passed":  1056,
+                        "Failed":  0,
+                        "Report":  "docs/regression/ResultTailLatency_2026-11-24_Repair02/Snapshot_Yes.txt",
+                        "ReportSHA256":  "49F641B8405EA0C66BE0699148C02039BDBF2551C056822407C9AB931DC263B3"
+                    }
+                ],
+    "FocusedPrepared":  true,
+    "FocusedPreparationSHA256":  "25ACCF97FBC854C54EDCC9D74EA8D03902813BD0D23DC05CDE255A9FA4F8F2C3"
+}

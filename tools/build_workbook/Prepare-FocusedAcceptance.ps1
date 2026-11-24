@@ -151,8 +151,10 @@ End Type
     }
     $module=$book.VBProject.VBComponents.Item('modWorkbookCalculation').CodeModule
     $body=$module.Lines(1,$module.CountOfLines)
-    $target='    batch.Execute'
-    if ([regex]::Matches($body,[regex]::Escape($target)).Count -ne 1) { throw 'Calculation capture target mismatch.' }
+    # Перехват идёт после условного запуска пакета и сохраняет запрет решателя для нулевой очереди.
+    $capture=[regex]::Matches($body,"(?im)^    If batch\.Count > 0 Then batch\.Execute(?:[ \t]*'[^\r\n]*)?\r?$")
+    if ($capture.Count -ne 1) { throw 'Calculation capture target mismatch.' }
+    $target=$capture[0].Value.TrimEnd("`r")
     $body=$body.Replace($target,$target+"`r`n    modTestBatchCalculation.TestCaptureFocusedCalculation section, batch")
     $module.DeleteLines(1,$module.CountOfLines); $module.AddFromString($body)
     $modified=@()

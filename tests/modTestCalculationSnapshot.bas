@@ -2031,7 +2031,7 @@ Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
     Dim data As Variant: data = snapshot.Table("Summary")
     TestSnapshotCheck "loads.summary.width", UBound(data, 2) = 40
     TestSnapshotCheck "loads.summary.title", CStr(data(6, 35)) = "Нагрузки в точке приложения"
-    TestSnapshotCheck "loads.summary.lineBreak", InStr(CStr(data(8, 38)), vbLf & "(если применимо)") > 0
+    TestSnapshotCheck "loads.summary.lineBreak", CStr(data(8, 38)) = "Нагрузки с учётом продольного" & vbLf & "изгиба (если применимо)"
     TestSnapshotCheck "loads.summary.originalMxComment", CStr(data(11, 36)) = "Исходный изгибающий момент Mx"
     TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 37)) = "Исходный изгибающий момент My"
     TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 38)), ChrW$(&H3B7)) = 0

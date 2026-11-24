@@ -1,0 +1,64 @@
+﻿{
+    "Status":  "PASS",
+    "PrimaryStatus":  "REVIEW_REQUIRED",
+    "SourceSHA256":  "D12A18B50DF7A4A9A9A04EA635848801663D093D0FE35057EDB08C307D8B1605",
+    "Macros":  [
+                   "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                   "modTestTorsionPost.RunTorsionOnlyTests",
+                   "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                   "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow"
+               ],
+    "Results":  [
+                    {
+                        "Mode":  "No",
+                        "Passed":  true,
+                        "SuitesStarted":  [
+                                              "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                                              "modTestTorsionPost.RunTorsionOnlyTests",
+                                              "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                                              "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow"
+                                          ],
+                        "SuitesFinished":  [
+                                               "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                                               "modTestTorsionPost.RunTorsionOnlyTests",
+                                               "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                                               "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow"
+                                           ],
+                        "Report":  "docs\\regression\\ResultTailLatency_2026-11-23_Full_Run02\\Supplement\\No.txt",
+                        "ReportSHA256":  "83B93411A372F315C5B1982C2A7616F9715806CC71946FE2A2826A43D6D48865",
+                        "ExitCode":  0,
+                        "Errors":  [
+
+                                   ],
+                        "SourceUnchanged":  true,
+                        "FreePhysicalGiB":  18.856819152832031,
+                        "FreeCommitGiB":  19.114334106445313
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "Passed":  true,
+                        "SuitesStarted":  [
+                                              "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                                              "modTestTorsionPost.RunTorsionOnlyTests",
+                                              "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                                              "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow"
+                                          ],
+                        "SuitesFinished":  [
+                                               "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                                               "modTestTorsionPost.RunTorsionOnlyTests",
+                                               "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                                               "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow"
+                                           ],
+                        "Report":  "docs\\regression\\ResultTailLatency_2026-11-23_Full_Run02\\Supplement\\Yes.txt",
+                        "ReportSHA256":  "AA4A387729C5D4E360528A3B53424322B5F9E4328E60F15979EF11C40058EAF3",
+                        "ExitCode":  0,
+                        "Errors":  [
+
+                                   ],
+                        "SourceUnchanged":  true,
+                        "FreePhysicalGiB":  18.786930084228516,
+                        "FreeCommitGiB":  19.083251953125
+                    }
+                ],
+    "FinishedUTC":  "2026-11-24T00:19:49.6989462+00:00"
+}

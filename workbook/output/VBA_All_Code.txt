@@ -8473,8 +8473,8 @@ Private Type TDoubleValue
     value As Double ' Число Double для чтения его точного двоичного представления.
 End Type
 Private Type TDoubleWords
-    low As Long ' Младшие 32 бита числа Double.
-    high As Long ' Старшие 32 бита числа Double.
+    Low As Long ' Младшие 32 бита числа Double.
+    High As Long ' Старшие 32 бита числа Double.
 End Type
 Private mVertices() As TVertex ' Единственный массив полных записей в исходном порядке.
 Private mCount As Long ' Число добавленных вершин; первую вершину повторно в конце не добавляют.
@@ -8598,7 +8598,7 @@ End Sub
 Private Function Finite(ByVal value As Double) As Boolean
     Dim number As TDoubleValue, words As TDoubleWords
     number.value = value: LSet words = number ' LSet переносит те же 64 бита Double, не выполняя числового преобразования.
-    Finite = ((words.high And &H7FF00000) <> &H7FF00000) ' Все единицы в поле экспоненты IEEE754 означают NaN либо бесконечность.
+    Finite = ((words.High And &H7FF00000) <> &H7FF00000) ' Все единицы в поле экспоненты IEEE754 означают NaN либо бесконечность.
 End Function
 ' Сообщает об ошибке ввода вершины с адресом именно того параметра, который добавлялся.
 Private Sub SpecError(ByVal reason As String, Optional ByVal sourceReference As String = "")
@@ -11672,8 +11672,8 @@ End Function
 ' включая участки скруглений: их исключение смещало подпись в сторону.
 Friend Function RuleExtremeEnds(ByVal ruleID As String, ByVal nx As Double, ByVal ny As Double, _
         ByRef startX As Double, ByRef startY As Double, ByRef endX As Double, ByRef endY As Double) As Boolean
-    Dim first As Double, last As Double, low As Double, support As Double
-    If Not RuleBounds(ruleID, first, last, low, support, ny, -nx) Then Exit Function
+    Dim first As Double, last As Double, Low As Double, support As Double
+    If Not RuleBounds(ruleID, first, last, Low, support, ny, -nx) Then Exit Function
     startX = first * ny + support * nx: startY = -first * nx + support * ny
     endX = last * ny + support * nx: endY = -last * nx + support * ny
     RuleExtremeEnds = True
@@ -12299,16 +12299,16 @@ End Sub
 ' бетона выполняет CSectionPlotDataReader.
 Private Sub TargetLabelAnchor(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation)
     Dim nx As Double, ny As Double, tx As Double, ty As Double, ids As Variant, id As Variant
-    Dim path As CGeometryPath, low As Double, high As Double, first As Double, last As Double, support As Double
+    Dim path As CGeometryPath, Low As Double, High As Double, first As Double, last As Double, support As Double
     LabelDirections value.normalX, value.normalY, nx, ny, tx, ty
     ids = definition.TargetPaths(value.target)
     first = 1E+100: last = -1E+100: support = -1E+100
     For Each id In ids
         Set path = definition.path(CStr(id))
-        path.ProjectionBounds tx, ty, low, high
-        first = GeomMin(first, low): last = GeomMax(last, high)
-        path.ProjectionBounds nx, ny, low, high
-        support = GeomMax(support, high)
+        path.ProjectionBounds tx, ty, Low, High
+        first = GeomMin(first, Low): last = GeomMax(last, High)
+        path.ProjectionBounds nx, ny, Low, High
+        support = GeomMax(support, High)
     Next id
     SetLabelAnchor value, nx, ny, tx, ty, first, last, support
 End Sub
@@ -12408,13 +12408,13 @@ End Function
 ' Определяет проекционные границы именованного пути или группы для размещения размеров.
 Private Sub TargetBounds(ByVal definition As CSectionDefinition, ByVal target As String, _
         ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double)
-    Dim ids As Variant, id As Variant, path As CGeometryPath, low As Double, high As Double
+    Dim ids As Variant, id As Variant, path As CGeometryPath, Low As Double, High As Double
     ids = definition.TargetPaths(target)
     minX = 1E+100: maxX = -1E+100: minY = 1E+100: maxY = -1E+100
     For Each id In ids
         Set path = definition.path(CStr(id))
-        path.ProjectionBounds 1#, 0#, low, high: minX = GeomMin(minX, low): maxX = GeomMax(maxX, high)
-        path.ProjectionBounds 0#, 1#, low, high: minY = GeomMin(minY, low): maxY = GeomMax(maxY, high)
+        path.ProjectionBounds 1#, 0#, Low, High: minX = GeomMin(minX, Low): maxX = GeomMax(maxX, High)
+        path.ProjectionBounds 0#, 1#, Low, High: minY = GeomMin(minY, Low): maxY = GeomMax(maxY, High)
     Next id
 End Sub
 
@@ -19452,19 +19452,19 @@ End Function
 
 ' Подтверждает единственную аффинную ветвь во всём интервале деформаций.
 ' Использует фактические подготовленные коэффициенты; переходы и граничные узлы не сглаживает.
-Friend Function TryLinearStressRange(ByVal low As Double, ByVal high As Double, ByRef slope As Double, ByRef intercept As Double) As Boolean
+Friend Function TryLinearStressRange(ByVal Low As Double, ByVal High As Double, ByRef slope As Double, ByRef intercept As Double) As Boolean
     EnsureInitialized
-    If low > high Then Exit Function
-    If high < mStrains(1) Then
+    If Low > High Then Exit Function
+    If High < mStrains(1) Then
         slope = 0#: If mHasCompressionExtension Then slope = mSegmentTangent(1)
         intercept = mStresses(1) - slope * mStrains(1)
-    ElseIf low > mStrains(mPointCount) Then
+    ElseIf Low > mStrains(mPointCount) Then
         slope = 0#: If mHasTensionExtension Then slope = mSegmentTangent(mPointCount - 1)
         intercept = mStresses(mPointCount) - slope * mStrains(mPointCount)
     Else
-        If low <= mStrains(1) Or high >= mStrains(mPointCount) Then Exit Function
+        If Low <= mStrains(1) Or High >= mStrains(mPointCount) Then Exit Function
         Dim first As Long, last As Long
-        first = FindSegmentIndex(low): last = FindSegmentIndex(high)
+        first = FindSegmentIndex(Low): last = FindSegmentIndex(High)
         If first < 1 Or first <> last Then Exit Function
         slope = mSegmentTangent(first): intercept = mSegmentIntercept(first)
     End If
@@ -25116,9 +25116,9 @@ End Function
 
 ' Вычисляет консервативный интервал аффинных деформаций по рамке узла.
 Private Sub StrainBounds(ByRef node As TForceNode, ByVal eps As Double, ByVal kx As Double, ByVal ky As Double, _
-        ByRef low As Double, ByRef high As Double, ByRef guard As Double)
-    If kx >= 0# Then low = eps + kx * node.minY: high = eps + kx * node.maxY Else low = eps + kx * node.maxY: high = eps + kx * node.minY
-    If ky >= 0# Then low = low + ky * node.minX: high = high + ky * node.maxX Else low = low + ky * node.maxX: high = high + ky * node.minX
+        ByRef Low As Double, ByRef High As Double, ByRef guard As Double)
+    If kx >= 0# Then Low = eps + kx * node.minY: High = eps + kx * node.maxY Else Low = eps + kx * node.maxY: High = eps + kx * node.minY
+    If ky >= 0# Then Low = Low + ky * node.minX: High = High + ky * node.maxX Else Low = Low + ky * node.maxX: High = High + ky * node.minX
     guard = ROUNDING_GUARD * (Abs(eps) + Abs(kx) * (Abs(node.minY) + Abs(node.maxY)) + Abs(ky) * (Abs(node.minX) + Abs(node.maxX)))
 End Sub
 
@@ -25126,23 +25126,23 @@ End Sub
 ' у перелома сразу передаёт прямому обходу, чтобы не строить бесполезный индекс.
 Public Function TryForces(ByVal diagram As CMaterialDiagram, ByVal eps As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef n As Double, ByRef mx As Double, ByRef my As Double) As Boolean
-    Dim node As TForceNode, low As Double, high As Double, guard As Double, a As Double, b As Double
+    Dim node As TForceNode, Low As Double, High As Double, guard As Double, a As Double, b As Double
     node = mNodes(1)
     If kx = 0# And ky = 0# Then
         b = diagram.StressAtStrain(eps): n = b * node.a: mx = b * node.AY: my = b * node.AX
         TryForces = True: Exit Function
     End If
-    StrainBounds node, eps, kx, ky, low, high, guard
-    If high - low <= 8# * guard Then
-        If Not diagram.TryLinearStressRange(low - guard, high + guard, a, b) Then Exit Function
+    StrainBounds node, eps, kx, ky, Low, High, guard
+    If High - Low <= 8# * guard Then
+        If Not diagram.TryLinearStressRange(Low - guard, High + guard, a, b) Then Exit Function
     End If
     n = 0#: mx = 0#: my = 0#
     Dim top As Long, id As Long, i As Long, p As Long, x As Double, y As Double, force As Double
     top = 1: mStack(top) = 1
     Do While top > 0
         id = mStack(top): top = top - 1: node = mNodes(id)
-        StrainBounds node, eps, kx, ky, low, high, guard
-        If diagram.TryLinearStressRange(low - guard, high + guard, a, b) Then
+        StrainBounds node, eps, kx, ky, Low, High, guard
+        If diagram.TryLinearStressRange(Low - guard, High + guard, a, b) Then
             n = n + (a * eps + b) * node.a + a * (kx * node.AY + ky * node.AX)
             mx = mx + (a * eps + b) * node.AY + a * (kx * node.AYY + ky * node.AXY)
             my = my + (a * eps + b) * node.AX + a * (kx * node.AXY + ky * node.AXX)
@@ -45229,18 +45229,18 @@ End Sub
 ' Находит ближайшую точечную группу по длине оси двоичным поиском.
 Private Function NearestGroup(ByVal station As Double, ByRef values() As Double, ByVal count As Long, ByVal perimeter As Double) As Long
     If count = 0 Then Exit Function
-    Dim low As Long, high As Long, middle As Long, previous As Long, following As Long
-    low = 1: high = count + 1
-    Do While low < high
-        middle = (low + high) \ 2
+    Dim Low As Long, High As Long, middle As Long, previous As Long, following As Long
+    Low = 1: High = count + 1
+    Do While Low < High
+        middle = (Low + High) \ 2
         If middle <= count Then
-            If values(middle) < station Then low = middle + 1 Else high = middle
+            If values(middle) < station Then Low = middle + 1 Else High = middle
         Else
-            high = middle
+            High = middle
         End If
     Loop
-    following = low: If following > count Then following = 1
-    previous = low - 1: If previous < 1 Then previous = count
+    following = Low: If following > count Then following = 1
+    previous = Low - 1: If previous < 1 Then previous = count
     Dim leftGap As Double, rightGap As Double
     leftGap = Abs(station - values(previous)): leftGap = GeomMin(leftGap, perimeter - leftGap)
     rightGap = Abs(station - values(following)): rightGap = GeomMin(rightGap, perimeter - rightGap)
@@ -46681,7 +46681,7 @@ Private Function TryReadFirstStraightEdgeRotation(ByVal entity As Object, _
     DeleteAcadObjectQuietly tempEntity
     mEdgeProbeCount = mEdgeProbeCount + 1
 
-    If Not IsArray(pieces) Then GoTo CleanUp
+    If Not IsArray(pieces) Then GoTo Cleanup
 
     Dim i As Long
     For i = LBound(pieces) To UBound(pieces)
@@ -46693,7 +46693,7 @@ Private Function TryReadFirstStraightEdgeRotation(ByVal entity As Object, _
         End If
     Next i
 
-CleanUp:
+Cleanup:
     DeleteExplodedPiecesQuietly pieces
     Exit Function
 
@@ -48263,8 +48263,8 @@ Option Explicit
 Private Declare PtrSafe Function CreateFileW Lib "kernel32" (ByVal name As LongPtr, ByVal access As Long, ByVal sharing As Long, ByVal security As LongPtr, ByVal creation As Long, ByVal attributes As Long, ByVal template As LongPtr) As LongPtr
 Private Declare PtrSafe Function ReadFile Lib "kernel32" (ByVal file As LongPtr, ByVal target As LongPtr, ByVal count As Long, ByRef readCount As Long, ByVal overlapped As LongPtr) As Long
 Private Declare PtrSafe Function WriteFile Lib "kernel32" (ByVal file As LongPtr, ByVal source As LongPtr, ByVal count As Long, ByRef writtenCount As Long, ByVal overlapped As LongPtr) As Long
-Private Declare PtrSafe Function GetFileSize Lib "kernel32" (ByVal file As LongPtr, ByVal high As LongPtr) As Long
-Private Declare PtrSafe Function SetFilePointer Lib "kernel32" (ByVal file As LongPtr, ByVal distance As Long, ByVal high As LongPtr, ByVal origin As Long) As Long
+Private Declare PtrSafe Function GetFileSize Lib "kernel32" (ByVal file As LongPtr, ByVal High As LongPtr) As Long
+Private Declare PtrSafe Function SetFilePointer Lib "kernel32" (ByVal file As LongPtr, ByVal distance As Long, ByVal High As LongPtr, ByVal origin As Long) As Long
 Private Declare PtrSafe Function CloseHandle Lib "kernel32" (ByVal handle As LongPtr) As Long
 Private Declare PtrSafe Sub CopyStreamBytes Lib "kernel32" Alias "RtlMoveMemory" (ByVal target As LongPtr, ByVal source As LongPtr, ByVal count As LongPtr)
 Private mHandle As LongPtr ' Принадлежит только этому объекту; INVALID_HANDLE_VALUE не хранится.
@@ -48301,8 +48301,8 @@ Private Sub OpenFile(ByVal path As String, ByVal access As Long, ByVal sharing A
     mPath = path
     mHandle = CreateFileW(StrPtr(path), access, sharing, 0, creation, 128, 0)
     If mHandle = -1 Then mHandle = 0: Err.Raise 5, "CBinarySnapshotFile", "Не удалось открыть файл: " & path & ". Код Windows: " & CStr(Err.LastDllError)
-    Dim high As Long: mSize = GetFileSize(mHandle, VarPtr(high))
-    If high <> 0 Or mSize < 0 Then CloseFile: Err.Raise 5, "CBinarySnapshotFile", "Снимок превышает поддерживаемый размер 2 ГиБ: " & path
+    Dim High As Long: mSize = GetFileSize(mHandle, VarPtr(High))
+    If High <> 0 Or mSize < 0 Then CloseFile: Err.Raise 5, "CBinarySnapshotFile", "Снимок превышает поддерживаемый размер 2 ГиБ: " & path
     mPosition = 0: mReadLimit = mSize: mBytesRead = 0#: mReadCalls = 0
 End Sub
 
@@ -51475,8 +51475,8 @@ Private Type TGeometryHashNumber
     value As Double
 End Type
 Private Type TGeometryHashBits
-    low As Long
-    high As Long
+    Low As Long
+    High As Long
 End Type
 Private mGeometrySeedA As Double, mGeometrySeedB As Double ' Подпись общей шапки одной неизменяемой пары матриц.
 Private mGeometrySeedReady As Boolean ' Разрешает PreparedGeometryHash только после явной подготовки текущих заголовков.
@@ -51644,9 +51644,9 @@ Private Sub GeometryMixValue(ByRef a As Double, ByRef b As Double, ByVal value A
         Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbCurrency, 14
             GeometryMixWord a, b, 1#
             number.value = CDbl(value): LSet bits = number
-            word = bits.low: If word < 0# Then word = word + 4294967296#
+            word = bits.Low: If word < 0# Then word = word + 4294967296#
             GeometryMixWord a, b, word
-            word = bits.high: If word < 0# Then word = word + 4294967296#
+            word = bits.High: If word < 0# Then word = word + 4294967296#
             GeometryMixWord a, b, word
         Case vbString
             text = CStr(value): length = Len(text)
@@ -64209,8 +64209,8 @@ Private Sub DrawFormedGeometryExport(ByVal Workbook As Object, ByVal section As 
     Exit Sub
 Failed:
     number = Err.number: description = Err.description: source = Err.source
-    Resume CleanUp
-CleanUp:
+    Resume Cleanup
+Cleanup:
     On Error Resume Next
     DeleteAcadTemporarySources document, sources
     On Error GoTo 0
@@ -65617,7 +65617,7 @@ Public Function TestExportConcreteElementGeometry(ByVal ms As Object, ByVal geom
     Dim source As Object, number As Long, description As String
     On Error GoTo Failed
     TestExportConcreteElementGeometry = AddAcadConcreteGeometry(ms, geometry, "TEST_CONCRETE", 8, sources)
-CleanUp:
+Cleanup:
     On Error Resume Next
     For Each source In sources: source.Delete: Next source
     On Error GoTo 0
@@ -65625,7 +65625,7 @@ CleanUp:
     Exit Function
 Failed:
     number = Err.number: description = Err.description
-    Resume CleanUp
+    Resume Cleanup
 End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
@@ -75172,8 +75172,8 @@ Private Type TDoubleValue
     value As Double
 End Type
 Private Type TDoubleWords
-    low As Long
-    high As Long
+    Low As Long
+    High As Long
 End Type
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -75287,7 +75287,7 @@ End Sub
 Private Function TestBits(ByVal value As Double) As String
     Dim number As TDoubleValue, words As TDoubleWords
     number.value = value: LSet words = number ' Перенос байтов в два Long сохраняет IEEE 754, в отличие от строкового округления числа.
-    TestBits = right$("00000000" & Hex$(words.high), 8) & right$("00000000" & Hex$(words.low), 8)
+    TestBits = right$("00000000" & Hex$(words.High), 8) & right$("00000000" & Hex$(words.Low), 8)
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -78295,10 +78295,10 @@ Public Function RunRealAutoCADContourFormatTests(ByVal ownedApplication As Objec
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует."
     doc.SaveAs path
     mReport = mReport & "NATIVE_DWG: " & path & vbCrLf
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck "native.format.runtime; " & CStr(Err.number) & "; " & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
     On Error GoTo 0
@@ -78489,10 +78489,10 @@ NextFarLoad:
         TestCheckCloseFar prefix & ".savedOriginalY", restored.concreteY(1), model.concreteY(1), 0.000001
     Next position
     doc.SaveAs ThisWorkbook.path & "\FarOrigin_1000m.dwg"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck "far.runtime; " & CStr(Err.number) & "; " & Err.description, False
-CleanUp:
+Cleanup:
     mNativeProgress = False
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
@@ -78599,10 +78599,10 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует; перезапись запрещена."
     doc.SaveAs path
     mReport = mReport & "NATIVE_DWG: " & path & vbCrLf
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck "native.runtime; " & CStr(Err.number) & "; " & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not doc Is Nothing Then doc.Close False
     If Not previous Is Nothing Then previous.Activate
@@ -78618,7 +78618,7 @@ End Function
 Private Sub TestCheckWorldCoordinateGuard()
     Dim document As CTestFakeAcadDocument, settings As CSystemSettingsReader
     Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, value As Variant
-    Dim number As Long, description As String, mode As Long, ExpectedError As Long
+    Dim number As Long, description As String, mode As Long, expectedError As Long
     Set document = New CTestFakeAcadDocument: Set settings = New CSystemSettingsReader
     Set importer = New CAutoCADSectionModelImporter
     For Each value In Array(0, Empty, Null, "1", 2, True, 0.5, CVErr(2015))
@@ -78627,9 +78627,9 @@ Private Sub TestCheckWorldCoordinateGuard()
         Set model = importer.ImportFromDocument(document, settings)
         number = Err.number: description = Err.description: Err.clear
         On Error GoTo 0
-        ExpectedError = vbObjectError + 4408
-        If mode = 1 Then ExpectedError = vbObjectError + 4407
-        TestCheck "worldUCS.reject." & CStr(mode), number = ExpectedError And model Is Nothing
+        expectedError = vbObjectError + 4408
+        If mode = 1 Then expectedError = vbObjectError + 4407
+        TestCheck "worldUCS.reject." & CStr(mode), number = expectedError And model Is Nothing
         TestCheck "worldUCS.noGeometryRead." & CStr(mode), document.TestGeometryReads = 0 And document.TestVariableReads = 1
         TestCheck "worldUCS.instruction." & CStr(mode), InStr(description, "_UCS") > 0 And InStr(description, "_World") > 0
     Next value
@@ -78657,7 +78657,7 @@ Private Sub TestCheckNativeWorldCoordinateGuard(ByVal doc As Object)
     Dim curves(0 To 0) As Object, regions As Variant, keys As Variant, values As Variant
     Dim mode As Long, i As Long, countBefore As Long, number As Long, description As String
     Dim failure As Long, failureDescription As String, query As CSectionGeometryQuery, region As CConcreteRegion
-    Dim writer As CNDMResultsWriter, low As Double, high As Double, intervals As Variant
+    Dim writer As CNDMResultsWriter, Low As Double, High As Double, intervals As Variant
     On Error GoTo Failed
     TestNativeProgress "world coordinate guard"
     xAxis(0) = 1#: yAxis(1) = 1#
@@ -78719,8 +78719,8 @@ Private Sub TestCheckNativeWorldCoordinateGuard(ByVal doc As Object)
     TestCheck "native.openingOnly.twoExactHoles", region.loopCount = 3 And region.segmentCount = 12
     TestCheckArea "native.openingOnly.analyticArea", region.area, 8000# - 125# * GEOM_PI
     TestCheck "native.openingOnly.holesExcluded", Not query.ContainsPoint(region, 5000#, 5000#) And Not query.ContainsPoint(region, 5025#, 5000#)
-    query.ProjectionBounds region, 1#, 0#, low, high
-    TestCheck "native.openingOnly.meshOuterBounds", Abs(low - 4950#) < 0.000001 And Abs(high - 5050#) < 0.000001
+    query.ProjectionBounds region, 1#, 0#, Low, High
+    TestCheck "native.openingOnly.meshOuterBounds", Abs(Low - 4950#) < 0.000001 And Abs(High - 5050#) < 0.000001
     intervals = query.LineIntervals(region, 5000#, 5000#, 1#, 0#)
     TestCheck "native.openingOnly.exactHoleIntersections", UBound(intervals, 1) = 3 And _
         Abs(intervals(1, 2) + 10#) < 0.000001 And Abs(intervals(2, 1) - 10#) < 0.000001 And _
@@ -78734,10 +78734,10 @@ Private Sub TestCheckNativeWorldCoordinateGuard(ByVal doc As Object)
     query.Initialize restored
     TestCheckArea "native.openingOnly.restoredArea", query.ConcreteDomain.area, 8000# - 125# * GEOM_PI
     TestCheck "native.openingOnly.restoredSource", query.ConcreteDomain.source = "ElementBoundaryLoops+KnownOpening"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     failure = Err.number: failureDescription = Err.description
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not world Is Nothing Then doc.ActiveUCS = world
     If Not fixture Is Nothing Then fixture.Close False
@@ -79401,11 +79401,11 @@ Private Sub TestCheckNativeConcreteComponentExport(ByVal document As Object)
         TestCheck "native.components.sameBoundary." & CStr(i), matched
     Next i
     TestCheckArea "native.components.totalArea", actualArea, 7600# * GEOM_PI
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     number = Err.number: description = Err.description
-    Resume CleanUp
-CleanUp:
+    Resume Cleanup
+Cleanup:
     On Error Resume Next
     For Each entity In owned: entity.Delete: Next entity
     On Error GoTo 0
@@ -79485,11 +79485,11 @@ Public Function RunNativeGeometryOnlyExportTests(ByVal document As Object) As St
             TestCheck prefix & ".ownedCleanup", document.modelSpace.count = before
         Next contourMode
     Next mode
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     number = Err.number: description = Err.description
-    Resume CleanUp
-CleanUp:
+    Resume Cleanup
+Cleanup:
     On Error Resume Next
     For Each entity In owned: entity.Delete: Next entity
     system.formula = savedSettings
@@ -83938,7 +83938,7 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
     TestAssertTrue stats, "batch.writer.availableRows.summaryRows43", _
         writer.RequiredSummaryOutputRowsForWorkbook(ThisWorkbook, 1) = 43
 
-CleanUp:
+Cleanup:
     On Error Resume Next
     ThisWorkbook.names.item("rngLoadCombinations").RefersTo = originalRefersTo
     ' Возвращаем исходный лист до удаления временного, чтобы Excel не выбирал
@@ -83958,7 +83958,7 @@ CleanUp:
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: batch.writer.availableRows; " & Err.description
-    Resume CleanUp
+    Resume Cleanup
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -91081,7 +91081,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCalculationSnapshot
 TYPE: 1
-LINES: 2453
+LINES: 2454
 ====================================================================================================
 Option Explicit
 
@@ -91092,8 +91092,8 @@ Private Type TTestSnapshotDouble
     value As Double ' Число, сравниваемое без округления.
 End Type
 Private Type TTestSnapshotBits
-    low As Long ' Первые четыре байта Double.
-    high As Long ' Последние четыре байта Double.
+    Low As Long ' Первые четыре байта Double.
+    High As Long ' Последние четыре байта Double.
 End Type
 Private mTestReport As String, mTestPassed As Long, mTestFailed As Long ' Итог и компактные адреса расхождений.
 
@@ -91688,22 +91688,22 @@ Private Sub TestSnapshotMissingGeometryFile(ByVal store As CCalculationSnapshotS
     Dim before As Variant: before = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry")
     Dim number As Long, Failed As Long, reason As String
     fs.MoveFile path, hidden
-    On Error GoTo CleanUp
+    On Error GoTo Cleanup
     Dim model As CSectionModel
     On Error Resume Next
     Set model = ReadFormedSectionFromResults(ThisWorkbook, False)
     number = Err.number: Err.clear
-    On Error GoTo CleanUp
+    On Error GoTo Cleanup
     TestSnapshotCheck "preview.missingFile.noRecalcFallback", number <> 0 And model Is Nothing
     On Error Resume Next
     UpdateSectionResultsForWorkbook ThisWorkbook
     number = Err.number: Err.clear
-    On Error GoTo CleanUp
+    On Error GoTo Cleanup
     TestSnapshotCheck "preview.missingFile.noRestoreFallback", number <> 0
     TestSnapshotCheck "preview.missingFile.keepsResults", TestSnapshotOptionalMatrixEqual(before, ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry"))
     TestSnapshotCheck "preview.missingFile.keepsLink", store.HasFileReference(ThisWorkbook)
-    GoTo CleanUp
-CleanUp:
+    GoTo Cleanup
+Cleanup:
     Failed = Err.number: reason = Err.description
     fs.MoveFile hidden, path
     If Failed <> 0 Then Err.Raise Failed, "TestSnapshotMissingGeometryFile", reason
@@ -92604,7 +92604,7 @@ End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' File без привязки не имеет права подменять свой источник сохранившимися таблицами Excel.
-Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional ByVal ExpectedError As Long = 0) As Boolean
+Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional ByVal expectedError As Long = 0) As Boolean
     On Error GoTo Rejected
     Dim model As CSectionModel, text As String
     Select Case consumer
@@ -92614,8 +92614,8 @@ Private Function TestSnapshotFileReadRejected(ByVal consumer As Long, Optional B
     End Select
     Exit Function
 Rejected:
-    If ExpectedError = 0 Then ExpectedError = vbObjectError + 4956
-    TestSnapshotFileReadRejected = Err.number = ExpectedError
+    If expectedError = 0 Then expectedError = vbObjectError + 4956
+    TestSnapshotFileReadRejected = Err.number = expectedError
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -92744,7 +92744,7 @@ Private Sub TestSnapshotColumnCodec(ByVal original As CCalculationSnapshot, ByVa
     Dim key As Variant
     For Each key In original.keys(): sample.AddTable CStr(key), original.table(CStr(key)): Next key
     Dim data(1 To 1024, 1 To 8) As Variant, row As Long, negative As TTestSnapshotDouble, bits As TTestSnapshotBits
-    bits.high = &H80000000: LSet negative = bits
+    bits.High = &H80000000: LSet negative = bits
     For row = 1 To 1024
         data(row, 1) = "Сечение_" & ChrW$(&H3B1)
         data(row, 2) = CDbl(row) / 7#
@@ -93029,7 +93029,7 @@ End Function
 Private Function TestSnapshotDouble(ByVal value As Double) As String
     Dim number As TTestSnapshotDouble, bits As TTestSnapshotBits
     number.value = value: LSet bits = number
-    TestSnapshotDouble = right$("00000000" & Hex$(bits.high), 8) & right$("00000000" & Hex$(bits.low), 8)
+    TestSnapshotDouble = right$("00000000" & Hex$(bits.High), 8) & right$("00000000" & Hex$(bits.Low), 8)
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -93115,7 +93115,7 @@ Private Sub TestSnapshotSummaryLoads(ByVal snapshot As CCalculationSnapshot)
     Dim data As Variant: data = snapshot.table("Summary")
     TestSnapshotCheck "loads.summary.width", UBound(data, 2) = 40
     TestSnapshotCheck "loads.summary.title", CStr(data(6, 35)) = "Нагрузки в точке приложения"
-    TestSnapshotCheck "loads.summary.lineBreak", InStr(CStr(data(8, 38)), vbLf & "(если применимо)") > 0
+    TestSnapshotCheck "loads.summary.lineBreak", CStr(data(8, 38)) = "Нагрузки с учётом продольного" & vbLf & "изгиба (если применимо)"
     TestSnapshotCheck "loads.summary.originalMxComment", CStr(data(11, 36)) = "Исходный изгибающий момент Mx"
     TestSnapshotCheck "loads.summary.originalMyComment", CStr(data(11, 37)) = "Исходный изгибающий момент My"
     TestSnapshotCheck "loads.summary.forceNoEta", InStr(CStr(data(11, 38)), ChrW$(&H3B7)) = 0
@@ -93535,6 +93535,7 @@ Private Sub TestSnapshotWriteLegacy(ByVal path As String, ByVal snapshot As CCal
     file.OpenUpdate path: file.position = file.size
     file.WriteASCII hash: file.WriteASCII signature: file.CloseFile
 End Sub
+
 
 
 ====================================================================================================
@@ -99007,10 +99008,10 @@ Private Sub TestAudit03SettingsTableGuards(ByRef stats As TConfigTestStats)
     Next index
     TestCheck stats, "audit03.settingsTable.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestLogLine stats, "SETTINGS_TABLE_CASES: blocks=6; positions=2; variants=" & CStr(cases) & "; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 FailedRun:
     TestCheck stats, "audit03.settingsTable.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -99108,10 +99109,10 @@ Private Sub TestCheckMultiAreaInputs(ByRef stats As TConfigTestStats)
     Next index
     TestCheck stats, "audit03.multiArea.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestLogLine stats, "MULTI_AREA_CASES: blocks=6; positions=2; entrypoints=2; invalidCases=24; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 FailedRun:
     TestCheck stats, "audit03.multiArea.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -99231,10 +99232,10 @@ Private Sub TestCheckGeneralRunControls(ByRef stats As TConfigTestStats)
     TestCheck stats, "audit03.generalRun.messages.noWorkbook", code <> 0 And InStr(1, reason, "Книга", vbTextCompare) > 0
     TestCheck stats, "audit03.generalRun.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestLogLine stats, "GENERAL_RUN_CASES: positions=2; invalidVariants=" & CStr(cases) & "; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 FailedRun:
     TestCheck stats, "audit03.generalRun.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not stream Is Nothing Then stream.Close
     If Not fixture Is Nothing Then fixture.Close False
@@ -100572,10 +100573,10 @@ Public Function RunLocaleNumberTests(Optional ByRef passedCount As Long = 0, Opt
     fixture.Close False: Set fixture = Nothing: Set area = Nothing
     TestCheck stats, "locale.snapshot.readAfterClose", settings.GetRequiredDouble("Locale.TestNumber") = 123.5
     TestCheck stats, "locale.snapshot.addressAfterClose", settings.InputLocation("Locale.TestNumber") = originalLocation
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck stats, "locale.runtime." & Err.number & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     Application.UseSystemSeparators = False: Application.decimalSeparator = oldDecimal
@@ -100652,10 +100653,10 @@ Public Function RunLocaleBoundaryTests(Optional ByRef passedCount As Long = 0, O
         Kill path: path = vbNullString
         Set fixture = Application.Workbooks.Add(-4167): fixture.Worksheets(1).name = "LocaleBoundary"
     Next separator
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck stats, "locale.boundary.runtime." & Err.number & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     If Not reopened Is Nothing Then reopened.Close False
@@ -100754,10 +100755,10 @@ Public Function RunLocaleSavedContractTests(Optional ByRef passedCount As Long =
         Next value
     Next kind
     TestCheck stats, "locale.savedContract.noSolver", SectionEquilibriumSolveCount() = solveCount
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck stats, "locale.savedContract.runtime." & Err.number & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not cell Is Nothing Then cell.value2 = original
     If Not fixture Is Nothing Then fixture.Close False
@@ -115406,8 +115407,8 @@ Private Type TDoubleValue
     value As Double
 End Type
 Private Type TDoubleWords
-    low As Long
-    high As Long
+    Low As Long
+    High As Long
 End Type
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -115526,7 +115527,7 @@ End Function
 Private Function TestBits(ByVal value As Double) As String
     Dim number As TDoubleValue, words As TDoubleWords
     number.value = value: LSet words = number
-    TestBits = right$("00000000" & Hex$(words.high), 8) & right$("00000000" & Hex$(words.low), 8)
+    TestBits = right$("00000000" & Hex$(words.High), 8) & right$("00000000" & Hex$(words.Low), 8)
 End Function
 
 
@@ -118301,7 +118302,7 @@ End Sub
 ' Переполнение при построении технической ветви возвращается как явная
 ' ошибка построения, а не как урезанная диаграмма с ложным пределом.
 Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestStats)
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     Dim steel As CSteelMaterialParameters
     Set steel = New CSteelMaterialParameters
     steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 1E+308, 1E+308, 1E+308, 1E+308
@@ -118312,7 +118313,7 @@ Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestS
     Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
     TestAssertTrue stats, "audit02.technical.overflowRejected", False
     Exit Sub
-ExpectedError:
+expectedError:
     TestAssertTrue stats, "audit02.technical.overflowRejected", Err.number = vbObjectError + 3245
 End Sub
 
@@ -118396,11 +118397,11 @@ End Sub
 Private Function TestAudit03CaptureDiagramInitialize(ByVal diagram As CMaterialDiagram, _
         ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
         ByRef description As String) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     description = vbNullString
     diagram.InitializeFromArrays strains, stresses, pointCount
     Exit Function
-ExpectedError:
+expectedError:
     TestAudit03CaptureDiagramInitialize = Err.number
     description = Err.description
 End Function
@@ -118410,10 +118411,10 @@ End Function
 ' Успех или случайная ошибка индекса вместо EnsureInitialized не принимаются.
 Private Function TestAudit03CaptureDiagramStress(ByVal diagram As CMaterialDiagram) As Long
     Dim stress As Double
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     stress = diagram.GetStress(-0.00075)
     Exit Function
-ExpectedError:
+expectedError:
     TestAudit03CaptureDiagramStress = Err.number
 End Function
 
@@ -118542,12 +118543,12 @@ Private Sub TestAudit03MaterialConfigBehavior(ByRef stats As TMaterialTestStats)
             TestAudit03MaterialDiagramSignature(provider.SteelMaterialFromSpec(spec)) = _
             TestAudit03MaterialDiagramSignature(baseline.SteelMaterialFromSpec(spec))
     Next i
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     failureNumber = Err.number
     failureDescription = Err.description
     TestAssertTrue stats, "audit03.materialConfig.runtime." & CStr(failureNumber) & "." & failureDescription, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not IsEmpty(savedConcrete) Then concreteRange.formula = savedConcrete
     If Not IsEmpty(savedSteel) Then steelRange.formula = savedSteel
@@ -118602,12 +118603,12 @@ End Function
 ' Перехватывает только контролируемую попытку прочитать неверный материал.
 ' Последующий recovery использует новый provider, чтобы не скрывать ошибку.
 Private Function TestAudit03MaterialConfigError(ByRef description As String) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     Dim provider As CMaterialModelProvider
     description = vbNullString
     Set provider = TestAudit03MaterialConfigProvider()
     Exit Function
-ExpectedError:
+expectedError:
     TestAudit03MaterialConfigError = Err.number
     description = Err.description
 End Function
@@ -119009,7 +119010,7 @@ End Sub
 Private Function TestMaterialOrderCase(ByVal pair As Long, ByVal valueSet As String, ByVal boundary As Double, _
         ByVal alpha As Double, ByVal extension As Boolean, ByRef description As String, ByRef inputKey As String, _
         ByRef actualLimit As Double, ByRef expectedLimit As Double) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     description = vbNullString: inputKey = vbNullString: actualLimit = 0#: expectedLimit = 0#
     Dim eb2 As Double, ebt2 As Double, eb0 As Double, ebt0 As Double, esc2 As Double, es2 As Double
     Dim threeEsc2 As Double, threeEs2 As Double, factor As Double, resistance As Double
@@ -119069,7 +119070,7 @@ Private Function TestMaterialOrderCase(ByVal pair As Long, ByVal valueSet As Str
     If pair <= 6 Then Set diagram = provider.ConcreteMaterialFromSpec(spec) Else Set diagram = provider.SteelMaterialFromSpec(spec)
     If pair = 2 Or pair = 4 Or pair = 6 Or pair = 8 Or pair = 10 Then actualLimit = diagram.PhysicalTensionStrain Else actualLimit = diagram.PhysicalCompressionStrain
     Exit Function
-ExpectedError:
+expectedError:
     TestMaterialOrderCase = Err.number: description = Err.description
 End Function
 
@@ -119521,15 +119522,15 @@ Public Function RunPerformancePreparationTests() As String
     TestCheck "domain.identity", TestRegionFingerprint(first) = TestRegionFingerprint(second) And query.TestDomainBuildCount = 3
     Dim props As CSectionPropertiesCalculator, oracle As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator: Set oracle = New CSectionPropertiesCalculator
-    Dim nx As Double, ny As Double, low As Double, high As Double, oldLow As Double, oldHigh As Double
+    Dim nx As Double, ny As Double, Low As Double, High As Double, oldLow As Double, oldHigh As Double
     For i = 1 To 30
         props.EnsureTransformed section, 30000#, 200000#: oracle.CalculateTransformedByModuli section, 30000#, 200000#
         TestCheck "properties.exact", TestPropertiesFingerprint(props) = TestPropertiesFingerprint(oracle)
         nx = Cos(CDbl(i)): ny = Sin(CDbl(i))
         For j = 1 To 2
-            props.CalculateProjection section, nx, ny, False, low, high
+            props.CalculateProjection section, nx, ny, False, Low, High
             oracle.CalculateProjection section, nx, ny, False, oldLow, oldHigh
-            TestCheck "properties.projection", TestDoubleBits(low) = TestDoubleBits(oldLow) And TestDoubleBits(high) = TestDoubleBits(oldHigh)
+            TestCheck "properties.projection", TestDoubleBits(Low) = TestDoubleBits(oldLow) And TestDoubleBits(High) = TestDoubleBits(oldHigh)
             TestCheck "properties.concreteI", TestDoubleBits(props.ConcreteInertiaAboutAxis(section, nx, ny, 3#, -2#)) = _
                 TestDoubleBits(oracle.ConcreteInertiaAboutAxis(section, nx, ny, 3#, -2#))
             TestCheck "properties.rebarI", TestDoubleBits(props.RebarInertiaAboutAxis(section, nx, ny, 3#, -2#)) = _
@@ -120580,10 +120581,10 @@ Private Sub TestPlotContainerContracts(ByRef stats As TUiTestStats)
     actual = fixture.Worksheets.item("Results").range("A1:FP20").value2
     TestAudit03ComparePlainSnapshot stats, "plotContainer.results", saved, actual, 1
     TestAssertTrue stats, "plotContainer.noSolve", SectionEquilibriumSolveCount() = solves
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "plotContainer.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.CutCopyMode = False
     If Not fixture Is Nothing Then fixture.Close False
@@ -120876,10 +120877,10 @@ Public Function RunContourLineWeightTests() As String
         cell.offset(0, -1).value2 = "ContourLineWeight"
     Next position
     TestAssertTrue stats, "contourWeight.noSolve", SectionEquilibriumSolveCount() = solves
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "contourWeight.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -121049,10 +121050,10 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.contourArc.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "CONTOUR_ARC_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.contourArc.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.decimalSeparator = savedDecimal: Application.ThousandsSeparator = savedThousands: Application.UseSystemSeparators = savedSeparators
     If Not fixture Is Nothing Then fixture.Close False
@@ -121308,10 +121309,10 @@ Private Sub TestAudit03NamedAnnotationSettings(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.namedAnnotation.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "NAMED_ANNOTATION_CASES: fields=21; positions=2; variants=" & CStr(cases) & "; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.namedAnnotation.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -121444,10 +121445,10 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Next mode
     TestAssertTrue stats, "audit03.autoPlot.noSolve", SectionEquilibriumSolveCount() = 0
     TestAppendLine stats, "AUTO_PLOT_CASES: variants=" & CStr(cases) & "; workbookFixtures=1; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.autoPlot.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -121655,10 +121656,10 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.snapshotMetadata.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "SNAPSHOT_METADATA_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.snapshotMetadata.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -122037,10 +122038,10 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     Next index
     TestAssertTrue stats, "audit03.generalPlot.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "GENERAL_PLOT_CASES: variants=" & CStr(cases) & "; geometryFixtures=2; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.generalPlot.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -122320,10 +122321,10 @@ Private Sub TestAudit03AnnotationLayoutContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.annotation.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "ANNOTATION_CASES: variants=" & CStr(cases) & "; layoutFixtures=1; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.annotation.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -122397,10 +122398,10 @@ Private Sub TestAudit03PlotEnableContracts(ByRef stats As TUiTestStats)
     UpdateSectionGeometryPreviewForWorkbook fixture
     TestAssertTrue stats, "audit03.generalPlot.enable.recovery", TestAudit03PlotShapeExists(chart, "ElementConcrete") And Not TestAudit03PlotShapeExists(chart, "Audit03Sentinel")
     TestAssertTrue stats, "audit03.generalPlot.enable.noSolve", SectionEquilibriumSolveCount() = solveCount
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.generalPlot.enable.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -122660,10 +122661,10 @@ Private Sub TestLocaleSavedNumbers(ByRef stats As TUiTestStats, ByVal fixture As
         Next field
     Next separator
     TestAssertTrue stats, "locale.saved.noSolver", SectionEquilibriumSolveCount() = solveCount
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "locale.saved.runtime." & Err.number & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not cell Is Nothing Then cell.value2 = original
     anchor.Resize(18, 4).value2 = saved
@@ -122944,10 +122945,10 @@ Private Sub TestIndexedFixtureIntegrity(ByRef stats As TUiTestStats)
         TestAssertTrue stats, prefix & ".recovery", UBound(actual, 1) = 3 And CStr(actual(3, 5)) = "R1"
     Next mutation
     TestAssertTrue stats, "indexedFixture.noSolve", SectionEquilibriumSolveCount() = solves
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "indexedFixture.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -123480,8 +123481,8 @@ Private Type TDoubleValue
     value As Double
 End Type
 Private Type TDoubleWords
-    low As Long
-    high As Long
+    Low As Long
+    High As Long
 End Type
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -123538,13 +123539,13 @@ Public Function RunPolygonSpecTests() As String
     errorCode = Err.number: Err.clear
     On Error GoTo Failed
     TestCheck "reject.incomplete", errorCode <> 0 And Not polygon.IsSealed
-    words.high = &H7FF00000: LSet number = words
+    words.High = &H7FF00000: LSet number = words
     On Error Resume Next
     polygon.AddVertex "Inf", number.value, 1#
     errorCode = Err.number: Err.clear
     On Error GoTo Failed
     TestCheck "reject.infinity", errorCode <> 0 And polygon.count = 2
-    words.low = 1: LSet number = words
+    words.Low = 1: LSet number = words
     On Error Resume Next
     polygon.AddVertex "NaN", 1#, 1#, number.value
     errorCode = Err.number: Err.clear
@@ -125751,10 +125752,10 @@ Private Sub TestDurationLocaleValid(ByRef stats As TProfileStats, ByVal loads As
             stats.cases = stats.cases + 1
         Next column
     Next separator
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestCheck stats, "durationLocale.runtime." & Err.number & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.UseSystemSeparators = False: Application.decimalSeparator = oldDecimal
     Application.ThousandsSeparator = oldThousands: Application.UseSystemSeparators = oldUse
@@ -130914,8 +130915,8 @@ Private Type TSectionSolverTestStats
 End Type
 
 Private Type TTestDoubleWords
-    low As Long
-    high As Long
+    Low As Long
+    High As Long
 End Type
 
 Private Type TTestDoubleValue
@@ -131986,10 +131987,10 @@ Private Sub TestAudit03InputCurvatureBinding(ByRef stats As TSectionSolverTestSt
             Next unitIndex
         Next axis
     Next method
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "automaticCurvature.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not unitRange Is Nothing Then unitRange.formula = savedUnits
     Application.DisplayAlerts = False
@@ -132646,10 +132647,10 @@ Private Sub TestAudit03SolverSettingEffects(ByRef stats As TSectionSolverTestSta
     TestAudit03InvalidSolverSettingEffects stats, sheet, section, concrete, steel
     TestAudit03LineSearchSettingEffects stats, sheet, section, steel
     TestAudit03NegativeUnsignedUnitSettings stats, sheet, section, concrete, steel
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.effect.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -132812,9 +132813,9 @@ End Sub
 Private Function TestNonFiniteDouble(ByVal kind As Long) As Double
     Dim words As TTestDoubleWords, number As TTestDoubleValue
     Select Case kind
-        Case 1: words.high = &H7FF80000
-        Case 2: words.high = &H7FF00000
-        Case 3: words.high = &HFFF00000
+        Case 1: words.High = &H7FF80000
+        Case 2: words.High = &H7FF00000
+        Case 3: words.High = &HFFF00000
         Case Else: Err.Raise 5, "modTestSectionSolver", "Неизвестный вид неконечного тестового значения."
     End Select
     LSet number = words
@@ -133624,8 +133625,8 @@ Private Type TSnapshotDouble
     value As Double
 End Type
 Private Type TSnapshotWords
-    low As Long
-    high As Long
+    Low As Long
+    High As Long
 End Type
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -134425,7 +134426,7 @@ Private Function TestSnapshotValue(ByVal value As Variant) As String
     Select Case VarType(value)
         Case vbDouble, vbSingle, vbCurrency, vbDecimal
             number.value = CDbl(value): LSet words = number ' Копируются байты Double: снимок обнаруживает даже изменения младших разрядов.
-            TestSnapshotValue = "d:" & right$("00000000" & Hex$(words.high), 8) & right$("00000000" & Hex$(words.low), 8)
+            TestSnapshotValue = "d:" & right$("00000000" & Hex$(words.High), 8) & right$("00000000" & Hex$(words.Low), 8)
         Case vbByte, vbInteger, vbLong
             TestSnapshotValue = "i:" & CStr(value)
         Case vbBoolean
@@ -138053,7 +138054,7 @@ Private Sub TestLoadCombinationRangeMinimumRows(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.loads.minRows.headerOnlyRejected", errorNumber <> 0 And _
         InStr(1, errorText, "минимум одну строку", vbTextCompare) > 0
 
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not tempSheet Is Nothing Then tempSheet.Delete
     app.DisplayAlerts = oldDisplayAlerts
@@ -138063,7 +138064,7 @@ CleanUp:
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: ui.loads.minRows; err=" & CStr(Err.number) & "; " & Err.description
-    Resume CleanUp
+    Resume Cleanup
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -138969,7 +138970,7 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
         InStr(1, errorText, "rngStabilitySummaryAnchor", vbTextCompare) > 0 And _
         InStr(1, errorText, "rngLoadCombinations", vbTextCompare) > 0
 
-CleanUp:
+Cleanup:
     On Error Resume Next
     ThisWorkbook.names.item("rngLoadCombinations").RefersTo = originalRefersTo
     If Not tempSheet Is Nothing Then tempSheet.Delete
@@ -138980,7 +138981,7 @@ CleanUp:
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: ui.results.layoutGuard; err=" & CStr(Err.number) & "; " & Err.description
-    Resume CleanUp
+    Resume Cleanup
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -141436,14 +141437,14 @@ Private Function TestPlotAnnotationTextUnitCellIsDynamic(ByVal rowName As String
     settings.Worksheet.Calculate
     TestPlotAnnotationTextUnitCellIsDynamic = (CStr(settings.cells.item(targetRow, 4).value2) = "pt")
 
-CleanUp:
+Cleanup:
     If Not valuesSaved Then Exit Function
     settings.cells.item(textUnitsRow, 2).value2 = oldRebarUnits
     settings.cells.item(textUnitsRow, 3).value2 = oldDimensionUnits
     settings.Worksheet.Calculate
     Exit Function
 Failed:
-    If valuesSaved Then Resume CleanUp
+    If valuesSaved Then Resume Cleanup
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -141922,10 +141923,10 @@ Private Sub TestAudit03ReaderContract(ByRef stats As TUiTestStats)
     Next columns
     TestAudit03ReaderRows stats, sheet
     TestAudit03ReaderTinyUnits stats, sheet
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.reader.entry.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -142163,10 +142164,10 @@ Private Sub TestAudit03InputContracts(ByRef stats As TUiTestStats)
     TestAudit03AssertInputError stats, Nothing, "MeshProduct", "audit03.input.mesh.product", vbObjectError + 2108
     TestAudit03AssertInputError stats, Nothing, "MeshBoundary", "audit03.input.mesh.boundary", vbObjectError + 2109
     TestAudit03AssertInputError stats, Nothing, "MeshSubcellProduct", "audit03.input.mesh.subcellProduct", vbObjectError + 2108
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.input.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -142191,7 +142192,7 @@ End Sub
 ' Сетка с непредставимым числом ячеек должна отказать до выделения массива/цикла.
 Private Function TestAudit03CaptureInputError(ByVal source As Object, ByVal operation As String, _
         ByRef description As String) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     Dim settings As CSystemSettingsReader, profiles As CCalculationProfileCatalog
     Dim mesh As CFiberMeshBuilder, geometry As CGeometryRegion
     Dim solver As CSectionSolver, registry As CSectionTypeRegistry
@@ -142234,7 +142235,7 @@ Private Function TestAudit03CaptureInputError(ByVal source As Object, ByVal oper
             End Select
     End Select
     Exit Function
-ExpectedError:
+expectedError:
     TestAudit03CaptureInputError = Err.number
     description = Err.description
 End Function
@@ -142313,11 +142314,11 @@ Private Sub TestAudit03ProfileInputContracts(ByRef stats As TUiTestStats)
         TestAssertTrue stats, "audit03.profile.missing." & CStr(key), actualCode = vbObjectError + 3988
         TestAssertTrue stats, "audit03.profile.missingReason." & CStr(key), InStr(1, description, CStr(key), vbBinaryCompare) > 0
     Next key
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.profile.runtime; " & CStr(Err.number) & "; " & Err.description
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -142404,11 +142405,11 @@ Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats
     TestAssertClose stats, "audit03.numeric.optionalDiameterBlank", settings.GetDouble("Rebar.Diameter2"), 0#, 0#
     TestAssertClose stats, "audit03.numeric.optionalKeyDefault", settings.GetDouble("Audit03.Absent", 17#), 17#, 0#
     TestAudit03BatchNumericSettingsInput stats
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.numeric.runtime; " & CStr(Err.number) & "; " & Err.description
-CleanUp:
+Cleanup:
     On Error Resume Next
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
@@ -142525,11 +142526,11 @@ Private Sub TestAudit03UnitSignConsumers(ByRef stats As TUiTestStats)
         TestAppendLine stats, "UNIT_SIGN_CONSUMER: key=" & CStr(key) & "|capacity=" & cap.stopReason & _
             "|formation=" & formed.ResultMeta.resultComment & "|batch=" & result.DirectStateMeta.resultComment
     Next key
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.unitSign.runtime; " & CStr(Err.number) & "; " & Err.description
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not target Is Nothing Then target.formula = savedFormula
     If Not unitRange Is Nothing Then unitRange.formula = savedUnits
@@ -142595,11 +142596,11 @@ Private Sub TestAudit03BatchNumericSettingsInput(ByRef stats As TUiTestStats)
     batch.Execute
     TestAssertTrue stats, "audit03.numeric.Batch.restoredStatus", batch.ResultAt(1).status <> "InputErr"
     TestAssertTrue stats, "audit03.numeric.Batch.restoredSolve", batch.ResultAt(1).DirectStateMeta.calculated
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     stats.Failed = stats.Failed + 1
     TestAppendLine stats, "FAIL: audit03.numeric.Batch.runtime; " & CStr(Err.number) & "; " & Err.description
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not target Is Nothing Then target.formula = savedFormula
     On Error GoTo 0
@@ -145080,10 +145081,10 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     Next position
     TestAssertTrue stats, "audit03.readLifecycle.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "READ_LIFECYCLE_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.readLifecycle.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
@@ -145254,10 +145255,10 @@ Private Sub TestAudit03ExcelGuardContracts(ByRef stats As TUiTestStats)
     Next mode
     TestAssertTrue stats, "audit03.excelGuard.noSolve", SectionEquilibriumSolveCount() = solveCount
     TestAppendLine stats, "EXCEL_GUARD_CASES: failedEnterVariants=8; validEnterVariants=24; equilibriumCases=0"
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "audit03.excelGuard.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If owned Then
         Err.clear: currentStart = TestExcelProcessIdentity(otherExcel, checkedPID)
@@ -147389,10 +147390,10 @@ Private Sub TestTorsionBlockLayoutGuard(ByRef stats As TUiTestStats)
     TestAssertTrue stats, "ui.torsionLayout.actionParagraph", InStr(layout.message(31), "." & vbCrLf & vbCrLf & "Что сделать:") > 0
     layout.CheckRowsGap "rngNDMElementResults", 188, 190, 190
     TestAssertTrue stats, "ui.torsionLayout.bottomUp", layout.issues.count = 2 And InStr(layout.message(31), "снизу вверх") > 0
-    GoTo CleanUp
+    GoTo Cleanup
 Failed:
     TestAssertTrue stats, "ui.torsionLayout.runtime." & CStr(Err.number) & "." & Err.description, False
-CleanUp:
+Cleanup:
     On Error Resume Next
     If Len(oldAnchor) > 0 Then ThisWorkbook.names.item("rngTorsionSummaryAnchor").RefersTo = oldAnchor
     If Not anchor Is Nothing Then anchor.value2 = marker
