@@ -1,0 +1,25 @@
+﻿{
+    "Created":  "2026-11-24T09:02:02.2960248+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Source\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+    "ProbeWorkbookSHA256":  "83BEBAB27BB284557FA6D95318D8B160B18DAFD4ED42B0B07F7BF07BE95BC441",
+    "HelperSHA256":  "58BBB163C3A4ED5EAB6D6310E632FDB7F30A5DB43D730CA84A842D5CDF905500",
+    "ExtraHelperSHA256":  "C7DFEB345333668C19B582F61FECAFD7AE6042DE0347A8DF3017803D306C7770",
+    "SavedFixtureSHA256":  "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "FixtureNormalizations":  [
+                                  {
+                                      "AddedValues":  "Empty",
+                                      "Table":  "rngNDMSectionGeometry",
+                                      "FromColumns":  15,
+                                      "AddedHeader":  "ExtraData",
+                                      "ToColumns":  16
+                                  }
+                              ],
+    "Compiled":  true,
+    "ModifiedComponents":  [
+                               "modWorkbookCalculation",
+                               "modTestBatchCalculation"
+                           ],
+    "CalculationExecuted":  false,
+    "ProductionChanged":  false
+}

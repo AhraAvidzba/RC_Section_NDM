@@ -96,6 +96,7 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) { throw 'Probe is read-only.' }
     $fixtureHash=''
+    $fixtureNormalizations=@()
     if ($SavedFixture) {
         $fixture=Get-Content -LiteralPath $SavedFixture -Raw -Encoding UTF8 | ConvertFrom-Json
         $fixtureNames=@($fixture.Tables | ForEach-Object Name)
@@ -113,9 +114,15 @@ try {
         foreach($table in $fixture.Tables) {
             $anchor=$book.Names.Item($table.Name).RefersToRange.Cells.Item(1,1)
             $anchor.CurrentRegion.ClearContents()
-            $values=New-Object 'object[,]' ([int]$table.Rows),([int]$table.Columns)
+            $columns=[int]$table.Columns
+            if($table.Name -eq 'rngNDMSectionGeometry' -and $columns -eq 15){
+                $columns=16 # Контрольный формат с Comment дополняется пустым ExtraData без изменения физических данных.
+                $fixtureNormalizations+=@{Table=$table.Name;FromColumns=15;ToColumns=16;AddedHeader='ExtraData';AddedValues='Empty'}
+            }
+            $values=New-Object 'object[,]' ([int]$table.Rows),$columns
             for($r=0;$r -lt $table.Rows;$r++){for($c=0;$c -lt $table.Columns;$c++){$values[$r,$c]=$table.Values[$r][$c]}}
-            $anchor.Resize([int]$table.Rows,[int]$table.Columns).Value2=$values
+            if($columns -eq 16 -and [int]$table.Columns -eq 15){$values[0,15]='ExtraData'}
+            $anchor.Resize([int]$table.Rows,$columns).Value2=$values
         }
         $fixtureHash=(Get-FileHash -LiteralPath $SavedFixture).Hash
     }
@@ -176,7 +183,7 @@ End Type
     if ((Get-FileHash -LiteralPath $source).Hash -cne $sourceHash) { throw 'Source workbook changed.' }
     [ordered]@{Created=(Get-Date).ToString('o'); SourceWorkbook=$source; SourceSHA256=$sourceHash;
         ProbeWorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash; HelperSHA256=(Get-FileHash -LiteralPath $helper).Hash;
-        ExtraHelperSHA256=$extraHash; SavedFixtureSHA256=$fixtureHash; Compiled=$true; ModifiedComponents=$modified; CalculationExecuted=$false; ProductionChanged=$false} |
+        ExtraHelperSHA256=$extraHash; SavedFixtureSHA256=$fixtureHash; FixtureNormalizations=$fixtureNormalizations; Compiled=$true; ModifiedComponents=$modified; CalculationExecuted=$false; ProductionChanged=$false} |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $directory 'Preparation.json') -Encoding UTF8
     Write-Output ('FOCUSED_PROBE_READY: '+$directory+'; calculation not executed')
 } finally {

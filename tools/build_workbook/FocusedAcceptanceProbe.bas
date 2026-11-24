@@ -45,16 +45,18 @@ Public Function TestRunFocusedAcceptanceCases(ByVal shapeName As String, ByVal g
     On Error GoTo Failed
     Dim oldRebars As Variant
     oldRebars = ThisWorkbook.Worksheets("Сечения").UsedRange.Formula
-    Dim stats As TBatchTestStats, oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant
-    Dim systemRange As Object, profileRange As Object, loadRange As Object
+    Dim stats As TBatchTestStats, oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant, oldTorsion As Variant
+    Dim systemRange As Object, profileRange As Object, loadRange As Object, torsionRange As Object
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
     Dim cases As Collection, item As Variant, values() As Variant, path As String
     Dim start As Double, elapsed As Double, message As String, completed As Long, maxSeconds As Double
-    Dim report As String, result As CCombinationResult, meta As Variant, prefix As String
+    Dim report As String, result As CCombinationResult, meta As Variant, prefix As String, zeroInput As Boolean
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
-    oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
+    Set torsionRange = ThisWorkbook.Names.Item("rngTorsionCombinations").RefersToRange
+    oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula: oldTorsion = torsionRange.Formula
+    torsionRange.Offset(1, 1).Resize(torsionRange.Rows.Count - 1, 1).Value2 = 0# ' План NM изолирован от T оформленного примера, включая полностью нулевую нагрузку.
     TestFocusedSelectGeometry shapeName
     TestSetSystemSetting "Load.ReferenceOffsetX", "0"
     TestSetSystemSetting "Load.ReferenceOffsetY", "0"
@@ -101,7 +103,8 @@ Public Function TestRunFocusedAcceptanceCases(ByVal shapeName As String, ByVal g
         Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
         ResetSectionEquilibriumSolveCount
         start = Timer
-        If CDbl(item(1)) = 0# And CDbl(item(2)) = 0# And CDbl(item(3)) = 0# Then
+        zeroInput = CDbl(item(1)) = 0# And CDbl(item(2)) = 0# And CDbl(item(3)) = 0#
+        If zeroInput Then
             TestFocusedCheckZeroInput stats, prefix
         Else
             message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
@@ -111,7 +114,7 @@ Public Function TestRunFocusedAcceptanceCases(ByVal shapeName As String, ByVal g
         TestAssertTrue stats, prefix & ".within10Seconds", elapsed <= 10#
         TestAppendLine stats, "FOCUSED_TIME|shape=" & shapeName & "|id=" & CStr(item(0)) & _
             "|elapsedSec=" & TestFormatNumberInvariant(elapsed) & "|solverCalls=" & CStr(SectionEquilibriumSolveCount())
-        If Not mFocusedBatch Is Nothing Then
+        If Not mFocusedBatch Is Nothing And Not zeroInput Then
             TestAssertTrue stats, prefix & ".oneCombination", mFocusedBatch.Count = 1
             TestAssertTrue stats, prefix & ".preparationReleased", mFocusedBatch.TestRunPreparationReleased
             ' ULS и SLS имеют отдельные точные кэши; устойчивость в этом профиле отключена.
@@ -143,7 +146,7 @@ Public Function TestRunFocusedAcceptanceCases(ByVal shapeName As String, ByVal g
             TestFocusedCheckOutputRow stats, "rngCrackSummaryAnchor", CStr(item(0)), prefix
             TestAppendLine stats, "FOCUSED_RESULT|id=" & CStr(item(0)) & "|overall=" & result.Status & _
                 "|capacity=" & result.StrengthResult.Capacity.Status & "|cracks=" & result.CrackSummaryStatus
-        ElseIf CStr(item(0)) <> "zero" Then
+        ElseIf Not zeroInput Then
             TestAssertTrue stats, prefix & ".capturedCalculation", False
         End If
         completed = completed + 1
@@ -163,6 +166,7 @@ Restore:
     If IsArray(oldSystem) Then systemRange.Formula = oldSystem
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
     If IsArray(oldLoads) Then loadRange.Formula = oldLoads
+    If IsArray(oldTorsion) Then torsionRange.Formula = oldTorsion
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     TestRunFocusedAcceptanceCases = stats.Report
     Exit Function
@@ -286,31 +290,52 @@ Private Function TestFocusedNameIn(ByVal name As String, ByVal names As Variant)
     Next item
 End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Требует штатного пропуска полностью нулевой нагрузки без solver и изменения прежних результатов или исходной таблицы.
+' Проверяет очистку расчётных состояний без решателя и сохранение геометрии и исходных нагрузок при полностью нулевом NM/T.
 Private Sub TestFocusedCheckZeroInput(ByRef stats As TBatchTestStats, ByVal prefix As String)
-    Dim resultRange As Object, loadRange As Object
-    Set resultRange = ThisWorkbook.Worksheets("Results").UsedRange
+    Dim loadRange As Object, torsionRange As Object
+    Set torsionRange = ThisWorkbook.Names.Item("rngTorsionCombinations").RefersToRange
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
-    Dim resultsBefore As Variant, loadsBefore As Variant
-    resultsBefore = resultRange.Formula: loadsBefore = loadRange.Formula
+    Dim geometryBefore As Variant, geometryAfter As Variant, statesAfter As Variant, loadsBefore As Variant, torsionBefore As Variant, emptyBatch As Boolean
+    geometryBefore = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry"): loadsBefore = loadRange.Formula: torsionBefore = torsionRange.Formula
     Dim message As String
     message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
     TestAssertTrue stats, prefix & ".zeroSkippedWithMessage", _
-        InStr(1, message, "Расчёт не запускался:", vbBinaryCompare) = 1 And _
-        InStr(1, message, "Прежние результаты сохранены.", vbBinaryCompare) > 0
+        InStr(1, message, "Расчёт НДМ не запускался:", vbBinaryCompare) > 0 And _
+        InStr(1, message, "Результаты обновлены без расчётных сочетаний", vbBinaryCompare) > 0
     TestAssertTrue stats, prefix & ".zeroNoSolverCalls", SectionEquilibriumSolveCount() = 0
-    TestAssertTrue stats, prefix & ".zeroNoCapturedCalculation", mFocusedBatch Is Nothing
-    TestAssertTrue stats, prefix & ".zeroResultsPreserved", TestFocusedCellMatricesEqual(resultsBefore, resultRange.Formula)
+    If Not mFocusedBatch Is Nothing Then emptyBatch = mFocusedBatch.Count = 0
+    TestAssertTrue stats, prefix & ".zeroEmptyBatch", emptyBatch
+    statesAfter = ReadPhysicalResultTable(ThisWorkbook, "rngNDMElementResults")
+    TestAssertTrue stats, prefix & ".zeroStatesCleared", UBound(statesAfter, 1) = 1
+    geometryAfter = ReadPhysicalResultTable(ThisWorkbook, "rngNDMSectionGeometry")
+    If Not TestFocusedCellMatricesEqual(geometryBefore, geometryAfter, 2) Then
+        TestAppendLine stats, "ZERO_GEOMETRY_SHAPE|before=" & UBound(geometryBefore, 1) & ":" & UBound(geometryBefore, 2) & "|after=" & UBound(geometryAfter, 1) & ":" & UBound(geometryAfter, 2)
+        If UBound(geometryBefore, 1) = UBound(geometryAfter, 1) And UBound(geometryBefore, 2) = UBound(geometryAfter, 2) Then
+            Dim row As Long, column As Long, differences As Long
+            For row = 1 To UBound(geometryBefore, 1)
+                For column = 2 To UBound(geometryBefore, 2)
+                    If VarType(geometryBefore(row, column)) <> VarType(geometryAfter(row, column)) Or CStr(geometryBefore(row, column)) <> CStr(geometryAfter(row, column)) Then
+                        TestAppendLine stats, "ZERO_GEOMETRY_DIFFERENCE|row=" & row & "|column=" & column & "|beforeType=" & VarType(geometryBefore(row, column)) & "|afterType=" & VarType(geometryAfter(row, column)) & "|before=" & CStr(geometryBefore(row, column)) & "|after=" & CStr(geometryAfter(row, column))
+                        differences = differences + 1
+                        If differences >= 10 Then Exit For
+                    End If
+                Next column
+                If differences >= 10 Then Exit For
+            Next row
+        End If
+    End If
+    TestAssertTrue stats, prefix & ".zeroGeometryPreserved", TestFocusedCellMatricesEqual(geometryBefore, geometryAfter, 2) ' RunID обозначает запуск; остальные поля геометрии сравниваются точно.
     TestAssertTrue stats, prefix & ".zeroLoadsPreserved", TestFocusedCellMatricesEqual(loadsBefore, loadRange.Formula)
+    TestAssertTrue stats, prefix & ".zeroTorsionLoadsPreserved", TestFocusedCellMatricesEqual(torsionBefore, torsionRange.Formula)
 End Sub
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Побуквенно сравнивает формулы и точные значения двух прямоугольных снимков, включая пустые ячейки и ошибки Excel.
-Private Function TestFocusedCellMatricesEqual(ByVal expected As Variant, ByVal actual As Variant) As Boolean
+' Сравнивает точные значения снимков с выбранного столбца; исключение RunID не меняет проверки остальных полей, пустых ячеек и ошибок Excel.
+Private Function TestFocusedCellMatricesEqual(ByVal expected As Variant, ByVal actual As Variant, Optional ByVal firstColumn As Long = 1) As Boolean
     If LBound(expected, 1) <> LBound(actual, 1) Or UBound(expected, 1) <> UBound(actual, 1) Or _
             LBound(expected, 2) <> LBound(actual, 2) Or UBound(expected, 2) <> UBound(actual, 2) Then Exit Function
     Dim row As Long, column As Long, expectedValue As Variant, actualValue As Variant
     For row = LBound(expected, 1) To UBound(expected, 1)
-        For column = LBound(expected, 2) To UBound(expected, 2)
+        For column = firstColumn To UBound(expected, 2)
             expectedValue = expected(row, column): actualValue = actual(row, column)
             If VarType(expectedValue) <> VarType(actualValue) Then Exit Function
             If IsError(expectedValue) Or VarType(expectedValue) = vbString Then

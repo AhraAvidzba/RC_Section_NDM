@@ -1,0 +1,129 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ResultTailLatency_2026-11-24_Repair03\Probe04\RC_Section_NDM.xlsm
+SOURCE_SHA256: 83BEBAB27BB284557FA6D95318D8B160B18DAFD4ED42B0B07F7BF07BE95BC441
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7bd857bde03e4fe3821da35916b9b8c7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=23892; startTicks=639310969372938360
+===== modTestBatchCalculation.TestRunFocusedZeroContract =====
+SUITE_STARTED: modTestBatchCalculation.TestRunFocusedZeroContract; 2026-11-24T09:02:26
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=23892; workingSet=180277248; privateBytes=144207872; cpu=17.859375
+FOCUSED_SETUP|shape=SavedWorkbook|group=Saved|mode=No|cases=1|fibers=45|rebars=20|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+OK: focused.SavedWorkbook.zero.zeroSkippedWithMessage
+OK: focused.SavedWorkbook.zero.zeroNoSolverCalls
+OK: focused.SavedWorkbook.zero.zeroEmptyBatch
+OK: focused.SavedWorkbook.zero.zeroStatesCleared
+OK: focused.SavedWorkbook.zero.zeroGeometryPreserved
+OK: focused.SavedWorkbook.zero.zeroLoadsPreserved
+OK: focused.SavedWorkbook.zero.zeroTorsionLoadsPreserved
+OK: focused.SavedWorkbook.zero.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=zero|elapsedSec=4.326171875|solverCalls=0
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=1; maxSeconds=4.326171875; passed=9; failed=0
+FOCUSED_SETUP|shape=SavedWorkbook|group=Saved|mode=No|cases=1|fibers=45|rebars=20|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+OK: focused.SavedWorkbook.axialSmall-1.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=axialSmall-1|elapsedSec=1.23046875|solverCalls=3
+OK: focused.SavedWorkbook.axialSmall-1.oneCombination
+OK: focused.SavedWorkbook.axialSmall-1.preparationReleased
+OK: focused.SavedWorkbook.axialSmall-1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.axialSmall-1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=axialSmall-1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.axialSmall-1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.axialSmall-1.direct.russianReason
+OK: audit03.comments.axialSmall-1.direct.readable
+OK: audit03.comments.axialSmall-1.direct.noMachinePrefix
+META: audit03.comments.axialSmall-1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.axialSmall-1.capacity.russianReason
+OK: audit03.comments.axialSmall-1.capacity.readable
+OK: audit03.comments.axialSmall-1.capacity.noMachinePrefix
+META: audit03.comments.axialSmall-1.formation|status=rsSuccessWithWarning|code=CRACK_NOT_FORMED|applies=True|calculated=True|comment=При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 64.912975830373; отдельная точка трещинообразования на этом пути не определяется.
+OK: audit03.comments.axialSmall-1.formation.reasonPresent
+OK: audit03.comments.axialSmall-1.formation.russianReason
+OK: audit03.comments.axialSmall-1.formation.readable
+OK: audit03.comments.axialSmall-1.formation.noMachinePrefix
+OK: audit03.comments.axialSmall-1.formation.ownSubtree
+META: audit03.comments.axialSmall-1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.axialSmall-1.current.russianReason
+OK: audit03.comments.axialSmall-1.current.readable
+OK: audit03.comments.axialSmall-1.current.noMachinePrefix
+META: audit03.comments.axialSmall-1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 64.912975830373; отдельная точка трещинообразования на этом пути не определяется.
+OK: audit03.comments.axialSmall-1.width.russianReason
+OK: audit03.comments.axialSmall-1.width.readable
+OK: audit03.comments.axialSmall-1.width.noMachinePrefix
+META: audit03.comments.axialSmall-1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.452 МПа; допускаемое Rb,mc2 = 16.700 МПа.
+OK: audit03.comments.axialSmall-1.longitudinal.russianReason
+OK: audit03.comments.axialSmall-1.longitudinal.readable
+OK: audit03.comments.axialSmall-1.longitudinal.noMachinePrefix
+META: audit03.comments.axialSmall-1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.axialSmall-1.formulaNoNumFail
+OK: audit03.comments.axialSmall-1.formationWarningPreserved
+OK: audit03.comments.axialSmall-1.strengthNoCrack
+OK: audit03.comments.axialSmall-1.crackNoCapacity
+OK: audit03.comments.axialSmall-1.overallComposition
+OK: audit03.comments.axialSmall-1.batchOutput
+OK: audit03.comments.axialSmall-1.strengthOutput
+OK: audit03.comments.axialSmall-1.crackOutput
+OK: audit03.comments.axialSmall-1.stabilityOutput
+OUTPUT: audit03.comments.axialSmall-1|strength=|crack=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 64.912975830373; отдельная точка трещинообразования на этом пути не определяется.|stability=|batch=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 64.912975830373; отдельная точка трещинообразования на этом пути не определяется.
+CASE: focused.SavedWorkbook.axialSmall-1|N=-439822.971502571|Mx=0|My=0|offsetX=10|offsetY=-7|path=N|selection=Auto|lambda=48.751758355414|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.axialSmall-1.path
+OK: focused.SavedWorkbook.axialSmall-1.validInput
+OK: focused.SavedWorkbook.axialSmall-1.NU; actual=-21442143.2258536; expected=-21442143.2258536
+OK: focused.SavedWorkbook.axialSmall-1.MxU; actual=-34.124004674144; expected=0.
+OK: focused.SavedWorkbook.axialSmall-1.MyU; actual=35.49047774449; expected=0.
+OK: focused.SavedWorkbook.axialSmall-1.stateMx; actual=17022160341.0847; expected=17022160375.2087
+OK: focused.SavedWorkbook.axialSmall-1.stateMy; actual=68382142313.126; expected=68382142277.6355
+OK: focused.SavedWorkbook.axialSmall-1.physicalCriterion
+OK: focused.SavedWorkbook.axialSmall-1.finalPhysical
+CASE: focused.SavedWorkbook.axialSmall-1|requested=Auto|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: focused.SavedWorkbook.axialSmall-1.validInput
+OK: focused.SavedWorkbook.axialSmall-1.autoPath
+FOCUSED_STATE|id=focused.SavedWorkbook.axialSmall-1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:C17472E5F39D18A9|Mx=F64:420FB4CC6FB9AB85|My=F64:422FD7C95E8B4566|eps0=F64:BF7E91783E44CAF0|kx=F64:3EB6551D5C91ECD1|ky=F64:BEC01B0BD9056629
+OK: focused.SavedWorkbook.axialSmall-1.snapshot.1
+OK: focused.SavedWorkbook.axialSmall-1.originalN.1; actual=-21442143.2258536; expected=-21442143.2258536
+OK: focused.SavedWorkbook.axialSmall-1.originalMx.1; actual=17022160341.0847; expected=17022160375.2087
+OK: focused.SavedWorkbook.axialSmall-1.originalMy.1; actual=68382142313.126; expected=68382142277.6355
+OK: focused.SavedWorkbook.axialSmall-1.centerN.1; actual=-21442143.2258536; expected=-21442143.2258536
+OK: focused.SavedWorkbook.axialSmall-1.centerMx.1; actual=150094968.45697; expected=150095002.580977
+OK: focused.SavedWorkbook.axialSmall-1.centerMy.1; actual=-214421396.768059; expected=-214421432.258537
+OK: focused.SavedWorkbook.axialSmall-1.physicalStatus.1
+OK: focused.SavedWorkbook.axialSmall-1.noHiddenExtension.1
+FOCUSED_STATE|id=focused.SavedWorkbook.axialSmall-1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:C11AD83BE2D191ED|Mx=F64:41B4CFC1F6BA376D|My=F64:41D4E6B92CA13615|eps0=F64:BEF4BC2CCF5659BB|kx=F64:3E19F4BCE98857F0|ky=F64:BE228190ACF45DEB
+OK: focused.SavedWorkbook.axialSmall-1.snapshot.2
+OK: focused.SavedWorkbook.axialSmall-1.originalN.2; actual=-439822.971502571; expected=-439822.971502571
+OK: focused.SavedWorkbook.axialSmall-1.originalMx.2; actual=349159926.727408; expected=349159926.727408
+OK: focused.SavedWorkbook.axialSmall-1.originalMy.2; actual=1402660018.51893; expected=1402660018.51893
+OK: focused.SavedWorkbook.axialSmall-1.centerN.2; actual=-439822.971502571; expected=-439822.971502571
+OK: focused.SavedWorkbook.axialSmall-1.centerMx.2; actual=3078760.80051802; expected=3078760.80051802
+OK: focused.SavedWorkbook.axialSmall-1.centerMy.2; actual=-4398229.71502572; expected=-4398229.71502573
+OK: focused.SavedWorkbook.axialSmall-1.physicalStatus.2
+OK: focused.SavedWorkbook.axialSmall-1.noHiddenExtension.2
+FOCUSED_STATE|id=focused.SavedWorkbook.axialSmall-1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:C11AD83BE2D191ED|Mx=F64:41B4CFC1F6BA376D|My=F64:41D4E6B92CA13615|eps0=F64:BF01B83CD7AECFF1|kx=F64:3E252F80FA601665|ky=F64:BE2E2CE39253DF32
+OK: focused.SavedWorkbook.axialSmall-1.snapshot.3
+OK: focused.SavedWorkbook.axialSmall-1.originalN.3; actual=-439822.971502571; expected=-439822.971502571
+OK: focused.SavedWorkbook.axialSmall-1.originalMx.3; actual=349159926.727408; expected=349159926.727408
+OK: focused.SavedWorkbook.axialSmall-1.originalMy.3; actual=1402660018.51893; expected=1402660018.51893
+OK: focused.SavedWorkbook.axialSmall-1.centerN.3; actual=-439822.971502571; expected=-439822.971502571
+OK: focused.SavedWorkbook.axialSmall-1.centerMx.3; actual=3078760.80051802; expected=3078760.80051802
+OK: focused.SavedWorkbook.axialSmall-1.centerMy.3; actual=-4398229.71502573; expected=-4398229.71502573
+OK: focused.SavedWorkbook.axialSmall-1.physicalStatus.3
+OK: focused.SavedWorkbook.axialSmall-1.noHiddenExtension.3
+FOCUSED_COMPARE|id=axialSmall-1|path=LambdaN|meta1=4:4|meta2=4:4|meta3=9:17|meta1=4:4|meta4=2:17|meta5=4:4|meta3=9:17|number0=48.7517583554142|number1=-21442143.2258536|number2=-34.1240046741441|number3=35.4904777444899|number4=0|number5=0|number6=0|number7=0|number8=0|number9=0|number10=2.70588657012586E-02|number11=2.70588657012586E-02
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.1
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.2
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.3
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.1
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.4
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.5
+OK: focused.SavedWorkbook.axialSmall-1.noInputOrInternalError.3
+OK: focused.SavedWorkbook.axialSmall-1.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.axialSmall-1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=axialSmall-1|overall=OK|capacity=OK|cracks=OK
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=1; maxSeconds=1.23046875; passed=82; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7bd857bde03e4fe3821da35916b9b8c7\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.TestRunFocusedZeroContract; 2026-11-24T09:02:35
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

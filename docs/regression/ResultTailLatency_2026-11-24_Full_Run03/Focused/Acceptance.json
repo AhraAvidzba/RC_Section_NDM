@@ -1,0 +1,94 @@
+{
+  "Status": "INCOMPLETE_OR_FAILED",
+  "SourceSHA256": "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+  "IndividualCases": 122,
+  "PassedAssertions": 10139,
+  "ElapsedSeconds": 1458.8183497999999,
+  "Errors": [
+    "A required stage reported an unsuccessful exit",
+    "SavedWorkbook_Saved_No: execution did not pass",
+    "SavedWorkbook_Saved_No: total missing or failed",
+    "SavedWorkbook_Saved_No: calculated result coverage differs",
+    "SavedWorkbook_Saved_Yes: execution did not pass",
+    "SavedWorkbook_Saved_Yes: total missing or failed",
+    "SavedWorkbook_Saved_Yes: calculated result coverage differs"
+  ],
+  "Stages": [
+    {
+      "ID": "Rectangles_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "Rectangles_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "Circle_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "Circle_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "PointedSection_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "PointedSection_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "HollowRectangle_Generated_No",
+      "Passed": true
+    },
+    {
+      "ID": "HollowRectangle_Generated_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "SavedWorkbook_Saved_No",
+      "Passed": false
+    },
+    {
+      "ID": "SavedWorkbook_Saved_Yes",
+      "Passed": false
+    },
+    {
+      "ID": "SavedWorkbook_Paths_No",
+      "Passed": true
+    },
+    {
+      "ID": "SavedWorkbook_Paths_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "Batch15_No",
+      "Passed": true
+    },
+    {
+      "ID": "Stability_No",
+      "Passed": true
+    },
+    {
+      "ID": "AsymmetricSteel_No",
+      "Passed": true
+    },
+    {
+      "ID": "Batch15_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "Stability_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "AsymmetricSteel_Yes",
+      "Passed": true
+    },
+    {
+      "ID": "OutputPresentation",
+      "Passed": true
+    }
+  ]
+}
