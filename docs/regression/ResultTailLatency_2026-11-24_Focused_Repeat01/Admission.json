@@ -1,0 +1,21 @@
+﻿{
+    "PID":  4104,
+    "StartTicksUTC":  639310977939259749,
+    "StartedUTC":  "2026-11-24T06:16:33.9477761+00:00",
+    "EvidenceDirectory":  "docs/regression/ResultTailLatency_2026-11-24_Focused_Repeat01",
+    "FocusedDirectory":  "docs/regression/ResultTailLatency_2026-11-24_Focused_Repeat01/Focused",
+    "SourceCommit":  "4cc844204d08f451fd026c5c92b174920797df1e",
+    "SourceSHA256":  "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+    "AdmissionDeadline":  "2026-11-24T10:00:00.0000000+03:00",
+    "RunnerDeadlineUTC":  "2026-11-24T06:55:00Z",
+    "ForecastMinutes":  30,
+    "ReserveMinutes":  5,
+    "FreePhysicalGiB":  18.156173706054688,
+    "FreeCommitGiB":  18.245319366455078,
+    "UserInstruction":  "Повтори только часовой план",
+    "SplitAcceptanceExplicitlyAuthorized":  true,
+    "RetainedCoreDirectory":  "docs/regression/ResultTailLatency_2026-11-24_Full_Run03",
+    "RetainedCoreExecutions":  202,
+    "RetainedSupplementExecutions":  8,
+    "OriginalFailedEvidencePreserved":  true
+}

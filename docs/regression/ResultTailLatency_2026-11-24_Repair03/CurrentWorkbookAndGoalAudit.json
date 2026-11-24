@@ -1,0 +1,29 @@
+{
+  "Status": "PENDING_ACCEPTANCE_CHOICE",
+  "CheckedUTC": "2026-11-24T06:12:36.004340+00:00",
+  "WorkbookSHA256": "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+  "ExportSHA256": "099838E0D5A6DC396D82743E324E3B22AD1924173BD931E35D85764534563B5A",
+  "VbaComponents": 203,
+  "RuntimeCodeEqualsNativeTimingAndDisplayCandidate": true,
+  "ChangedComponentsSinceNativeCandidate": [
+    "modTestCalculationSnapshot",
+    "modTestGeometryReview",
+    "modTestLoadTableConfig",
+    "modTestWorkbookInterface"
+  ],
+  "OnlyVbaProjectChangedSinceLastInstallation": [
+    "xl/vbaProject.bin"
+  ],
+  "UserDataAndFormattingUnchanged": true,
+  "PhysicalResultsCompared": 78532,
+  "PhysicalResultsAndStatusesIdentical": true,
+  "FullRuntimeMedianSeconds": {
+    "Before": 6.5695063,
+    "After": 3.4352418
+  },
+  "CoreEvidence": "docs\\regression\\ResultTailLatency_2026-11-24_Repair03\\CoreOnlyReview.json",
+  "DirectedEvidence": "docs\\regression\\ResultTailLatency_2026-11-24_Repair03\\DiagnosisAndDirectedAcceptance.json",
+  "Outstanding": "User decision: a full single-run repeat exceeds 10:00; accepting complete groups from separate invocations requires explicit exception",
+  "OverallPASS": false,
+  "PushPerformed": false
+}

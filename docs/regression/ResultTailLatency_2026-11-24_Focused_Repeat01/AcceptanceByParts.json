@@ -1,0 +1,181 @@
+{
+  "Status": "PASS",
+  "AcceptanceMode": "UserAuthorizedSeparateCompleteGroups",
+  "SingleInvocation": false,
+  "UserInstruction": "Повтори только часовой план",
+  "AdmissionSHA256": "857ADA716913B993940D28305957021C29899C480E8D6FCAC65BBFB16E5A884C",
+  "SourceSHA256": "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+  "SameWorkbookBytes": true,
+  "CoreSuites": 202,
+  "FocusedSingleCases": 122,
+  "SupplementSuites": 8,
+  "CoreDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03",
+  "FocusedDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused",
+  "CoreSourceCommit": "bd7987dd9c42dc6f2c208b5f96ca16b0c036aa49",
+  "FocusedSourceCommit": "4cc844204d08f451fd026c5c92b174920797df1e",
+  "OriginalRun03Status": "INCOMPLETE_OR_FAILED",
+  "OriginalFocusedStatus": "INCOMPLETE_OR_FAILED",
+  "OriginalRun03SHA256": "B4D8C1BF54D55FC0BE3BF560067E183EA679853F7C668F1B5F4E0FFEF95B6049",
+  "OriginalFailureEvidencePreserved": true,
+  "FocusedAcceptanceSHA256": "3B85CCD15081F8261868A11A997C96D65BC2DEBABBCC72165754C8CB744B3F77",
+  "IndependentIntegrals": 563,
+  "ReviewedNumFailStates": 7,
+  "NativeCADPassed": true,
+  "OwnExcelClosures": [
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Full_Off.txt",
+      "ClosureSHA256": "19145BFCD0CC1432D5CF6A447CE1BF0D1D611960E12A58D02AF9219E4DFF0A2B"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Geometry_Off.txt",
+      "ClosureSHA256": "16646A21A8148240CBF5DBE88192E1139DA7A93C8FB778DC8D5D5909E8C257DA"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\SP35_Off.txt",
+      "ClosureSHA256": "21D83411B32055A5AAA6F5FC365BAA75BCBAFEC1FCE4808105C862A3884CA4DB"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Recipes_Off.txt",
+      "ClosureSHA256": "539E9377AF1B3356AFE2511ADB0AC5CC3E795B4AFF2E9BE1754E6ECF648BE608"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\SavedOffsets_Off.txt",
+      "ClosureSHA256": "9E34D0DA8704D9ED016B57FD7455B97F56F202456462EE8F7FDE9A2F376F923B"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\CurrentFeatures_Off.txt",
+      "ClosureSHA256": "32FDD772E1E9361BADD9FFAA1A616319000FD21260CA147AC05501CF966EA4AA"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Full_On.txt",
+      "ClosureSHA256": "67AB6C1E4FD67B9964111499EA630436B92581B56BEBBE7C505D4D3A2595C92B"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Geometry_On.txt",
+      "ClosureSHA256": "D09B05135FC22D97F1450275596B858E1170F014F7785EC28C108FB3879985D0"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\SP35_On.txt",
+      "ClosureSHA256": "0B7985589C63EF06AF38BEEAEBB65C1CEDB35DF12792E92BBCBFD33961C300B5"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Recipes_On.txt",
+      "ClosureSHA256": "18B0C6677479984AB7398DA22B464006990FE34CB5919AA64AF31AED8B7EBB2E"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\SavedOffsets_On.txt",
+      "ClosureSHA256": "9F381238BA97947BD7847828BE3C9EAEAD64F5683726232D0001CDC49186DD05"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\CurrentFeatures_On.txt",
+      "ClosureSHA256": "9334AFC9B2EA0D8602195AA7916A6E4C67E2DFB0B5719D2B0E107A28C0839579"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Rectangles_Generated_No.txt",
+      "ClosureSHA256": "44D8218BB775CE559F3C439BF7AD9E1CD09243CB63B80605BFFA4E4A07A44982"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Rectangles_Generated_Yes.txt",
+      "ClosureSHA256": "69A293208273E31FAE3A6AE5FEA3C0EDFB5EC8FEC7446FDDDE3D791EA845FBA0"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Circle_Generated_No.txt",
+      "ClosureSHA256": "F60D1408DD802675BB8270A55E6BC6026577BEB8AF2476A75107D00C5C6F64E9"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Circle_Generated_Yes.txt",
+      "ClosureSHA256": "1F4769BB80B397BB54EFD840EE9BDBABE1F3A66F2F7D848D5B2045325D6EE7AC"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\PointedSection_Generated_No.txt",
+      "ClosureSHA256": "9C494E0C5255DB4FEC3A5707C6FAA3C0D3BB197D10C15193C8EA27B53593C206"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\PointedSection_Generated_Yes.txt",
+      "ClosureSHA256": "B4F9AEF76765990B77B1985B104D836740620DF623ACE5E8DE7E4D3EEC818AB8"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\HollowRectangle_Generated_No.txt",
+      "ClosureSHA256": "56AC3A62741CBFF3D58F7BDA90FDCA29E71067694E059062F6FB14687E09EBE8"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\HollowRectangle_Generated_Yes.txt",
+      "ClosureSHA256": "3329981680550F2D7D23FCF52B6FFAABA9C9963BC9251E9046F18F869A7B7326"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\SavedWorkbook_Saved_No.txt",
+      "ClosureSHA256": "50FE9EC46C6B91D02241DD46E98F8CD5E12D48A6D54184792E0DCF0FB1B17FCA"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\SavedWorkbook_Saved_Yes.txt",
+      "ClosureSHA256": "283668250CAD859D41878D30F223378F32B2F434BE32CA56B20D2F9AE9B4908E"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\SavedWorkbook_Paths_No.txt",
+      "ClosureSHA256": "7020936819ABA6ACAFE6879131D16171BD44190A1B92158CA0559148E4663169"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\SavedWorkbook_Paths_Yes.txt",
+      "ClosureSHA256": "69E5C8AF2309972F1A595EDEA7228AD48B6B075B7616FFC92B6F263FACF8C3BB"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Batch15_No.txt",
+      "ClosureSHA256": "8EF658BA7DE63B7D2CCBD50F8DE06367B502163B39E5BBA06C09F06EA3240FD6"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Stability_No.txt",
+      "ClosureSHA256": "CFE4D0F7A30E1800253D48F655F9066AB7F14F68A703127A02FE754890AC291C"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\AsymmetricSteel_No.txt",
+      "ClosureSHA256": "F46781430B49963C0DD76052E30D91D89BC6865AE5DECD8765A816B587D187B8"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Batch15_Yes.txt",
+      "ClosureSHA256": "CEE3B8BB285FC2405120A415FD4CF2052036A1340737ABC499ECEC5AA85F0BCE"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Stability_Yes.txt",
+      "ClosureSHA256": "477B6333585C34A821E81BEA15FDA7CF11851F9B050C0E4109B83CF5D1E954FA"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\AsymmetricSteel_Yes.txt",
+      "ClosureSHA256": "2354304EF49AA64626E4EF1E11A7E122B9BE6FB77353EE06A1B5694FE9749100"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Model_Rectangles.txt",
+      "ClosureSHA256": "59EBFFCAE0EFF24E43761500767DBA62BCFE5D2410DA00DCEF3B0B28F1201A15"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Model_Circle.txt",
+      "ClosureSHA256": "91B5415BDACD157043F0326062CF6600690826C04BC459ECB713507FAD08A27D"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Model_PointedSection.txt",
+      "ClosureSHA256": "758993F5E08817FFB912C6587418882A7475C76EF5CFF2B2B9FD359F6682BCF6"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Model_HollowRectangle.txt",
+      "ClosureSHA256": "1B763C8C86B91E5CD5D79D3B3E8E100255331E08B9C6F8A60763A09EE7B1B885"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Model_SavedWorkbook.txt",
+      "ClosureSHA256": "2E9DA4016DF729B81EE5180C8F9CC01085037A677F4703984C72DDA78A759FEA"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\OutputPresentation.txt",
+      "ClosureSHA256": "DE8DE9B51567104C41A258B01662660523B593D9939E876A0A985E81E17B337F"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Supplement\\No.txt",
+      "ClosureSHA256": "5CE80EBD6AD1A4FCA692BD156E4AF5B668C8E49BE0062A205F85DB7C9D3F032E"
+    },
+    {
+      "Report": "docs\\regression\\ResultTailLatency_2026-11-24_Full_Run03\\Supplement\\Yes.txt",
+      "ClosureSHA256": "A1875B11C87A2EABAD55713EB590300194A66A59A459ED665A18B6BB3F71ADF9"
+    }
+  ],
+  "WorkingWorkbookUnchanged": true,
+  "FinishedUTC": "2026-11-24T09:43:15.021560+03:00",
+  "Meaning": "Все согласованные полные группы проверены на одной книге в отдельных запусках; исходный неуспешный Run03 сохранён."
+}

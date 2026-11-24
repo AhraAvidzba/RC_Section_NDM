@@ -1,0 +1,54 @@
+﻿{
+    "Passed":  true,
+    "Created":  "2026-11-24T09:17:30.9943303+03:00",
+    "SourceSHA256":  "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+    "ProbeSHA256":  "765BD7DF2E03360D4E72C092521FA07104BF8330CF1FF81D3AF316EA59C482D3",
+    "Groups":  [
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Probe\\Rectangles_Generated_Manifest.txt",
+                       "Shape":  "Rectangles",
+                       "ReportSHA256":  "123D4E11E982327C458B57C48711222EC59C0F0F463AF6E45CD9FB8DA5F9980D",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Probe\\Circle_Generated_Manifest.txt",
+                       "Shape":  "Circle",
+                       "ReportSHA256":  "C796A40FBE6DFBBE0E60062DA63EFCAC72EB98587A2C7A18F11828F103FE23F8",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Probe\\PointedSection_Generated_Manifest.txt",
+                       "Shape":  "PointedSection",
+                       "ReportSHA256":  "E1F39F41C6C23A6DA2CA14DEE61AFEBB0023D47027AF0C850D9C4E598CDC66E8",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Probe\\HollowRectangle_Generated_Manifest.txt",
+                       "Shape":  "HollowRectangle",
+                       "ReportSHA256":  "F1274CA0B12EA10A7F1BEB70E482C0161C0AD70F6FAA58F649C476234DEF56C6",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Saved",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Probe\\SavedWorkbook_Saved_Manifest.txt",
+                       "Shape":  "SavedWorkbook",
+                       "ReportSHA256":  "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23",
+                       "CasesPerMode":  23
+                   },
+                   {
+                       "Group":  "Paths",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultTailLatency_2026-11-24_Focused_Repeat01\\Focused\\Probe\\SavedWorkbook_Paths_Manifest.txt",
+                       "Shape":  "SavedWorkbook",
+                       "ReportSHA256":  "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70",
+                       "CasesPerMode":  6
+                   }
+               ],
+    "SingleCasesTwoModes":  122,
+    "SolverExecuted":  false,
+    "AcceptanceExecuted":  false,
+    "ProductionChanged":  false
+}

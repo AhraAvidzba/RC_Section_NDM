@@ -1,0 +1,23 @@
+{
+  "Status": "PASS_BEFORE_PUSH",
+  "AcceptanceMode": "UserAuthorizedSeparateCompleteGroups",
+  "SingleInvocation": false,
+  "UserInstruction": "Повтори только часовой план",
+  "SourceSHA256": "2D413237AAF72D2D134290268F828DBC99140C2850303B558D4B1F68C96AAE06",
+  "RuntimeAndOutputReview": "docs/regression/ResultTailLatency_2026-11-24_Repair03/CurrentWorkbookAndGoalAudit.json",
+  "CoreSuites": 202,
+  "FocusedSingleCases": 122,
+  "SupplementSuites": 8,
+  "FocusedElapsedSeconds": 1505.1538039,
+  "FocusedFinishedUTC": "2026-11-24T06:41:40.5668522+00:00",
+  "MaxSingleSeconds": 7.5703125,
+  "SameWorkbookBytes": true,
+  "OriginalFailureEvidencePreserved": true,
+  "OwnExcelClosuresVerified": 38,
+  "CompiledVBAComponents": 203,
+  "WorkingWorkbookAndExportUnchanged": true,
+  "Report": "docs/reports/ResultTailLatency_2026-11-23.md",
+  "VerifierSHA256": "A011141A47F4278EA22BD8571C6A598E934C85AE21C5DB11087A40BFD5E80648",
+  "AcceptanceSHA256": "08E0D50AE3EB3ADC00282AC5039E7B0F6AACDD9E3F4060CDEE4A7F82C9F858A4",
+  "CheckedUTC": "2026-11-24T06:44:16.972320+00:00"
+}
