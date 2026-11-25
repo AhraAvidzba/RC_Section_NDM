@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -36,6 +36,79 @@ Public Function RequiredColumns() As Long
     RequiredColumns = TORSION_POST_DISPLAY_COLUMNS
 End Function
 
+' Собирает строку IO-контракта из смысловых свойств; неприменимые числа остаются Empty.
+Public Function CreateSummaryData(ByVal result As CTorsionPostResult) As Variant
+    Dim data(1 To 1, 1 To TORSION_POST_COLUMNS) As Variant
+    data(1, tscCombinationID) = result.CombinationID
+    data(1, tscLongitudinalStatus) = result.LongitudinalStatus
+    data(1, tscHoopStatus) = result.HoopStatus
+    data(1, tscConcreteStatus) = result.ConcreteStatus
+    data(1, tscCombinedStatus) = result.CombinedStatus
+    data(1, tscOverallStatus) = result.OverallStatus
+    If result.HasResultComment Then data(1, tscResultComment) = result.ResultComment
+    If result.HasTResults Then
+        data(1, tscStateName) = result.StateName
+        data(1, tscTorque) = result.Torque
+        data(1, tscEnclosedArea) = result.EnclosedArea
+        data(1, tscHoopPerimeter) = result.HoopPerimeter
+        data(1, tscCotangent) = result.Cotangent
+        data(1, tscShearFlow) = result.ShearFlow
+        data(1, tscLongitudinalForce) = result.LongitudinalForce
+        data(1, tscLongitudinalArea) = result.LongitudinalArea
+        data(1, tscRequiredLongitudinalArea) = result.RequiredLongitudinalArea
+        data(1, tscCriticalTRebarID) = result.CriticalTRebarID
+        data(1, tscMaximumTStress) = result.MaximumTStress
+        data(1, tscLongitudinalResistance) = result.LongitudinalResistance
+        data(1, tscLongitudinalReserve) = result.LongitudinalReserve
+        data(1, tscHoopArea) = result.HoopArea
+        data(1, tscHoopSpacing) = result.HoopSpacing
+        data(1, tscHoopStress) = result.HoopStress
+        data(1, tscHoopResistance) = result.HoopResistance
+        data(1, tscHoopReserve) = result.HoopReserve
+        data(1, tscConcreteMethod) = result.ConcreteMethod
+        data(1, tscBarBand) = result.BarBand
+        data(1, tscCriticalTPlacement) = result.CriticalTPlacement
+        If result.HasConcreteCapacity Then
+            data(1, tscConcreteThickness) = result.ConcreteThickness
+            data(1, tscConcreteTorqueLimit) = result.ConcreteTorqueLimit
+            data(1, tscConcreteReserve) = result.ConcreteReserve
+        End If
+        If result.HasConcreteStress Then
+            data(1, tscConcreteStress) = result.ConcreteStress
+            data(1, tscConcreteResistance) = result.ConcreteResistance
+            data(1, tscEffectiveConcreteArea) = result.EffectiveConcreteArea
+            data(1, tscConcreteDesignStrength) = result.ConcreteDesignStrength
+            data(1, tscConcreteEfficiency) = result.ConcreteEfficiency
+        End If
+        If result.HasCombinedResults Then
+            data(1, tscCriticalNMTRebarID) = result.CriticalNMTRebarID
+            data(1, tscNormalStress) = result.NormalStress
+            data(1, tscTStressAtCriticalNMT) = result.TStressAtCriticalNMT
+            data(1, tscCombinedForce) = result.CombinedForce
+            data(1, tscCombinedStress) = result.CombinedStress
+            data(1, tscCombinedResistance) = result.CombinedResistance
+            data(1, tscCriticalNMTPlacement) = result.CriticalNMTPlacement
+            If result.HasCombinedReserve Then data(1, tscCombinedReserve) = result.CombinedReserve
+        End If
+    End If
+    CreateSummaryData = data
+End Function
+
+' Собирает подробные строки стержней для Excel и снимка без изменения объекта результата.
+Public Function CreateBarData(ByVal result As CTorsionPostResult) As Variant
+    If result.BarCount = 0 Then Exit Function
+    Dim data() As Variant, i As Long
+    ReDim data(1 To result.BarCount, 1 To TORSION_BAR_COLUMNS)
+    For i = 1 To result.BarCount
+        data(i, tbcCombinationID) = result.CombinationID
+        data(i, tbcRebarID) = result.BarID(i)
+        data(i, tbcPlacement) = result.BarPlacement(i)
+        data(i, tbcForce) = result.BarForce(i)
+        data(i, tbcAllocatedLength) = result.BarLength(i)
+    Next i
+    CreateBarData = data
+End Function
+
 ' Сохраняет расчётные значения и поэлементные усилия отдельными матрицами.
 Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results As Collection, _
         ByVal units As CUnitSystem)
@@ -45,19 +118,18 @@ Public Sub CaptureSummary(ByVal snapshot As CCalculationSnapshot, ByVal results 
     count = results.Count: If count < 1 Then count = 1
     ReDim data(1 To count, 1 To TORSION_POST_COLUMNS)
     For Each result In results
-        values = result.Bars
-        If IsArray(values) Then barRows = barRows + UBound(values, 1)
+        barRows = barRows + result.BarCount
     Next result
     ReDim bars(1 To barRows + 1, 1 To TORSION_BAR_COLUMNS)
     bars(1, 1) = "LoadCase": bars(1, 2) = "Rebar": bars(1, 3) = "Грань"
     bars(1, 4) = "F_T, " & units.OutputForceUnit: bars(1, 5) = "l_i, " & units.OutputLengthUnit
     barRow = 1
     For Each result In results
-        row = row + 1: summary = result.Summary
+        row = row + 1: summary = CreateSummaryData(result)
         For column = 1 To TORSION_POST_COLUMNS
             data(row, column) = TorsionSummaryOutputValue(summary(1, column), column, units)
         Next column
-        values = result.Bars
+        values = CreateBarData(result)
         If IsArray(values) Then
             For i = 1 To UBound(values, 1)
                 barRow = barRow + 1

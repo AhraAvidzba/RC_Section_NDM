@@ -1,0 +1,19 @@
+{
+  "Status": "PASS",
+  "FullSourceCommit": "cd1b29395c8c7947b8b654d96fdd64e2da0f74ba",
+  "FullWorkbookSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+  "FullExecutions": 202,
+  "FullPassedAssertions": 905922,
+  "FocusedSingleCases": 122,
+  "FocusedPassedAssertions": 14014,
+  "FocusedSeconds": 1240.374988,
+  "RealAutoCADStages": 2,
+  "IndependentIntegrals": 563,
+  "ReviewedNumFailStates": 7,
+  "SupplementExecutions": 14,
+  "SubsequentTypedDirectedExecutions": 40,
+  "TypedCandidateSHA256": "6276D1017C97529725F9CB3E0BF61B027EE1DED7999DD9E566722DA333F52037",
+  "NoNewFullRunForTypedChange": true,
+  "ReadyForInstallation": true,
+  "Scope": "Full PASS belongs to F06 baseline; subsequent typed torsion candidate accepted only by directed tests as authorized."
+}

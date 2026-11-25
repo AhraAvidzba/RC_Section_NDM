@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTorsionPostprocess"
+﻿Attribute VB_Name = "modTorsionPostprocess"
 Option Explicit
 
 ' ==========================================================================
@@ -53,12 +53,11 @@ Private Function CaptureTorsionPostCore(ByVal workbook As Object, ByVal section 
         End If
     Next row
     torsionWriter.CaptureSummary snapshot, results, units
-    Dim summary As Variant, warnings As Long, policy As New CResultStatusPolicy, firstReason As String
+    Dim warnings As Long, policy As New CResultStatusPolicy, firstReason As String
     For Each result In results
-        summary = result.Summary
-        If CStr(summary(1, 38)) <> policy.OK Then
+        If result.OverallStatus <> policy.OK Then
             warnings = warnings + 1
-            If Len(firstReason) = 0 And Len(CStr(summary(1, 39))) > 0 Then firstReason = CStr(summary(1, 39))
+            If Len(firstReason) = 0 And Len(result.ResultComment) > 0 Then firstReason = result.ResultComment
         End If
     Next result
     If warnings > 0 Then CaptureTorsionPostCore = "Постпроверка T (кручение): строк с отказом, ошибкой или недоступной суммой — " & CStr(warnings) & ". Причины указаны в блоке NMT на Results."
@@ -146,8 +145,6 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
         End If
     Next i
     Set result = calculator.Calculate(identifier, torque, state, zeroNormalState)
-    Dim values As Variant, bars As Variant, addressed As CTorsionPostResult
-    values = result.Summary
     Dim diagnostic As String, concreteDiagnostic As String
     If Len(result.StateFailureReason) > 0 Then diagnostic = settings.InputErrorMessage("Torsion.StateType", result.StateFailureReason, _
         "Выберите сохранённое состояние или включите его получение в расчётном профиле сочетания.")
@@ -159,15 +156,13 @@ Private Function ReadTorsionPostRow(ByVal workbook As Object, ByVal section As C
     End If
     diagnostic = WorkbookMessageParagraph(diagnostic, concreteDiagnostic)
     If Len(diagnostic) > 0 Then
-        values(1, 39) = WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & diagnostic, workbook)
-        bars = result.Bars
-        Set addressed = New CTorsionPostResult: addressed.Initialize values, bars, result.StateFailureReason ' Адресная копия не меняет готовое НДС или неизменяемый результат вычислителя.
-        Set result = addressed
+        Set result = result.WithResultComment(WorkbookDialogText("Постпроверка T (кручение)." & vbCrLf & diagnostic, workbook))
     End If
     Set ReadTorsionPostRow = result
     Exit Function
 Failed:
-    Dim reason As String, context As String
+    Dim reason As String, context As String, errorNumber As Long
+    errorNumber = Err.Number
     reason = Err.Description: context = "Постпроверка T (кручение), ID «" & identifier & "»"
     If column > 0 Then
         reason = InputDiagnosticText(reason, source.Worksheet.Name & "!" & source.Cells(row, column).Address(False, False), _
@@ -177,7 +172,7 @@ Failed:
     End If
     reason = WorkbookDialogText(reason, workbook)
     Set result = New CTorsionPostResult
-    result.InitializeFailure identifier, reason
+    result.InitializeFailure identifier, reason, errorNumber = TORSION_RESULT_CONTRACT_ERROR
     Set ReadTorsionPostRow = result
 End Function
 

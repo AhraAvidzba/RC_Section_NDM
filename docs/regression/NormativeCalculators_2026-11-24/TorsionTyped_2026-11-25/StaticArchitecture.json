@@ -1,0 +1,27 @@
+{
+  "Status": "STATIC_PASS",
+  "BaselineCommit": "cd1b29395c8c7947b8b654d96fdd64e2da0f74ba",
+  "NoNewVBAClassesOrModules": true,
+  "ChangedComponents": [
+    "src/Excel/CTorsionSummaryWriter.cls",
+    "src/Excel/modTorsionPostprocess.bas",
+    "src/Torsion/CTorsionPostCalculator.cls",
+    "src/Torsion/CTorsionPostResult.cls",
+    "src/Torsion/modTorsionPostTypes.bas",
+    "tests/modTestTorsionPost.bas",
+    "tests/modTestTorsionProjections.bas"
+  ],
+  "All44NamedFieldsMappedAndCopied": true,
+  "KernelAndResultDoNotKnowOutputColumnPositions": true,
+  "CheckedNumericalExpressions": [
+    "q = torque / (2# * mOuter.EnclosedArea)",
+    "force = q * mOuter.Length * mCotangent",
+    "hoopStress = q * mP.HoopSpacing / (mHoopArea * mCotangent)",
+    "delta = force * mCoefficients(i)",
+    "combined = normal + delta",
+    "criticalForce = combined * mSection.RebarArea(i)",
+    "mCotangent = 1# / Tan(mP.StrutAngle * 4# * Atn(1#) / 180#)",
+    "mHoopArea = 4# * Atn(1#) * mP.HoopDiameter ^ 2 / 4#"
+  ],
+  "Limit": "Native compilation and directed No/Yes acceptance still required."
+}

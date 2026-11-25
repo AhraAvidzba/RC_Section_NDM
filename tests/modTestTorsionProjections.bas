@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestTorsionProjections"
+﻿Attribute VB_Name = "modTestTorsionProjections"
 Option Explicit
 
 ' ==================== ДЛЯ ТЕСТОВ ====================
@@ -306,7 +306,7 @@ Private Sub TestProjectionCalculatorOutput(ByVal section As CSectionModel)
     calculator.Prepare section, p
     Dim result As CTorsionPostResult: Set result = calculator.Calculate("Equal", 1000000#, Nothing)
     Dim bars As Variant, row As Variant, i As Long, total As Double
-    bars = result.Bars: row = result.Summary
+    bars = TestTorsionBars(result): row = TestTorsionSummary(result)
     TestProjectionAssert "One output per physical bar", UBound(bars, 1) = section.RebarCount
     For i = 1 To UBound(bars, 1): total = total + bars(i, 4): Next i
     TestProjectionNear "Calculator force equilibrium", total, CDbl(row(1, 8))
@@ -336,3 +336,17 @@ Private Sub TestProjectionAssert(ByVal label As String, ByVal passed As Boolean)
     If passed Then mTestPassed = mTestPassed + 1 Else mTestFailed = mTestFailed + 1
     mTestLog = mTestLog & vbCrLf & IIf(passed, "PASS ", "FAIL ") & label
 End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет прежний табличный IO-контракт через действующий адаптер вывода.
+Private Function TestTorsionSummary(ByVal result As CTorsionPostResult) As Variant
+    Dim writer As New CTorsionSummaryWriter
+    TestTorsionSummary = writer.CreateSummaryData(result)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Получает подробные строки только через сериализацию существующего writer.
+Private Function TestTorsionBars(ByVal result As CTorsionPostResult) As Variant
+    Dim writer As New CTorsionSummaryWriter
+    TestTorsionBars = writer.CreateBarData(result)
+End Function

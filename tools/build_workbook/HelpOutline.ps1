@@ -157,17 +157,20 @@ function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
     $sheet.Rows.Hidden=$false
     Repair-HelpConfigEntries $Workbook
     $rows=Get-HelpMainRows $sheet
-    $configTitle=$script:HelpMainTitles[-1]
     foreach ($title in $script:HelpMainTitles) {
         if (-not $rows.ContainsKey($title)) {throw ('Missing Help section: '+$title)}
     }
-    foreach ($title in @('Справка по результатам расчета листа Results','Добавление нового типа сечения')) {
+    # Собираем упорядоченный суффикс перед Config: соседние готовые разделы не перемещаем.
+    # Это работает и до установки полного руководства, когда раздел кручения стоит после Config.
+    for ($i=$script:HelpMainTitles.Count-2;$i -ge 0;$i--) {
+        $title=$script:HelpMainTitles[$i]
+        $nextTitle=$script:HelpMainTitles[$i+1]
         $rows=Get-HelpMainRows $sheet
-        $first=[int]$rows[$title];$destination=[int]$rows[$configTitle]
-        if ($first -gt $destination) {
-            $last=Get-HelpSectionLastRow $rows $first (Get-HelpContentLastRow $sheet)
-            Move-HelpRowsBefore $Workbook $sheet $first $last $destination
-        }
+        $first=[int]$rows[$title];$destination=[int]$rows[$nextTitle]
+        $actualNext=@($rows.Values | Where-Object {$_ -gt $first} | Sort-Object)[0]
+        if ($null -ne $actualNext -and [int]$actualNext -eq $destination) {continue}
+        $last=Get-HelpSectionLastRow $rows $first (Get-HelpContentLastRow $sheet)
+        Move-HelpRowsBefore $Workbook $sheet $first $last $destination
     }
     $rows=Get-HelpMainRows $sheet
     $ordered=@($script:HelpMainTitles | ForEach-Object {[int]$rows[$_]})

@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestTorsionPost"
+﻿Attribute VB_Name = "modTestTorsionPost"
 Option Explicit
 
 ' ==================== ДЛЯ ТЕСТОВ ====================
@@ -18,7 +18,7 @@ Public Function RunTorsionOnlyTests() As String
     Dim calculator As New CTorsionPostCalculator: calculator.Prepare section, p
     Dim result As CTorsionPostResult, values As Variant, bars As Variant, i As Long, total As Double
     Set result = calculator.Calculate("T_ONLY", 3900000#, Nothing, True)
-    values = result.Summary: bars = result.Bars
+    values = TestTorsionSummary(result): bars = TestTorsionBars(result)
     TestTorsionNear "Zero NM exactly", values(1, 30), 0#
     TestTorsionNear "T + zero NM", values(1, 33), 98.4375
     TestTorsionNear "Same governing T increment", values(1, 31), CDbl(values(1, 12))
@@ -28,7 +28,7 @@ Public Function RunTorsionOnlyTests() As String
     For i = 1 To UBound(bars, 1): total = total + CDbl(bars(i, 4)): Next i
     TestTorsionNear "Force preserved", total, 39375#
     Set result = calculator.Calculate("MISSING_NM", 3900000#, Nothing)
-    values = result.Summary
+    values = TestTorsionSummary(result)
     TestTorsionAssert "Missing nonzero NM is unavailable", CStr(values(1, 36)) = "N/A" And Len(result.StateFailureReason) > 0
     section.Contours.Clear
     Set calculator = New CTorsionPostCalculator
@@ -60,7 +60,7 @@ Public Function RunTorsionPostTests() As String
     p.ConcreteMethod = "Strut": p.ConcreteResistance = 10#: p.CharacteristicConcreteStrength = 20#: p.ConcretePartialFactor = 2#: p.LongitudinalAxisOffset = 20#
     Dim calculator As New CTorsionPostCalculator: calculator.Prepare section, p
     Dim result As CTorsionPostResult: Set result = calculator.Calculate("T01", 3900000#, Nothing)
-    Dim row As Variant, bars As Variant: row = result.Summary: bars = result.Bars
+    Dim row As Variant, bars As Variant: row = TestTorsionSummary(result): bars = TestTorsionBars(result)
     TestTorsionNear "Ao = 160*260", row(1, 4), 41600#
     TestTorsionNear "uo = 2*(160+260)", row(1, 5), 840#
     TestTorsionNear "q = T/(2Ao)", row(1, 7), 46.875
@@ -87,37 +87,37 @@ Public Function RunTorsionPostTests() As String
     Next i
     TestTorsionNear "Allocated force equilibrium", total, 39375#
     TestTorsionAssert "T determining bar owns its placement", CStr(row(1, 43)) = section.RebarComment(CLng(Mid$(CStr(row(1, 11)), 2)))
-    Set result = calculator.Calculate("Tminus", -3900000#, Nothing): row = result.Summary
+    Set result = calculator.Calculate("Tminus", -3900000#, Nothing): row = TestTorsionSummary(result)
     TestTorsionNear "T sign invariance", row(1, 8), total
     p.ConcreteMethod = "GorskyRectangle": p.GorskyCoefficient = 0.07
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("TG", 3900000#, Nothing): row = result.Summary
+    Set result = calculator.Calculate("TG", 3900000#, Nothing): row = TestTorsionSummary(result)
     TestTorsionNear "Gorsky coefficient*c*b2*h", row(1, 26), 8400000#
     TestTorsionNear "Gorsky changes no longitudinal force", row(1, 8), 39375#
     p.ConcreteMethod = "None"
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("TnoConcrete", 3900000#, Nothing): row = result.Summary
+    Set result = calculator.Calculate("TnoConcrete", 3900000#, Nothing): row = TestTorsionSummary(result)
     TestTorsionAssert "Concrete disabled", IsEmpty(row(1, 27)) And CStr(row(1, 28)) = "N/A"
     Dim state As CSectionStateResult
     Set state = TestTorsionReadyPlane(section, -0.0005, True)
-    Set result = calculator.Calculate("Tcompression", 3900000#, state): row = result.Summary
+    Set result = calculator.Calculate("Tcompression", 3900000#, state): row = TestTorsionSummary(result)
     TestTorsionAssert "NMT determining bar owns its placement", CStr(row(1, 44)) = section.RebarComment(CLng(Mid$(CStr(row(1, 29)), 2)))
     TestTorsionNear "NM compression retains sign", row(1, 30), -100#
     TestTorsionNear "Signed sum is negative", row(1, 33), -1.5625
     TestTorsionAssert "Compressive sum has no tensile limit", IsEmpty(row(1, 35)) And CStr(row(1, 36)) = "OK"
     Set state = TestTorsionReadyPlane(section, 0.0005, False)
-    Set result = calculator.Calculate("Tphysical", 3900000#, state): row = result.Summary
+    Set result = calculator.Calculate("Tphysical", 3900000#, state): row = TestTorsionSummary(result)
     TestTorsionNear "Outside physical flag still uses saved NM", row(1, 30), 100#
     TestTorsionNear "Outside physical flag signed sum", row(1, 33), 198.4375
     TestTorsionAssert "NM reasons stay in NM", Len(CStr(row(1, 39))) = 0 And CStr(row(1, 36)) = "OK"
     p.HoopResistance = 1000000#
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
     Set state = TestTorsionReadyPlane(section, -0.0005, True)
-    Set result = calculator.Calculate("Tcompensation", 12000000#, state): row = result.Summary
+    Set result = calculator.Calculate("Tcompensation", 12000000#, state): row = TestTorsionSummary(result)
     TestTorsionAssert "T only failure does not override signed sum", CStr(row(1, 15)) = "FAIL" And CStr(row(1, 36)) = "OK" And CStr(row(1, 38)) = "OK"
     Set section = TestTorsionHollow(): p.BarBand = 200#
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("Thollow", 3900000#, Nothing): row = result.Summary: bars = result.Bars
+    Set result = calculator.Calculate("Thollow", 3900000#, Nothing): row = TestTorsionSummary(result): bars = TestTorsionBars(result)
     TestTorsionNear "Hollow uses outer area only", row(1, 9), 400#
     TestTorsionAssert "Wide band excludes inner row", UBound(bars, 1) = 4
     total = 0#
@@ -126,6 +126,7 @@ Public Function RunTorsionPostTests() As String
         TestTorsionAssert "Outer bar ID " & CStr(i), Val(Mid$(CStr(bars(i, 2)), 2)) <= 4
     Next i
     TestTorsionNear "Hollow allocates all tie force", total, 39375#
+    TestTypedTorsionResult
     GoTo Finished
 Failed:
     mTestFailed = mTestFailed + 1: mTestLog = mTestLog & vbCrLf & "RUNTIME: " & Err.Description
@@ -181,7 +182,7 @@ Public Function RunTorsionPostAvailabilityTests() As String
     p.ConcreteMethod = "None": p.ConcreteResistance = 10#: p.CharacteristicConcreteStrength = 20#: p.ConcretePartialFactor = 2#: p.LongitudinalAxisOffset = 20#
     Dim state As CSectionStateResult: Set state = TestTorsionReadyPlane(section, 0.0005, True)
     Dim calculator As New CTorsionPostCalculator, result As CTorsionPostResult, expected As Variant, actual As Variant
-    calculator.Prepare section, p: Set result = calculator.Calculate("Base", 3900000#, state): expected = result.Summary
+    calculator.Prepare section, p: Set result = calculator.Calculate("Base", 3900000#, state): expected = TestTorsionSummary(result)
     Dim scenario As Variant, column As Long
     For Each scenario In Array("UnknownMethod", "ExcessiveThickness", "InvalidConcreteInput")
         p.ConcreteMethod = "Strut": p.WallThickness = 0#: p.ConcreteInputInvalid = False
@@ -191,7 +192,7 @@ Public Function RunTorsionPostAvailabilityTests() As String
             Case "InvalidConcreteInput": p.ConcreteInputInvalid = True
         End Select
         Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-        Set result = calculator.Calculate(CStr(scenario), 3900000#, state): actual = result.Summary
+        Set result = calculator.Calculate(CStr(scenario), 3900000#, state): actual = TestTorsionSummary(result)
         TestTorsionAssert CStr(scenario) & " concrete InputErr", CStr(actual(1, 28)) = "InputErr"
         TestTorsionAssert CStr(scenario) & " overall cannot be OK", CStr(actual(1, 38)) = "InputErr"
         TestTorsionAssert CStr(scenario) & " no invented concrete limit", IsEmpty(actual(1, 26)) And IsEmpty(actual(1, 27))
@@ -206,20 +207,20 @@ Public Function RunTorsionPostAvailabilityTests() As String
     p.ConcreteMethod = "None": p.ConcreteInputInvalid = False: p.WallThickness = 0#
     p.HoopDiameter = Sqr(400# / (4# * Atn(1#))): p.HoopSpacing = 210#: p.HoopResistance = p.SteelResistance
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("EqualSteelDensities45", 3900000#, state): actual = result.Summary
+    Set result = calculator.Calculate("EqualSteelDensities45", 3900000#, state): actual = TestTorsionSummary(result)
     TestTorsionNear "Equal density at 45 gives same longitudinal and hoop stress", actual(1, 12), CDbl(actual(1, 18))
     TestTorsionNear "Equal resistance gives same T reserve", actual(1, 14), CDbl(actual(1, 20))
     p.BarBand = 1000000#
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("WideBand", 3900000#, state): actual = result.Summary
+    Set result = calculator.Calculate("WideBand", 3900000#, state): actual = TestTorsionSummary(result)
     TestTorsionNear "Band wider than maximum dimension keeps eligible area", actual(1, 9), expected(1, 9)
     TestTorsionNear "Wide band keeps longitudinal force", actual(1, 8), expected(1, 8)
     TestTorsionAssert "Wide band is not clamped to geometry", CDbl(actual(1, 37)) = 1000000#
     Set section = TestTorsionHollow(): p.ConcreteMethod = "GorskyRectangle": p.GorskyCoefficient = 0.07
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("WrongShapeForGorsky", 3900000#, Nothing): actual = result.Summary
+    Set result = calculator.Calculate("WrongShapeForGorsky", 3900000#, Nothing): actual = TestTorsionSummary(result)
     TestTorsionAssert "Gorsky shape error only in concrete", CStr(actual(1, 28)) = "InputErr" And CStr(actual(1, 15)) <> "InputErr" And CStr(actual(1, 21)) <> "InputErr"
-    Dim bars As Variant: bars = result.Bars
+    Dim bars As Variant: bars = TestTorsionBars(result)
     TestTorsionAssert "Hollow wide band keeps outer row rule", UBound(bars, 1) = 4
     GoTo Finished
 Failed:
@@ -522,7 +523,7 @@ End Function
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Независимое сравнение с относительным допуском для аналитических величин.
 Private Sub TestTorsionNear(ByVal name As String, ByVal actual As Variant, ByVal expected As Double)
-    TestTorsionAssert name, Abs(CDbl(actual) - expected) <= 1E-9 * GeomMax(1#, Abs(expected))
+    TestTorsionAssert name, Abs(CDbl(actual) - expected) <= 0.000000001 * GeomMax(1#, Abs(expected))
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -704,7 +705,7 @@ Public Function RunTorsionGeometryInvariantTests() As String
                 Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
                 For sg = -1 To 1 Step 2
                     Set result = calculator.Calculate("INV", sg * 3900000# * sizeFactor ^ 3, Nothing)
-                    data = result.Summary: bars = result.Bars
+                    data = TestTorsionSummary(result): bars = TestTorsionBars(result)
                     TestTorsionNear "Similar Ao", data(1, 4), 41600# * sizeFactor ^ 2
                     TestTorsionNear "Similar perimeter", data(1, 5), 840# * sizeFactor
                     TestTorsionNear "Similar stress", data(1, 12), 98.4375
@@ -731,7 +732,7 @@ Public Function RunTorsionGeometryInvariantTests() As String
     Next i
     p.AxisOffset = 20#: p.HoopDiameter = 8#: p.HoopSpacing = 150#: p.BarBand = 25#
     Set calculator = New CTorsionPostCalculator: calculator.Prepare section, p
-    Set result = calculator.Calculate("CIRCLE", 3900000#, Nothing): data = result.Summary: bars = result.Bars
+    Set result = calculator.Calculate("CIRCLE", 3900000#, Nothing): data = TestTorsionSummary(result): bars = TestTorsionBars(result)
     TestTorsionNear "Circle exact Ao", data(1, 4), pi * 6400#
     TestTorsionNear "Circle exact perimeter", data(1, 5), pi * 160#
     lengthSum = 0#: forceSum = 0#
@@ -772,4 +773,82 @@ Private Function TestTorsionTransformedRectangle(ByVal sizeFactor As Double, ByV
         Next j
     Next i
     Set TestTorsionTransformedRectangle = section
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет прежний табличный IO-контракт через действующий адаптер вывода.
+Private Function TestTorsionSummary(ByVal result As CTorsionPostResult) As Variant
+    Dim writer As New CTorsionSummaryWriter
+    TestTorsionSummary = writer.CreateSummaryData(result)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет владение данными, неизменяемость, независимую адресную копию и Empty/ноль в IO.
+Private Sub TestTypedTorsionResult()
+    Dim data As TTorsionPostData, policy As New CResultStatusPolicy
+    data.HasTResults = True: data.HasCombinedResults = True
+    data.CombinationID = "Typed": data.StateName = "StrengthState": data.Torque = 3900000#
+    data.ShearFlow = 12.5: data.NormalStress = 0#: data.CombinedStress = -12#
+    data.LongitudinalStatus = policy.OK: data.HoopStatus = policy.OK
+    data.ConcreteMethod = "None": data.ConcreteStatus = policy.NotApplicable
+    data.CombinedStatus = policy.OK: data.OverallStatus = policy.OK
+    Dim identifiers(1 To 1) As String, placements(1 To 1) As String
+    Dim forces(1 To 1) As Double, lengths(1 To 1) As Double
+    identifiers(1) = "Rtyped": placements(1) = "B - верхняя внешняя грань, ряд 1"
+    forces(1) = 123.456789012345: lengths(1) = 205#
+    Dim result As New CTorsionPostResult, writer As New CTorsionSummaryWriter
+    result.Initialize data, 1, identifiers, placements, forces, lengths, "Причина NM"
+    data.Torque = -1#: identifiers(1) = "Changed": forces(1) = -1#
+    TestTorsionAssert "Typed input values are copied", result.Torque = 3900000#
+    TestTorsionAssert "Typed bar identifiers are copied", result.BarID(1) = "Rtyped"
+    TestTorsionAssert "Typed bar forces are copied", result.BarForce(1) = 123.456789012345
+    TestTorsionAssert "Typed bar placement retained", result.BarPlacement(1) = placements(1)
+    TestTorsionAssert "Typed bar length retained", result.BarLength(1) = 205#
+    Dim summary As Variant, bars As Variant
+    summary = writer.CreateSummaryData(result): bars = writer.CreateBarData(result)
+    TestTorsionAssert "Typed computed zero stays Double", VarType(summary(1, 30)) = vbDouble And CDbl(summary(1, 30)) = 0#
+    TestTorsionAssert "Typed unbounded reserve stays Empty", IsEmpty(summary(1, 35))
+    TestTorsionAssert "Typed absent concrete stress stays Empty", IsEmpty(summary(1, 24))
+    TestTorsionAssert "Typed absent comment stays Empty", IsEmpty(summary(1, 39))
+    bars(1, 4) = -1#
+    TestTorsionAssert "Typed exported matrix cannot change result", result.BarForce(1) = 123.456789012345
+    Dim addressed As CTorsionPostResult
+    Set addressed = result.WithResultComment("Адресная диагностика")
+    TestTorsionAssert "Typed addressed comment is independent", addressed.ResultComment = "Адресная диагностика" And Not result.HasResultComment
+    TestTorsionAssert "Typed state failure reason retained", addressed.StateFailureReason = "Причина NM"
+    TestTorsionAssert "Typed addressed bars retained", addressed.BarCount = 1 And addressed.BarForce(1) = result.BarForce(1)
+    Dim copyData As Variant, column As Long
+    copyData = writer.CreateSummaryData(addressed)
+    For column = 1 To TORSION_POST_COLUMNS
+        If column <> 39 Then TestTorsionAssert "Typed copy field " & CStr(column), _
+            VarType(copyData(1, column)) = VarType(summary(1, column)) And CStr(copyData(1, column)) = CStr(summary(1, column))
+    Next column
+    Dim number As Long, ignored As Double
+    On Error Resume Next
+    result.InitializeFailure "Overwrite", "Недопустимая запись"
+    number = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestTorsionAssert "Typed immutable result rejects write", number = TORSION_RESULT_CONTRACT_ERROR
+    TestTorsionAssert "Typed rejected write preserves values", result.CombinationID = "Typed" And result.Torque = 3900000#
+    On Error Resume Next
+    ignored = result.BarForce(0): number = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestTorsionAssert "Typed invalid bar index has contract error", number = TORSION_RESULT_CONTRACT_ERROR
+    TestTorsionAssert "Typed index error preserves result", result.BarForce(1) = 123.456789012345
+    Dim failed As New CTorsionPostResult
+    failed.InitializeFailure "Failure", "", True
+    summary = writer.CreateSummaryData(failed)
+    TestTorsionAssert "Typed failure has no numeric torque", IsEmpty(summary(1, 3))
+    TestTorsionAssert "Typed explicit empty comment stays String", VarType(summary(1, 39)) = vbString And Len(CStr(summary(1, 39))) = 0
+    TestTorsionAssert "Typed failure remains CalcErr", failed.OverallStatus = policy.CalcErr
+    TestTorsionAssert "Typed failure has no bar matrix", IsEmpty(writer.CreateBarData(failed))
+    Set addressed = failed.WithResultComment("Адрес ошибки")
+    TestTorsionAssert "Typed failure copy retains no bars", addressed.BarCount = 0 And addressed.OverallStatus = policy.CalcErr
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Получает подробные строки только через сериализацию существующего writer.
+Private Function TestTorsionBars(ByVal result As CTorsionPostResult) As Variant
+    Dim writer As New CTorsionSummaryWriter
+    TestTorsionBars = writer.CreateBarData(result)
 End Function

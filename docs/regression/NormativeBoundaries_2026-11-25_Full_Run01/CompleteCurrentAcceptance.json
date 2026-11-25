@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+  "CoreSuites": 202,
+  "CorePassedAssertions": 905922,
+  "FocusedSingleCases": 122,
+  "FocusedPassedAssertions": 14014,
+  "IndependentIntegrals": 563,
+  "IndependentlyReviewedNumFailStates": 7,
+  "SameWorkbookBytes": true,
+  "SingleInvocation": true,
+  "CoreDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\NormativeBoundaries_2026-11-25_Full_Run01",
+  "FocusedDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\NormativeBoundaries_2026-11-25_Full_Run01\\Focused",
+  "FocusedRunSHA256": "1375564EC906EF9C6920E21F041CB7C8C0C0CD1CE3EE9394D94E47172D3ABC7B",
+  "IndependentSHA256": "5D3B9A91FDF6DD90891A35783E43F60D3F424B93ACBF9DC310697DACB8AE4C56",
+  "Meaning": "All current acceptance groups use exactly the same production workbook; invocation is recorded above."
+}

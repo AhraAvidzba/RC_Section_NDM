@@ -1,0 +1,50 @@
+{
+  "Status": "PASS",
+  "Scope": "10 related torsion macros x Baseline/Candidate x No/Yes",
+  "Executions": 40,
+  "NewFullRunsStarted": false,
+  "OriginalAssertionsIdentical": true,
+  "NewTypedAssertionsPerMode": 65,
+  "NoNewVBAComponents": true,
+  "NativeCompilationComponents": 209,
+  "AllNonVBAPartsByteIdentical": true,
+  "CandidateInstalled": false,
+  "Runs": [
+    {
+      "Label": "Baseline",
+      "Mode": "No",
+      "Macros": 10,
+      "Assertions": 1481,
+      "Failures": 0,
+      "ReportSHA256": "A5B178DC60339AD5EA00D678AEE564ABEC36E1A4D8388837CD63B643464F01BB",
+      "SourceSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B"
+    },
+    {
+      "Label": "Baseline",
+      "Mode": "Yes",
+      "Macros": 10,
+      "Assertions": 1481,
+      "Failures": 0,
+      "ReportSHA256": "8E7386F6C24186955F933B4877A0334A93F0BBDF5D978DA44804102893E6AD7D",
+      "SourceSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B"
+    },
+    {
+      "Label": "Candidate",
+      "Mode": "No",
+      "Macros": 10,
+      "Assertions": 1546,
+      "Failures": 0,
+      "ReportSHA256": "68B709E0CF0367E3E3D80C092D841BBE032ECE82E25EC4713F59228B1B746B45",
+      "SourceSHA256": "6276D1017C97529725F9CB3E0BF61B027EE1DED7999DD9E566722DA333F52037"
+    },
+    {
+      "Label": "Candidate",
+      "Mode": "Yes",
+      "Macros": 10,
+      "Assertions": 1546,
+      "Failures": 0,
+      "ReportSHA256": "F89156CC0366AF7984033F7E26437712DF6E9BB21A72BED0575A5E7339FE63D0",
+      "SourceSHA256": "6276D1017C97529725F9CB3E0BF61B027EE1DED7999DD9E566722DA333F52037"
+    }
+  ]
+}

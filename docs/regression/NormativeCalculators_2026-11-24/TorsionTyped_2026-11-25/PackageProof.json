@@ -1,0 +1,25 @@
+{
+  "Status": "PASS",
+  "NativeComponents": 209,
+  "NoNewVBAComponents": true,
+  "ChangedComponents": [
+    "CTorsionPostCalculator",
+    "CTorsionPostResult",
+    "CTorsionSummaryWriter",
+    "modTestTorsionPost",
+    "modTestTorsionProjections",
+    "modTorsionPostTypes",
+    "modTorsionPostprocess"
+  ],
+  "SourceEquality": true,
+  "CompiledBuildSHA256": "8BD97564AA9C94F8906B3CA89CA985B640DA5D88D5FBB48288E99C8AE8871F2A",
+  "BaselineSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+  "CandidateSHA256": "6276D1017C97529725F9CB3E0BF61B027EE1DED7999DD9E566722DA333F52037",
+  "ExportSHA256": "E59680D2DEA767331F5368178AD618E07034F575AB1A3D6FC64D542DDCED391B",
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllNonVBAPartsByteIdentical": true,
+  "Installed": false,
+  "ExistingTestTolerance": "1E-9 and 0.000000001 are identical; decimal notation already exists in baseline native code."
+}

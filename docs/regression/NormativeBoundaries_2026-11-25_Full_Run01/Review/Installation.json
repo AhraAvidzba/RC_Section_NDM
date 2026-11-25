@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "InstalledBookSHA256": "6276D1017C97529725F9CB3E0BF61B027EE1DED7999DD9E566722DA333F52037",
+  "InstalledExportSHA256": "E59680D2DEA767331F5368178AD618E07034F575AB1A3D6FC64D542DDCED391B",
+  "OnlyChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllNonVBAPartsPreserved": true,
+  "NativeCompiledVBAInstalled": true,
+  "UnrelatedFilesPreserved": {
+    "workbook/output/NDM_Test_1232_30/RC_Section_NDM_execution_report.txt": "2E0D23BE24CAB73DAE4371538D9AFDDBA88DB8E1560F76A38164C1756C81ED49",
+    "workbook/output/RC_Section_NDM_execution_report.txt": null,
+    "Типы_сечения.dwg": "13C7F0268E5E3536A2854EDF3324EF876D300629B8A0447B92ACB8A2334C7121"
+  },
+  "FullAcceptanceSource": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+  "TypedChangeAcceptance": "DirectedAcceptance.json:40 executions; no new full run"
+}
