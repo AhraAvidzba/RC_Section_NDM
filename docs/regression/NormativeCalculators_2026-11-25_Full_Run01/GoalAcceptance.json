@@ -1,0 +1,14 @@
+﻿{
+    "Status":  "PASS",
+    "SourceSHA256":  "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+    "PrimaryExitCode":  0,
+    "SupplementExitCode":  0,
+    "RequiredCoreExecutions":  202,
+    "RequiredFocusedSingleCases":  122,
+    "RequiredSupplementExecutions":  12,
+    "SameWorkbookBytes":  true,
+    "FinishedUTC":  "2026-11-25T02:49:09.7309552+00:00",
+    "Deadline":  "2026-11-25T10:00:00+03:00",
+    "Primary":  "CompleteCurrentAcceptance.json",
+    "Supplement":  "Supplement/Acceptance.json"
+}

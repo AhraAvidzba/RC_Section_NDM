@@ -1,0 +1,9 @@
+﻿{
+    "Status":  "COMPLETED_PENDING_LOG_REVIEW",
+    "FinishedUTC":  "2026-11-25T02:47:13.9243293+00:00",
+    "SourceSHA256":  "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+    "ExpectedSuites":  202,
+    "SummarizeExitCode":  0,
+    "FinalizeExitCode":  0,
+    "CompleteAcceptance":  "CompleteCurrentAcceptance.json"
+}

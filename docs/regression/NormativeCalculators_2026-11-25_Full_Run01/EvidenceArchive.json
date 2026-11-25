@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "Archive": "FullEvidence.zip",
+  "SHA256": "DC63519C489B35D8354EA1D314458C0E7990C8A693C70C116B60A23226C73652",
+  "Bytes": 3340688,
+  "IncludedFiles": 349,
+  "ExcludedXLSMCopies": 4,
+  "Inventory": "Review/EvidenceInventory.json",
+  "InventorySHA256": "84768ED7740897EFE7739AB38F011C65B7FFCC10AFC0AD0C4199F9C3F6171311",
+  "IntegrityAndEveryEntryHashVerified": true
+}
