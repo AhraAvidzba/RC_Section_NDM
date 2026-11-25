@@ -15,6 +15,61 @@ Private Type TCrackTestStats
 End Type
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет независимость СП 35 от входа phi3 СП 63 и сохранение правила psi_s
+' при недоступной пороговой точке; штатные наборы физики запускаются отдельно.
+Public Function RunNormativeBoundaryTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    Dim section As CSectionModel, solver As CSectionSolver, current As CSectionStateResult
+    Set solver = TestSolveServiceState(section, 200000#, 0#, 0#)
+    Set current = New CSectionStateResult
+    current.InitializeFromSolver sstCrackedState, cpCrackedNDS, TestCrackedStateSpec(), solver, False, True
+    Dim owner As CCrackFormationCalculator, formation As CCrackFormationResult, meta As CResultMeta
+    Set owner = New CCrackFormationCalculator
+    owner.LimitSearchSetFailure sfcNumericalFailure, "Контроль границы нормативных калькуляторов."
+    Set meta = New CResultMeta
+    meta.SetSolverFailure sfcNumericalFailure, rkCrackFormation, "Контроль границы нормативных калькуляторов.", True
+    Set formation = New CCrackFormationResult
+    formation.InitializeFromCalculator owner, meta
+    TestAssertTrue stats, "boundary.formation.noUsablePoint", Not formation.HasUsableFormationPoint
+    Dim load As CSectionLoadState
+    Set load = New CSectionLoadState: load.Initialize 200000#, 0#, 0#, 0#, 0#
+    Dim reference As CCrackWidthCalculator, independent As CCrackWidthCalculator
+    Set reference = New CCrackWidthCalculator: reference.StandardCode = "SP35"
+    reference.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+    Set independent = New CCrackWidthCalculator: independent.StandardCode = "SP35"
+    independent.Phi3Mode = "Не используется в СП 35"
+    independent.Phi1 = -1#: independent.Phi2 = -1#: independent.PsiS = -1#
+    independent.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, Nothing
+    TestAssertTrue stats, "boundary.sp35.referenceCalculated", reference.ResultMeta.Calculated
+    TestAssertTrue stats, "boundary.sp35.noClassificationCalculated", independent.ResultMeta.Calculated
+    TestAssertClose stats, "boundary.sp35.sameWidth", independent.CrackWidth, reference.CrackWidth, 0#
+    TestAssertClose stats, "boundary.sp35.sameArea", independent.Abt, reference.Abt, 0#
+    TestAssertClose stats, "boundary.sp35.sameStress", independent.SigmaS, reference.SigmaS, 0#
+    TestAssertTrue stats, "boundary.sp35.sameStatus", independent.CrackWidthInternalStatus = reference.CrackWidthInternalStatus
+    TestAssertTrue stats, "boundary.sp35.sameReason", independent.StopReason = reference.StopReason
+    Dim sp63 As CCrackWidthCalculator
+    Set sp63 = New CCrackWidthCalculator
+    sp63.PsiMode = "User": sp63.PsiS = 0.25: sp63.AllowableCrackWidth = 10#
+    sp63.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+    TestAssertTrue stats, "boundary.sp63.fallbackCalculated", sp63.ResultMeta.Calculated
+    TestAssertClose stats, "boundary.sp63.fallbackPsi1", sp63.PsiS, 1#, 0#
+    TestAssertTrue stats, "boundary.sp63.fallbackWarning", sp63.CrackWidthInternalStatus = rsSuccessWithWarning
+    Dim errorNumber As Long, errorReason As String
+    On Error Resume Next
+    sp63.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, Nothing
+    errorNumber = Err.Number: errorReason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    TestAssertTrue stats, "boundary.sp63.classificationRequired", errorNumber = vbObjectError + 3715
+    TestAssertTrue stats, "boundary.sp63.classificationReason", InStr(1, errorReason, "phi3", vbTextCompare) > 0
+    TestAppendLine stats, "TOTAL_NORMATIVE_BOUNDARY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunNormativeBoundaryTests = stats.Report
+    Exit Function
+Failed:
+    RunNormativeBoundaryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет материалы, образование трещины, подготовку областей и формулу ширины.
 ' Возвращает отчёт отдельных проверок; ошибка подготовки теста сохраняется отдельно.
 Public Function RunCrackWidthTests() As String

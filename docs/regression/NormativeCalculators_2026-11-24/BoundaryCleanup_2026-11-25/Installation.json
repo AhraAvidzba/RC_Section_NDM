@@ -1,0 +1,9 @@
+{
+  "Status": "INSTALLED",
+  "WorkbookSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+  "VBAExportSHA256": "E9998E65CFA49758C0A0334560A3760A1190C787C28113D74C357814B12D623E",
+  "AllNonVBAPartsByteIdentical": true,
+  "NoNewVBAComponents": true,
+  "Acceptance": "Acceptance.json",
+  "SourceBuildCompiled": true
+}

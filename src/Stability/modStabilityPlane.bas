@@ -62,7 +62,6 @@ Public Const STABILITY_ACC_PLANES_BOTH As String = "BothPlanes" ' Случайн
 Public Const STABILITY_SMALL_FORCE As Double = 0.000001 ' Малый допуск по силе, Н.
 Public Const STABILITY_SMALL_VALUE As Double = 0.000000001 ' Общий малый допуск для безразмерных величин.
 Public Const STABILITY_PASS_TOLERANCE As Double = 0.000000001 ' Малый допуск для граничного PASS.
-Public Const STABILITY_SP35_REBAR_AREA_LIMIT_RATIO As Double = 0.03 ' Порог 3% площади арматуры по СП 35.
 
 ' Возвращает край бетонного сечения на стороне, противоположной направлению
 ' сжатой равнодействующей. Для СП 35 это грань, относительно которой считается

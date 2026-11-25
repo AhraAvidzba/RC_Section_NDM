@@ -1,0 +1,377 @@
+{
+  "Entries": [
+    {
+      "Path": "Acceptance.json",
+      "Bytes": 4178,
+      "SHA256": "7924B9A9A9642E3795FA80E7FD372123F80AEAAA20C536C3FDA77854633E0170",
+      "Included": true
+    },
+    {
+      "Path": "Baseline.xlsm",
+      "Bytes": 12738721,
+      "SHA256": "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+      "Included": false
+    },
+    {
+      "Path": "Baseline_No.txt",
+      "Bytes": 417018,
+      "SHA256": "991367C7F7942D45D1189501C998E16AC812BC8A9F2BAF9AEC02FDDF37397641",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_No.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "E75960EBE10D80306074831177E897DD3BBAB889EAFAD67C84CFEB264D2B2AAE",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "8A49346D9AE1523CD6123FCD1C0B6B7243928D8EC6E806B8F8A4472BA80B0AA7",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_No.txt.ProcessClosure.json",
+      "Bytes": 2629,
+      "SHA256": "4AFE5189D50D19F6952B2F2D5F82EEE175DC5D1FBE680478F01CBA16A154663B",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "D0D3CB45FB90143558698DE2406EB94271B8CF1F297C75EF903DB1C102A47C80",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_No.txt.stdout.log",
+      "Bytes": 1041,
+      "SHA256": "9E501527944E149A900010E6E961F66A3899EF14B3E637F4081530BCBD5081F3",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt",
+      "Bytes": 417204,
+      "SHA256": "5A1D48F67086EEAF7531D26B799423D1B28B935C1EF86B3B19CFAF719E352CE9",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "BD1C77F7BF390833DD2EC114A33E2163B38CB5CAB4EA6782B13CF2D8CD21D5B2",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "71C528200BC37CE862568F7DCABD756D428C0AA1DD87E5276930B4BA85411141",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt.ProcessClosure.json",
+      "Bytes": 6545,
+      "SHA256": "C5FEB47BD130FB09C1A788379617FB34B764CC81BCBB7CB1E0015ABACBE0DFED",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "29E0D347D6400C22202B159113611F56FD43C27F34DE16B35C35225BC570FF5B",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Included": true
+    },
+    {
+      "Path": "Baseline_Yes.txt.stdout.log",
+      "Bytes": 1048,
+      "SHA256": "244BCDC1D5C46D47AEEB5B35A7794DA148DB0B2C265383EEF1AE92BFED5A8708",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt",
+      "Bytes": 3619,
+      "SHA256": "ABE9032287FE9EA3710443ECF9843B7B2A27F1D950D9EC6772AB3CB0B2D3C08A",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "1E7DE6B19DE81E38E911795E7349CD7C900821B1F9E1FFEADDF3A3A1C9A9C2EF",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt.Ownership.json",
+      "Bytes": 258,
+      "SHA256": "C21A8F19671B74774D895103440D4CE7EB321E8F89D9159FC8C0D6A92B3FAF8C",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt.ProcessClosure.json",
+      "Bytes": 4581,
+      "SHA256": "B73ACC775EEDE0DF1805B6A1120ED4DF9848B6BC16A76452AEB2C369611EE107",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt.RunnerCleanup.json",
+      "Bytes": 510,
+      "SHA256": "540101E9F68E1C50509B4572F964F242610CD874CD05CAEF0E8F449ED304C03F",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_No.txt.stdout.log",
+      "Bytes": 604,
+      "SHA256": "EF92691AB7ED0CDB533A51E5B5BAA18DE5785E1A90C9389890B0AE3AB187FBE0",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt",
+      "Bytes": 3628,
+      "SHA256": "372D6F2A9B0A6B93BD25355BC618F18D3CBED2A243C9DA772947EA75B0653C5C",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "FA3D1CC6D14EB275064A7A7076A6B085A51EA59091EC67B910706E144429D3A5",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "15DC2D8D30A0608322C55A2A5A0E5B032815E79E8759F134B8639E889418811B",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt.ProcessClosure.json",
+      "Bytes": 2633,
+      "SHA256": "7C3FAC0EE66B2AD9A4E90584577A0B5BACA7BA24FF5F3158F7CED6495C5DFFFA",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "A4768D70F66158F291801F9D7A98C596C2D6E5DB7F3321931E54F26E042D83F9",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Included": true
+    },
+    {
+      "Path": "Boundary_Yes.txt.stdout.log",
+      "Bytes": 607,
+      "SHA256": "B8E72A8185A005B1D9ADB1E5E0C52A56C191153AFD2C7A6A55AEF17D2BA893ED",
+      "Included": true
+    },
+    {
+      "Path": "BuildOwnership.json",
+      "Bytes": 363,
+      "SHA256": "F956E4BF7A7E2A2026091A269B74CD34094B26AC46C33C15E55A86F896F12F6A",
+      "Included": true
+    },
+    {
+      "Path": "Candidate.xlsm",
+      "Bytes": 12774730,
+      "SHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+      "Included": false
+    },
+    {
+      "Path": "Candidate_No.txt",
+      "Bytes": 417370,
+      "SHA256": "FE49D69E121FE50CA05D517CF8934BE7B703F758C1DA7B56AF370F6688DBCFE6",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_No.txt.memory.json",
+      "Bytes": 320,
+      "SHA256": "45CC7C60F160763BF1C47673BE380C62611F54F75E30DD0EB2501FCF4283A33B",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_No.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "5139008F410C09C404C9D0D40DE6424A9232C31A54E2731142238F8402496FFB",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_No.txt.ProcessClosure.json",
+      "Bytes": 5567,
+      "SHA256": "08FE2860E87BFDB97ECA0F620CFB9A4F28D0AB924EEF1FDACD4B4227EDFA0F7D",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_No.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "C28D0AFDD09DEB40B2667DDCC99101F0FEF47383895FC3A8B594D71B5E75FB24",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_No.txt.stdout.log",
+      "Bytes": 1041,
+      "SHA256": "8F3FC6CE227DA014B4CC5CA4BC2F43D2A2BE82E23AD003842FE89F3111FAD520",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt",
+      "Bytes": 416762,
+      "SHA256": "C2AB94FB285978B563A66A22E0F2F6A008DAF12E86D9C54AE41A65B5A630249B",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt.memory.json",
+      "Bytes": 319,
+      "SHA256": "58CA8B0E573F60DBF7B9F3C81ED3E1A1B21351B37E1C2E621ECA139E61ACCFC8",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt.Ownership.json",
+      "Bytes": 259,
+      "SHA256": "81BA7274110E3FEF055583599E8017945B63679CAAA4B32D1CF117CECA71363A",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt.ProcessClosure.json",
+      "Bytes": 5567,
+      "SHA256": "338A0DA53D11C5EE8A12E3A95265793666C72525DC74892794341AB7F387A097",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt.RunnerCleanup.json",
+      "Bytes": 511,
+      "SHA256": "BAD94809C0570BE5406ECCA75828E9B7448AD4A466806DFD4F6218ABC101918D",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Included": true
+    },
+    {
+      "Path": "Candidate_Yes.txt.stdout.log",
+      "Bytes": 1051,
+      "SHA256": "25DF09705B9F54DA2C948C99941FF0E03AA48E43994C2361A8F3BBEA53C52B6B",
+      "Included": true
+    },
+    {
+      "Path": "CandidateBuild.xlsm",
+      "Bytes": 13379576,
+      "SHA256": "4C82F22547103E4BEF4A7EE08D7D3AD05604565A7E1B980B330F2F518F002CC5",
+      "Included": false
+    },
+    {
+      "Path": "DirectedRuns.json",
+      "Bytes": 4782,
+      "SHA256": "B7F62A7411F97BE362B69EC4F05B7FFE9719B88E3591A27A61FABEE0E12E3EEC",
+      "Included": true
+    },
+    {
+      "Path": "Installation.json",
+      "Bytes": 349,
+      "SHA256": "F22362DB3F1BF80BC9DFE02C56217C84AADEB6CC70EBCBE685A2AE5FF4942E60",
+      "Included": true
+    },
+    {
+      "Path": "NativeCandidate.txt",
+      "Bytes": 9900842,
+      "SHA256": "D8A337F0F6B152A85E991A9669F3997FA83F98BBA4971A26A9F7F41139B1D26A",
+      "Included": true
+    },
+    {
+      "Path": "OriginalNative.txt",
+      "Bytes": 9894643,
+      "SHA256": "05EB16BC8BE2D7908063ABF15704359F84CEEC9B5E2507A78E13D3BD2395D7D0",
+      "Included": true
+    },
+    {
+      "Path": "PackageProof.json",
+      "Bytes": 745,
+      "SHA256": "7E6E3A2024CC41F09C0E8F9D4694E6FF9378C704EA7F1B62B52E2105A94D17D9",
+      "Included": true
+    },
+    {
+      "Path": "ProofScripts/Build-Workbook.ps1",
+      "Bytes": 36935,
+      "SHA256": "A19348A221FC732CFA481B8348577DDF0CA388F8A776EAD93308664ADE5080AD",
+      "Included": true
+    },
+    {
+      "Path": "ProofScripts/Export-Audit03VbaSnapshot.ps1",
+      "Bytes": 8144,
+      "SHA256": "24EE0D581FFE20AA4351DA947499DAFBCFD26132B597FE71E80197911AD198A4",
+      "Included": true
+    },
+    {
+      "Path": "ProofScripts/Run-Audit02ModeTests.ps1",
+      "Bytes": 26339,
+      "SHA256": "D99A0DFD9DB6D7C4D28D159D4C9BDB7D3C2B5499A3D4D367ADD20DB8B79F66E1",
+      "Included": true
+    },
+    {
+      "Path": "ProofScripts/Run-Audit03Watchdog.ps1",
+      "Bytes": 12844,
+      "SHA256": "B8F44E1A5C368A3FDAC64532B8E7B153F24061B051881D71379D000AD1FBB3EB",
+      "Included": true
+    },
+    {
+      "Path": "ProofScripts/Run-CurrentSupplementAcceptance.ps1",
+      "Bytes": 4742,
+      "SHA256": "7791134DF94428A05FA25E55F611AE55850B0E12427494A6EE012087B588F4D0",
+      "Included": true
+    },
+    {
+      "Path": "ProofScripts/Run-NormativeFullAcceptance.ps1",
+      "Bytes": 2873,
+      "SHA256": "0CE7CBF887AA2C658CFED68E62694A40B83738D1D2E6F984BE591D1B9D70121E",
+      "Included": true
+    },
+    {
+      "Path": "Run-DirectedBoundaryTests.ps1",
+      "Bytes": 3240,
+      "SHA256": "80F523FB45C0FDE21C0C98F7B8C71A8A99B28B045D54DF8B8F62B44F71780ACF",
+      "Included": true
+    },
+    {
+      "Path": "SourceScope.json",
+      "Bytes": 792,
+      "SHA256": "1BB9D52F452081B4654BC1AA5AA7875DF80338D5F681A5CE01897ECF6E0B724F",
+      "Included": true
+    },
+    {
+      "Path": "Test-VerifyBoundaryAcceptance.py",
+      "Bytes": 7083,
+      "SHA256": "AA98B549408D2EC82EEE4A1DA17DD403193BE037D5D16932AE456310E142037E",
+      "Included": true
+    },
+    {
+      "Path": "VBA_All_Code.txt",
+      "Bytes": 9900815,
+      "SHA256": "E9998E65CFA49758C0A0334560A3760A1190C787C28113D74C357814B12D623E",
+      "Included": true
+    }
+  ],
+  "Exclusion": "Duplicate XLSM evidence copies only; installed candidate is versioned in workbook/output/RC_Section_NDM.xlsm."
+}

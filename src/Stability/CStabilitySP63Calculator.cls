@@ -15,6 +15,12 @@ Option Explicit
 ' Работает с двумя заранее подготовленными главными плоскостями.
 ' Геометрию и исходные нагрузки не читает из Excel; готовые моменты возвращает фасаду.
 
+' Вычисляет модуль случайного эксцентриситета СП 63; длина и габарит переданы в мм.
+' Выбор L или l0 относится к настройке режима и выполняется фасадом.
+Friend Function AutomaticAccidentalEccentricity(ByVal lengthForAccidental As Double, ByVal depthValue As Double) As Double
+    AutomaticAccidentalEccentricity = GeomMax(GeomMax(lengthForAccidental / 600#, depthValue / 30#), 10#)
+End Function
+
 ' Выбирает центр стержня, относительно которого СП 63 требует считать M1 и Ml1:
 ' наиболее растянутый или наименее сжатый стержень для текущего направления
 ' эксцентриситета. При отсутствии арматуры используется край бетонного контура,

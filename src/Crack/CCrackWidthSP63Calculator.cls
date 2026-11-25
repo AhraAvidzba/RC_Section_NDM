@@ -16,10 +16,25 @@ Option Explicit
 ' Образование трещины и равновесие не пересчитывает; геометрия и диагностика общие.
 ' Состояние принадлежит вызывающему фасаду и не сохраняется в этом объекте.
 
+' Выбирает ветвь СП 63 и правило psi_s по пригодности готовой пороговой точки.
+' Общий фасад проверяет текущее НДС; поиск образования трещины здесь не повторяется.
+Friend Sub Calculate(ByRef work As TCrackWidthWork, ByVal currentSolver As CSectionStateResult, _
+        ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal loadStateForClassification As CSectionLoadState)
+    If loadStateForClassification Is Nothing Then _
+        Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Состояние нагрузки для коэффициента phi3 не передано."
+    work.FallbackPsi1 = Not work.Formation.HasUsableFormationPoint
+    If work.Formation.CentralTensionBranch Then
+        CalculateCentralTension work, currentSolver, section, materialProvider, loadStateForClassification
+    Else
+        CalculateGeneralBending work, currentSolver, section, materialProvider, loadStateForClassification
+    End If
+End Sub
+
 ' Выполняет отдельную ветку СП для истинного центрального растяжения.
 ' Здесь нет нейтральной линии, поэтому Abt принимается равной всей площади
 ' бетона, а As - всей продольной арматуре, которая растянута в текущем НДС.
-Friend Sub CalculateCentralTension(ByRef work As TCrackWidthWork, ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
+Private Sub CalculateCentralTension(ByRef work As TCrackWidthWork, ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState)
     work.CentralTensionBranch = True
@@ -50,7 +65,7 @@ End Sub
 ' Выполняет общий расчет для N + Mx + My при существующей нейтральной линии.
 ' Все геометрические величины строятся в координате s вдоль нормали к
 ' нейтральной линии, направленной в сторону растяжения.
-Friend Sub CalculateGeneralBending(ByRef work As TCrackWidthWork, ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
+Private Sub CalculateGeneralBending(ByRef work As TCrackWidthWork, ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState)
     work.Phi3 = ResolvePhi3(work, loadStateForClassification)

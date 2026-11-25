@@ -18,6 +18,13 @@ Option Explicit
 ' Диагностическая ветвь передаётся ByRef: завершение первой плоскости остаётся
 ' наблюдаемым и при отказе второй. Объект не хранит состояние между вызовами.
 
+Private Const STABILITY_SP35_REBAR_AREA_LIMIT_RATIO As Double = 0.03 ' Порог 3% площади арматуры по СП 35.
+
+' Вычисляет модуль случайного эксцентриситета СП 35; выбор L или l0 уже выполнен фасадом.
+Friend Function AutomaticAccidentalEccentricity(ByVal lengthForAccidental As Double) As Double
+    AutomaticAccidentalEccentricity = lengthForAccidental / 400#
+End Function
+
 ' ----------------------------- СП 35 --------------------------------------
 
 ' Расчет по СП 35. Для малых эксцентриситетов используется табличная ветвь

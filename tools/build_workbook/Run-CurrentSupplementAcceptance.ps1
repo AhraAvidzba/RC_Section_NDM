@@ -25,7 +25,8 @@ $macros=@(
     'modTestWorkbookInterface.RunAudit03ExcelGuardTests',
     'modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow',
     'modTestBatchCalculation.RunNormativeStabilityTests',
-    'modTestBatchCalculation.RunNormativePartialBranchFailureTest'
+    'modTestBatchCalculation.RunNormativePartialBranchFailureTest',
+    'modTestCrackWidth.RunNormativeBoundaryTests'
 )
 $patterns=@(
     '(?m)^TOTAL_ZERO_LOAD_COMBINATIONS: passed=([1-9][0-9]*); failed=0\r?$',
@@ -33,7 +34,8 @@ $patterns=@(
     '(?m)^TOTAL_AUDIT03_EXCEL_GUARD: passed=([1-9][0-9]*); failed=0\r?$',
     '(?m)^TOTAL_FRESHNESS_WORKFLOW: passed=([1-9][0-9]*); failed=0\r?$',
     '(?m)^TOTAL_NORMATIVE_STABILITY: passed=([1-9][0-9]*); failed=0\r?$',
-    '(?m)^TOTAL_NORMATIVE_PARTIAL_BRANCH: passed=11; failed=0\r?$'
+    '(?m)^TOTAL_NORMATIVE_PARTIAL_BRANCH: passed=11; failed=0\r?$',
+    '(?m)^TOTAL_NORMATIVE_BOUNDARY: passed=13; failed=0\r?$'
 )
 $results=@();$allPassed=$true
 foreach($mode in @('No','Yes')){
@@ -52,7 +54,7 @@ foreach($mode in @('No','Yes')){
     $passed=$passed -and $closure.Passed -and $text.Contains('WATCHDOG_COMPLETED: exit=0; source unchanged=True') -and ((Get-FileHash -LiteralPath $frozen).Hash -ceq $hash)
     if(-not $passed){$allPassed=$false}
     $results+=,[ordered]@{Mode=$mode;Passed=$passed;ExitCode=$exitCode;Macros=$macros;Report=$relative;ReportSHA256=(Get-FileHash -LiteralPath $path).Hash;Errors=$errors;ProcessClosed=$closure.Passed}
-    [ordered]@{Status='RUNNING';SourceSHA256=$hash;ExpectedExecutions=12;Results=$results}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath (Join-Path $directory 'Acceptance.json') -Encoding UTF8
+    [ordered]@{Status='RUNNING';SourceSHA256=$hash;ExpectedExecutions=14;Results=$results}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath (Join-Path $directory 'Acceptance.json') -Encoding UTF8
 }
-[ordered]@{Status=if($allPassed){'PASS'}else{'REVIEW_REQUIRED'};SourceSHA256=$hash;ExpectedExecutions=12;Results=$results;FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath (Join-Path $directory 'Acceptance.json') -Encoding UTF8
+[ordered]@{Status=if($allPassed){'PASS'}else{'REVIEW_REQUIRED'};SourceSHA256=$hash;ExpectedExecutions=14;Results=$results;FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath (Join-Path $directory 'Acceptance.json') -Encoding UTF8
 if(-not $allPassed){exit 1}

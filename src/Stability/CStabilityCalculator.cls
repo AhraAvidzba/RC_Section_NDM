@@ -592,9 +592,8 @@ Private Sub TransformDesignMoments(ByVal props As CSectionPropertiesCalculator, 
 End Sub
 
 ' Считает модуль случайного эксцентриситета для выбранного СП и режима Config.
-' В нормативном режиме AutoWithL используется геометрическая длина L:
-' для СП 63 - ea = max(L/600; h/30; 10 мм), для СП 35 - ec,sl = L/400.
-' Расчетная длина l0 = mu*L применяется только в режиме AutoWithMuL.
+' Выбирает пользовательский ввод либо длину L/l0 для автоматического режима.
+' Нормативную формулу выполняет калькулятор выбранного СП.
 Private Function AccidentalEccentricity(ByVal modeText As String, ByVal userValue As Double, _
         ByVal userSettingName As String, ByVal geometricLength As Double, _
         ByVal effectiveLength As Double, ByVal depthValue As Double) As Double
@@ -615,9 +614,9 @@ Private Function AccidentalEccentricity(ByVal modeText As String, ByVal userValu
     If lengthForAccidental <= STABILITY_SMALL_VALUE Then RaiseInput "На листе Config проверьте Stability.ElementLength и коэффициент расчетной длины: длина для случайного эксцентриситета должна быть больше нуля."
 
     If mCode = STABILITY_CODE_SP35 Then
-        AccidentalEccentricity = lengthForAccidental / 400#
+        AccidentalEccentricity = mSP35.AutomaticAccidentalEccentricity(lengthForAccidental)
     Else
-        AccidentalEccentricity = GeomMax(GeomMax(lengthForAccidental / 600#, depthValue / 30#), 10#)
+        AccidentalEccentricity = mSP63.AutomaticAccidentalEccentricity(lengthForAccidental, depthValue)
     End If
 End Function
 

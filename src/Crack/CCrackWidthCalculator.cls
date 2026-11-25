@@ -95,8 +95,8 @@ End Sub
 
 
 ' Принимает готовую проверку образования трещины без нового решения НДС.
-' Если порог не найден, пригодное текущее НДС позволяет рассчитать ширину
-' по СП 63 с psi_s = 1 и предупреждением при его использовании; в СП 35 psi_s не применяется.
+' Если пригодная пороговая точка отсутствует, проверка ширины остаётся доступной
+' по текущему НДС. Правила коэффициентов определяет выбранный нормативный калькулятор.
 ' Подтверждённое отсутствие трещины NotCracked
 ' исключает расчёт ширины независимо от режима коэффициентов.
 Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
@@ -113,20 +113,8 @@ Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
         CrackSetWidthResult mWork, rsNotApplicable, rcCrackNotFormed, formation.ResultMeta.ResultComment
         Exit Sub
     End If
-    mWork.FallbackPsi1 = Not formation.HasLimitPoint
-    If formation.ResultMeta.InternalStatus <> rsSuccess And _
-            formation.ResultMeta.InternalStatus <> rsSuccessWithWarning Then mWork.FallbackPsi1 = True
-    If formation.CrackFormed Then
-        Dim postState As CSectionStateResult
-        Set postState = formation.PostCrackState
-        If postState Is Nothing Then
-            mWork.FallbackPsi1 = True
-        ElseIf Not postState.Converged Or Not postState.WithinPhysicalRange Then
-            mWork.FallbackPsi1 = True
-        End If
-    End If
     mWork.Converged = True
-    mWork.CrackFormed = formation.CrackFormed Or mWork.FallbackPsi1
+    mWork.CrackFormed = formation.CrackFormed Or Not formation.HasUsableFormationPoint
     mWork.CentralTensionBranch = formation.CentralTensionBranch
     CrackSetWidthResult mWork, rsNotApplicable, rcCrackNotFormed, formation.StopReason
 End Sub
@@ -154,8 +142,6 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
         Exit Sub
     End If
     ValidateInputs currentSolver, section, materialProvider
-    If loadStateForClassification Is Nothing Then _
-        Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Состояние нагрузки для коэффициента phi3 не передано."
     If crackedStateSpec Is Nothing Then _
         Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState)."
     If Not crackedStateSpec.IsComplete Then _
@@ -173,10 +159,8 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
     mWork.GeometryQuery.EnsureSection section
     If mWork.StandardCode = "SP35" Then
         mSP35.CalculateSP35 mWork, currentSolver, section, materialProvider.SteelMaterialFromSpec(mWork.CrackedStateSpec)
-    ElseIf formation.CentralTensionBranch Then
-        mSP63.CalculateCentralTension mWork, currentSolver, section, materialProvider, loadStateForClassification
     Else
-        mSP63.CalculateGeneralBending mWork, currentSolver, section, materialProvider, loadStateForClassification
+        mSP63.Calculate mWork, currentSolver, section, materialProvider, loadStateForClassification
     End If
 End Sub
 

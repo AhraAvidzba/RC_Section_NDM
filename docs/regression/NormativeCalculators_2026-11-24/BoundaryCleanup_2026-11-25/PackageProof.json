@@ -1,0 +1,23 @@
+{
+  "Status": "PASS",
+  "NativeComponents": 209,
+  "NoNewVBAComponents": true,
+  "ChangedComponents": [
+    "CCrackFormationResult",
+    "CCrackWidthCalculator",
+    "CCrackWidthSP63Calculator",
+    "CStabilityCalculator",
+    "CStabilitySP35Calculator",
+    "CStabilitySP63Calculator",
+    "modStabilityPlane",
+    "modTestCrackWidth"
+  ],
+  "SourceEquality": true,
+  "BaselineSHA256": "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+  "CandidateSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+  "ExportSHA256": "E9998E65CFA49758C0A0334560A3760A1190C787C28113D74C357814B12D623E",
+  "AllNonVBAPartsByteIdentical": true,
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "Status": "PASS",
+  "Baseline": "83f3803a",
+  "UnchangedExistingMethodBodies": 333,
+  "ChangedExistingMethods": [
+    "src/Crack/CCrackWidthCalculator.cls:InitializeForFormation",
+    "src/Crack/CCrackWidthCalculator.cls:Calculate",
+    "src/Stability/CStabilityCalculator.cls:AccidentalEccentricity"
+  ],
+  "AddedMethods": [
+    "src/Crack/CCrackFormationResult.cls:HasUsableFormationPoint",
+    "src/Crack/CCrackWidthSP63Calculator.cls:Calculate",
+    "src/Stability/CStabilitySP35Calculator.cls:AutomaticAccidentalEccentricity",
+    "src/Stability/CStabilitySP63Calculator.cls:AutomaticAccidentalEccentricity",
+    "tests/modTestCrackWidth.bas:RunNormativeBoundaryTests"
+  ],
+  "AutomaticEccentricityExpressionsUnchanged": true,
+  "NoNewVBAClassesOrModules": true
+}

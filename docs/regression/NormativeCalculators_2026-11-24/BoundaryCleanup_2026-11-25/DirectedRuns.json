@@ -1,0 +1,92 @@
+﻿[
+    {
+        "Label":  "Baseline",
+        "Mode":  "No",
+        "SourceSHA256":  "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+        "Report":  "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Baseline_No.txt",
+        "Macros":  [
+                       "modTestCrackWidth.RunCrackWidthTests",
+                       "modTestCrackWidth.RunAudit03SigmaSCrcBoundaryTests",
+                       "modTestCrackWidth.RunNoFormationTensionWidthTests",
+                       "modTestSP35CrackWidth.RunSP35FormulaTests",
+                       "modTestSP35CrackWidth.RunSP35PreparationTests",
+                       "modTestSP35CrackWidth.RunSP35PipelineTests",
+                       "modTestBatchCalculation.RunNormativeStabilityTests",
+                       "modTestProfileConfig.RunStabilityDurationMatchingTests"
+                   ],
+        "Passed":  true
+    },
+    {
+        "Label":  "Baseline",
+        "Mode":  "Yes",
+        "SourceSHA256":  "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+        "Report":  "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Baseline_Yes.txt",
+        "Macros":  [
+                       "modTestCrackWidth.RunCrackWidthTests",
+                       "modTestCrackWidth.RunAudit03SigmaSCrcBoundaryTests",
+                       "modTestCrackWidth.RunNoFormationTensionWidthTests",
+                       "modTestSP35CrackWidth.RunSP35FormulaTests",
+                       "modTestSP35CrackWidth.RunSP35PreparationTests",
+                       "modTestSP35CrackWidth.RunSP35PipelineTests",
+                       "modTestBatchCalculation.RunNormativeStabilityTests",
+                       "modTestProfileConfig.RunStabilityDurationMatchingTests"
+                   ],
+        "Passed":  true
+    },
+    {
+        "Label":  "Candidate",
+        "Mode":  "No",
+        "SourceSHA256":  "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+        "Report":  "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Candidate_No.txt",
+        "Macros":  [
+                       "modTestCrackWidth.RunCrackWidthTests",
+                       "modTestCrackWidth.RunAudit03SigmaSCrcBoundaryTests",
+                       "modTestCrackWidth.RunNoFormationTensionWidthTests",
+                       "modTestSP35CrackWidth.RunSP35FormulaTests",
+                       "modTestSP35CrackWidth.RunSP35PreparationTests",
+                       "modTestSP35CrackWidth.RunSP35PipelineTests",
+                       "modTestBatchCalculation.RunNormativeStabilityTests",
+                       "modTestProfileConfig.RunStabilityDurationMatchingTests"
+                   ],
+        "Passed":  true
+    },
+    {
+        "Label":  "Candidate",
+        "Mode":  "Yes",
+        "SourceSHA256":  "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+        "Report":  "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Candidate_Yes.txt",
+        "Macros":  [
+                       "modTestCrackWidth.RunCrackWidthTests",
+                       "modTestCrackWidth.RunAudit03SigmaSCrcBoundaryTests",
+                       "modTestCrackWidth.RunNoFormationTensionWidthTests",
+                       "modTestSP35CrackWidth.RunSP35FormulaTests",
+                       "modTestSP35CrackWidth.RunSP35PreparationTests",
+                       "modTestSP35CrackWidth.RunSP35PipelineTests",
+                       "modTestBatchCalculation.RunNormativeStabilityTests",
+                       "modTestProfileConfig.RunStabilityDurationMatchingTests"
+                   ],
+        "Passed":  true
+    },
+    {
+        "Label":  "Boundary",
+        "Mode":  "No",
+        "SourceSHA256":  "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+        "Report":  "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Boundary_No.txt",
+        "Macros":  [
+                       "modTestCrackWidth.RunNormativeBoundaryTests",
+                       "modTestBatchCalculation.RunNormativePartialBranchFailureTest"
+                   ],
+        "Passed":  true
+    },
+    {
+        "Label":  "Boundary",
+        "Mode":  "Yes",
+        "SourceSHA256":  "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+        "Report":  "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Boundary_Yes.txt",
+        "Macros":  [
+                       "modTestCrackWidth.RunNormativeBoundaryTests",
+                       "modTestBatchCalculation.RunNormativePartialBranchFailureTest"
+                   ],
+        "Passed":  true
+    }
+]

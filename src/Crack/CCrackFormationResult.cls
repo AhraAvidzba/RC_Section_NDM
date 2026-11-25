@@ -147,6 +147,19 @@ Public Property Get ConfirmedNotCracked() As Boolean
     End Select
 End Property
 
+' Подтверждает пригодность найденной пороговой точки для последующей проверки.
+' При образованной трещине требуется также физически допустимое состояние после неё.
+' Выбор коэффициентов раскрытия принадлежит калькулятору соответствующего СП.
+Public Property Get HasUsableFormationPoint() As Boolean
+    If Not mHasLimitPoint Then Exit Property
+    If mMeta.InternalStatus <> rsSuccess And mMeta.InternalStatus <> rsSuccessWithWarning Then Exit Property
+    If mCrackFormed Then
+        If mPostCrackState Is Nothing Then Exit Property
+        If Not mPostCrackState.Converged Or Not mPostCrackState.WithinPhysicalRange Then Exit Property
+    End If
+    HasUsableFormationPoint = True
+End Property
+
 ' Фактически принятый путь lambda-поиска.
 Public Property Get FormationMethod() As String
     FormationMethod = mFormationMethod

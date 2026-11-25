@@ -28,8 +28,8 @@ if((Test-Path -LiteralPath $corePath) -and (Test-Path -LiteralPath $extraPath)){
     $extra=Get-Content -LiteralPath $extraPath -Raw -Encoding UTF8|ConvertFrom-Json
     $sourceHash=$core.SourceSHA256
     $passed=$primaryCode -eq 0 -and $supplementCode -eq 0 -and $core.Status -eq 'PASS' -and $extra.Status -eq 'PASS' -and $sourceHash -ceq $extra.SourceSHA256
-    $passed=$passed -and $core.CoreSuites -eq 202 -and $core.FocusedSingleCases -eq 122 -and $extra.ExpectedExecutions -eq 12 -and $extra.Results.Count -eq 2
+    $passed=$passed -and $core.CoreSuites -eq 202 -and $core.FocusedSingleCases -eq 122 -and $extra.ExpectedExecutions -eq 14 -and $extra.Results.Count -eq 2
     $passed=$passed -and (($extra.Results|ForEach-Object Mode) -join ',') -ceq 'No,Yes'
 }
-[ordered]@{Status=if($passed){'PASS'}else{'REVIEW_REQUIRED'};SourceSHA256=$sourceHash;PrimaryExitCode=$primaryCode;SupplementExitCode=$supplementCode;RequiredCoreExecutions=202;RequiredFocusedSingleCases=122;RequiredSupplementExecutions=12;SameWorkbookBytes=$passed;FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o');Deadline=$Deadline;Primary='CompleteCurrentAcceptance.json';Supplement='Supplement/Acceptance.json'}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $directory 'GoalAcceptance.json') -Encoding UTF8
+[ordered]@{Status=if($passed){'PASS'}else{'REVIEW_REQUIRED'};SourceSHA256=$sourceHash;PrimaryExitCode=$primaryCode;SupplementExitCode=$supplementCode;RequiredCoreExecutions=202;RequiredFocusedSingleCases=122;RequiredSupplementExecutions=14;SameWorkbookBytes=$passed;FinishedUTC=[DateTimeOffset]::UtcNow.ToString('o');Deadline=$Deadline;Primary='CompleteCurrentAcceptance.json';Supplement='Supplement/Acceptance.json'}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $directory 'GoalAcceptance.json') -Encoding UTF8
 if(-not $passed){exit 1}

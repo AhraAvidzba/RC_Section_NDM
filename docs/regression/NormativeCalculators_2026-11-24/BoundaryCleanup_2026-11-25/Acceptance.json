@@ -1,0 +1,117 @@
+{
+  "Status": "DIRECTED_PASS",
+  "ComparisonExecutions": 32,
+  "BoundaryExecutions": 4,
+  "Comparisons": [
+    {
+      "Mode": "No",
+      "ExactlyMatchingEngineeringLines": 4291,
+      "NumericToleranceUsedForComparison": false
+    },
+    {
+      "Mode": "Yes",
+      "ExactlyMatchingEngineeringLines": 4291,
+      "NumericToleranceUsedForComparison": false
+    }
+  ],
+  "Reports": [
+    {
+      "Label": "Baseline",
+      "Mode": "No",
+      "Report": "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Baseline_No.txt",
+      "SHA256": "991367C7F7942D45D1189501C998E16AC812BC8A9F2BAF9AEC02FDDF37397641",
+      "Executions": 8,
+      "Passed": true,
+      "ProcessClosed": true
+    },
+    {
+      "Label": "Baseline",
+      "Mode": "Yes",
+      "Report": "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Baseline_Yes.txt",
+      "SHA256": "5A1D48F67086EEAF7531D26B799423D1B28B935C1EF86B3B19CFAF719E352CE9",
+      "Executions": 8,
+      "Passed": true,
+      "ProcessClosed": true
+    },
+    {
+      "Label": "Candidate",
+      "Mode": "No",
+      "Report": "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Candidate_No.txt",
+      "SHA256": "FE49D69E121FE50CA05D517CF8934BE7B703F758C1DA7B56AF370F6688DBCFE6",
+      "Executions": 8,
+      "Passed": true,
+      "ProcessClosed": true
+    },
+    {
+      "Label": "Candidate",
+      "Mode": "Yes",
+      "Report": "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Candidate_Yes.txt",
+      "SHA256": "C2AB94FB285978B563A66A22E0F2F6A008DAF12E86D9C54AE41A65B5A630249B",
+      "Executions": 8,
+      "Passed": true,
+      "ProcessClosed": true
+    },
+    {
+      "Label": "Boundary",
+      "Mode": "No",
+      "Report": "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Boundary_No.txt",
+      "SHA256": "ABE9032287FE9EA3710443ECF9843B7B2A27F1D950D9EC6772AB3CB0B2D3C08A",
+      "Executions": 2,
+      "Passed": true,
+      "ProcessClosed": true
+    },
+    {
+      "Label": "Boundary",
+      "Mode": "Yes",
+      "Report": "docs/regression/NormativeCalculators_2026-11-24/BoundaryCleanup_2026-11-25/Boundary_Yes.txt",
+      "SHA256": "372D6F2A9B0A6B93BD25355BC618F18D3CBED2A243C9DA772947EA75B0653C5C",
+      "Executions": 2,
+      "Passed": true,
+      "ProcessClosed": true
+    }
+  ],
+  "SourceProof": {
+    "Status": "PASS",
+    "Baseline": "83f3803a",
+    "UnchangedExistingMethodBodies": 333,
+    "ChangedExistingMethods": [
+      "src/Crack/CCrackWidthCalculator.cls:InitializeForFormation",
+      "src/Crack/CCrackWidthCalculator.cls:Calculate",
+      "src/Stability/CStabilityCalculator.cls:AccidentalEccentricity"
+    ],
+    "AddedMethods": [
+      "src/Crack/CCrackFormationResult.cls:HasUsableFormationPoint",
+      "src/Crack/CCrackWidthSP63Calculator.cls:Calculate",
+      "src/Stability/CStabilitySP35Calculator.cls:AutomaticAccidentalEccentricity",
+      "src/Stability/CStabilitySP63Calculator.cls:AutomaticAccidentalEccentricity",
+      "tests/modTestCrackWidth.bas:RunNormativeBoundaryTests"
+    ],
+    "AutomaticEccentricityExpressionsUnchanged": true,
+    "NoNewVBAClassesOrModules": true
+  },
+  "PackageProof": {
+    "Status": "PASS",
+    "NativeComponents": 209,
+    "NoNewVBAComponents": true,
+    "ChangedComponents": [
+      "CCrackFormationResult",
+      "CCrackWidthCalculator",
+      "CCrackWidthSP63Calculator",
+      "CStabilityCalculator",
+      "CStabilitySP35Calculator",
+      "CStabilitySP63Calculator",
+      "modStabilityPlane",
+      "modTestCrackWidth"
+    ],
+    "SourceEquality": true,
+    "BaselineSHA256": "646B9E6ACF78BA029136BED50561CB305D38B08982E6D00736DCA88B78611E57",
+    "CandidateSHA256": "F06EE141AFE777FCE1353099AA575E1D0D4BCFCF4E6E111929BE175D70D9AB8B",
+    "ExportSHA256": "E9998E65CFA49758C0A0334560A3760A1190C787C28113D74C357814B12D623E",
+    "AllNonVBAPartsByteIdentical": true,
+    "ChangedZIPParts": [
+      "xl/vbaProject.bin"
+    ]
+  },
+  "FutureFullSupplementIncludesBoundaryInBothModes": true,
+  "FullRunRepeated": false
+}
