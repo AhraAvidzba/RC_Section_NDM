@@ -23,6 +23,13 @@
 таблицы Results. Интеграционные доказательства и сценарии Excel/File:
 `docs/regression/TorsionPostprocess_2026-11-17`.
 
+В Excel и File таблица `rngTorsionBarForces` выводится полностью для всех
+сочетаний с T. Проверки `RunTorsionBarLengthTests` и
+`modTestTorsionConcrete.RunTorsionConcreteWorkbookTests` с аргументами File/Excel
+проверяют пять колонок, запись после расчёта и восстановление из файла,
+удаление лишнего хвоста и отказ до очистки при недостатке строк. Полные
+состояния элементов НДМ в File на лист не выводятся.
+
 После исправлений приёмки 22.10 использовать направленные
 RunAudit03ImportedSnapshotUnitChangeTests, RunAudit03GeometrySnapshotTests,
 modTestPlotConfig.RunAudit03SnapshotMetadataTests, RunPreviewSnapshotContractTests,

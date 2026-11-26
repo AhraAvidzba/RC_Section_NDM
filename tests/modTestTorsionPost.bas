@@ -433,6 +433,7 @@ Public Function RunTorsionBarLengthTests() As String
         If pass = 1 Then units.LoadFromSettings settings Else units.InitializeDefaults ' Штатная книга выводит mm; стандарт ядра для OUTPUT Length — m.
         Set calculator = New CTorsionPostCalculator: calculator.Prepare TestTorsionRectangle(), p
         Set results = New Collection: results.Add calculator.Calculate("Length01", 3900000#, Nothing)
+        results.Add calculator.Calculate("Length02", 3900000#, Nothing) ' Два сочетания проверяют полный вывод строк, а не только первого блока стержней.
         Set snapshot = New CCalculationSnapshot: writer.CaptureSummary snapshot, results, units
         bars = snapshot.Table(TORSION_BAR_DATA_KEY): data = snapshot.Table(TORSION_POST_DATA_KEY)
         headers = snapshot.Table(TORSION_POST_HEADERS_KEY)
@@ -486,8 +487,10 @@ Public Function RunTorsionBarLengthTests() As String
         warning = writer.RestoreSummary(ThisWorkbook, indexed)
         TestTorsionAssert "File restore " & pass, Len(warning) = 0
         indexed.CloseFile: Kill path: path = vbNullString
-        warning = writer.RestoreSummary(ThisWorkbook, snapshot, False)
-        TestTorsionAssert "File sheet omits detail " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 4).Value2)
+        TestTorsionAssert "File both combinations retained " & pass, UBound(bars, 1) = 9 And CStr(anchor.Offset(8, 0).Value2) = "Length02"
+        For row = 1 To UBound(bars, 1): For column = 1 To TORSION_BAR_COLUMNS
+            TestTorsionAssert "File sheet exact " & pass & ":" & row & ":" & column, CStr(anchor.Offset(row - 1, column - 1).Value2) = CStr(bars(row, column))
+        Next column: Next row
         warning = writer.ClearSummary(ThisWorkbook)
         TestTorsionAssert "Clear length data " & pass, Len(warning) = 0 And IsEmpty(anchor.Offset(1, 4).Value2)
     Next pass

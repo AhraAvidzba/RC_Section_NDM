@@ -1,0 +1,21 @@
+{
+  "Status": "PASS",
+  "Executions": 10,
+  "Assertions": 1156,
+  "NoFullRunStarted": true,
+  "FileAndExcelWorkflowsPassed": true,
+  "AllFiveColumnsAndBothCombinationsVerified": true,
+  "RefreshRepairsSheetAndClearsTail": true,
+  "OverflowCheckedBeforeClear": true,
+  "FileNDMDetailsRemainOmitted": true,
+  "CompiledComponents": 209,
+  "InstalledBookSHA256": "9F6776127DAE1D4CFD2CB9E41920BF0CDE00D88E35D1C0177AAA86DAC59393C4",
+  "InstalledExportSHA256": "1F293C244CEA840699CB7CD701D2DF805008F61A689954DBBF190FBE268002F2",
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin",
+    "xl/sharedStrings.xml"
+  ],
+  "OtherWorkbookDataAndFormattingPreserved": true,
+  "FixtureModeNote": "Tables execute No/Yes; existing workbook workflow fixture explicitly sets Yes in both outer runs.",
+  "RunnerReviewNote": "Initial scanner matched PASS Runtime preserves width; anchored RUNTIME pattern fixed, successful primary log retained and reviewed without rerun."
+}

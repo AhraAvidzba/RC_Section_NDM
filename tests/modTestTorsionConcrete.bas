@@ -246,7 +246,30 @@ Public Function RunTorsionConcreteWorkbookTests(ByVal storageMode As String) As 
         TestConcreteAssert "File stores 44 columns", UBound(matrix, 2) = TORSION_POST_COLUMNS
         TestConcreteNear "File exact fcd", matrix(1, 41), CDbl(anchor.Offset(0, 32).Value2)
         TestConcreteNear "File exact nu", matrix(1, 42), 0.552
-        TestConcreteAssert "File sheet bars header only", IsEmpty(ThisWorkbook.Names("rngTorsionBarForces").RefersToRange.Offset(1, 0).Value2)
+        Dim barAnchor As Object: Set barAnchor = ThisWorkbook.Names("rngTorsionBarForces").RefersToRange
+        Dim column As Long, sheetBars As Variant
+        sheetBars = barAnchor.Resize(UBound(barMatrix, 1), TORSION_BAR_COLUMNS).Value2
+        For i = 1 To UBound(barMatrix, 1): For column = 1 To TORSION_BAR_COLUMNS
+            TestConcreteAssert "File calculated bars exact " & i & ":" & column, CStr(sheetBars(i, column)) = CStr(barMatrix(i, column))
+        Next column: Next i
+        barAnchor.Resize(UBound(barMatrix, 1) + 2, TORSION_BAR_COLUMNS).Value2 = "Test stale bars"
+        Dim savedBarAddress As String: savedBarAddress = ThisWorkbook.Names("rngTorsionBarForces").RefersTo
+        ThisWorkbook.Names("rngTorsionBarForces").RefersTo = "='" & barAnchor.Worksheet.Name & "'!" & barAnchor.Worksheet.Cells(barAnchor.Worksheet.Rows.Count, barAnchor.Column).Address
+        Dim overflowNumber As Long, overflowReason As String
+        On Error Resume Next
+        UpdateSectionResultsForWorkbook ThisWorkbook
+        overflowNumber = Err.Number: overflowReason = Err.Description: Err.Clear
+        ThisWorkbook.Names("rngTorsionBarForces").RefersTo = savedBarAddress
+        On Error GoTo Failed
+        TestConcreteAssert "File bar overflow diagnosed", overflowNumber <> 0 And InStr(overflowReason, "rngTorsionBarForces") > 0
+        TestConcreteAssert "File bar overflow before clear", CStr(barAnchor.Value2) = "Test stale bars"
+        UpdateSectionResultsForWorkbook ThisWorkbook ' Тот же вход, который использует кнопка обновления: источник только File, без решения НДМ.
+        sheetBars = barAnchor.Resize(UBound(barMatrix, 1), TORSION_BAR_COLUMNS).Value2
+        For i = 1 To UBound(barMatrix, 1): For column = 1 To TORSION_BAR_COLUMNS
+            TestConcreteAssert "File refreshed bars exact " & i & ":" & column, CStr(sheetBars(i, column)) = CStr(barMatrix(i, column))
+        Next column: Next i
+        TestConcreteAssert "File stale bar tail cleared", IsEmpty(barAnchor.Offset(UBound(barMatrix, 1), 0).Value2)
+        TestConcreteAssert "File NM details remain header only", IsEmpty(ThisWorkbook.Names("rngNDMElementResults").RefersToRange.Offset(1, 0).Value2)
     End If
     GoTo Finished
 Failed:

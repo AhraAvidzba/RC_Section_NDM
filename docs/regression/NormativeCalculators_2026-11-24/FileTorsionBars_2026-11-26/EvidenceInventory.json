@@ -1,0 +1,283 @@
+{
+  "ArchiveSHA256": "1599811D6250606DB4CE090D50E8C3AF6464EBF92F090FD1354B3B45E34F3B27",
+  "Included": [
+    {
+      "Path": "Acceptance.json",
+      "SHA256": "811CD1935268EE7E0861A115F2B49AC1078A5AEB69F852702738332FAAE7EBDE",
+      "Bytes": 968
+    },
+    {
+      "Path": "BaselineNative.txt",
+      "SHA256": "E59680D2DEA767331F5368178AD618E07034F575AB1A3D6FC64D542DDCED391B",
+      "Bytes": 9936879
+    },
+    {
+      "Path": "CodeUpdate.json",
+      "SHA256": "917B1E61085E33CD11EC825B362A8DE95D7E3AE3E53CFCE5DCFB98DBE265EF0A",
+      "Bytes": 683
+    },
+    {
+      "Path": "Excel_No.txt",
+      "SHA256": "04C1C23DFEDBFBAB5EC1CE536F37F253868B6FF6AB24444EC1B2032344F7102C",
+      "Bytes": 3004
+    },
+    {
+      "Path": "Excel_No.txt.memory.json",
+      "SHA256": "7345685C6B6F8A877F3060A89336446A907E8C4DDDC8BFED9B57366176780CA6",
+      "Bytes": 320
+    },
+    {
+      "Path": "Excel_No.txt.Ownership.json",
+      "SHA256": "3931873F049575C675A9763F3C972D900A9D3583017A3F47DD8E907E275B2240",
+      "Bytes": 258
+    },
+    {
+      "Path": "Excel_No.txt.ProcessClosure.json",
+      "SHA256": "75B321686C55416147487EBC439836D70531F778D26D93442B88FF63342BB582",
+      "Bytes": 2629
+    },
+    {
+      "Path": "Excel_No.txt.RunnerCleanup.json",
+      "SHA256": "5F9FA1772052A4A06310AC83B7B34CF9B01C8D3EA39C51F644EC37E9E43B2EE3",
+      "Bytes": 510
+    },
+    {
+      "Path": "Excel_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "Excel_No.txt.stdout.log",
+      "SHA256": "9E5FA8AE2457495B18B85C1F42B9ECCC14815C280DE4F0C84350C29392B5E6DE",
+      "Bytes": 483
+    },
+    {
+      "Path": "Excel_Yes.txt",
+      "SHA256": "EFF6248F11603158B13C818C5DC8E09172B0F42C9CEE2DEF1C80763FA258D1F9",
+      "Bytes": 2929
+    },
+    {
+      "Path": "Excel_Yes.txt.memory.json",
+      "SHA256": "9931062B1AB0D2B4F0C4D8A81B8C771DF81A2F9F41066AA3FC7405F51175C030",
+      "Bytes": 319
+    },
+    {
+      "Path": "Excel_Yes.txt.Ownership.json",
+      "SHA256": "4B8CF4275FFF9CFEECD05FED18608BFE4E305113B528E784EBCABD0F4E465606",
+      "Bytes": 259
+    },
+    {
+      "Path": "Excel_Yes.txt.ProcessClosure.json",
+      "SHA256": "CF239E56708527EDB762844E3C0448691A22E636DDA6AD52DEB5465FF74C1EF3",
+      "Bytes": 2633
+    },
+    {
+      "Path": "Excel_Yes.txt.RunnerCleanup.json",
+      "SHA256": "AEA41BBD8272D333AB2D11A785F4A7AD48C84D074D555E8BD3EBBE6E3F8DD552",
+      "Bytes": 511
+    },
+    {
+      "Path": "Excel_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "Excel_Yes.txt.stdout.log",
+      "SHA256": "DBC2F0E00DC55AC8EA40BD8C2F8F9BB0477860E6BE106135C4E1B411A65F4037",
+      "Bytes": 484
+    },
+    {
+      "Path": "File_No.txt",
+      "SHA256": "8F12D08BDD8E6A6DEE599ACBF8414069F9EF8F0E7E64CAEF2CDF005458679440",
+      "Bytes": 8011
+    },
+    {
+      "Path": "File_No.txt.memory.json",
+      "SHA256": "A11D6D4004F5335C6E43A141E17FE0BE72FD56EB3109905BD84E4CA3A7283220",
+      "Bytes": 320
+    },
+    {
+      "Path": "File_No.txt.Ownership.json",
+      "SHA256": "EF5A9DE5642E1CD22D544D2DC4E8D12ACC5441D8231C23A2E25970571CBAAF51",
+      "Bytes": 259
+    },
+    {
+      "Path": "File_No.txt.ProcessClosure.json",
+      "SHA256": "84197A79F2F1D040F1C88851E33B14D8F4F694DE50E412E9373CB5A5667BFEAE",
+      "Bytes": 4100
+    },
+    {
+      "Path": "File_No.txt.RunnerCleanup.json",
+      "SHA256": "4CE76B5208E75D1E59BEB339A3A38B7F420B358BAC9453BEAC28F0868E12D8BD",
+      "Bytes": 511
+    },
+    {
+      "Path": "File_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "File_No.txt.stdout.log",
+      "SHA256": "B5AAC8C289FA0BFE1A77626F1557E06C21ACA0DE952C8BCA3A2BD68AC2DDF1E9",
+      "Bytes": 483
+    },
+    {
+      "Path": "File_Yes.txt",
+      "SHA256": "21C3D2C4738C05F24943D3B6EA3A5C638662EE5361E0BE7A3A5A47F49CB81712",
+      "Bytes": 7932
+    },
+    {
+      "Path": "File_Yes.txt.memory.json",
+      "SHA256": "A5F4EDE6A19C5EFF6EBD8576DA1B31C92E293046167AA612AE32D4AA51659296",
+      "Bytes": 320
+    },
+    {
+      "Path": "File_Yes.txt.Ownership.json",
+      "SHA256": "EE1BBB80F018AE98C1A7B600DE5369C96839A5A43352F9A87414EA55ABC4BE0F",
+      "Bytes": 259
+    },
+    {
+      "Path": "File_Yes.txt.ProcessClosure.json",
+      "SHA256": "F74B876AF3B85F399D7FE6F70B5AB5C5ABCF338B31E2FDE4144306750346C0FE",
+      "Bytes": 3611
+    },
+    {
+      "Path": "File_Yes.txt.RunnerCleanup.json",
+      "SHA256": "8FB8C818AE51D56078231A01E67786CD2D1A0EF97A3B8DEB9AED25328739C565",
+      "Bytes": 511
+    },
+    {
+      "Path": "File_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "File_Yes.txt.stdout.log",
+      "SHA256": "C783C411FF34F82D77ECF9556D619F3EA6FF1E5C9033E8DE4A83828AD7D7FED6",
+      "Bytes": 484
+    },
+    {
+      "Path": "NativeCandidate.txt",
+      "SHA256": "38E0F0E312EA4ED006944E9C74B36B1063F23846A43DC7B163C1FA0D66286B6F",
+      "Bytes": 9940435
+    },
+    {
+      "Path": "PackageProof.json",
+      "SHA256": "2FBF347BEFC21173CA78BBA6A2EFDE15694A01B4113A87B5D0386266DB2877D9",
+      "Bytes": 789
+    },
+    {
+      "Path": "Prepare-Candidate.py",
+      "SHA256": "E102DE25AC6A6E00D6FAB2FE0EF256DBD5D4E53282B7F9FD424A3ABA6A7A2958",
+      "Bytes": 4155
+    },
+    {
+      "Path": "Run-Directed.ps1",
+      "SHA256": "6AC8A43D21DAA66257008F87CB379605B4D2B3456C66836D9FCEE38588B515AF",
+      "Bytes": 2776
+    },
+    {
+      "Path": "Runs.json",
+      "SHA256": "42B0BE4AB38E5865BC594EAA77865E03492FAC61FA4634D9A8EAE7BF991AAA57",
+      "Bytes": 2942
+    },
+    {
+      "Path": "Tables_No.txt",
+      "SHA256": "498BFA5494A6FCA784F7A3918915CABDEF57C010658FDCE3357B65B6FDC20EC1",
+      "Bytes": 16916
+    },
+    {
+      "Path": "Tables_No.txt.memory.json",
+      "SHA256": "BAEF0D6ED278B6BB1D7337949C0B55AEAC4D40D006F66D056271FA2CC7A9E2A6",
+      "Bytes": 320
+    },
+    {
+      "Path": "Tables_No.txt.Ownership.json",
+      "SHA256": "CA0D3E3364116A06C50DC4CF82C1A965AD43E8719CA4083243F02ACB810BF68B",
+      "Bytes": 259
+    },
+    {
+      "Path": "Tables_No.txt.ProcessClosure.json",
+      "SHA256": "1A35051949E743DFC8CE57FE3D0A12457E7844A3A7861AAD22E9F1910121AC09",
+      "Bytes": 4100
+    },
+    {
+      "Path": "Tables_No.txt.RunnerCleanup.json",
+      "SHA256": "1A56158D73AF2C5522F7973AD2FA367B5826424141FCB3E895D6E4837FF14EF7",
+      "Bytes": 511
+    },
+    {
+      "Path": "Tables_No.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "Tables_No.txt.stdout.log",
+      "SHA256": "1F5342A4619B9FAA230BA4C10B863D39E2D5CA99C1715C09EBBBADAA4798BA9C",
+      "Bytes": 526
+    },
+    {
+      "Path": "Tables_Yes.txt",
+      "SHA256": "4109CCA5EB5F2C1A88BB765D7DB283463F21C75A124B1573D0B070384A6BF141",
+      "Bytes": 16732
+    },
+    {
+      "Path": "Tables_Yes.txt.memory.json",
+      "SHA256": "A9ABF6EAE09337B02E4BCAE4F792A484205180C7A957E887C0B03CE42751C672",
+      "Bytes": 319
+    },
+    {
+      "Path": "Tables_Yes.txt.Ownership.json",
+      "SHA256": "30E1C3844B23E2FA3E549F9848230BA559E8FBA857EC6571EF561B8DDA1AFD41",
+      "Bytes": 258
+    },
+    {
+      "Path": "Tables_Yes.txt.ProcessClosure.json",
+      "SHA256": "7CE41E53E385C5AA501C1FB8D888A943E4A1578277E835368FC56A2E6583C091",
+      "Bytes": 4581
+    },
+    {
+      "Path": "Tables_Yes.txt.RunnerCleanup.json",
+      "SHA256": "7E2E3CC9999ABFA438311B99BBB3DBD6B017B6BFA1FDDCB31821DE1CD7BE5EFE",
+      "Bytes": 510
+    },
+    {
+      "Path": "Tables_Yes.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0
+    },
+    {
+      "Path": "Tables_Yes.txt.stdout.log",
+      "SHA256": "DAFB67B446C5281E21DB8C99ACE751503CC36CCC3BC2EB7DA2071DAF8EF28705",
+      "Bytes": 530
+    },
+    {
+      "Path": "VBA_All_Code.txt",
+      "SHA256": "1F293C244CEA840699CB7CD701D2DF805008F61A689954DBBF190FBE268002F2",
+      "Bytes": 9940403
+    },
+    {
+      "Path": "Verify-AndInstall.py",
+      "SHA256": "E2AF35479A8D99F9975BDB90934DE035E5482046BE7C7555C1E42CE20C4F92C3",
+      "Bytes": 6144
+    }
+  ],
+  "ExcludedLocalBinaryArtifacts": [
+    {
+      "Path": "Baseline.xlsm",
+      "SHA256": "6276D1017C97529725F9CB3E0BF61B027EE1DED7999DD9E566722DA333F52037",
+      "Bytes": 12809700
+    },
+    {
+      "Path": "Candidate.xlsm",
+      "SHA256": "9F6776127DAE1D4CFD2CB9E41920BF0CDE00D88E35D1C0177AAA86DAC59393C4",
+      "Bytes": 12778868
+    },
+    {
+      "Path": "CandidateNative.xlsm",
+      "SHA256": "A080AFC029BA8367EBB6D3C28B7A6B5197BFB2DD5CC80843B100506ADD73D5AE",
+      "Bytes": 13341544
+    }
+  ],
+  "OriginalLogsRetained": true
+}

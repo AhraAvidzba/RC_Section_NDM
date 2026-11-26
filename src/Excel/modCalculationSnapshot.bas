@@ -100,7 +100,7 @@ Public Sub UpdateSectionResultsForWorkbook(ByVal workbook As Object, Optional By
         summary.RestoreSummary workbook, snapshot, fullFormatting
     End If
     Dim torsionWriter As New CTorsionSummaryWriter
-    Dim torsionWarning As String: torsionWarning = torsionWriter.RestoreSummary(workbook, snapshot, mode = "Excel")
+    Dim torsionWarning As String: torsionWarning = torsionWriter.RestoreSummary(workbook, snapshot)
     If mode = "Excel" Then
         store.ClearReference workbook
     Else
@@ -180,6 +180,12 @@ Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snaps
     nextTopRow = nextAnchor.Row - 2
     layout.CheckRowsGap "rngNDMSectionGeometry и расположенных ниже таблиц Results", _
         firstTorsionRow + rowCount - 1, nextTopRow, nextTopRow
+    If snapshot.HasTable(TORSION_BAR_DATA_KEY) Then
+        Set anchor = workbook.Names.Item("rngTorsionBarForces").RefersToRange
+        rowCount = snapshot.TableRowCount(TORSION_BAR_DATA_KEY) ' Усилия стержней T выводятся полностью при обоих носителях снимка.
+        If Not ResultRowsFitSheet(anchor.Row, rowCount, anchor.Worksheet.Rows.Count) Then _
+            layout.Issues.Add ResultRowLimitDescription("rngTorsionBarForces", anchor.Row, rowCount, anchor.Worksheet.Rows.Count)
+    End If
     If layout.Issues.Count > 0 Then Err.Raise 5, "ValidateRestoredSnapshotLayout", _
         layout.Message(snapshot.TableRowCount("Summary") - 12, "Обновление результатов не выполнено.", False)
 End Sub
@@ -210,6 +216,10 @@ Private Function RestoredSnapshotMandatoryRowsFit(ByVal workbook As Object, ByVa
     Set anchor = workbook.Names.Item("rngTorsionSummaryAnchor").RefersToRange
     If Not ResultRowsFitSheet(anchor.Row - torsionWriter.HeaderRowsAboveAnchor, _
             torsionWriter.RequiredRowsForWorkbook(workbook, torsionCount), anchor.Worksheet.Rows.Count) Then Exit Function
+    If snapshot.HasTable(TORSION_BAR_DATA_KEY) Then
+        Set anchor = workbook.Names.Item("rngTorsionBarForces").RefersToRange
+        If Not ResultRowsFitSheet(anchor.Row, snapshot.TableRowCount(TORSION_BAR_DATA_KEY), anchor.Worksheet.Rows.Count) Then Exit Function
+    End If
     RestoredSnapshotMandatoryRowsFit = True
 End Function
 
@@ -398,7 +408,7 @@ Private Sub UpdateIndexedResultsForWorkbook(ByVal workbook As Object, ByRef plot
         summary.RestoreIndexedSummary workbook, source, fullFormatting, worstCriterion
     End If
     Dim torsionWriter As New CTorsionSummaryWriter
-    Dim torsionWarning As String: torsionWarning = torsionWriter.RestoreSummary(workbook, source, False)
+    Dim torsionWarning As String: torsionWarning = torsionWriter.RestoreSummary(workbook, source)
     store.LinkFile workbook
     If preview Then UpdateSectionGeometryPreviewForWorkbook workbook, plotWarning Else UpdateSectionPlotForWorkbook workbook, False, plotWarning
     plotHasWarning = (Len(plotWarning) > 0)

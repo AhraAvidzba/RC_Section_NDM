@@ -175,8 +175,7 @@ End Function
 
 ' Заполняет только самостоятельную таблицу после устойчивости и нижнюю
 ' техническую таблицу. Отказ вывода не изменяет готовое НДС и его статусы.
-Public Function RestoreSummary(ByVal workbook As Object, ByVal source As Object, _
-        Optional ByVal includeBarRows As Boolean = True) As String
+Public Function RestoreSummary(ByVal workbook As Object, ByVal source As Object) As String
     On Error GoTo Failed
     Dim anchor As Object: Set anchor = TorsionAnchor(workbook, "rngTorsionSummaryAnchor")
     If anchor Is Nothing Then
@@ -220,7 +219,9 @@ Public Function RestoreSummary(ByVal workbook As Object, ByVal source As Object,
     ValidateTorsionTarget workbook, target.Offset(-1, 0).Resize(rows + 5, target.Columns.Count)
     Dim barAnchor As Object: Set barAnchor = TorsionAnchor(workbook, "rngTorsionBarForces")
     If barAnchor Is Nothing Then Err.Raise 5, , "Не найден якорь rngTorsionBarForces."
-    Dim barCount As Long: barCount = UBound(bars, 1): If Not includeBarRows Then barCount = 1
+    Dim barCount As Long: barCount = UBound(bars, 1)
+    If Not ResultRowsFitSheet(barAnchor.Row, barCount, barAnchor.Worksheet.Rows.Count) Then _
+        Err.Raise 5, , ResultRowLimitDescription("rngTorsionBarForces", barAnchor.Row, barCount, barAnchor.Worksheet.Rows.Count)
     ValidateTorsionTarget workbook, barAnchor.Resize(barCount, TORSION_BAR_COLUMNS)
     If Not workbook.Application.Intersect(target, barAnchor.Resize(barCount, TORSION_BAR_COLUMNS)) Is Nothing Then _
         Err.Raise 5, , "Якоря подробной и поэлементной таблиц T пересекаются."
