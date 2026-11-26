@@ -1,4 +1,4 @@
-﻿# Заменяет только точные согласованные пояснения, включая длинные строки и повторы.
+﻿# Заменяет пояснения по точному совпадению с картой текстов, включая длинные строки и повторы.
 function Update-StandaloneHelpText($Workbook) {
     $mapping=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'StandaloneHelpText.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     $replacements=New-Object 'System.Collections.Generic.Dictionary[string,string]' ([StringComparer]::Ordinal)

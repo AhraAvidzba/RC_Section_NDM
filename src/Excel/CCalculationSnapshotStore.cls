@@ -39,7 +39,7 @@ Public Sub LinkFile(ByVal workbook As Object)
     SetLink workbook, "Hash", FileIdentity(path)
 End Sub
 
-' Читает прежнюю служебную привязку для проверки переноса/диагностики.
+' Читает служебную привязку снимка для проверки переноса и диагностики.
 ' Пользовательские действия выбирают текущий файл через LoadFile, а не эту привязку.
 Public Function LoadLinkedFile(ByVal workbook As Object) As CCalculationSnapshot
     Dim path As String: path = CStr(workbook.Path) & Application.PathSeparator & LinkText(workbook, "File")

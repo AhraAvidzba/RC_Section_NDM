@@ -7,7 +7,7 @@ Option Explicit
 Private mTestPassed As Long, mTestFailed As Long, mTestLog As String
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' При явном нуле NM сумма равна T; отсутствующее ненулевое состояние по-прежнему не подменяется нулём.
+' При явном нуле NM сумма равна T; отсутствующее ненулевое состояние не подменяется нулём.
 Public Function RunTorsionOnlyTests() As String
     mTestPassed = 0: mTestFailed = 0: mTestLog = vbNullString
     On Error GoTo Failed
@@ -779,7 +779,7 @@ Private Function TestTorsionTransformedRectangle(ByVal sizeFactor As Double, ByV
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет прежний табличный IO-контракт через действующий адаптер вывода.
+' Получает табличную сводку результата через класс вывода.
 Private Function TestTorsionSummary(ByVal result As CTorsionPostResult) As Variant
     Dim writer As New CTorsionSummaryWriter
     TestTorsionSummary = writer.CreateSummaryData(result)

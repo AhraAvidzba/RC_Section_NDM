@@ -351,7 +351,7 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
         If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then
             badValues = Array(vbNullString, "Wrong", CVErr(2015))
         ElseIf CStr(key) = "Rebar.Count" Then
-            badValues = Array(-1#, True, 0.5, 2147483648#, "abc", CVErr(2015)) ' Один стержень теперь допустим; логическое значение по-прежнему не является количеством.
+            badValues = Array(-1#, True, 0.5, 2147483648#, "abc", CVErr(2015)) ' Один стержень допустим; логическое значение не является количеством.
         ElseIf CStr(key) = "Circle.Diameter" Then
             badValues = Array(vbNullString, -1#, 0#, "abc", CVErr(2015))
         ElseIf CStr(key) = "Rebar.AxisDistance" Then
@@ -1658,8 +1658,8 @@ Private Function TestRebarFieldRowSummary(ByVal bars As CRebarLayout, ByVal grou
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' ряд определяется по ID декларативного правила, а не по
-' удалённому формату имён legacy-раскладчика. Расчётные R1/R2 здесь не используются.
+' Определяет ряд по ID декларативного правила.
+' Расчётные имена R1/R2 для этого не используются.
 Private Function TestRebarFieldBelongsToRow(ByVal barID As String, ByVal group As String, ByVal rowNumber As Long) As Boolean
     Dim prefix As String
     prefix = group & ".Row" & CStr(rowNumber) & "."

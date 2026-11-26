@@ -6077,7 +6077,7 @@ Private Sub TestAudit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal pr
                         If CStr(baseline(row, 5)) = "1/mm" Then
                             ' Около нуля сохраняется абсолютный порог 1e-12.
                             ' Относительное округление большого коэффициента
-                            ' согласовано с проверкой деформаций Elements (1e-10).
+                            ' Допуск совпадает с проверкой деформаций Elements (1e-10).
                             absoluteLimit = 0.000000000001 + 0.0000000001 * Abs(expected)
                             If compareInertiaRoundoff Then
                                 ' ДЛЯ ТЕСТОВ: INPUT tf/м2 даёт относительное
@@ -8584,7 +8584,7 @@ Private Function TestMaterialDiagramControlsHeadingExists(ByVal sheet As Object)
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' повторяет сценарии восьми устаревших проверок после изменения таблиц и сообщений.
+' Проверяет ввод, таблицы и сообщения интерфейса в восьми сценариях.
 ' В этом модуле находятся пять проверок; оставшиеся три выполняет GeometryReview.
 Public Function RunCorrectedUiExpectationsTests() As String
     Dim stats As TUiTestStats, config As Object, saved As Variant
@@ -9243,8 +9243,8 @@ Private Function TestFreshnessSystemCell(ByVal key As String) As Object
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Находит ячейку параметра в текущей широкой таблице профилей: ключи по строкам,
-' ProfileId по столбцам; старую длинную структуру fixture здесь не имитирует.
+' Находит ячейку параметра в таблице профилей: ключи по строкам,
+' ProfileId по столбцам.
 Private Function TestFreshnessProfileCell(ByVal profileID As String, ByVal key As String) As Object
     Dim area As Object, values As Variant, row As Long, column As Long, profileColumn As Long
     Set area = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange: values = area.Value2

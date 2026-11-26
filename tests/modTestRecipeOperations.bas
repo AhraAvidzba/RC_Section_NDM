@@ -466,7 +466,7 @@ Public Function RunSavedPointedOffsetTests() As String
 
     Next value
     Set model = New CSectionModel
-    model.GeometryDiagnosticsText = "Предупреждение: исторический текст без кодов."
+    model.GeometryDiagnosticsText = "Предупреждение: текст без кода диагностики."
     TestCheck "saved.warning.historicalNotClassified", Not model.HasGeometryWarnings And model.GeometryWarningText = ""
     model.SetGeometryWarnings True, ""
     TestCheck "saved.warning.emptyDisplayStillEvent", model.HasGeometryWarnings

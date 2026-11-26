@@ -1144,8 +1144,8 @@ Private Sub TestConfigureDurationUnits(ByVal force As String, ByVal moment As St
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сохраняет первоначальную ошибку чтения для сравнения до исправления.
-' После исправления ошибка строки должна храниться в StabilityMeta, а не прерывать вызов.
+' Перехватывает исключение выполнения и возвращает его номер и описание.
+' Ошибка строки длительных нагрузок должна храниться в StabilityMeta без прерывания вызова.
 Private Function TestExecuteDuration(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByRef batch As CBatchSectionCalculator, ByRef reason As String, _

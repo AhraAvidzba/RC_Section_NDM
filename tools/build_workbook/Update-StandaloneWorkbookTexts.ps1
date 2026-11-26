@@ -1,4 +1,4 @@
-﻿# Адресно заменяет согласованные пояснения; данные и структура листов сохраняются.
+﻿# Адресно заменяет пояснения по карте текстов; данные и структура листов сохраняются.
 param([Parameter(Mandatory=$true)][string]$WorkbookPath,[Parameter(Mandatory=$true)][string]$ReportPath)
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path

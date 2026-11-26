@@ -225,7 +225,7 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
 End Function
 
 ' Решает одну линейную задачу равновесия относительно заданной пробной
-' плоскости деформаций. Здесь нет итераций Newton: мы только берем текущие
+' плоскости деформаций. Без итераций Newton используются текущие
 ' касательные участки диаграмм и представляем sigma(epsilon) как
 ' E_t * epsilon + intercept для каждого элемента.
 Private Function TrySolveLinearizedTrialPlane(ByVal section As CSectionModel, _

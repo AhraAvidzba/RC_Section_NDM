@@ -381,7 +381,7 @@ Private Function TestFixtureHeaderRow(ByRef data As Variant, ByVal caption As St
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' фиксирует старую расчетную ломаную до аналитического переноса.
+' Формирует контрольную матрицу геометрии скруглённых сечений.
 Public Function TestDumpRoundedGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
@@ -535,7 +535,7 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' сравнивает расчёт до и после рефакторинга без изменения Results.
+' Формирует контрольный снимок расчётов без изменения Results.
 ' Для каждой формы использует три назначения материалов и четыре направления
 ' нагрузки, затем — несущую способность, образование и ширину трещин СП 35.
 Public Function TestDumpShapeCalculationSnapshot(Optional ByVal crackCode As String = "SP35") As String

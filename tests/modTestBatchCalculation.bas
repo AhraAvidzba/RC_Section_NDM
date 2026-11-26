@@ -2966,7 +2966,7 @@ RestoreAndFail:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет две договоренности по СП 35: табличные коэффициенты приходят из
+' Проверяет источники данных СП 35: табличные коэффициенты приходят из
 ' rngSP35Table721, а материал устойчивости выбирается отдельной строкой профиля.
 ' При SLS(II) в тестовом наборе Rb/Rsc больше, поэтому расчетная сила должна
 ' получиться выше, чем при нормативном для устойчивости ULS(I).
@@ -4019,7 +4019,7 @@ RestoreAndFail:
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет исправление СП 35: выбор ветви идет по ядровому расстоянию r, а
+' Проверяет выбор ветви СП 35 по ядровому расстоянию r, а
 ' не по радиусу инерции i. Для круга D=500 мм ядровое расстояние примерно
 ' равно половине радиуса инерции, поэтому перепутать эти величины легко.
 Private Sub TestStabilitySP35UsesCoreDistanceNotRadius(ByRef stats As TBatchTestStats)
@@ -7621,7 +7621,7 @@ End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' проверяет неизменность готовых результатов сочетаний.
-' Отдельный запуск воспроизводит тот же пример до и после исправления.
+' Отдельный запуск проверяет сохранность результатов, уже переданных потребителям.
 Public Function RunAudit03PublishedResultTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
@@ -7786,7 +7786,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
     TestSetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
     TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    TestSetSystemSetting "SLS.Crack.Code", "SP63" ' Эта историческая матрица проверяет формулы СП 63; значение возвращается.
+    TestSetSystemSetting "SLS.Crack.Code", "SP63" ' Матрица проверяет формулы СП 63; исходное значение настройки восстанавливается.
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem

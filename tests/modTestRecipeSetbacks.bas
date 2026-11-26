@@ -682,7 +682,7 @@ Private Sub TestMainCoincidenceLabels()
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет один реальный стержень Circle: четыре режима дуги270 градусов и полный IncludeStart, без старого ограничения n>=2.
+' Проверяет один стержень Circle: четыре режима дуги 270 градусов и замкнутую окружность с IncludeStart.
 Private Sub TestCircleSingleEndModes()
     Dim values As Variant, recipe As ISectionRecipe, layout As CRebarLayout, mode As Long
     Dim modes As Variant, expectedX As Variant, expectedY As Variant

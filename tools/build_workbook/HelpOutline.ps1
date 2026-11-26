@@ -11,7 +11,7 @@ $script:HelpMainTitles=@(
     'Справка по настройкам Config и листа «Сечения»'
 )
 
-# Ищет содержимое, а не оставшийся после старого большого гайда UsedRange.
+# Находит последнюю заполненную строку независимо от размеров UsedRange.
 function Get-HelpContentLastRow($Sheet) {
     $cell=$Sheet.Cells.Find('*',$Sheet.Cells.Item(1,1),-4123,2,1,2,$false)
     if ($null -eq $cell) {return 0}
@@ -193,8 +193,8 @@ function Set-HelpSectionOrderAndOutline($Workbook,[switch]$Expanded) {
     return [ordered]@{Titles=$script:HelpMainTitles;Rows=$ordered;LastRow=$last;DefaultExpanded=$configTitle;Groups=$script:HelpMainTitles.Count;Moves=$script:HelpRowMoves}
 }
 
-# Узкие прежние обновления дописывали эти настройки после Results.
-# Переносим весь абзац внутрь Config, сохраняя реальные адреса Подробнее.
+# Размещает пояснения настроек внутри раздела Config.
+# При переносе абзаца сохраняет адреса ссылок «Подробнее».
 function Repair-HelpConfigEntries($Workbook) {
     $sheet=$Workbook.Worksheets.Item('Справка')
     foreach ($key in @('SLS.Crack.ToleranceLambda','General.PlateauSlopeFactor')) {

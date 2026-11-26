@@ -84,7 +84,7 @@ try{
    Test-ZeroAssert ($storage+'.T.NMzero.'+$row) ($null -ne $sigmaNM -and [double]$sigmaNM -eq 0) $sigmaNM
    Test-ZeroAssert ($storage+'.T.sum.'+$row) ($sigmaT -gt 0 -and [double]$sigmaSum -eq [double]$sigmaT) @($sigmaT,$sigmaSum)
   }
-  $loads.Cells.Item(6,2).Value2=0.0001 # Теперь остаётся только T: повторный запуск очищает прежние состояния KEEP.
+  $loads.Cells.Item(6,2).Value2=0.0001 # После фильтрации остаётся только T: повторный запуск очищает состояния KEEP.
   $message=[string]$app.Run($prefix+'modWorkbookCalculation.RunSectionCalculationForWorkbook',$book)
   Test-ZeroAssert ($storage+'.Tonly.message') ($message -match 'НДС от N, Mx и My не рассчитывался') $message
   $index=$book.Names.Item('rngNDMElementResultIndex').RefersToRange.Cells.Item(1,1)

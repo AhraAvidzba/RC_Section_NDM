@@ -35,7 +35,7 @@ Failed:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Сверяет запрос владельца с прежним запросом независимой Geometry для прямоугольника, дуг и отверстия; выдаваемая наружу область остаётся копией.
+' Сверяет запрос владельца с независимой Geometry для прямоугольника, дуг и отверстия; выдаваемая наружу область остаётся копией.
 Private Sub TestOwnerReadQueries(ByRef stats As TTestStats)
     Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
     Dim regions As Collection: Set regions = New Collection

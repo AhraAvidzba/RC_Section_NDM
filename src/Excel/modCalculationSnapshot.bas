@@ -136,7 +136,7 @@ End Sub
 ' Проверяет вместимость готовых таблиц до очистки; число LC не берётся из текущего Config.
 Private Sub ValidateRestoredSnapshotLayout(ByVal workbook As Object, ByVal snapshot As Object, ByVal includeElements As Boolean)
     Dim key As Variant, values As Variant, anchor As Object, rowCount As Long
-    Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange ' В старом payload её может не быть; текущая книга всё равно выводит шапку до любых очисток.
+    Set anchor = workbook.Names.Item("rngNDMElementGeometry").RefersToRange ' Шапка выводится до очистки, в том числе когда снимок не содержит матрицу границ.
     If Not ResultRowsFitSheet(anchor.Row, 1, anchor.Worksheet.Rows.Count) Then Err.Raise 5, "ValidateRestoredSnapshotLayout", "Не помещается шапка rngNDMElementGeometry."
     For Each key In snapshot.BaseKeys()
         Set anchor = workbook.Names.Item(CStr(key)).RefersToRange

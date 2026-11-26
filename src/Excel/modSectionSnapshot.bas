@@ -983,7 +983,7 @@ End Function
 Public Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
     Dim snapshot As CResultReadSource: Set snapshot = CurrentResultSource(workbook)
     If Not snapshot Is Nothing Then
-        If rangeName = "rngNDMElementGeometry" And Not snapshot.HasTable(rangeName) Then Exit Function ' Старый Adaptive-снимок может не иметь необязательной матрицы границ; Contour проверяется snapshot.Validate.
+        If rangeName = "rngNDMElementGeometry" And Not snapshot.HasTable(rangeName) Then Exit Function ' В Adaptive матрица границ необязательна; для Contour её наличие проверяет snapshot.Validate.
         If workbook Is mSnapshotReadWorkbook And mSnapshotReadGeometryOnly Then
             ReadAnchoredResultTable = snapshot.Table(rangeName)
         Else

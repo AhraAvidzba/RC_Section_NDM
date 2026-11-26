@@ -371,8 +371,8 @@ Private Sub StoreIncludedGroups(ByVal candidate As Long, ByRef included() As Boo
 End Sub
 
 ' [SP35] Табл. 7.26: beta для одиночных, сдвоенных и строенных стержней.
-' [NDM] Для связной группы из четырех и более сохраняется согласованное
-' beta=0.75. Подготовка использует полный неделимый состав группы.
+' [NDM] Для связной группы из четырех и более принято beta=0.75.
+' Подготовка использует полный неделимый состав группы.
 Public Function SP35GroupBetaFromData(ByVal barCount As Long) As Double
     Select Case barCount
         Case 1: SP35GroupBetaFromData = 1#
@@ -425,7 +425,7 @@ Private Function ReferenceDiameterForRow(ByRef included() As Boolean, ByRef rows
     ReferenceDiameterForRow = SelectedDiameter(minimum, maximum, total, count)
 End Function
 
-' Применяет согласованное программное правило выбора d_ref; только Average
+' Выбирает d_ref в режиме Min, Max или Average; только Average
 ' усредняет диаметры арифметически, не по площади и не через эквивалентный d.
 Private Function SelectedDiameter(ByVal minimum As Double, ByVal maximum As Double, ByVal total As Double, ByVal count As Long) As Double
     If count = 0 Then InvalidData "В опорном ряду СП 35 отсутствует арматура."

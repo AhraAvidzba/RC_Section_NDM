@@ -172,7 +172,7 @@ Finished:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' общие правила без таблиц типов или старых раскладчиков.
+' общие правила без отдельных таблиц и раскладчиков для каждого типа.
 Public Function RunRecipeRuleTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -800,7 +800,7 @@ Private Function TestRoundedInputCase(ByVal scenario As Long) As Boolean
             valid = True: TestFixtureInputCell(range, "Detail", "W", "left").Value2 = 100#
             TestFixtureInputCell(range, "Detail", "R1", "left").Value2 = 220#: TestFixtureInputCell(range, "Detail", "R2", "left").Value2 = 0#
         Case 12: valid = True: TestFixtureInputCell(range, "Detail", "R1", "left").Value2 = 200#: TestFixtureInputCell(range, "Detail", "R1", "right").Value2 = 200#
-        Case 13: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 600# ' Сторона действительно исчезает с учётом as противоположной стороны; прежние 380 мм оставляют допустимую ширину.
+        Case 13: Set invalid = TestFixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 600# ' Смещение 600 мм устраняет сторону с учётом as противоположной стороны.
         Case 14
             valid = True: TestFixtureInputCell(range, "Main", "Left", "n").Value2 = 0: TestFixtureInputCell(range, "Main", "Left", "as").ClearContents
             TestFixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive"
@@ -905,7 +905,7 @@ Rejected:
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' полная сборка рецепта общими классами без старых способов геометрии и размещения
+' Проверяет полную сборку рецепта общими классами геометрии и размещения
 ' арматуры.
 Public Function TestDumpCircleRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, counts As Variant, number As Variant, scenario As Long
@@ -1638,7 +1638,7 @@ Private Sub TestSetSystemInput(ByVal key As String, ByVal value As Variant)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' рецепты используют названия сторон из Config, а не внутренние имена и прежние варианты.
+' Проверяет названия сторон рецептов по видимым таблицам Config.
 Public Function RunRecipeCaptionTests() As String
     Dim config As Object, saved As Variant, fixture As Variant, table As Object, reader As CSectionInputReader
     Dim settings As CSystemSettingsReader, units As CUnitSystem, typeID As String, tableName As String

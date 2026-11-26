@@ -2298,7 +2298,7 @@ Private Sub TestCheckNativeMixedContourRoundTrip(ByVal doc As Object)
         On Error GoTo Failed
         TestCheck prefix & ".overlaidCopyNotIgnored", number <> 0
         number = 0
-        ' Тест сам подготавливает чистый импорт, как теперь обязан пользователь.
+        ' Перед импортом на исходных слоях оставляется один набор геометрии без дублей.
         For i = doc.ModelSpace.Count - 1 To countBefore Step -1: doc.ModelSpace.Item(i).Delete: Next i
         Set section = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.Layers)
         query.Initialize section: Set region = query.ConcreteDomain

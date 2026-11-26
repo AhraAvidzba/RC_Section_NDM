@@ -338,7 +338,7 @@ Private Sub TestProjectionAssert(ByVal label As String, ByVal passed As Boolean)
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
-' Проверяет прежний табличный IO-контракт через действующий адаптер вывода.
+' Получает табличную сводку результата через класс вывода.
 Private Function TestTorsionSummary(ByVal result As CTorsionPostResult) As Variant
     Dim writer As New CTorsionSummaryWriter
     TestTorsionSummary = writer.CreateSummaryData(result)
