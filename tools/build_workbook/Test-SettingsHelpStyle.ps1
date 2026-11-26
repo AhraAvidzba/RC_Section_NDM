@@ -9,12 +9,38 @@ param([Parameter(Mandatory=$true)][string]$WorkbookPath,
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
 . (Join-Path $PSScriptRoot 'HelpOutline.ps1')
+. (Join-Path $PSScriptRoot 'TorsionPostprocess.ps1')
 $path=(Resolve-Path -LiteralPath $WorkbookPath).Path
 $directory=(Resolve-Path -LiteralPath $EvidenceDirectory).Path
 $hash=(Get-FileHash -LiteralPath $path).Hash
 $previous=@(Get-Process EXCEL -ErrorAction SilentlyContinue | ForEach-Object Id)
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class SettingsStyleTestWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);}'
 $app=$null;$book=$null;$owned=0;$ticks=0
+
+# -------------------- ДЛЯ ТЕСТОВ --------------------
+# Получает ожидаемые рисунки из действующих разделов сборщика в отдельной временной книге.
+function Test-ExpectedHelpPictures($Application,$HelpSheet) {
+    $scratch=$null
+    try {
+        $scratch=$Application.Workbooks.Add()
+        $target=$scratch.Worksheets.Item(1)
+        $rows=Get-HelpMainRows $HelpSheet
+        $script:FormulaImageDir=Join-Path $directory 'ExpectedFormulaImages'
+        [void][IO.Directory]::CreateDirectory($script:FormulaImageDir)
+        $script:FormulaImageCounter=0
+        $script:FormulaImageRows.Clear()
+        $null=Add-DirectStateMethodologyGuide $target ([int]$rows['Поиск НДС текущего сочетания']+1)
+        $null=Add-CapacityMethodologyGuide $target ([int]$rows['Поиск предельной несущей способности']+1)
+        $null=Add-CrackWidthMethodologyGuide $target ([int]$rows['Расчет ширины раскрытия нормальных трещин']+1)
+        $null=Add-StabilityMethodologyGuide $target ([int]$rows['Расчет продольного изгиба и устойчивости']+1)
+        $null=Add-TorsionMethodologyGuide $target ([int]$rows['Расчет на кручение']+1)
+        $null=Add-ResultsSheetGuide $target ([int]$rows['Справка по результатам расчета листа Results']+1)
+        return @($script:FormulaImageRows|ForEach-Object {$_.Name})
+    }finally{
+        if($scratch -and (Test-OwnedExcel)){$scratch.Close($false)}
+        $book.Activate();$HelpSheet.Activate()
+    }
+}
 
 # -------------------- ДЛЯ ТЕСТОВ --------------------
 # Подтверждает принадлежность Excel по PID и времени старта перед закрытием.
@@ -139,9 +165,7 @@ try{
         if([Math]::Abs([double]$help.Rows.Item($heading).RowHeight-[double]$help.StandardHeight) -gt 0.1){throw ('Setting header height differs: '+$item.Key)}
         $lines=@($item.Lines | Where-Object {-not [string]::IsNullOrWhiteSpace([string]$_)})
         for($index=0;$index -lt $lines.Count;$index++){
-            $number=$help.Cells.Item($heading+$index+1,1);$text=$help.Cells.Item($heading+$index+1,2)
-            if($number.Value2 -isnot [double] -or $number.Value2 -ne ($index+1) -or $number.HorizontalAlignment -ne -4152 -or $number.NumberFormat -cne '0'){throw ('Paragraph numbering differs: '+$item.Key+' '+($index+1))}
-            if($number.Font.Name -cne 'Arial' -or $number.Font.Size -ne 10 -or $number.Font.Color -ne 0 -or $number.Font.Bold -or $number.Font.Italic){throw ('Number style differs: '+$item.Key)}
+            $text=$help.Cells.Item($heading+$index+1,2) # Пояснения являются абзацами; служебная колонка A не используется и не проверяется.
             if([string]$text.Value2 -cne [string]$lines[$index]){throw ('Help content differs from catalog: '+$item.Key)}
             $height=[double]$text.EntireRow.RowHeight
             $text.EntireRow.AutoFit() | Out-Null
@@ -151,7 +175,9 @@ try{
         $blocks+=,[ordered]@{Key=$item.Key;Row=$heading;Paragraphs=$lines.Count}
     }
     $pictures=@($help.Shapes | Where-Object Type -eq 13)
-    if($pictures.Count -ne 76 -or @($pictures | Where-Object {$_.Height -le 0 -or $_.Width -le 0}).Count){throw 'Help pictures are missing or collapsed.'}
+    $expectedPictures=@(Test-ExpectedHelpPictures $app $help)
+    if($expectedPictures.Count -eq 0 -or $pictures.Count -ne $expectedPictures.Count -or @($pictures | Where-Object {$_.Height -le 0 -or $_.Width -le 0}).Count){throw 'Help pictures are missing or collapsed.'}
+    foreach($name in $expectedPictures){if(@($pictures|Where-Object Name -ceq $name).Count -ne 1){throw ('Help picture is missing or duplicated: '+$name)}}
     $sections=Get-HelpMainRows $help;$last=Get-HelpContentLastRow $help
     $headers=@($sections.Values | Sort-Object);$cycles=0
     for($index=0;$index -lt $headers.Count;$index++){
@@ -191,7 +217,7 @@ try{
         if($module.CountOfLines){$code.Add([string]$module.Lines(1,$module.CountOfLines))}
     }
     [IO.File]::WriteAllText((Join-Path $directory 'VBA_All_Code.txt'),($code -join "`r`n"),[Text.UTF8Encoding]::new($true))
-    [ordered]@{Status='PASS';WorkbookSHA256=$hash;ListSeparator=$separator;Validation=$validation;InvalidValuesRejected=2;RightBorder='dotted/black/thin';LinkFontsChecked=$links;HelpBlocks=$blocks;NumberedParagraphs=$paragraphs;HelpPictures=$pictures.Count;OutlineCycles=$cycles;Navigation=$navigation;UpdateButtonCaption=[string]$updateButton.TextFrame.Characters().Text;FreshResults=(-not $hasSavedResults);SavedResultsAllowed=[bool]$AllowSavedResults;VBACompiled=$true;OwnedPID=$owned;StartTicks=[string]$ticks} |
+    [ordered]@{Status='PASS';WorkbookSHA256=$hash;ListSeparator=$separator;Validation=$validation;InvalidValuesRejected=2;RightBorder='dotted/black/thin';LinkFontsChecked=$links;HelpBlocks=$blocks;Paragraphs=$paragraphs;HelpPictures=$pictures.Count;OutlineCycles=$cycles;Navigation=$navigation;UpdateButtonCaption=[string]$updateButton.TextFrame.Characters().Text;FreshResults=(-not $hasSavedResults);SavedResultsAllowed=[bool]$AllowSavedResults;VBACompiled=$true;OwnedPID=$owned;StartTicks=[string]$ticks} |
         ConvertTo-Json -Depth 7 | Set-Content -LiteralPath (Join-Path $directory 'SettingsHelpStyle.json') -Encoding UTF8
     Write-Output ('SETTINGS_HELP_STYLE_PASS: blocks='+$blocks.Count+'; paragraphs='+$paragraphs+'; links='+$links+'; pictures='+$pictures.Count)
 }catch{

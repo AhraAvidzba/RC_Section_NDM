@@ -6,7 +6,8 @@
 param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm",
     [string]$ReportPath = "",
-    [switch]$UserConfiguredWorkbook
+    [switch]$UserConfiguredWorkbook,
+    [switch]$UnformattedWorkbook
 )
 
 $ErrorActionPreference = "Stop"
@@ -70,6 +71,48 @@ $layout = Read-WorkbookLayout
 function Test-SavedNamedRange([object]$Range, [string]$Name) {
     $expected = @($layout.Names | Where-Object Name -eq $Name)[0]
     return $Range.Worksheet.Name -ceq $expected.Sheet -and $Range.Address() -ceq $expected.Address
+}
+
+# -------------------- ДЛЯ ТЕСТОВ --------------------
+# Читает параметры печати и разрывы из пакета без зависимости от драйвера принтера.
+# Для оформленной книги эталоном служит тот же шаблон, что использует сборщик.
+function Get-TestPrintLayoutSignature([string]$Path, [switch]$Template) {
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $archive=[IO.Compression.ZipFile]::OpenRead($Path)
+    try {
+        if($Template){
+            $reader=New-Object IO.StreamReader($archive.GetEntry('manifest.json').Open())
+            try {$metadata=$reader.ReadToEnd()|ConvertFrom-Json} finally {$reader.Dispose()}
+            $sheetPath=[string]$metadata.sheet
+        }else{
+            $reader=New-Object IO.StreamReader($archive.GetEntry('xl/workbook.xml').Open())
+            try {[xml]$catalog=$reader.ReadToEnd()} finally {$reader.Dispose()}
+            $sheet=@($catalog.workbook.sheets.sheet|Where-Object name -ceq 'Расчет')[0]
+            $id=$sheet.GetAttribute('id','http://schemas.openxmlformats.org/officeDocument/2006/relationships')
+            $reader=New-Object IO.StreamReader($archive.GetEntry('xl/_rels/workbook.xml.rels').Open())
+            try {[xml]$relationships=$reader.ReadToEnd()} finally {$reader.Dispose()}
+            $target=[string]@($relationships.Relationships.Relationship|Where-Object Id -ceq $id)[0].Target
+            $sheetPath=if($target.StartsWith('/')){$target.TrimStart('/')}else{'xl/'+$target}
+        }
+        $reader=New-Object IO.StreamReader($archive.GetEntry($sheetPath).Open())
+        try {[xml]$document=$reader.ReadToEnd()} finally {$reader.Dispose()}
+        $result=[ordered]@{}
+        foreach($tag in @('pageSetup','pageMargins','printOptions','pageSetUpPr','rowBreaks','colBreaks')){
+            $node=$document.SelectSingleNode("//*[local-name()='$tag']")
+            $attributes=@();$children=@()
+            if($node){
+                foreach($attribute in $node.Attributes){
+                    if($attribute.NamespaceURI -eq 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'){continue}
+                    $attributes+=($attribute.LocalName+'='+$attribute.Value)
+                }
+                foreach($child in $node.ChildNodes){
+                    $children+=(@($child.Attributes|ForEach-Object {$_.LocalName+'='+$_.Value}|Sort-Object)-join ';')
+                }
+            }
+            $result[$tag]=(@($attributes|Sort-Object)-join ';')+'|'+($children-join '|')
+        }
+        return $result
+    }finally{$archive.Dispose()}
 }
 $fullWorkbookPath = Join-Path $root $WorkbookPath
 
@@ -170,7 +213,10 @@ try {
         "rngNDMSectionContours",
         "rngNDMSectionProperties",
         "rngNDMSectionAnnotations",
-        "rngNDMMaterialDiagrams"
+        "rngNDMMaterialDiagrams",
+        "rngNDMElementGeometry",
+        "rngTorsionSummaryAnchor",
+        "rngTorsionBarForces"
     )
 
     $actualNames = @()
@@ -194,23 +240,15 @@ try {
         $materialDiagramsRange = $workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
         $stabilityLoadsRange = $workbook.Names.Item("rngStabilityDurationLoads").RefersToRange
         $sp35TableRange = $workbook.Names.Item("rngSP35Table721").RefersToRange
-        Add-Check $checks "Results ranges layout" (
-            ([string]$batchSummaryRange.Worksheet.Name -eq "Results") -and
-            ($batchSummaryRange.Row -eq 1) -and ($batchSummaryRange.Column -eq 1) -and
-            ($batchSummaryRange.Rows.Count -eq 1) -and ($batchSummaryRange.Columns.Count -eq 1) -and
-            ($strengthSummaryAnchorRange.Worksheet.Name -eq "Results") -and
-            ($strengthSummaryAnchorRange.Row -eq 49) -and ($strengthSummaryAnchorRange.Column -eq 1) -and
-            ($crackSummaryAnchorRange.Worksheet.Name -eq "Results") -and
-            ($crackSummaryAnchorRange.Row -eq 85) -and ($crackSummaryAnchorRange.Column -eq 1) -and
-            ($stabilitySummaryAnchorRange.Worksheet.Name -eq "Results") -and
-            ($stabilitySummaryAnchorRange.Row -eq 122) -and ($stabilitySummaryAnchorRange.Column -eq 1) -and
-            ($elementResultsRange.Row -eq 156) -and ($elementResultsRange.Column -eq 1) -and
-            ($geometryResultsRange.Row -eq 156) -and ($geometryResultsRange.Column -eq 12) -and
-            ($sectionContoursRange.Row -eq 156) -and ($sectionContoursRange.Column -eq 30) -and
-            ($sectionPropertiesRange.Row -eq 156) -and ($sectionPropertiesRange.Column -eq 49) -and
-            ($materialDiagramsRange.Row -eq 156) -and ($materialDiagramsRange.Column -eq 57) -and
-            ($sectionAnnotationsRange.Row -eq 156) -and ($sectionAnnotationsRange.Column -eq 70)
-        ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column):$($batchSummaryRange.Columns.Count) cols; strengthAnchor=R$($strengthSummaryAnchorRange.Row)C$($strengthSummaryAnchorRange.Column); crackAnchor=R$($crackSummaryAnchorRange.Row)C$($crackSummaryAnchorRange.Column); stabilityAnchor=R$($stabilitySummaryAnchorRange.Row)C$($stabilitySummaryAnchorRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
+        $layoutIssues=@()
+        foreach($key in @('rngBatchSummary','rngStrengthSummaryAnchor','rngCrackSummaryAnchor',
+            'rngStabilitySummaryAnchor','rngTorsionSummaryAnchor','rngNDMSectionGeometry',
+            'rngNDMSectionProperties','rngNDMMaterialDiagrams','rngNDMSectionContours',
+            'rngNDMElementResults','rngNDMElementGeometry','rngNDMSectionAnnotations','rngTorsionBarForces')){
+            $range=$workbook.Names.Item($key).RefersToRange
+            if(-not (Test-SavedNamedRange $range $key)){$layoutIssues+=($key+'='+$range.Worksheet.Name+'!'+$range.Address())}
+        }
+        Add-Check $checks "Results ranges layout" ($layoutIssues.Count -eq 0) ("WorkbookLayout.json; mismatches: "+($layoutIssues-join ', '))
         Add-Check $checks "Stability duration loads range" (
             ($stabilityLoadsRange.Worksheet.Name -eq "Config") -and
             (Test-SavedNamedRange $stabilityLoadsRange "rngStabilityDurationLoads") -and
@@ -239,20 +277,22 @@ try {
     $system = $workbook.Worksheets.Item("Config")
 
     $printArea = [string]$calc.PageSetup.PrintArea
-    $printAreaOk = $printArea.Contains('$A$1:$AJ$60') -or $printAreaXml.Contains('$A$1:$AJ$60')
-    Add-Check $checks "Print area" $printAreaOk ("PageSetup=$printArea; Xml=$printAreaXml")
+    $savedPrintArea=[string]@($layout.Sheets|Where-Object Name -ceq 'Расчет')[0].PrintArea
+    $expectedPrintArea=if($UnformattedWorkbook){'$A$1:$AJ$60'}else{$savedPrintArea}
+    $printAreaOk = $printArea.Contains($expectedPrintArea) -or $printAreaXml.Contains($expectedPrintArea)
+    Add-Check $checks "Print area" $printAreaOk ("Expected=$expectedPrintArea; PageSetup=$printArea; Xml=$printAreaXml")
     Add-Check $checks "A4 portrait" (($calc.PageSetup.PaperSize -eq 9) -and ($calc.PageSetup.Orientation -eq 1)) ("PaperSize=$($calc.PageSetup.PaperSize); Orientation=$($calc.PageSetup.Orientation)")
-    Add-Check $checks "Print scale for one-page blocks" (($calc.PageSetup.Zoom -le 100) -and ($calc.HPageBreaks.Count -eq 0)) ("Zoom=$($calc.PageSetup.Zoom); HBreaks=$($calc.HPageBreaks.Count)")
-
-    $breakColumns = @()
-    foreach ($break in $calc.VPageBreaks) {
-        if ($break.Type -eq -4135) {
-            $breakColumns += $break.Location.Column
+    if($UnformattedWorkbook){
+        Add-Check $checks "Print scale for one-page blocks" (($calc.PageSetup.Zoom -le 100) -and ($calc.HPageBreaks.Count -eq 0)) ("Zoom=$($calc.PageSetup.Zoom); HBreaks=$($calc.HPageBreaks.Count)")
+        $breakColumns=@($calc.VPageBreaks|Where-Object Type -eq -4135|ForEach-Object {$_.Location.Column})
+        Add-Check $checks "Vertical page breaks" ($breakColumns -contains 19) ("Columns: "+($breakColumns-join ', '))
+    }else{
+        $expectedPrint=Get-TestPrintLayoutSignature (Join-Path $PSScriptRoot 'CalculationPresentation.zip') -Template
+        $actualPrint=Get-TestPrintLayoutSignature $fullWorkbookPath
+        foreach($tag in $expectedPrint.Keys){
+            Add-Check $checks ("Presentation print layout: "+$tag) ($actualPrint[$tag] -ceq $expectedPrint[$tag]) ("Expected="+$expectedPrint[$tag]+"; Actual="+$actualPrint[$tag])
         }
     }
-    $expectedBreakColumns = @(19)
-    $hasBreaks = -not (@($expectedBreakColumns | Where-Object { $breakColumns -notcontains $_ }).Count)
-    Add-Check $checks "Vertical page breaks" $hasBreaks ("Columns: " + ($breakColumns -join ", "))
 
     $loadsRangeForLayout = $workbook.Names.Item("rngLoadCombinations").RefersToRange
     $loadCombinationsOnConfig = (Test-SavedNamedRange $loadsRangeForLayout "rngLoadCombinations")

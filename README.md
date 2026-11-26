@@ -26,6 +26,8 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 
 Для сборки оформленной книги в отдельную папку укажите `-OutputPath` и `-UseFormattedLayout`. С `-OutputPath` без этих параметров оформления создаётся обычная книга. Чтобы получить оба варианта за одну сборку, задайте два разных пути в `-OutputPath` и `-FormattedOutputPath`.
 
+При проверке неоформленной книги передайте `-UnformattedWorkbook` в `Validate-Workbook.ps1`. Оформленная книга проверяется по `WorkbookLayout.json` и `CalculationPresentation.zip`.
+
 ## Разработка
 
 Основная ветка — `main`: рабочая версия программы. Изменения выполняются в отдельных ветках `codex/...` от актуальной `main` и после проверок сливаются в `main`.
