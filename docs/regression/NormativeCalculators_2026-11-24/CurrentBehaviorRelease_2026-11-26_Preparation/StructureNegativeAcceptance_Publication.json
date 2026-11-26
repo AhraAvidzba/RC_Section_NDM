@@ -1,0 +1,29 @@
+{
+  "Status": "PASS",
+  "Cases": [
+    {
+      "Case": "MovedGeometryAnchor",
+      "ExpectedFailure": "Results ranges layout",
+      "ActualFailures": [
+        "Results ranges layout"
+      ],
+      "Passed": true
+    },
+    {
+      "Case": "WrongPrintArea",
+      "ExpectedFailure": "Print area",
+      "ActualFailures": [
+        "Print area"
+      ],
+      "Passed": true
+    },
+    {
+      "Case": "UnexpectedRowBreak",
+      "ExpectedFailure": "Presentation print layout: rowBreaks",
+      "ActualFailures": [
+        "Presentation print layout: rowBreaks"
+      ],
+      "Passed": true
+    }
+  ]
+}

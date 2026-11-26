@@ -6,8 +6,7 @@
 param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm",
     [string]$ReportPath = "",
-    [switch]$UserConfiguredWorkbook,
-    [switch]$UnformattedWorkbook
+    [switch]$UserConfiguredWorkbook
 )
 
 $ErrorActionPreference = "Stop"
@@ -278,20 +277,14 @@ try {
 
     $printArea = [string]$calc.PageSetup.PrintArea
     $savedPrintArea=[string]@($layout.Sheets|Where-Object Name -ceq 'Расчет')[0].PrintArea
-    $expectedPrintArea=if($UnformattedWorkbook){'$A$1:$AJ$60'}else{$savedPrintArea}
+    $expectedPrintArea=$savedPrintArea
     $printAreaOk = $printArea.Contains($expectedPrintArea) -or $printAreaXml.Contains($expectedPrintArea)
     Add-Check $checks "Print area" $printAreaOk ("Expected=$expectedPrintArea; PageSetup=$printArea; Xml=$printAreaXml")
     Add-Check $checks "A4 portrait" (($calc.PageSetup.PaperSize -eq 9) -and ($calc.PageSetup.Orientation -eq 1)) ("PaperSize=$($calc.PageSetup.PaperSize); Orientation=$($calc.PageSetup.Orientation)")
-    if($UnformattedWorkbook){
-        Add-Check $checks "Print scale for one-page blocks" (($calc.PageSetup.Zoom -le 100) -and ($calc.HPageBreaks.Count -eq 0)) ("Zoom=$($calc.PageSetup.Zoom); HBreaks=$($calc.HPageBreaks.Count)")
-        $breakColumns=@($calc.VPageBreaks|Where-Object Type -eq -4135|ForEach-Object {$_.Location.Column})
-        Add-Check $checks "Vertical page breaks" ($breakColumns -contains 19) ("Columns: "+($breakColumns-join ', '))
-    }else{
-        $expectedPrint=Get-TestPrintLayoutSignature (Join-Path $PSScriptRoot 'CalculationPresentation.zip') -Template
-        $actualPrint=Get-TestPrintLayoutSignature $fullWorkbookPath
-        foreach($tag in $expectedPrint.Keys){
-            Add-Check $checks ("Presentation print layout: "+$tag) ($actualPrint[$tag] -ceq $expectedPrint[$tag]) ("Expected="+$expectedPrint[$tag]+"; Actual="+$actualPrint[$tag])
-        }
+    $expectedPrint=Get-TestPrintLayoutSignature (Join-Path $PSScriptRoot 'CalculationPresentation.zip') -Template
+    $actualPrint=Get-TestPrintLayoutSignature $fullWorkbookPath
+    foreach($tag in $expectedPrint.Keys){
+        Add-Check $checks ("Presentation print layout: "+$tag) ($actualPrint[$tag] -ceq $expectedPrint[$tag]) ("Expected="+$expectedPrint[$tag]+"; Actual="+$actualPrint[$tag])
     }
 
     $loadsRangeForLayout = $workbook.Names.Item("rngLoadCombinations").RefersToRange

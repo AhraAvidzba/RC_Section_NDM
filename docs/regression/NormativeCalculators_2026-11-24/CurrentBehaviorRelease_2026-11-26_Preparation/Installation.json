@@ -1,0 +1,36 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807",
+  "ExportSHA256": "D546A2D8EFD80BEED1E7C698E41153A937179652A583174E6EE38D4553806D0B",
+  "InstalledWorkbookEqualsFullRunSource": true,
+  "NativeComponents": 209,
+  "UserDataPreservedInLocalBackups": [
+    {
+      "Source": "workbook/output/RC_Section_NDM.xlsm",
+      "LocalBackup": "docs/regression/NormativeCalculators_2026-11-24/CurrentBehaviorRelease_2026-11-26_Preparation/UserSavedBeforeRelease.xlsm",
+      "SHA256": "788CC3FD97D3C0E7BAE1356F35BF4BB0E72A71821777B20272B49C0E1886DFA2",
+      "Published": false
+    },
+    {
+      "Source": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "LocalBackup": "docs/regression/NormativeCalculators_2026-11-24/CurrentBehaviorRelease_2026-11-26_Preparation/UserSavedReportBeforeRelease.txt",
+      "SHA256": "E32AD8BF3128BC37D03DE4314840CC9CB0AEB68F3B0B84459466DC3CEAB50169",
+      "Published": false
+    }
+  ],
+  "ArchivedOutputFiles": [
+    {
+      "From": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "To": "docs/regression/NormativeCalculators_2026-11-24/CurrentBehaviorRelease_2026-11-26_Preparation/OutputCleanup/RC_Section_NDM_execution_report.txt",
+      "SHA256": "E32AD8BF3128BC37D03DE4314840CC9CB0AEB68F3B0B84459466DC3CEAB50169",
+      "Published": false
+    },
+    {
+      "From": "workbook/output/RC_NDM_ui_test_progress.txt",
+      "To": "docs/regression/NormativeCalculators_2026-11-24/CurrentBehaviorRelease_2026-11-26_Preparation/OutputCleanup/RC_NDM_ui_test_progress.txt",
+      "SHA256": "8063E18A8054F34637082903407E57EFD533284B9DC41D44333B46561A1CCF0F",
+      "Published": false
+    }
+  ],
+  "HistoryAndOtherWorktreesUnchanged": true
+}

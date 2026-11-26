@@ -1,0 +1,1134 @@
+{
+  "Format": "NDM.ReleaseEvidence/1",
+  "SourceSHA256": "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807",
+  "Files": [
+    {
+      "Path": "Apply-LocalTextEdits.py",
+      "Bytes": 8988,
+      "SHA256": "A559511E6DA0AF2A11F82D72F88F93D79361F48F542F571D99AF65538DC2F57B"
+    },
+    {
+      "Path": "Audit-CurrentText.py",
+      "Bytes": 4936,
+      "SHA256": "F1C15DBE6F391955DF336E98EF90D23E63FA2BBC172577521F5C9C3670DBC90C"
+    },
+    {
+      "Path": "Audit-FullRun.py",
+      "Bytes": 8469,
+      "SHA256": "D466DC972030B8F999D723DF8DB44C54E8B56FF4C41125CBE007B444AC80C812"
+    },
+    {
+      "Path": "Backup.json",
+      "Bytes": 642,
+      "SHA256": "28EDD3C990064A1D28ECB434DB2E4ABE6BE0E1CA3428DE75E7166D58AEC90F7D"
+    },
+    {
+      "Path": "BuildOwnership.json",
+      "Bytes": 382,
+      "SHA256": "61E560A79D319637F403746A0788D60ADCC44AB9D0AADBB560B9C9B8CD1D5EA6"
+    },
+    {
+      "Path": "CCalculationSnapshotStore_SourceDifference.txt",
+      "Bytes": 489,
+      "SHA256": "A128D293F42FDEC6A0CAC8F0FE4F9301808E11275C917C6683126E3BB4F86D03"
+    },
+    {
+      "Path": "CCrackFormationCalculator_SourceDifference.txt",
+      "Bytes": 135,
+      "SHA256": "039CE2A7B2C1F01D2BAF3E538734D25C2BC4B776E46770D22A556B40304F1A1A"
+    },
+    {
+      "Path": "CDiscreteForceIntegrator_SourceDifference.txt",
+      "Bytes": 343,
+      "SHA256": "C60DA7736CE579A4A4DBEC9CDAAD444E25B38D0D56C4B12E2B0E6594C335B3D0"
+    },
+    {
+      "Path": "CleanRelease.json",
+      "Bytes": 1442,
+      "SHA256": "EC11F438E7DC6B4861C2273B2F6962A678A21FEA1AE24FCAE550CD330F6B506A"
+    },
+    {
+      "Path": "CLinearSystem3x3_SourceDifference.txt",
+      "Bytes": 112,
+      "SHA256": "F8C39FF09F1742D840370E173AFE86DCBB9A7F8950F375EB5EFA93217A54AE72"
+    },
+    {
+      "Path": "CLoadMultiplierSearch_SourceDifference.txt",
+      "Bytes": 129,
+      "SHA256": "1A966DDE5729679928CC874CBDBABA17529EEF9E0E6FBC150141B07B2AD82972"
+    },
+    {
+      "Path": "CLoadPathMath_SourceDifference.txt",
+      "Bytes": 130,
+      "SHA256": "C0A63303A28E894945DFD458748DA3193173B378178ABFB200587EB9722B1348"
+    },
+    {
+      "Path": "CSectionGeometryQuery_SourceDifference.txt",
+      "Bytes": 117,
+      "SHA256": "9D9E078FB95D97D2E059319927206AAC5F9084589B80524DA09658D2551CDE9D"
+    },
+    {
+      "Path": "CTorsionConcreteCheck_SourceDifference.txt",
+      "Bytes": 91,
+      "SHA256": "5A7AD1BB2CDC8895D34184ED84ECCD66027169241BECF7D78D507F2DE764B05F"
+    },
+    {
+      "Path": "CTorsionLongitudinalDemand_SourceDifference.txt",
+      "Bytes": 204,
+      "SHA256": "FD8EBB571283257E8C03417411084B7025618DA199BA3672EDABEE7D3ABD1CC0"
+    },
+    {
+      "Path": "CUltimateStrainSearch_SourceDifference.txt",
+      "Bytes": 129,
+      "SHA256": "EE9C027B65ED5647A909E1A9A7046515E39BCCEB2563F3839B8B9D0309B29239"
+    },
+    {
+      "Path": "EditorialReview.json",
+      "Bytes": 2047,
+      "SHA256": "03F8BF007F2B94462C2E68C070923E4D89C2E144FBCB18B62CE9D166623B8BB5"
+    },
+    {
+      "Path": "HelpStyle_Final/Config.png",
+      "Bytes": 27886,
+      "SHA256": "1A911E718875AD1B207FF4B5E8BED334B5351994DDD4E7A7F92EC2AF47B4838B"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_001_text.png",
+      "Bytes": 8004,
+      "SHA256": "7E068415DA205640ABD5170214BC17CB58530333E0CBDC32DF8683BBFC9C920E"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_002_text.png",
+      "Bytes": 8399,
+      "SHA256": "79DEB5E709057F29FB0BC2A0EFB8C28002B83A4325C3689D8211BD748B1B9051"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_003_text.png",
+      "Bytes": 7357,
+      "SHA256": "9C740FA14821901CF3B58E731C1240D42518081684F91F2910A30E38A057F1ED"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_004_text.png",
+      "Bytes": 13192,
+      "SHA256": "74680A8E4B51FAA863BFC080DC306A413A898A9D12E7EFC7AA7407984D6D2A93"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_005_text.png",
+      "Bytes": 12938,
+      "SHA256": "7E10B01CE940D4FE093A8F9BD2273B287D498205546A382E46F40EA7C79856C2"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_006_text.png",
+      "Bytes": 4449,
+      "SHA256": "D72B540A64B9C9EEB02279574FA96772B592A47BFEDCFBE09685F53836E69C0D"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_007_composite.png",
+      "Bytes": 8494,
+      "SHA256": "6CD4D96538C3D3F35DFC59060BD0465349BAF633251E8697BB0FC3FCB2DE49F5"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_008_text.png",
+      "Bytes": 6031,
+      "SHA256": "66BB0C9B248CABA312AF5A1192F823D5B8B3DAA2BB56D0C8AAED5847AC71735D"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_009_text.png",
+      "Bytes": 13603,
+      "SHA256": "12A14F2B8DA3C29832D942BB03FCEBD6C9475CE1225B7508DB1610093A1F1514"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_010_normative_SP63_CrackCondition.png",
+      "Bytes": 13847,
+      "SHA256": "2D61CFE405846ADC1AAB7119700E56253CF36C987D9B3C3006419D2C626ADDEF"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_011_normative_SP63_CrackWidth.png",
+      "Bytes": 20609,
+      "SHA256": "CE7792D1ECE5A1C99851DC64E55B8AA941EF885948FB2C0F9082EF98759C7FEA"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_012_text.png",
+      "Bytes": 21014,
+      "SHA256": "356924F4D6D82CDC6FC6DFEDD9ED0D2278A68DC956611FAB42F543C72E58D59F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_013_normative_SP63_TensionCondition.png",
+      "Bytes": 11849,
+      "SHA256": "8D0723ED0448DE14F23C7FC97F46AE13269731F092370C9F800947A98441B8DF"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_014_normative_SP63_TensionForce.png",
+      "Bytes": 16682,
+      "SHA256": "18E90361904F2BCE0F55E9804FFCCD96617C83B6E9114F4229FBC1BE29EE9B2D"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_015_normative_SP63_Area.png",
+      "Bytes": 16877,
+      "SHA256": "577300DE099E72FE4D3082BCC8CE9979E5FBA1C0742687D93E05FF8A49951A51"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_016_fraction.png",
+      "Bytes": 4205,
+      "SHA256": "B25884C9BEAE2D4E35F9CF0B568CACDEB9CEC44A227A4FEB647B377C685F5B7F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_017_text.png",
+      "Bytes": 5765,
+      "SHA256": "29193781CDC4C3AB86ECA5561FABDF299A6A2F7C43450E096B1A9D4608772BB3"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_018_normative_SP63_TensionStrain.png",
+      "Bytes": 22501,
+      "SHA256": "37805E9B7A2B0CD27AAA8E2FC089B843DF9A0977C90DEB1E02E340BF8E32383E"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_019_text.png",
+      "Bytes": 10176,
+      "SHA256": "9E67653633AAEF5E4584D8D3B1506B138AE7A26DF579DC78476362AC80AB3893"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_020_fraction.png",
+      "Bytes": 7116,
+      "SHA256": "99FEB5AE113E84EB7583724ABDC555640B4FB267836D8902ED989D97BA4B1139"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_021_fraction.png",
+      "Bytes": 8513,
+      "SHA256": "82089A56330F538AEDEA056AF3FF532E547064D54067E46254739B501CFE8524"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_022_normative_SP63_CrackSpacing.png",
+      "Bytes": 15358,
+      "SHA256": "9490C80E6645D112F6683A5E28184CC941465D22B5225FE4527C49C92EE5A5D3"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_023_text.png",
+      "Bytes": 9885,
+      "SHA256": "385E8787FCE86CC5B43E6BAAF066B02571C54BC9F279F1C489B93A73A5F29F1C"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_024_text.png",
+      "Bytes": 11474,
+      "SHA256": "4333BC241B0A6F9DD405422EA96318F3757A7C71ED9AE7BDECCBDFA194FAA32F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_025_normative_SP63_Psi.png",
+      "Bytes": 15323,
+      "SHA256": "6CB8368FB644B7B25BAD8F7513BA24B30274475488776387FFA36DCC7CD9D6C0"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_026_fraction.png",
+      "Bytes": 5246,
+      "SHA256": "F0D075731B01CCB465BB8186FA162ACBA4D25ADF9D30508921F6B83EFD88E70A"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_027_normative_SP35_CrackWidth.png",
+      "Bytes": 14420,
+      "SHA256": "B93173A5DC8DBEB0B3D513D87FAAD192A61C3660C2C18DB97D5DB7828903BCDE"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_028_fraction.png",
+      "Bytes": 5484,
+      "SHA256": "7F60365869494E58D7B56043B98026D088529F7C21B509D3ED734EBDD5C81D57"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_029_composite.png",
+      "Bytes": 8265,
+      "SHA256": "FB5887CA4BA9EEF8C7C00C53090BCC28B1C528746C5D6039B84C83C5EE13B0D6"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_030_fraction.png",
+      "Bytes": 12598,
+      "SHA256": "C04AF6CE50A79D08BFC1B8849F3CC0360A661B39A412D06774E747F8F178E5CC"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_031_sp35_Groups.png",
+      "Bytes": 19881,
+      "SHA256": "675C941239967ECB23F62BB818102831F995484609FC1744E5B098CF8E1DC916"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_032_text.png",
+      "Bytes": 3366,
+      "SHA256": "B8CEA854354ED836323EA6958F5A3F64C6C7AFA774AC496AA0DA658EC2150B66"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_033_composite.png",
+      "Bytes": 7936,
+      "SHA256": "F10DA04BCC2D7090E7E35914D961EEB40AD270546EA04689761EE5030E9F023B"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_034_composite.png",
+      "Bytes": 11890,
+      "SHA256": "624B56D6D6C797815164B16EBF0555ECF4A04B985CA5A73957DD2299EC9A7D54"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_035_text.png",
+      "Bytes": 3711,
+      "SHA256": "B121D7F3DD7D4DCD9B4A4697B0354C4FBDF9ECBAD528A275CE8275ED9FFC5AA1"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_036_sp35_Rows.png",
+      "Bytes": 18388,
+      "SHA256": "4EB28E887380111F37FF9C58BDAE020A334FBB429969B5D9C85BABE5989F9DD8"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_037_text.png",
+      "Bytes": 8994,
+      "SHA256": "01A237E857FFD1ACC87DD454AD9AB5C1AF1AD04C0DF165901681971BF46351D7"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_038_sp35_Contours.png",
+      "Bytes": 17353,
+      "SHA256": "3AB24104FEFEDC03FC174F78D9D7B4140CC274639956435D096939706AB9EC30"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_039_normative_SP35_Radius.png",
+      "Bytes": 12501,
+      "SHA256": "DF316B722EFE61A7B477894D7DD182D20F061701F9FD4A970A9797E34E3ABC31"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_040_text.png",
+      "Bytes": 7030,
+      "SHA256": "933518D2D4613858FD8AF7096D86E43BD1F282147ABD5A570EA21D0F62159EF6"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_041_text.png",
+      "Bytes": 13653,
+      "SHA256": "99B2BE833D08A0B4FAA4E8B334B0407C7ADACA6DF9529C3298ACFFD56B69709F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_042_sp35_MeshCentral.png",
+      "Bytes": 18600,
+      "SHA256": "EDBA4626C53FA96A286BB3AE878548A642E0EC0B8DF19081584445EE1AFA15C7"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_043_composite.png",
+      "Bytes": 17733,
+      "SHA256": "A7003AE3BAA1CAD69CF5A832F14E89196A49A875A1371B4B1402C7A5391282DA"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_044_fraction.png",
+      "Bytes": 8660,
+      "SHA256": "365C3340AA3FE7D3710998367B5578640BDE312F7FC67D7E681C9A1E7E687BA3"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_045_text.png",
+      "Bytes": 6563,
+      "SHA256": "B71BFAC6FD97EE1E880D029F77793895780696701ACEFD2982214DEB365356DB"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_046_text.png",
+      "Bytes": 4272,
+      "SHA256": "56A217694E5F976427B38187640E655D363E6DA15E2F48B7CD4CEA1B94B484B0"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_047_fraction.png",
+      "Bytes": 6670,
+      "SHA256": "78985A3762AEC004286358F2B86C6792F57D397622844CEEE8CFB91A43C5C806"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_048_text.png",
+      "Bytes": 4820,
+      "SHA256": "232A567267EC8702B0D631ED23456AAF11FB69C0A4FFDA19D5D031FB8EC3130F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_049_text.png",
+      "Bytes": 17410,
+      "SHA256": "761B15F3DDFF2F7F76F4EE5809CE3755035576BB7C517B9034CA09997469D07A"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_050_text.png",
+      "Bytes": 6065,
+      "SHA256": "23A79993E50C528D07476E0E56A53BC0100470A81362F52355DEE67992B3F502"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_051_fraction.png",
+      "Bytes": 3569,
+      "SHA256": "7E05F55967501BFA57662B4EA78C8B8B03E23D05F43120795FADCE6CB5E50A9F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_052_composite.png",
+      "Bytes": 5392,
+      "SHA256": "EEB6B9AC57F9451800B7970773BFC71F328A2E26A9826BA418F47065D6FA0386"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_053_fraction.png",
+      "Bytes": 4246,
+      "SHA256": "39BCE2F928063DD3A0BF62EF6099B1C6586D4998DB31D1257C6451F51F01FB9C"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_054_text.png",
+      "Bytes": 5121,
+      "SHA256": "B84C16CB459E55D07760AF6EE3C062496F0AB4C4A165D42AB69AFB0AA3591C53"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_055_composite.png",
+      "Bytes": 13125,
+      "SHA256": "A4E31852DEE85E0A972319DB90580D0D114D02617EEB95EC304212925C3A8731"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_056_fraction.png",
+      "Bytes": 4166,
+      "SHA256": "ABFB6D25C933B6665B57B13F628B296A0F7D07C308BBF17B95DE5C23DA072456"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_057_text.png",
+      "Bytes": 20134,
+      "SHA256": "D5769EF8524522C03FECB9C7D1879426293E140C58D119D0A5B6D10A21C48662"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_058_normative_SP63_PhiL.png",
+      "Bytes": 9904,
+      "SHA256": "CAB086B6E788EC14D586C6A7FB424C7ACE1FBEB3C86AAEB00A4D23EEA49B61EA"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_059_fraction.png",
+      "Bytes": 5667,
+      "SHA256": "F9D18CD7AC13B640237ECB7458E20AD43BD3EC7E1DB9B1682DB8CEB1F9F1C1A1"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_060_normative_SP63_Kb.png",
+      "Bytes": 13995,
+      "SHA256": "52BC1098BEB4AC1F4A833FC4A044EA975F7C0DD66B8322A721B0260F99CBE437"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_061_normative_SP63_D.png",
+      "Bytes": 14151,
+      "SHA256": "FB7621BB5D0A2DA6B6F3B506446E55126469966EF9E80D0F7A89B63472F5776A"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_062_normative_SP63_Ncr.png",
+      "Bytes": 12696,
+      "SHA256": "A0C3F33F4A87371F567BFBE5BF200A920BA48DA69EDF15B6480DD2D878518196"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_063_normative_SP63_Eta.png",
+      "Bytes": 10171,
+      "SHA256": "7E60EF4C5F85FA69D36A89082233D17FC0C3B192EC848FCA3C1FCA5821524479"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_064_fraction.png",
+      "Bytes": 6077,
+      "SHA256": "39D82574729FB9A9D4C8CE40DB1F6985CC18E96A119EC6E504E27EC96EF05738"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_065_text.png",
+      "Bytes": 5000,
+      "SHA256": "E614E151D1F39DA35CDAADF3626CBB9E58C0D337284AA0A66A2230DF5A7C6791"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_066_normative_SP35_PhiL.png",
+      "Bytes": 11998,
+      "SHA256": "57A352D41A193D70B19D163F304E5C287FDD99FF8B216E32EC8C58E7C4B58702"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_067_normative_SP35_DeltaMin.png",
+      "Bytes": 19434,
+      "SHA256": "A15D641F0A252A4F015235543C890CA14C068C77F4871272405A716DCAC0A108"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_068_fraction.png",
+      "Bytes": 4277,
+      "SHA256": "3F6A1DA49239C9B308BE43D1F4DFAB5DA2CF0D0B3E8C2C97894987646A8B136C"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_069_fraction.png",
+      "Bytes": 6921,
+      "SHA256": "4F2D72DCF679FD607C0FB3F9719EE14A54FF59893C1D4DC580FD5E43DBC93442"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_070_composite.png",
+      "Bytes": 9731,
+      "SHA256": "22A7A9E1E2DF66611CFFA04D3D298BE1565F3560BBF4A500BAD776694CE12286"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_071_normative_SP35_Ncr.png",
+      "Bytes": 27899,
+      "SHA256": "FA2EB8EB0E5086710EC7441DEE286F09A16CC7CB14C5324F5C5242442051EBC2"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_072_normative_SP35_Eta.png",
+      "Bytes": 9669,
+      "SHA256": "00FA8C980DBD986D81CB8BE0A0FF3B0762279D1D7AE7DF463B038132644BDD35"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_073_normative_SP35_NLimit.png",
+      "Bytes": 12750,
+      "SHA256": "8B29F3A156222376CF52DCF55DBFD39A738ABF4BEB3243EA3C67D42A43CAF805"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_074_text.png",
+      "Bytes": 8675,
+      "SHA256": "CD627A9DBDB8B59B745F4E74C158EE18D1E5C6CEF13DF8DCCEAE36C9CB5AB744"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_075_fraction.png",
+      "Bytes": 3515,
+      "SHA256": "00EFA63099A7F512B8413DF2BC5428680BDE8A6D95EE7A1C6180E164B568BBD0"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_076_fraction.png",
+      "Bytes": 4464,
+      "SHA256": "B250267FE80EF1DC8D6A23AFC3850822FBA85A8E337242D4C769A26A6C643E51"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_077_normative_SP35_Phi.png",
+      "Bytes": 13658,
+      "SHA256": "D905E06601FA61752F07C4C3E155BED1B4E75A300C39ACBEC37BCE3BF2DDD539"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_078_fraction.png",
+      "Bytes": 6143,
+      "SHA256": "9B9E4E2A4B993843DAF333766ACE839E83FA2393EA4B0EDAB1E44195AD8882CD"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_079_fraction.png",
+      "Bytes": 7970,
+      "SHA256": "8EB23A77F9F33A8AB84DCA0A5484C450C3CC6E582F43CC40071A145612E1DF98"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_080_fraction.png",
+      "Bytes": 12916,
+      "SHA256": "68DAD4FDB35BE594ECFD4836BD069C300E0C1D9774C407360EB927CB0E9F748C"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_081_text.png",
+      "Bytes": 7928,
+      "SHA256": "FF54987F43C0575451BEA66C10ACAFCDCBB18C0B8CCBA37B1EB042DA9C55F5D2"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_082_fraction.png",
+      "Bytes": 8637,
+      "SHA256": "F25B42BD047083CDB21983402EC2C99FFA0FA2E442E61D0C08024A47BCBD3BF5"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_083_text.png",
+      "Bytes": 8358,
+      "SHA256": "70227BF137FB782C1C4B81F357DBBBB60A650ACE24EB9BF5B663FDBB154FEC43"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_084_fraction.png",
+      "Bytes": 10006,
+      "SHA256": "6F80DDD5DCEA3CD9B903E757E8C746671D58553075480DFF4B543BF001F2CCC7"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_085_text.png",
+      "Bytes": 6795,
+      "SHA256": "0B8B36B760DEFFABED16EFFBCE245E2F28F5AEBEC5C8422A97675F46FE6B3A51"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_086_composite.png",
+      "Bytes": 12183,
+      "SHA256": "61EAD4FE619EF42FE7BAADB2A114B649255EDE316841124114E7CCDC3CE79E02"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_087_fraction.png",
+      "Bytes": 13208,
+      "SHA256": "824867046E898742FDC40EF3314A423F5F5A8C8BFE2B24C70E4A9CEF614B6CED"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_088_text.png",
+      "Bytes": 6416,
+      "SHA256": "347ADFD8545B5CCDF1B2E626EAB19FBB10ACF20805F140A6EBCC92BF13BC6F9E"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_089_text.png",
+      "Bytes": 13283,
+      "SHA256": "7775F6BB3F1C86C77A450FA73B4A1407CC8D1AC6B62E9C38B456F805564788F8"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_090_fraction.png",
+      "Bytes": 9947,
+      "SHA256": "E5C052F09948A4B735EDCD031552B2BCE3CDAF051CA8E3F0AB20A5610BA13CA5"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_091_composite.png",
+      "Bytes": 12421,
+      "SHA256": "137F95E3966F7B7AD5BB733B9D31ED77946F656FA207AF808AD244425BCC8B22"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_092_text.png",
+      "Bytes": 8194,
+      "SHA256": "53FC3A8D5BC9E56CF45504F2A616A44DE76BFF978FC220AEE5FB14E3693D998F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_093_text.png",
+      "Bytes": 8383,
+      "SHA256": "DDE7C1A1074B5D07F9953D0195959154125F0245041ECDD5495948C9ADC9560D"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_094_composite.png",
+      "Bytes": 15559,
+      "SHA256": "E6F4890AF88F57E23B8D556BDE55B06C1BD42208F0AD17FF45FD553E0243EDEC"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_095_text.png",
+      "Bytes": 9878,
+      "SHA256": "084055641272A48C6569331075D853285979D3CDCD11E9A555FA07AA2824E6E0"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_096_fraction.png",
+      "Bytes": 10861,
+      "SHA256": "62A927FEFDB2BB429C3FBE1CBD4BA4D7124C09B0CFF790F551C195376EC8DB4A"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_097_fraction.png",
+      "Bytes": 15723,
+      "SHA256": "4516D4AF8194BFCFD03EFD4C82980A5D45DA0DF04B1DCCB176DBBE5310C37BFF"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_098_text.png",
+      "Bytes": 11755,
+      "SHA256": "D1E67EFD046FC6680CD738FE479C1B4FFFB973F4590EE736B990A557D560AB3E"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_099_fraction.png",
+      "Bytes": 9236,
+      "SHA256": "45C8E0BE197D34C7C5BC38BCD90713B571D2466CF0FAD447DD901C9DA4BBF382"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_100_text.png",
+      "Bytes": 7294,
+      "SHA256": "BFDC7BB8A51EC8F8DD5C6958332D8AB726CF7B0D7F0C0D2CE426F1D34C72F051"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_101_text.png",
+      "Bytes": 9653,
+      "SHA256": "45A60A5FCBEB9AC442C6F35EA14427200FEC4137D5331D67CCAC8C746435A32D"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_102_fraction.png",
+      "Bytes": 9479,
+      "SHA256": "E522F355570ED8103A6A13AD043F22948F82DB417481133502CBD34EDEC58ACB"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_103_text.png",
+      "Bytes": 11509,
+      "SHA256": "5590C4B60EC42DCF63D0718F3AD3E019AB799CB4ABFD42B7467EF011A9DA0CBB"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_104_fraction.png",
+      "Bytes": 10800,
+      "SHA256": "43C4CA13B592E74C6C91103EC8E78FC748CA7663AF89C4DFECC86D036AB42CEF"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_105_fraction.png",
+      "Bytes": 3569,
+      "SHA256": "7E05F55967501BFA57662B4EA78C8B8B03E23D05F43120795FADCE6CB5E50A9F"
+    },
+    {
+      "Path": "HelpStyle_Final/ExpectedFormulaImages/formula_106_fraction.png",
+      "Bytes": 2863,
+      "SHA256": "7AFA6EE0F7629E6CFC6F04A86FA5005943A5A97A55C51D23ABAD61AB9488255F"
+    },
+    {
+      "Path": "HelpStyle_Final/General.ReformatResultsEnabled.png",
+      "Bytes": 24226,
+      "SHA256": "306608985BDF4FE81BE2605E9732F5967AB846DFB0C180DB9D8376CB7A281731"
+    },
+    {
+      "Path": "HelpStyle_Final/InlineValidationLists.json",
+      "Bytes": 15398,
+      "SHA256": "DE5E037F51BB0064AF4287DB9B41B7FE642ACE98C9A34B1FE199D0465DAA45F2"
+    },
+    {
+      "Path": "HelpStyle_Final/Mesh.StepMode.png",
+      "Bytes": 38468,
+      "SHA256": "BFDB1848055FE975571D87EB8B69436574536DA8196D98870AF6AF49D62922E9"
+    },
+    {
+      "Path": "HelpStyle_Final/SettingsHelpStyle.json",
+      "Bytes": 37241,
+      "SHA256": "B0DB2AF91B0FE2BAA22B280FF0AE61CCEA82645EF8F98F1FA2760D29615D7FE6"
+    },
+    {
+      "Path": "HelpStyle_Final/SnapshotSettingStyles.json",
+      "Bytes": 431,
+      "SHA256": "AFC51D82E5C37F2E6845BA6C2403F96505E7F5AFA5B9F49133ECDF5442A72F2A"
+    },
+    {
+      "Path": "HelpStyle_Final/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "HelpStyle_Final/stdout.log",
+      "Bytes": 190,
+      "SHA256": "7823F5CDDF6E4AE8037CF177C9C54850E9C9ADABA64B62BDA8815E11A1BCF16C"
+    },
+    {
+      "Path": "HelpStyle_Final/VBA_All_Code.txt",
+      "Bytes": 9957923,
+      "SHA256": "C45B088E2300B3EB3FAF2E912B546D6762B7A4642B4AE7EC36688869028F13FA"
+    },
+    {
+      "Path": "HelpStyle_Review02/InlineValidationLists.json",
+      "Bytes": 15398,
+      "SHA256": "DE5E037F51BB0064AF4287DB9B41B7FE642ACE98C9A34B1FE199D0465DAA45F2"
+    },
+    {
+      "Path": "HelpStyle_Review02/SnapshotSettingStyles.json",
+      "Bytes": 431,
+      "SHA256": "AFC51D82E5C37F2E6845BA6C2403F96505E7F5AFA5B9F49133ECDF5442A72F2A"
+    },
+    {
+      "Path": "HelpStyle_Review02/stderr.log",
+      "Bytes": 526,
+      "SHA256": "D7885EFF38CDDB6F45C13EA0432B2EF93BFA7A82EA8A82A48DA3F6D68A3FF24A"
+    },
+    {
+      "Path": "HelpStyle_Review02/stdout.log",
+      "Bytes": 216,
+      "SHA256": "0AE591F8315A0C6081EB4CC4900D0FAC52DDD0FA1A82693A9F83A93515E65531"
+    },
+    {
+      "Path": "InitialTextInventory.json",
+      "Bytes": 1296959,
+      "SHA256": "62D6DF0C5B0F2745FA867D4FD18293D5F1E6AACE3D6AF9E0AF5692DA87F84980"
+    },
+    {
+      "Path": "InlineValidationLists.json",
+      "Bytes": 15398,
+      "SHA256": "DE5E037F51BB0064AF4287DB9B41B7FE642ACE98C9A34B1FE199D0465DAA45F2"
+    },
+    {
+      "Path": "Install-Clean-Release.py",
+      "Bytes": 3759,
+      "SHA256": "D209B3B620114451FC495C35D1DCBDB7393A6D4D1A0804ABE6CE8F5D402EC8EB"
+    },
+    {
+      "Path": "Installation.json",
+      "Bytes": 1778,
+      "SHA256": "F5E15A709A64CEC0BF61142FCC66865C23BD2B1DF9452AAE6DF2C3232E8BA61D"
+    },
+    {
+      "Path": "LocalEdits.json",
+      "Bytes": 12265,
+      "SHA256": "3CFC469C0EDABE38A1C026DC459CAD34908EBB383FABAC9CD8F275C06BF44014"
+    },
+    {
+      "Path": "modAutoCADStressExport_SourceDifference.txt",
+      "Bytes": 212,
+      "SHA256": "E22870604818499378F72497AD75F4EB13EC153521B440A01EB4EF6381CA3269"
+    },
+    {
+      "Path": "modCalculationSnapshot_SourceDifference.txt",
+      "Bytes": 405,
+      "SHA256": "E2E73865AC5283BCA17420CFFCEB31BF827883281AFD6D2F1179DF250916E42F"
+    },
+    {
+      "Path": "modNonlinearStepControl_SourceDifference.txt",
+      "Bytes": 445,
+      "SHA256": "18B8F65DE0800712810FE77CF9A2AB6CFB0BC63B73D331F96FEDA79A8022D747"
+    },
+    {
+      "Path": "modSectionSnapshot_SourceDifference.txt",
+      "Bytes": 404,
+      "SHA256": "BAA8D96EC6E10720E26980DC77CB3704CAEA43958FFFD390522A08E48217CA04"
+    },
+    {
+      "Path": "modTestCalculationSnapshot_SourceDifference.txt",
+      "Bytes": 178,
+      "SHA256": "86BC03A4BCDBF269932003E92E62A166A910DCBC15AAD847431E59F3F2AB9DE2"
+    },
+    {
+      "Path": "modTestConfiguration_SourceDifference.txt",
+      "Bytes": 162,
+      "SHA256": "9745572A5A0FEF14EBDB73B21E67E92D3FFE04E24ACEE76D0ECB02864FB1E751"
+    },
+    {
+      "Path": "modTestCrackWidth_SourceDifference.txt",
+      "Bytes": 638,
+      "SHA256": "C6E81CCE8D5AA3878C82076DA524C70064F15C3F15DD30112E159DEBA6E5B25E"
+    },
+    {
+      "Path": "modTestDiscreteForces_SourceDifference.txt",
+      "Bytes": 98,
+      "SHA256": "D5B7457CBB58626C7E043201B13AFA29FAD81675DF42C5600E4DA7A50792E6BB"
+    },
+    {
+      "Path": "modTestElementGeometry_SourceDifference.txt",
+      "Bytes": 2046,
+      "SHA256": "CDAD414F7A3B0107036EFC171F56DC971AE6AC0C483E3C5480F580419DBFDEC6"
+    },
+    {
+      "Path": "modTestGeometry_SourceDifference.txt",
+      "Bytes": 548,
+      "SHA256": "35A95B690BECFDA40D78622167CFA7B9CC3DDA82210F948A1E478C8DCBA995DC"
+    },
+    {
+      "Path": "modTestLoadTableConfig_SourceDifference.txt",
+      "Bytes": 95,
+      "SHA256": "426A405C06E274A3DCE4AEC9C168B041FEE55CB6F1961D32AF10409CD585C244"
+    },
+    {
+      "Path": "modTestRecipeSetbacks_SourceDifference.txt",
+      "Bytes": 543,
+      "SHA256": "5D61BACCA4736630EECF024D4E75CBFC6772D7B43DD63DF0D341A0EAD19C7877"
+    },
+    {
+      "Path": "modTestSectionRecipes_SourceDifference.txt",
+      "Bytes": 1239,
+      "SHA256": "6A6C669BB23E9A34C29CA33CC4D20B525C6145078FF0C1179C85AC46270C0358"
+    },
+    {
+      "Path": "modTestSectionSolver_SourceDifference.txt",
+      "Bytes": 852,
+      "SHA256": "021F4FE68EE35F357D0850B5500877276A2351CE271D115796249BE9FBA51913"
+    },
+    {
+      "Path": "modTestShapeArchitecture_SourceDifference.txt",
+      "Bytes": 415,
+      "SHA256": "5CC3BE2F0187CB6EF318EBA36938DFEED3E0F98ACB13AB6492C21A348116040D"
+    },
+    {
+      "Path": "modTestTorsionPost_SourceDifference.txt",
+      "Bytes": 907,
+      "SHA256": "3A4426B259F8005EBA78D10D38B8C12AD94F8F835EEC5679A4C9FEAD8D5033E2"
+    },
+    {
+      "Path": "modTestTorsionProjections_SourceDifference.txt",
+      "Bytes": 409,
+      "SHA256": "793DD4E0A7B528E55E4492FE688FF5A3C21AA1289A242B11CBD6BDE2DD2AE7CE"
+    },
+    {
+      "Path": "modTestWorkbookInterface_SourceDifference.txt",
+      "Bytes": 605,
+      "SHA256": "D7CF47E328B08F0AD2A0FEDD61C0F490B7AB9C516ABD1AF8295F35254018A65F"
+    },
+    {
+      "Path": "NativeBaseline.txt",
+      "Bytes": 9959019,
+      "SHA256": "FF16687121501D92957DA959E9D315CC369FA080DA838F570A22B9D9FDE925FF"
+    },
+    {
+      "Path": "NativeBuild01.txt",
+      "Bytes": 9958688,
+      "SHA256": "185E3A1BA29E02FA0D8ADB01476B14F510633F7B27B3F09110E554047EA19B82"
+    },
+    {
+      "Path": "NativeRelease.txt",
+      "Bytes": 9958343,
+      "SHA256": "BCB94BDE6FD5FA276D14ED87ECC08EF558ACA36BD0A4C047FF3450F920E64665"
+    },
+    {
+      "Path": "Package-Release-Evidence.py",
+      "Bytes": 5033,
+      "SHA256": "FFC60C154E1C7F558A4F90F76759E009DD0A6FBE2679C6E7E06676121FA464A7"
+    },
+    {
+      "Path": "Portability.json",
+      "Bytes": 247,
+      "SHA256": "305A52821AF8D5794CA95ACFC5440CD357FBC2D869B0AB2C0AF90A8457B67D09"
+    },
+    {
+      "Path": "PreliminaryKeywordHits.txt",
+      "Bytes": 885027,
+      "SHA256": "A22E442DDAEFB837E656AEB741BC04F75863E24BC1458F492F5322F410E63023"
+    },
+    {
+      "Path": "PreparationCleanup.json",
+      "Bytes": 1709,
+      "SHA256": "E23BFB3D14F675D226457E40DD2BC0F85BD17BC639F84363DC7B37F456BEB2FA"
+    },
+    {
+      "Path": "PrimaryAuditSetup01.txt",
+      "Bytes": 3110,
+      "SHA256": "B9787448EA576CA9E2ABE0076DCB32F7C7916E41BAB61609EB2FEB63DD2B61C6"
+    },
+    {
+      "Path": "PublicationAcceptance.json",
+      "Bytes": 754,
+      "SHA256": "BA012FB295AE623F4686CD0DDBF8DE2C13503490B7F76208C7B3440FCFB09800"
+    },
+    {
+      "Path": "ReleaseTextInventory.json",
+      "Bytes": 1312874,
+      "SHA256": "CD23854B22EDCFF3ADF10FC95D4BC867A5C04DCB56A4AA1590F00363C8B003F7"
+    },
+    {
+      "Path": "Run-Release-Full.ps1",
+      "Bytes": 3217,
+      "SHA256": "9B09918276C25057BC9C4719FFA4F006206874F2336FFFAA5D1181F2BF713EED"
+    },
+    {
+      "Path": "SnapshotSettingStyles.json",
+      "Bytes": 431,
+      "SHA256": "AFC51D82E5C37F2E6845BA6C2403F96505E7F5AFA5B9F49133ECDF5442A72F2A"
+    },
+    {
+      "Path": "Structure.json",
+      "Bytes": 5393,
+      "SHA256": "C5EA4F024C5BC21AA31DCFBF174F200952596405F8D78880B1D871240028C6C2"
+    },
+    {
+      "Path": "Structure_Publication.json",
+      "Bytes": 4801,
+      "SHA256": "AC16AC9C741599A396068BB502C1B163A778DA63767C34805890E878B34FF00F"
+    },
+    {
+      "Path": "Structure_Review01.json",
+      "Bytes": 4430,
+      "SHA256": "1FEA45C1E54AC1583D46FBEE752B1BC4F79E03EC857C725023764D382D755CD1"
+    },
+    {
+      "Path": "StructureNegativeAcceptance.json",
+      "Bytes": 635,
+      "SHA256": "A2038CA7B21679309B24A29AE9CD569F9042007135997BAB6F774FB05CC0FB07"
+    },
+    {
+      "Path": "StructureNegativeAcceptance_Publication.json",
+      "Bytes": 635,
+      "SHA256": "A2038CA7B21679309B24A29AE9CD569F9042007135997BAB6F774FB05CC0FB07"
+    },
+    {
+      "Path": "StructureNegativeCases/MovedGeometryAnchor.json",
+      "Bytes": 5430,
+      "SHA256": "8A27C0E02E7ACA82AA3385C5FD0438A0036832A9C2585C318CED65335AE0E219"
+    },
+    {
+      "Path": "StructureNegativeCases/MovedGeometryAnchor.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeCases/MovedGeometryAnchor.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "E864EFF33019CD4018D78EB8AD6CFD64459AD2714EE1E01DE4D336B8967055FB"
+    },
+    {
+      "Path": "StructureNegativeCases/UnexpectedRowBreak.json",
+      "Bytes": 5447,
+      "SHA256": "03FCC3798456BB75083CF0C3B5776F71053A77299BDD13FAFB9CFCBF8F9BD6CA"
+    },
+    {
+      "Path": "StructureNegativeCases/UnexpectedRowBreak.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeCases/UnexpectedRowBreak.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "203D46F4925E4FBC7334C50F27CE4A12D6431381F69E1004B158A584CC7781CC"
+    },
+    {
+      "Path": "StructureNegativeCases/WrongPrintArea.json",
+      "Bytes": 5394,
+      "SHA256": "78BCA5CCB0D1AA86036E074C305CB431730AFE292AABE78CB13E357FD5761594"
+    },
+    {
+      "Path": "StructureNegativeCases/WrongPrintArea.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeCases/WrongPrintArea.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "E5D94493449DD64566A709A06ED898529F8482CE7C3A7B0276E0AA1E6E75A9D7"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/MovedGeometryAnchor.json",
+      "Bytes": 5430,
+      "SHA256": "8A27C0E02E7ACA82AA3385C5FD0438A0036832A9C2585C318CED65335AE0E219"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/MovedGeometryAnchor.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/MovedGeometryAnchor.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "E864EFF33019CD4018D78EB8AD6CFD64459AD2714EE1E01DE4D336B8967055FB"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/UnexpectedRowBreak.json",
+      "Bytes": 5447,
+      "SHA256": "03FCC3798456BB75083CF0C3B5776F71053A77299BDD13FAFB9CFCBF8F9BD6CA"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/UnexpectedRowBreak.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/UnexpectedRowBreak.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "203D46F4925E4FBC7334C50F27CE4A12D6431381F69E1004B158A584CC7781CC"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/WrongPrintArea.json",
+      "Bytes": 5394,
+      "SHA256": "78BCA5CCB0D1AA86036E074C305CB431730AFE292AABE78CB13E357FD5761594"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/WrongPrintArea.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/WrongPrintArea.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "E5D94493449DD64566A709A06ED898529F8482CE7C3A7B0276E0AA1E6E75A9D7"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure01/MovedGeometryAnchor.stderr.log",
+      "Bytes": 1032,
+      "SHA256": "67A2A1F4FDB917E299CFB4EAE8A6BFFEDB5D37C6B59584959417D0A65A437FF2"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure01/MovedGeometryAnchor.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure02/MovedGeometryAnchor.stderr.log",
+      "Bytes": 645,
+      "SHA256": "60F2DAE9A3F2E0D19C68B65DCBE197A78781B43AE64CDE8C4700C022FDFE411A"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure02/MovedGeometryAnchor.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/MovedGeometryAnchor.json",
+      "Bytes": 5430,
+      "SHA256": "8A27C0E02E7ACA82AA3385C5FD0438A0036832A9C2585C318CED65335AE0E219"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/MovedGeometryAnchor.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/MovedGeometryAnchor.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "E864EFF33019CD4018D78EB8AD6CFD64459AD2714EE1E01DE4D336B8967055FB"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/WrongPrintArea.json",
+      "Bytes": 5394,
+      "SHA256": "78BCA5CCB0D1AA86036E074C305CB431730AFE292AABE78CB13E357FD5761594"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/WrongPrintArea.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/WrongPrintArea.stdout.log",
+      "Bytes": 4081,
+      "SHA256": "E5D94493449DD64566A709A06ED898529F8482CE7C3A7B0276E0AA1E6E75A9D7"
+    },
+    {
+      "Path": "Test-Structure-Negatives-Publication.py",
+      "Bytes": 4253,
+      "SHA256": "D30CDC8300007DA6400F00DE79602E6AC86CB0FF5C649D858D42CC47BEF007CF"
+    },
+    {
+      "Path": "Test-Structure-Negatives.py",
+      "Bytes": 4229,
+      "SHA256": "2569F0303DA6CE80DD335F2AE6DD8BCE2CA83D6C5BBA66F7397EB5274539B1D5"
+    },
+    {
+      "Path": "TextScope.json",
+      "Bytes": 3470,
+      "SHA256": "37CB738FB750903566FEFD363AFA15CDD7CD979E1C4E0F8019428B472B5AC18B"
+    },
+    {
+      "Path": "TextScope_Build01.json",
+      "Bytes": 4287,
+      "SHA256": "CBA609EF02A57C41C9D73907E3A3A47F019F61BA6FA20321B378BEF7036FB81F"
+    },
+    {
+      "Path": "Update-Structure-Checks.py",
+      "Bytes": 3070,
+      "SHA256": "1AECB86D9819A2C163A58984BB94D439B8704CA9FB31E69D9F25565A505B90D8"
+    },
+    {
+      "Path": "Verify-Clean-Release.py",
+      "Bytes": 3311,
+      "SHA256": "17E47D1ADDA8DEEA4DA4CF4FE18F71309A817CBBFC9595D75A50799027CAEBBC"
+    },
+    {
+      "Path": "Verify-Editorial-Review.py",
+      "Bytes": 4017,
+      "SHA256": "807304F98B753173FE09AEF256B0782D81615B49A4F6577831AF6EF2B82C810B"
+    },
+    {
+      "Path": "Verify-Text-Scope.py",
+      "Bytes": 5073,
+      "SHA256": "AE4A1CD6CCF7EA988AD76D9E1CD68D4AC63F774AF6CFCB0BE213CF3BB6030BD4"
+    }
+  ],
+  "Excluded": [
+    {
+      "Path": "Build01_PreFinalComments.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "OutputCleanup/RC_NDM_ui_test_progress.txt",
+      "Reason": "Local user backup"
+    },
+    {
+      "Path": "OutputCleanup/RC_Section_NDM_execution_report.txt",
+      "Reason": "Local user backup"
+    },
+    {
+      "Path": "RC_Section_NDM.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeCases/MovedGeometryAnchor.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeCases/UnexpectedRowBreak.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeCases/WrongPrintArea.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/MovedGeometryAnchor.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/UnexpectedRowBreak.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeCases_Publication/WrongPrintArea.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure01/MovedGeometryAnchor.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure02/MovedGeometryAnchor.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/MovedGeometryAnchor.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "StructureNegativeSetupFailure03/WrongPrintArea.xlsm",
+      "Reason": "Workbook retained locally; accepted release published separately"
+    },
+    {
+      "Path": "UserSavedBeforeRelease.xlsm",
+      "Reason": "Local user backup"
+    },
+    {
+      "Path": "UserSavedReportBeforeRelease.txt",
+      "Reason": "Local user backup"
+    }
+  ],
+  "LocalPrimaryFilesRetained": true,
+  "WorkbookLocation": "workbook/output/RC_Section_NDM.xlsm"
+}

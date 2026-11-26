@@ -1,0 +1,246 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807",
+  "CoreExecutions": 202,
+  "FocusedSingleCases": 122,
+  "SupplementExecutions": 14,
+  "NativeAutoCADStages": 2,
+  "IndependentModels": 5,
+  "IndependentIntegrals": 563,
+  "IndependentlyReviewedNumFailStates": 7,
+  "ExactMacroOrderChecked": true,
+  "PrimaryLogs": [
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Full_Off.txt",
+      "SHA256": "7893BEFBB3B42A99838938F8072922A390420FAAD47A984D37BE6E58DC5E4521",
+      "Executions": 8,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Geometry_Off.txt",
+      "SHA256": "811F1177C534379A7E6B3E77ECB6432531528E832C663013027F019157B50135",
+      "Executions": 36,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/SP35_Off.txt",
+      "SHA256": "821281C36D4B3B34A5B6D486051E938839531E5FEA93E152D14A39D4AC17E125",
+      "Executions": 6,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Recipes_Off.txt",
+      "SHA256": "305D0D094B5822D709F63972D1D3EFB367C79B7535CCD2C4A5E743002BF8E0BA",
+      "Executions": 26,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/SavedOffsets_Off.txt",
+      "SHA256": "331AFAA5848A65A9E4364B8BDBEFA14798DB7E25792F5F46D1AC74088CA1026A",
+      "Executions": 2,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/CurrentFeatures_Off.txt",
+      "SHA256": "7F7666D6F931A051EBCD60019BED16ED26203DAD16A620FF5D6C53FDE74027A3",
+      "Executions": 23,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Full_On.txt",
+      "SHA256": "97B82E1C8F69DBDF9264D6C929AFF4B79F18FBB3B996E35CB5E758660301F24E",
+      "Executions": 8,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Geometry_On.txt",
+      "SHA256": "93470FC488392E9BDA540F5B5F89FF5AFE906778B8033854FFC61D6279DBE468",
+      "Executions": 36,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/SP35_On.txt",
+      "SHA256": "FADF78A21F658CB026CFC9028ACA0F5EB0CDFDAD8C59FC50370EF077DCE91E09",
+      "Executions": 6,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Recipes_On.txt",
+      "SHA256": "A2ABB09871057D05E5698143108DD32161C8E3A4E003F3D934CE328927EF4757",
+      "Executions": 26,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/SavedOffsets_On.txt",
+      "SHA256": "CC60D83F930DB60A3945C0920D59A5AE70DB450C21864212D908B4F766D77913",
+      "Executions": 2,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/CurrentFeatures_On.txt",
+      "SHA256": "E7F37B84F4E4F28915A8AD3EADB6D486E6B5B9164D07DCF48901D47A7B7047B7",
+      "Executions": 23,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Rectangles_Generated_No.txt",
+      "SHA256": "307DA2F27F038DED93C8566244E8555EE38A3FD1C1002F231E2092A9B7CB2271",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Rectangles_Generated_Yes.txt",
+      "SHA256": "0266053E5F487B6B7649D48F87E21D8584E64275F77DB609F0BCE1BF0C6FB6BE",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Circle_Generated_No.txt",
+      "SHA256": "10BF6A472BF4708CE759EED43E3DAC784B8A03512725A99471E5CB4F4C23A9C1",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Circle_Generated_Yes.txt",
+      "SHA256": "213C5A01E539813E97D80C7E580820AD289683573F3933C56C0C76B4BF99B1C8",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/PointedSection_Generated_No.txt",
+      "SHA256": "95D6C6D663D069A08222840D8993F75C716CEF6CD7D4E4FDF16CAE1E7E11AD12",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/PointedSection_Generated_Yes.txt",
+      "SHA256": "5BEC6178A034E2B62E814F3747E4C331DC3FB2010510ED4234E80B31B3857740",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/HollowRectangle_Generated_No.txt",
+      "SHA256": "4E26E5BFF7C451F1E7FA04D00E5E288439E5EA6079914745C66F907EC12F6AC9",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/HollowRectangle_Generated_Yes.txt",
+      "SHA256": "4357C6143BDBBE222F9CE55FD75DBE8782EE377446D4E8D3A3685E2F41214EC9",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/SavedWorkbook_Saved_No.txt",
+      "SHA256": "2D3344DD6806355A8699A8047031E48665ABF60BA3DCB849A746C57343CFEFE6",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/SavedWorkbook_Saved_Yes.txt",
+      "SHA256": "A60AB7776DF11ED8BFA39FCB55057F7A772F9B2BA8507C92812EC1DE372AC413",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/SavedWorkbook_Paths_No.txt",
+      "SHA256": "13985957B2FC4213DA56901ED6341635C991DF2E463CBDB8042AFE8467CFDD46",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/SavedWorkbook_Paths_Yes.txt",
+      "SHA256": "C808310C756E93A4311D700C4044731EE3944872B102A8A6E301AD71A692B29F",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Batch15_No.txt",
+      "SHA256": "0DA8422DF262559F52F48A6D4DA73A7D67AAE441870E9070D021CD193D73069C",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Stability_No.txt",
+      "SHA256": "93E54E6B1ECDD2DA770E51A7F912E98D717C32DE88D74410B244A904CF0FA20A",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/AsymmetricSteel_No.txt",
+      "SHA256": "263732F1B65C7ABF2C3F4A4522B96F3CF76CC2DC0E9038B49C982EA7698C3401",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Batch15_Yes.txt",
+      "SHA256": "808B4B7BDC5BD21BD5E0E3BAB2723810698EDB0A39E2C77BF60FBF7E0632A82F",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Stability_Yes.txt",
+      "SHA256": "DF406F400FAE881CF3AEC5CF0AE1C91B355925BC436EAAA263ED1FEEBAC54D2D",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/AsymmetricSteel_Yes.txt",
+      "SHA256": "DB725D116200F5068AB6F6DA1253550D5F3E14D4A5729F823CC1D9EE5C3726D1",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Model_Rectangles.txt",
+      "SHA256": "B41DA287430E69D0967579541F4D5C4F515A02CAF4F3E92795B18479DCBF290F",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Model_Circle.txt",
+      "SHA256": "35B1B6CDEF10AA8FE3DF65B6DCEBFDDB5AF71EF38D29376D980CA27E39B23489",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Model_PointedSection.txt",
+      "SHA256": "4F74B43016EAAC9DFE76133D7C1DABA1204DBE7B3DA6EB79080C282F09AB725F",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Model_HollowRectangle.txt",
+      "SHA256": "4546794853B2173A3E7303F8C7A62B2828B7B442B0240F31713526BBD44D97DE",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/Model_SavedWorkbook.txt",
+      "SHA256": "3773039F089AF4D799EB8232A467C8ECB0E22BE0CA412E3D5080C6CCD77223B0",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Focused/OutputPresentation.txt",
+      "SHA256": "1313B356E0E7114B4ABCFEEC5839477D00F1AD224772425026F9BF2FD642B0AF",
+      "Executions": 1,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Supplement/No.txt",
+      "SHA256": "DC71C9D7521BDECE5B7C5FFBDB6CFE99C55A817393AE483F8739B665258B67F4",
+      "Executions": 7,
+      "FailureLines": 0
+    },
+    {
+      "Path": "docs/regression/CurrentBehaviorRelease_2026-11-26_Full_Run01/Supplement/Yes.txt",
+      "SHA256": "2A0358D091F10CF342640F98572F6019D7635E14AB88C944DA65A80DCD7B0C5F",
+      "Executions": 7,
+      "FailureLines": 0
+    }
+  ],
+  "FirstRunCompletedInFull": true,
+  "FullRepeatRequired": false,
+  "StartedUTC": "2026-11-26T16:29:40.7880568+00:00",
+  "FinishedUTC": "2026-11-26T21:42:24.7294257+00:00"
+}

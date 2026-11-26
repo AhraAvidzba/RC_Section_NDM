@@ -1,0 +1,48 @@
+﻿{
+    "Status":  "PASS",
+    "SourceSHA256":  "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807",
+    "ExpectedExecutions":  14,
+    "Results":  [
+                    {
+                        "Mode":  "No",
+                        "Passed":  true,
+                        "ExitCode":  0,
+                        "Macros":  [
+                                       "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                                       "modTestTorsionPost.RunTorsionOnlyTests",
+                                       "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                                       "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow",
+                                       "modTestBatchCalculation.RunNormativeStabilityTests",
+                                       "modTestBatchCalculation.RunNormativePartialBranchFailureTest",
+                                       "modTestCrackWidth.RunNormativeBoundaryTests"
+                                   ],
+                        "Report":  "docs\\regression\\CurrentBehaviorRelease_2026-11-26_Full_Run01\\Supplement\\No.txt",
+                        "ReportSHA256":  "DC71C9D7521BDECE5B7C5FFBDB6CFE99C55A817393AE483F8739B665258B67F4",
+                        "Errors":  [
+
+                                   ],
+                        "ProcessClosed":  true
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "Passed":  true,
+                        "ExitCode":  0,
+                        "Macros":  [
+                                       "modTestBatchCalculation.RunZeroLoadCombinationTests",
+                                       "modTestTorsionPost.RunTorsionOnlyTests",
+                                       "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+                                       "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow",
+                                       "modTestBatchCalculation.RunNormativeStabilityTests",
+                                       "modTestBatchCalculation.RunNormativePartialBranchFailureTest",
+                                       "modTestCrackWidth.RunNormativeBoundaryTests"
+                                   ],
+                        "Report":  "docs\\regression\\CurrentBehaviorRelease_2026-11-26_Full_Run01\\Supplement\\Yes.txt",
+                        "ReportSHA256":  "2A0358D091F10CF342640F98572F6019D7635E14AB88C944DA65A80DCD7B0C5F",
+                        "Errors":  [
+
+                                   ],
+                        "ProcessClosed":  true
+                    }
+                ],
+    "FinishedUTC":  "2026-11-26T21:42:24.5413848+00:00"
+}

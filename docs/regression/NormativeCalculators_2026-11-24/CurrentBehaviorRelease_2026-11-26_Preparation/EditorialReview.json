@@ -1,0 +1,21 @@
+{
+  "Status": "PASS",
+  "VBASourceFilesScanned": 217,
+  "NativeVBAComponentsScanned": 209,
+  "BuildAndActiveDocumentationFilesScanned": 552,
+  "ScannedSourceLines": 212028,
+  "HelpTextCellsScanned": 1852,
+  "HelpFormulaCellsScanned": 0,
+  "SearchPattern": "согласовано|согласованное программное|\\bтеперь\\b|по просьбе|по замечаниям|как мы обсуждали|тобой|твоему|вашему|до и после (?:исправления|рефакторинга)|Проверяет исправление|исправленного размерного|устаревших проверок|удалённому формату|историческ|прежний табличный|в этой версии|старого ограничения|старого большого гайда|плоскость раньше|прежние 380|фиксирует старую|старую матрицу|старую длинную|\\bИИ\\b|\\bChatGPT\\b|\\bAI assistant\\b",
+  "UnresolvedTargetPhrases": [],
+  "RewriteScope": "Локальные строки; остальной текст сохранен.",
+  "PreservedCurrentContracts": [
+    "Предыдущий расчет, кэш и ранее выданные объекты относятся к данным текущего алгоритма.",
+    "NDMSNP04/05/06, расширение .ndms, размеры матриц и технические имена описывают конкретные поддерживаемые форматы.",
+    "Согласованность единиц, геометрии и равновесия имеет расчетный смысл.",
+    "Сравнения и журналы в docs/reports и docs/regression сохраняют историю проверок."
+  ],
+  "InventorySHA256": "CD23854B22EDCFF3ADF10FC95D4BC867A5C04DCB56A4AA1590F00363C8B003F7",
+  "SourceScopeProof": "TextScope.json",
+  "CleanReleaseProof": "CleanRelease.json"
+}

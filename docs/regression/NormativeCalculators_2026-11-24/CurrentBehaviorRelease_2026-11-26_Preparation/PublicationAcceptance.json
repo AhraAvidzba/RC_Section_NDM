@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807",
+  "ExportSHA256": "D546A2D8EFD80BEED1E7C698E41153A937179652A583174E6EE38D4553806D0B",
+  "NativeComponents": 209,
+  "SourceCodeUnchangedSinceFullRunCommit": "3561d9d0eaaf5aefc4ed02b705f1adb00e45ad41",
+  "CoreExecutions": 202,
+  "FocusedSingleCases": 122,
+  "SupplementExecutions": 14,
+  "PrimaryAudit": "PrimaryAudit.json",
+  "CleanOutputInstalled": true,
+  "PostRunChange": "Only the external structural checker and README; unused raw-layout option removed.",
+  "PostRunPositiveStructureChecks": 31,
+  "PostRunNegativeStructureCases": 3,
+  "UserBackupsExcludedFromPublication": true,
+  "PriorRegressionHistoryRetained": true
+}

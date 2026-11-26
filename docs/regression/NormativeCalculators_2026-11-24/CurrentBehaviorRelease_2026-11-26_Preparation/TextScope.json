@@ -1,0 +1,113 @@
+{
+  "Status": "PASS",
+  "WorkingVBASourceFiles": 203,
+  "NativeComponents": 209,
+  "ChangedVBASources": [
+    {
+      "Path": "src/Crack/CSP35CrackData.cls",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "src/Excel/CCalculationSnapshotStore.cls",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "src/Excel/modCalculationSnapshot.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "src/Excel/modSectionSnapshot.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "src/Solver/CStateGuessBuilder.cls",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestAutoCADContours.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestCrackWidth.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestElementGeometry.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestGeometryConfig.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestProfileConfig.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestRecipeOperations.bas",
+      "OnlyComments": false,
+      "OnlyCommentAndDiagnosticFixtureText": true
+    },
+    {
+      "Path": "tests/modTestRecipeSetbacks.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestSectionSolver.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestTorsionPost.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestTorsionProjections.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "OnlyComments": true,
+      "OnlyCommentAndDiagnosticFixtureText": false
+    }
+  ],
+  "RuntimeLogicUnchanged": true,
+  "FixtureOnlyChange": "Текст произвольной диагностической строки без кода; численные данные и assertions не менялись.",
+  "SourceEquality": true,
+  "SourceDifferences": [],
+  "NativeExecutableCodeEqualsBaseline": true,
+  "WorkbookSHA256": "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807"
+}

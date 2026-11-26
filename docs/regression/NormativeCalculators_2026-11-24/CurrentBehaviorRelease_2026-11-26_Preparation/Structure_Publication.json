@@ -1,0 +1,157 @@
+[
+  {
+    "Check": "Canonical print area names",
+    "Passed": true,
+    "Details": "CalculationSheetIndex=3; canonical=1; noncanonical=0; file not repaired"
+  },
+  {
+    "Check": "Sheets Config/Сечения/Справка/Расчет/Results",
+    "Passed": true,
+    "Details": "Config, Сечения, Справка, Расчет, Results"
+  },
+  {
+    "Check": "Required named ranges",
+    "Passed": true,
+    "Details": "Missing: "
+  },
+  {
+    "Check": "Results ranges layout",
+    "Passed": true,
+    "Details": "WorkbookLayout.json; mismatches: "
+  },
+  {
+    "Check": "Stability duration loads range",
+    "Passed": true,
+    "Details": "Address=$P$70:$S$100"
+  },
+  {
+    "Check": "SP35 table 7.21 range",
+    "Passed": true,
+    "Details": "Address=$AB$60:$AG$79; Rows=20; Columns=6"
+  },
+  {
+    "Check": "No duplicate names",
+    "Passed": true,
+    "Details": "Duplicates: "
+  },
+  {
+    "Check": "No obsolete named ranges",
+    "Passed": true,
+    "Details": "Present: "
+  },
+  {
+    "Check": "Print area",
+    "Passed": true,
+    "Details": "Expected=$A$1:$BD$59; PageSetup=; Xml=Расчет!$A$1:$BD$59"
+  },
+  {
+    "Check": "A4 portrait",
+    "Passed": true,
+    "Details": "PaperSize=9; Orientation=1"
+  },
+  {
+    "Check": "Presentation print layout: pageSetup",
+    "Passed": true,
+    "Details": "Expected=fitToHeight=1;fitToWidth=4;orientation=portrait;paperSize=9|; Actual=fitToHeight=1;fitToWidth=4;orientation=portrait;paperSize=9|"
+  },
+  {
+    "Check": "Presentation print layout: pageMargins",
+    "Passed": true,
+    "Details": "Expected=bottom=0.19685039370078741;footer=0.31496062992125984;header=0.31496062992125984;left=0.19685039370078741;right=0.19685039370078741;top=0.19685039370078741|; Actual=bottom=0.19685039370078741;footer=0.31496062992125984;header=0.31496062992125984;left=0.19685039370078741;right=0.19685039370078741;top=0.19685039370078741|"
+  },
+  {
+    "Check": "Presentation print layout: printOptions",
+    "Passed": true,
+    "Details": "Expected=horizontalCentered=1|; Actual=horizontalCentered=1|"
+  },
+  {
+    "Check": "Presentation print layout: pageSetUpPr",
+    "Passed": true,
+    "Details": "Expected=fitToPage=1|; Actual=fitToPage=1|"
+  },
+  {
+    "Check": "Presentation print layout: rowBreaks",
+    "Passed": true,
+    "Details": "Expected=|; Actual=|"
+  },
+  {
+    "Check": "Presentation print layout: colBreaks",
+    "Passed": true,
+    "Details": "Expected=|; Actual=|"
+  },
+  {
+    "Check": "Load combinations table at saved position",
+    "Passed": true,
+    "Details": "Sheet=Config; Row=70; Column=8"
+  },
+  {
+    "Check": "Config settings table headers",
+    "Passed": true,
+    "Details": "Параметр | Значение | Ед. | Комментарий | Справка"
+  },
+  {
+    "Check": "No duplicate Config keys",
+    "Passed": true,
+    "Details": "Duplicates: "
+  },
+  {
+    "Check": "No obsolete Config settings",
+    "Passed": true,
+    "Details": "Present: "
+  },
+  {
+    "Check": "Solver.Method default",
+    "Passed": true,
+    "Details": "Value=Newton"
+  },
+  {
+    "Check": "Stability.Code default",
+    "Passed": true,
+    "Details": "Value=SP35"
+  },
+  {
+    "Check": "Solver.Method validation list",
+    "Passed": true,
+    "Details": "Values=Newton, Secant"
+  },
+  {
+    "Check": "Concrete material parameters",
+    "Passed": true,
+    "Details": "Rows=8; Columns=6"
+  },
+  {
+    "Check": "Steel material parameters",
+    "Passed": true,
+    "Details": "Rows=6; Columns=6"
+  },
+  {
+    "Check": "Calculation profiles",
+    "Passed": true,
+    "Details": "Rows=32; Columns=7"
+  },
+  {
+    "Check": "Config right-side ranges vertical stack",
+    "Passed": true,
+    "Details": "rngUnitSettings=R3C8:R9; rngSignConventionSettings=R12C8:R15; rngSteelMaterialParameters=R18C8:R23; rngConcreteMaterialParameters=R26C8:R33; rngCalculationProfiles=R36C8:R67; rngPlotAnnotationSettings=R125C8:R140"
+  },
+  {
+    "Check": "Load combinations table headers",
+    "Passed": true,
+    "Details": "CombinationID | N, tf | Mx, tf*m | My, tf*m | ProfileId | LoadPath | Comment"
+  },
+  {
+    "Check": "Formulas allowed on workbook sheets",
+    "Passed": true,
+    "Details": "Excel formulas are allowed and preferred for transparent user-level calculations; VBA validation covers workbook structure."
+  },
+  {
+    "Check": "Runtime Excel IO uses bulk ranges",
+    "Passed": true,
+    "Details": "Cells.Item matches: "
+  },
+  {
+    "Check": "Source workbook unchanged",
+    "Passed": true,
+    "Details": "Before=FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807; After=FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807"
+  }
+]

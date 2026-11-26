@@ -1,0 +1,65 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "FE0689F3DFECF0708D85A0027B5DEF7F3D97C071466171A25441AC48A6B5C807",
+  "BuildCommand": "Build-Workbook.ps1 -OutputPath <preparation>/RC_Section_NDM.xlsm -UseFormattedLayout",
+  "Sheets": [
+    "Config",
+    "Сечения",
+    "Справка",
+    "Расчет",
+    "Results"
+  ],
+  "Tables": [
+    {
+      "Table": "rngStrengthSummaryAnchor",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngCrackSummaryAnchor",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngStabilitySummaryAnchor",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngTorsionSummaryAnchor",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMSectionGeometry",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMSectionProperties",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMMaterialDiagrams",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMSectionContours",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMElementResults",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMElementGeometry",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngNDMSectionAnnotations",
+      "DataIDs": 0
+    },
+    {
+      "Table": "rngTorsionBarForces",
+      "DataIDs": 0
+    }
+  ],
+  "NoSavedUserGeometryOrCalculatedResults": true,
+  "DefaultsAndExamplesComeFromBuilder": true,
+  "WorkbookBytesUnchangedAfterNativeReadOnlyChecks": true
+}
