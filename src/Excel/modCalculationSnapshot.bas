@@ -12,6 +12,7 @@ Private mReadViewResolved As Boolean
 Private mReadSnapshot As CCalculationSnapshot ' Неизменяемый набор только на время одной операции чтения.
 Private mReadWorkbook As Object ' Книга, которой принадлежит текущий контекст.
 Private mReadDepth As Long ' Вложенные чтения схемы и экспорта не уничтожают внешний контекст.
+Private Const LARGE_SNAPSHOT_WARNING_ROWS As Long = 100000 ' Порог предупреждения о крупной таблице; физический предел листа проверяется отдельно.
 
 ' Открывает короткую область чтения; между пользовательскими действиями кэша нет.
 Public Sub BeginCalculationSnapshotRead(ByVal workbook As Object, Optional ByVal snapshot As CCalculationSnapshot = Nothing)
@@ -313,10 +314,10 @@ Public Function CalculationSnapshotOutputPolicy(ByVal storageMode As String, ByV
                 CalculationSnapshotOutputPolicy = "RowLimit"
                 Exit Function
             End If
-            If CDbl(entry(1)) > 60000# Then largeMandatory = True
+            If CDbl(entry(1)) > LARGE_SNAPSHOT_WARNING_ROWS Then largeMandatory = True
         Next i
     End If
-    If storageMode = "Excel" And (estimatedRows > 60000# Or estimatedBoundaryRows > 60000#) Then CalculationSnapshotOutputPolicy = "File"
+    If storageMode = "Excel" And (estimatedRows > LARGE_SNAPSHOT_WARNING_ROWS Or estimatedBoundaryRows > LARGE_SNAPSHOT_WARNING_ROWS) Then CalculationSnapshotOutputPolicy = "File"
     If largeMandatory Then
         If Len(CalculationSnapshotOutputPolicy) > 0 Then
             CalculationSnapshotOutputPolicy = "FileAndMandatory"
@@ -341,7 +342,7 @@ Public Sub OfferExternalCalculationSnapshot(ByVal workbook As Object, ByVal esti
         message = "На Results предстоит вывести большие обязательные таблицы."
         For i = LBound(mandatoryRows) To UBound(mandatoryRows)
             entry = mandatoryRows(i)
-            If CDbl(entry(1)) > 60000# Then
+            If CDbl(entry(1)) > LARGE_SNAPSHOT_WARNING_ROWS Then
                 Set table = workbook.Names.Item(CStr(entry(0))).RefersToRange
                 message = message & vbCrLf & CStr(entry(0)) & " (" & table.Parent.Name & "!" & _
                     table.Address(False, False) & "): около " & Format$(CDbl(entry(1)), "0") & " строк."

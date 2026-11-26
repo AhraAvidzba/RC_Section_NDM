@@ -1,0 +1,24 @@
+{
+  "Status": "PASS",
+  "Assertions": 68,
+  "SolverCalled": false,
+  "FullSuiteStarted": false,
+  "Threshold": 100000,
+  "Comparison": "strictly greater",
+  "Meshes": [
+    "Adaptive",
+    "Contour"
+  ],
+  "Storages": [
+    "Excel",
+    "File"
+  ],
+  "InstalledWorkbookSHA256": "B158AD84620770B2E4325937209BE8F25191D36355C066A168BB96C01EB13D44",
+  "InstalledExportSHA256": "3FE8C31883F3B40F3FAAD7E4A8135BABCBF83A1466A3B0375C450CE321CC4531",
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin",
+    "xl/sharedStrings.xml"
+  ],
+  "OtherWorkbookDataPreserved": true,
+  "NativeLiteralFormatting": "VBE omits optional # in fractional Double 123.456; same in baseline, numeric value unchanged."
+}

@@ -1,0 +1,81 @@
+{
+  "ArchiveSHA256": "E73F9361D0AB7E3E9A5FF09A81AA6CAF6591533A080A2EF48EE1AE605629D37D",
+  "Files": [
+    {
+      "File": "Acceptance.json",
+      "SHA256": "F8B7F539FC7862451D37FBE8BC169D6B67319F2EEB00B7CDFC34BDB8E08DFFFB",
+      "Archived": true
+    },
+    {
+      "File": "BaselineNative.txt",
+      "SHA256": "1F293C244CEA840699CB7CD701D2DF805008F61A689954DBBF190FBE268002F2",
+      "Archived": false
+    },
+    {
+      "File": "CodeUpdate.json",
+      "SHA256": "9D97B255536A3858699C0B067B9D8F3EDE00CC218E7A101DC4CF01B55B0C97AC",
+      "Archived": true
+    },
+    {
+      "File": "Finalize.py",
+      "SHA256": "34A4A7726A44EAE4B9FABF8BBCAF0E734806ECF5D5B1B8F673BB7018DFE09903",
+      "Archived": true
+    },
+    {
+      "File": "NativeCandidate.txt",
+      "SHA256": "4D96E996D1ADF4C525FF56C156D60E9EC320782A355F5C5B44B65C4A82774325",
+      "Archived": false
+    },
+    {
+      "File": "PackageProof.json",
+      "SHA256": "7BD0583DAB029DD6878796902E4CB0C7B3A6C6F1313849A77870883D930E1E5E",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt",
+      "SHA256": "86E130EE34AD49394953FA11C2F74446563F18B58DD00C1CF603AC0E5E7A46CC",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt.memory.json",
+      "SHA256": "CEEA89D77CF38A0E70E8D16E3444C5B22DED383B6E39DB436EB0AD7B30C75896",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt.Ownership.json",
+      "SHA256": "B7916B9DF58897944CB0C5E6B1766B474618E8C2EC3C5EC16FA115D359361B44",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt.ProcessClosure.json",
+      "SHA256": "3BFFCE9736A3C6DD1F46AA105D6445D9DAE1EA000595EF687450ACB2C419D409",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt.RunnerCleanup.json",
+      "SHA256": "94910E776B6157EBEC00BE779BDAB19DC9600947A870D5C03BF0CCBE8A08A148",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Archived": true
+    },
+    {
+      "File": "Policy.txt.stdout.log",
+      "SHA256": "8DBE40383874F9651AAE9433F3052A06DF2F2CD6666E2290CE255EC71EAC0B52",
+      "Archived": true
+    },
+    {
+      "File": "Prepare-Candidate.py",
+      "SHA256": "1974FE4E007CBAAF542C872C0BDD30341465362DE6BE95BED5EF55711B56D41A",
+      "Archived": true
+    },
+    {
+      "File": "VBA_All_Code.txt",
+      "SHA256": "3FE8C31883F3B40F3FAAD7E4A8135BABCBF83A1466A3B0375C450CE321CC4531",
+      "Archived": false
+    }
+  ],
+  "OriginalsRetainedLocally": true
+}

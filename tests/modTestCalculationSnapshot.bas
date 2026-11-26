@@ -816,21 +816,27 @@ Private Sub TestSnapshotOutputPolicies()
             label = "rows.policy." & CStr(mesh) & "." & CStr(mode)
             rows = Array(Array("rngNDMSectionGeometry", 1001#, 156), Array("rngNDMElementGeometry", 1#, 156))
             TestSnapshotCheck label & ".small", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 60000#, rows, limit) = ""
+            TestSnapshotCheck label & ".formerThresholdAbove", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 60001#, rows, limit) = ""
+            TestSnapshotCheck label & ".thresholdBelow", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 99999#, rows, limit) = ""
+            TestSnapshotCheck label & ".thresholdExact", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100000#, rows, limit) = ""
             expected = "": If CStr(mode) = "Excel" Then expected = "File"
-            TestSnapshotCheck label & ".stateFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 60001#, rows, limit) = expected
-            rows = Array(Array("rngNDMSectionGeometry", 60001#, 156), Array("rngNDMElementGeometry", 1#, 156))
+            TestSnapshotCheck label & ".stateFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100001#, rows, limit) = expected
+            TestSnapshotCheck label & ".boundaryExact", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit, 100000#) = ""
+            rows = Array(Array("rngNDMSectionGeometry", 100000#, 156), Array("rngNDMElementGeometry", 1#, 156))
+            TestSnapshotCheck label & ".mandatoryExact", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit) = ""
+            rows = Array(Array("rngNDMSectionGeometry", 100001#, 156), Array("rngNDMElementGeometry", 1#, 156))
             TestSnapshotCheck label & ".mandatory", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit) = "Mandatory"
             expected = "Mandatory": If CStr(mode) = "Excel" Then expected = "FileAndMandatory"
-            TestSnapshotCheck label & ".both", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 60001#, rows, limit) = expected
+            TestSnapshotCheck label & ".both", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100001#, rows, limit) = expected
             rows = Array(Array("rngNDMSectionGeometry", CDbl(limit) - 155#, 156), Array("rngNDMElementGeometry", 1#, 156))
             TestSnapshotCheck label & ".exactLimit", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit) = "Mandatory"
             rows = Array(Array("rngNDMSectionGeometry", 1001#, 156), Array("rngNDMElementGeometry", 1#, 156))
             expected = "": If CStr(mode) = "Excel" Then expected = "File"
-            TestSnapshotCheck label & ".boundaryLargeFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit, 60001#) = expected
+            TestSnapshotCheck label & ".boundaryLargeFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit, 100001#) = expected
             TestSnapshotCheck label & ".boundaryOverflowFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100#, rows, limit, CDbl(limit) + 1#) = expected
             rows = Array(Array("rngNDMSectionGeometry", CDbl(limit) - 154#, 156))
-            TestSnapshotCheck label & ".geometryOverflowNoFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 60001#, rows, limit) = "RowLimit"
-            OfferExternalCalculationSnapshot ThisWorkbook, 60001#, False, rows
+            TestSnapshotCheck label & ".geometryOverflowNoFile", CalculationSnapshotOutputPolicy(store.StorageMode(ThisWorkbook), 100001#, rows, limit) = "RowLimit"
+            OfferExternalCalculationSnapshot ThisWorkbook, 100001#, False, rows
             TestSnapshotCheck label & ".noninteractivePreserved", store.StorageMode(ThisWorkbook) = CStr(mode)
         Next mode
     Next mesh

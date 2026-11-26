@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "BaselineSHA256": "9F6776127DAE1D4CFD2CB9E41920BF0CDE00D88E35D1C0177AAA86DAC59393C4",
+  "CandidateSHA256": "B158AD84620770B2E4325937209BE8F25191D36355C066A168BB96C01EB13D44",
+  "ExportSHA256": "3FE8C31883F3B40F3FAAD7E4A8135BABCBF83A1466A3B0375C450CE321CC4531",
+  "CompiledNativeSHA256": "6E1BAB864176978603B7F0FDEEA19012FB8C5F082B7F488151A0E89119B4584D",
+  "NativeComponents": 209,
+  "ChangedComponents": [
+    "modCalculationSnapshot",
+    "modTestCalculationSnapshot"
+  ],
+  "SourceEquality": true,
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin",
+    "xl/sharedStrings.xml"
+  ],
+  "OnlyOneHelpParagraphChanged": true,
+  "HelpThresholdUpdated": true,
+  "AllOtherWorkbookPartsPreserved": true
+}
