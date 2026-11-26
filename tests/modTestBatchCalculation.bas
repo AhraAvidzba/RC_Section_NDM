@@ -11619,6 +11619,9 @@ Public Function RunZeroLoadCombinationTests() As String
     TestAssertClose stats, "reader.retained", batch.Count, 5#, 0#
     TestAssertTrue stats, "reader.Traw.only", batch.IsAdditionalLoadOnly(1)
     TestAssertTrue stats, "reader.Tfiltered.only", batch.IsAdditionalLoadOnly(2)
+    ' Неприменимое поле с ошибкой Excel не читается; профиль результата остается пустым. Пустой PR проверяется также штатным примером TOnlyBlankProfile.
+    TestAssertTrue stats, "reader.Traw.emptyProfile", Len(batch.InputProfileId(1)) = 0
+    TestAssertTrue stats, "reader.Tfiltered.emptyProfile", Len(batch.InputProfileId(2)) = 0
     TestAssertClose stats, "reader.original.N", batch.OriginalN(2), -600#, 0#
     TestAssertClose stats, "reader.N.aboveMaximumDepth", batch.N(3), 600.001, 0#
     TestAssertClose stats, "reader.M.above", batch.UserMx(4), 200000.001, 0#

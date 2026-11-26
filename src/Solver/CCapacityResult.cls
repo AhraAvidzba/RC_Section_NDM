@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -280,7 +280,7 @@ Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
             MethodChoiceReport = "Итог поиска несущей: Auto принял результат UltimateStrain, резервный переход на LoadMultiplier не потребовался."
         ElseIf StrComp(mSolutionMethod, "LoadMultiplier", vbTextCompare) = 0 Then
             If mPureAxialForMethod Then
-                MethodChoiceReport = "Итог поиска несущей: Auto использовал LoadMultiplier сразу, потому что траектория чисто осевая относительно центра приведенного сечения."
+                MethodChoiceReport = "Итог поиска несущей: Auto использовал LoadMultiplier сразу, поскольку для выбора метода моменты относительно центра приведенного сечения признаны малыми по действующему фильтру; фактическая траектория сохранена."
             Else
                 MethodChoiceReport = "Итог поиска несущей: Auto переключился на LoadMultiplier, потому что UltimateStrain не дал устойчивую предельную точку; подробная причина ниже в диагностике solver-а."
             End If
@@ -288,7 +288,7 @@ Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
     ElseIf StrComp(solutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
             StrComp(mSolutionMethod, "LoadMultiplier", vbTextCompare) = 0 Then
         If mPureAxialForMethod Then
-            MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier, так как траектория чисто осевая относительно центра приведенного сечения и не решается устойчиво прямым UltimateStrain."
+            MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier, поскольку для выбора метода моменты относительно центра приведенного сечения признаны малыми по действующему фильтру; фактическая траектория сохранена."
         Else
             MethodChoiceReport = "Итог поиска несущей: фактически использован LoadMultiplier."
             If Not loadPath Is Nothing Then

@@ -460,10 +460,12 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
     reader.LoadFromWorkbook workbook, batch, units
-    report.AddValue "Пропущено сочетаний ниже порогов фильтрации N и M (без T)", CStr(reader.SkippedZeroCount)
-    If reader.SkippedZeroCount > 0 Then report.AddValue "ID пропущенных сочетаний", reader.SkippedZeroIDs
-    report.AddValue "Прочитано сочетаний", CStr(batch.Count)
-    report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
+    report.AddValue "Полностью исключено сочетаний с малыми усилиями и без кручения", CStr(reader.SkippedZeroCount)
+    report.AddBlock "Причина исключения сочетаний", FilteredCombinationMessage(reader.SkippedZeroCount, reader.SkippedZeroIDs)
+    report.AddValue "Принято сочетаний для обработки", CStr(batch.Count)
+    report.AddValue "Из них передано на этап НДМ (включая проверку исходных данных)", CStr(batch.NormalLoadCombinationCount)
+    report.AddValue "Из них запрошено только T (кручение), без НДМ", CStr(batch.Count - batch.NormalLoadCombinationCount)
+    report.AddBlock "Список сочетаний — моменты в заданной точке приложения нагрузки", CombinationListForReport(batch, units)
     LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
     Dim sp35Table As Variant, sp35TableInputError As String
     sp35Table = ReadSP35Table721FromWorkbook(workbook, sp35TableInputError)
@@ -471,10 +473,11 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddStep "Прочитаны нагрузки и таблицы для расчета устойчивости."
 
     report.AddSection "Точка приложения нагрузки"
-    report.AddStep "Расчет центра тяжести бетонного сечения для пользовательской точки нагрузки."
+    report.AddStep "Координаты приведены во внутренней расчетной системе, в которой заданы координаты бетонных и арматурных элементов сечения. " & _
+        "Это не смещения от центра тяжести: смещения задаются отдельно в Load.ReferenceOffsetX/Y. " & _
+        "N не зависит от точки отсчета; Mx и My ниже всегда подписаны с указанием этой точки."
     If batch.NormalLoadCombinationCount > 0 Then ApplyLoadReferenceFromSettings section, settings, units, batch
-    report.AddValue "Точка приложения нагрузки X", ReportLengthText(batch.LoadReferenceX, units)
-    report.AddValue "Точка приложения нагрузки Y", ReportLengthText(batch.LoadReferenceY, units)
+    report.AddValue "Точка приложения нагрузки", report.FormatPoint(batch.LoadReferenceX, batch.LoadReferenceY)
 
     report.AddSection "Проверка вывода Results"
     ValidateResultsOutputLayout workbook, section, batch, profiles, showMessages
@@ -489,6 +492,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     report.AddSection "Расчет сочетаний"
     Dim savedProfileValues As Variant: savedProfileValues = workbook.Names.Item("rngCalculationProfiles").RefersToRange.Value2 ' Замораживает исходный профиль до вычислений, без чтения Config при подготовке файла.
     If batch.Count > 0 Then batch.Execute ' Нулевая очередь обновляет пустой вывод и сохраняет геометрию; решатель не запускается.
+    report.AddSection "Статистика всего пакетного расчета"
     report.AddValue "Время batch-расчета", FormatReportNumber(batch.ElapsedSeconds) & " с"
     report.AddValue "Количество стартов UltimateStrain", CStr(batch.UltimateStrainStartCount)
     report.AddValue "Количество итераций НДС", CStr(batch.SolverIterationCount)
@@ -496,10 +500,11 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
 
     Dim summaryWriter As CBatchResultWriter
     Set summaryWriter = New CBatchResultWriter
-    report.AddSection "Запись результатов"
     Dim savedSnapshot As CCalculationSnapshot: Set savedSnapshot = New CCalculationSnapshot
     Dim torsionWarning As String
     torsionWarning = CaptureTorsionPostprocess(workbook, section, batch, units, savedSnapshot)
+    report.ReportTorsionResults savedSnapshot
+    report.AddSection "Запись результатов"
     Set summaryWriter.CaptureSnapshot = savedSnapshot
     summaryWriter.WriteSummary workbook, batch, units, section, fullFormatting
     Set ndmWriter.CaptureSnapshot = savedSnapshot
@@ -517,7 +522,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
-    report.AddValue "Время до записи итогового отчёта", FormatReportNumber(totalElapsedSeconds) & " с"
+    report.AddValue "Время от начала вызова макроса до записи отчета (включая подготовку до старта журнала)", FormatReportNumber(totalElapsedSeconds) & " с"
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
@@ -525,7 +530,7 @@ Private Function CalculateSectionCore(ByVal workbook As Object, Optional ByVal s
     If batch.Count = 0 Then CalculateSectionCore = "Расчёт НДМ не запускался: ненулевых усилий N, Mx и My после фильтрации нет. Результаты обновлены без расчётных сочетаний; сформированная геометрия сохранена."
     If batch.Count > 0 And batch.NormalLoadCombinationCount = 0 Then CalculateSectionCore = "Расчёт T (кручение) завершён. НДС от N, Mx и My не рассчитывался: после фильтрации они равны нулю; добавки NM в сумме NMT приняты равными нулю."
     If reader.SkippedZeroCount > 0 Then CalculateSectionCore = WorkbookMessageParagraph(CalculateSectionCore, _
-        "Пропущено сочетаний ниже порогов фильтрации N и M (без T): " & CStr(reader.SkippedZeroCount) & "." & vbCrLf & "ID: " & reader.SkippedZeroIDs & ".")
+        FilteredCombinationMessage(reader.SkippedZeroCount, reader.SkippedZeroIDs))
     CalculateSectionCore = WorkbookMessageAfterOutcome(CalculateSectionCore, dataOrigin)
     requiresAttention = requiresAttention Or plotHasWarning
     If Len(plotWarning) > 0 Then CalculateSectionCore = CalculateSectionCore & vbCrLf & vbCrLf & plotWarning
@@ -926,14 +931,22 @@ Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator
     Dim i As Long
     For i = 1 To batch.Count
         lines.Add CStr(i) & ". " & batch.CombinationID(i) & _
-            "; profile=" & batch.InputProfileId(i) & _
-            "; N=" & ReportForceText(batch.N(i), units) & _
-            "; Mx=" & ReportMxText(batch.Mx(i), units) & _
-            "; My=" & ReportMyText(batch.My(i), units) & _
+            "; профиль НДМ=" & IIf(batch.IsAdditionalLoadOnly(i), "не требуется (только T)", batch.InputProfileId(i)) & _
+            "; N=" & ReportForceText(batch.OriginalN(i), units) & _
+            "; Mx=" & ReportMxText(batch.OriginalMx(i), units) & _
+            "; My=" & ReportMyText(batch.OriginalMy(i), units) & _
             "; comment=" & batch.CombinationName(i)
     Next i
 
     CombinationListForReport = JoinCollectionLines(lines)
+End Function
+
+' Объясняет только реальные исключения заданных ненулевых NM; сочетания с T остаются в обработке.
+Private Function FilteredCombinationMessage(ByVal count As Long, ByVal identifiers As String) As String
+    If count <= 0 Then Exit Function
+    FilteredCombinationMessage = "Не рассчитывались сочетания, в которых заданные N, Mx и My полностью обнулились после фильтрации, " & _
+        "а T (кручение) не задан." & vbCrLf & "Количество: " & CStr(count) & "." & vbCrLf & "ID: " & identifiers & "." & vbCrLf & _
+        "Изначально пустые и нулевые строки в это количество не входят. Сочетания с T обрабатываются отдельно и здесь не учитываются."
 End Function
 
 ' Форматирует длину для отчёта выполнения в тех же единицах, что и лист Results.
@@ -1298,6 +1311,7 @@ End Function
 ' нужна только для протокола запуска и не участвует в расчетных формулах.
 Private Function FormatReportNumber(ByVal value As Double) As String
     FormatReportNumber = Replace$(Format$(value, "0.############"), ",", ".")
+    If Right$(FormatReportNumber, 1) = "." Then FormatReportNumber = Left$(FormatReportNumber, Len(FormatReportNumber) - 1)
 End Function
 
 ' Считает продолжительность пользовательского сценария с учетом возможного

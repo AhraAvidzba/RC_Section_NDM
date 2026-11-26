@@ -54,6 +54,7 @@ Public Sub Initialize(ByVal workbook As Object, ByVal settings As CSystemSetting
     AddRawLine "Книга: " & SafeWorkbookName(workbook)
     AddRawLine "Папка книги: " & WorkbookFolder(workbook)
     AddRawLine "Начало: " & Format$(mStartedAt, "yyyy-mm-dd hh:nn:ss")
+    AddRawLine "Отметки [с] и длительность журнала отсчитываются от указанного начала отчета; общий таймер макроса включает более раннюю подготовку."
     AddRawLine String$(72, "-")
 End Sub
 
@@ -110,7 +111,7 @@ Public Sub Save(Optional ByVal finalStatus As String = vbNullString)
     AddRawLine String$(72, "-")
     If Len(Trim$(finalStatus)) > 0 Then AddRawLine Trim$(finalStatus)
     AddRawLine "Окончание: " & Format$(Now, "yyyy-mm-dd hh:nn:ss")
-    AddRawLine "Длительность по таймеру: " & Format$(ElapsedSeconds(), "0.000") & " с"
+    AddRawLine "Длительность ведения журнала: " & Format$(ElapsedSeconds(), "0.000") & " с"
 
     Dim fso As Object
     Dim stream As Object
@@ -119,6 +120,47 @@ Public Sub Save(Optional ByVal finalStatus As String = vbNullString)
     stream.Write JoinLines()
     stream.Close
 End Sub
+
+' Выводит отдельный итог T/NMT из готовых таблиц снимка в их сохраненных выходных единицах.
+' НДС и равновесие заново не решает; пустые результаты не превращает в нули.
+Public Sub ReportTorsionResults(ByVal snapshot As CCalculationSnapshot)
+    If Not mEnabled Then Exit Sub
+    If Not snapshot.HasTable(TORSION_POST_DATA_KEY) Then Exit Sub
+    AddSection "Кручение и проверочная сумма напряжений NM+T"
+    AddStep "T (кручение) рассматривается как момент вокруг продольной оси сечения. При отсутствии поперечной силы перенос точки в плоскости сечения не меняет T. " & _
+        "Сумма NM+T проверяется сложением напряжений; совместное равновесие NMT не рассчитывается."
+    Dim data As Variant: data = snapshot.Table(TORSION_POST_DATA_KEY)
+    Dim row As Long, count As Long, momentUnit As String
+    momentUnit = "(единица снимка)": If Not mUnits Is Nothing Then momentUnit = mUnits.OutputMomentUnit
+    For row = 1 To UBound(data, 1)
+        If Len(CStr(data(row, tscCombinationID))) > 0 Then
+            count = count + 1
+            AddValue "Сочетание ID", CStr(data(row, tscCombinationID))
+            AddValue "T вокруг продольной оси сечения", SavedNumber(data(row, tscTorque)) & " " & momentUnit
+            AddValue "Общий статус проверки T/NMT", CStr(data(row, tscOverallStatus))
+            AddValue "Продольная арматура от T: запас / статус", SavedNumber(data(row, tscLongitudinalReserve)) & " / " & CStr(data(row, tscLongitudinalStatus))
+            AddValue "Хомут: запас / статус", SavedNumber(data(row, tscHoopReserve)) & " / " & CStr(data(row, tscHoopStatus))
+            AddValue "Бетон: запас / статус", SavedNumber(data(row, tscConcreteReserve)) & " / " & CStr(data(row, tscConcreteStatus))
+            AddValue "Сумма напряжений NM+T: запас / статус", CombinedReserveText(data, row) & " / " & CStr(data(row, tscCombinedStatus))
+            If Len(CStr(data(row, tscResultComment))) > 0 Then AddValue "Пояснение T/NMT", CStr(data(row, tscResultComment))
+        End If
+    Next row
+    If count = 0 Then AddStep "Активных сочетаний с T нет; кручение не рассчитывалось."
+End Sub
+
+' Форматирует сохраненную выходную величину без повторного преобразования единиц.
+Private Function SavedNumber(ByVal value As Variant) As String
+    If IsEmpty(value) Then SavedNumber = "не определялось": Exit Function
+    If IsNumeric(value) Then SavedNumber = FormatNumberInvariant(CDbl(value)) Else SavedNumber = CStr(value)
+End Function
+
+' Отличает неограниченный запас при сжатии от недоступной суммы напряжений.
+Private Function CombinedReserveText(ByRef data As Variant, ByVal row As Long) As String
+    CombinedReserveText = SavedNumber(data(row, tscCombinedReserve))
+    If Not IsEmpty(data(row, tscCombinedReserve)) Or IsEmpty(data(row, tscCombinedStress)) Then Exit Function
+    If CDbl(data(row, tscCombinedStress)) <= 0# And CStr(data(row, tscCombinedStatus)) = "OK" Then _
+        CombinedReserveText = "не ограничен по растяжению"
+End Function
 
 ' Сообщает вызывающему коду, нужно ли дописывать путь к отчету в итоговое
 ' пользовательское сообщение.
@@ -184,13 +226,34 @@ End Property
 ' Форматирует число независимо от регионального десятичного разделителя.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    If Right$(FormatNumberInvariant, 1) = "." Then FormatNumberInvariant = Left$(FormatNumberInvariant, Len(FormatNumberInvariant) - 1)
 End Function
 
 ' Добавляет понятное представление диагностики в отчёт. Исходный подробный журнал
 ' сохраняется в результате; сокращение повторов меняет только текст вывода.
 Public Sub AddDiagnosticBlock(ByVal title As String, ByVal body As String)
     If Not mEnabled Then Exit Sub
+    If Len(Trim$(body)) = 0 Then Exit Sub
+    AddStep "Диагностика ниже дана во внутренних единицах и знаках: N, Nint, RN — Н; Mx, My, Mxint, Myint, RMx, RMy — Н*мм. " & _
+        "N > 0 означает растяжение; Mx > 0 растягивает сторону +Y, My > 0 — сторону +X. " & _
+        "Моменты и их невязки относятся к началу O(0; 0) внутренней расчетной системы сечения. " & _
+        "Координаты — мм; epsilon0 относится к O, кривизны — 1/мм. Номер пробы или оценки плоскости не является lambda."
     AddBlock title, HumanReadableReportBlock(title, body)
+End Sub
+
+' Подписывает точку в той же расчетной системе, в которой хранятся координаты элементов сечения.
+Public Function FormatPoint(ByVal x As Double, ByVal y As Double) As String
+    FormatPoint = "X=" & FormatLength(x) & "; Y=" & FormatLength(y) & _
+        " (внутренняя расчетная система координат элементов сечения)"
+End Function
+
+' Записывает усилия с явной точкой отсчета моментов; N при переносе точки не меняется.
+Public Sub ReportLoads(ByVal title As String, ByVal n As Double, ByVal mx As Double, ByVal my As Double, _
+        ByVal pointName As String, ByVal x As Double, ByVal y As Double)
+    If Not mEnabled Then Exit Sub
+    AddValue title & " — моменты относительно " & pointName, _
+        "N=" & FormatForce(n) & "; Mx=" & FormatMx(mx) & "; My=" & FormatMy(my)
+    AddValue "Точка отсчета: " & pointName, FormatPoint(x, y)
 End Sub
 
 ' Форматирует длину для отчёта в той же выходной единице, что таблица Results.
@@ -350,7 +413,8 @@ Private Function HumanReadableReportBlock(ByVal title As String, ByVal body As S
     text = body
     If Len(text) = 0 Then Exit Function
 
-    If InStr(1, title, "Диагностика расчета трещин", vbTextCompare) > 0 Then
+    If InStr(1, title, "Диагностика расчета трещин", vbTextCompare) > 0 Or _
+            InStr(1, title, "Диагностика образования трещины", vbTextCompare) > 0 Then
         text = CompactCrackDiagnosticText(text)
     End If
     If InStr(1, title, "Сценарий прямого StateSolution", vbTextCompare) > 0 Or _
@@ -456,11 +520,11 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     ReplaceDiagnosticMarker translated, "; rho=", "; соответствие прогноза="
     ReplaceWholeDiagnosticLine translated, "ultimatePath pureAxial redirected=LoadMultiplier", "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
     ReplaceWholeDiagnosticLine translated, "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier.", "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
-    ReplaceDiagnosticMarker translated, "ultimatePath iter=", "итерация UltimateStrain по общей lambda-траектории="
-    ReplaceDiagnosticMarker translated, "ultimate iter=", "итерация UltimateStrain по моментной траектории="
+    ReplaceDiagnosticMarker translated, "ultimatePath iter=", "оценка предельной плоскости по общей lambda-траектории №="
+    ReplaceDiagnosticMarker translated, "ultimate iter=", "оценка предельной плоскости по моментной траектории №="
     ReplaceDiagnosticMarker translated, "lambda_crc=", "Найден lambda_crc="
     ReplaceDiagnosticMarker translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc="
-    ReplaceDiagnosticMarker translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc="
+    ReplaceDiagnosticMarker translated, "lambda_crc_path_iter=", "lambda_crc проверяемой плоскости="
     ReplaceDiagnosticMarker translated, "lambda_crc_load_probe=", "точка LoadMultiplier lambda_crc="
     ReplaceDiagnosticMarker translated, "iterations=", "итераций="
     ReplaceDiagnosticMarker translated, "method=", "метод="
@@ -472,7 +536,9 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     ReplaceDiagnosticMarker translated, "guardedLambda=", "защищенная lambda="
     ReplaceDiagnosticMarker translated, "bracketLow=", "нижняя граница="
     ReplaceDiagnosticMarker translated, "bracketHigh=", "верхняя граница="
-    ReplaceDiagnosticMarker translated, "probe=", "точка lambda="
+    ReplaceDiagnosticMarker translated, "probe=", "проба №="
+    ReplaceDiagnosticMarker translated, "initialGuess=warmStartLoadState", "начальное приближение=сохраненное НДС близкой нагрузки"
+    ReplaceDiagnosticMarker translated, "ultimateNewton step=", "шаг Ньютона предельной плоскости №="
     ReplaceDiagnosticMarker translated, "step=", "шаг="
     ReplaceDiagnosticMarker translated, "iter=", "итерация="
     ReplaceDiagnosticMarker translated, "directStateRetry=", "повтор прямого НДС="
@@ -545,13 +611,19 @@ Public Sub ReportStabilityDetails(ByVal stability As CStabilityResult)
     If stability Is Nothing Then Exit Sub
 
     If Len(stability.Meta.ResultComment) > 0 Then _
-        AddValue "Причина остановки устойчивости", stability.Meta.ResultComment
+        AddValue "Пояснение результата устойчивости", stability.Meta.ResultComment
+    If Not stability.PlaneApplicable1 And Not stability.PlaneApplicable2 Then
+        AddStep "Проверка главных плоскостей не выполнена или не требуется; см. пояснение результата. Ее числовые параметры не выводятся."
+        Exit Sub
+    End If
+    AddValue "Центр приведенного сечения для устойчивости", FormatPoint(stability.ReferenceX, stability.ReferenceY)
+    AddStep "M1 и M2 относятся к внутренним главным центральным осям сечения; единицы моментов — выходные."
     AddValue "Продольная сила для проверки", FormatForce(stability.DesignN)
-    AddValue "Моменты после учета eta по главным плоскостям 1/2", _
+    AddValue "Моменты после учета eta относительно центра приведенного сечения, главные оси 1/2", _
         "M1=" & FormatMomentMagnitude(stability.DesignMoment1) & "; " & _
         "M2=" & FormatMomentMagnitude(stability.DesignMoment2)
     AddValue "Длительная часть продольной силы", FormatSignedCompressionForce(stability.SustainedN)
-    AddValue "Длительные моменты по главным плоскостям 1/2", _
+    AddValue "Длительные моменты относительно того же центра, главные оси 1/2", _
         "M1l=" & FormatMomentMagnitude(stability.SustainedMoment1) & "; " & _
         "M2l=" & FormatMomentMagnitude(stability.SustainedMoment2)
 
@@ -559,35 +631,43 @@ Public Sub ReportStabilityDetails(ByVal stability As CStabilityResult)
         StabilityBranchDisplayName(stability.PlaneBranch1) & "; " & StabilityPassDisplayName(stability.PlanePassed1)
     AddValue "Плоскость 1: eta и запас", _
         FormatNumberInvariant(stability.Eta1) & "; " & FormatNumberInvariant(stability.Reserve1)
-    AddValue "Плоскость 1: Ncr/Nult", _
-        "Ncr=" & FormatCompressionForce(stability.Ncr1) & "; Nult=" & FormatCompressionForce(stability.Nultimate1)
-    AddValue "Плоскость 1: h, i, r и гибкость l0/i", _
+    If LCase$(stability.PlaneBranch1) = "sp35-table" Then
+        AddValue "Плоскость 1: Nult,stab", FormatCompressionForce(stability.Nultimate1)
+        AddStep "В табличной ветви плоскости 1 Ncr и жесткость D не рассчитываются."
+    ElseIf stability.PlaneApplicable1 Then
+        AddValue "Плоскость 1: Ncr", FormatCompressionForce(stability.Ncr1)
+    End If
+    AddValue "Плоскость 1: h, i и гибкость l0/i", _
         "h=" & FormatLength(stability.Depth1) & "; " & _
         "i=" & FormatLength(stability.Radius1) & "; " & _
-        "r=" & FormatLength(stability.CoreDistance1) & "; " & _
         "l0/i=" & FormatNumberInvariant(stability.Slenderness1)
-    AddValue "Плоскость 1: e, ea, phi_l и D", _
+    If UCase$(stability.Code) = "SP35" Then AddValue "Плоскость 1: ядровое расстояние r", FormatLength(stability.CoreDistance1)
+    AddValue "Плоскость 1: e, ea", _
         "e=" & FormatLength(stability.Eccentricity1) & "; " & _
-        "ea=" & FormatLength(stability.AccidentalEcc1) & "; " & _
-        "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; " & _
-        "D=" & FormatStiffness(stability.StiffnessD1)
+        "ea=" & FormatLength(stability.AccidentalEcc1)
+    If stability.PlaneApplicable1 And LCase$(stability.PlaneBranch1) <> "sp35-table" Then _
+        AddValue "Плоскость 1: phi_l и D", "phi_l=" & FormatNumberInvariant(stability.PhiL1) & "; D=" & FormatStiffness(stability.StiffnessD1)
 
     AddValue "Плоскость 2: ветвь и итог", _
         StabilityBranchDisplayName(stability.PlaneBranch2) & "; " & StabilityPassDisplayName(stability.PlanePassed2)
     AddValue "Плоскость 2: eta и запас", _
         FormatNumberInvariant(stability.Eta2) & "; " & FormatNumberInvariant(stability.Reserve2)
-    AddValue "Плоскость 2: Ncr/Nult", _
-        "Ncr=" & FormatCompressionForce(stability.Ncr2) & "; Nult=" & FormatCompressionForce(stability.Nultimate2)
-    AddValue "Плоскость 2: h, i, r и гибкость l0/i", _
+    If LCase$(stability.PlaneBranch2) = "sp35-table" Then
+        AddValue "Плоскость 2: Nult,stab", FormatCompressionForce(stability.Nultimate2)
+        AddStep "В табличной ветви плоскости 2 Ncr и жесткость D не рассчитываются."
+    ElseIf stability.PlaneApplicable2 Then
+        AddValue "Плоскость 2: Ncr", FormatCompressionForce(stability.Ncr2)
+    End If
+    AddValue "Плоскость 2: h, i и гибкость l0/i", _
         "h=" & FormatLength(stability.Depth2) & "; " & _
         "i=" & FormatLength(stability.Radius2) & "; " & _
-        "r=" & FormatLength(stability.CoreDistance2) & "; " & _
         "l0/i=" & FormatNumberInvariant(stability.Slenderness2)
-    AddValue "Плоскость 2: e, ea, phi_l и D", _
+    If UCase$(stability.Code) = "SP35" Then AddValue "Плоскость 2: ядровое расстояние r", FormatLength(stability.CoreDistance2)
+    AddValue "Плоскость 2: e, ea", _
         "e=" & FormatLength(stability.Eccentricity2) & "; " & _
-        "ea=" & FormatLength(stability.AccidentalEcc2) & "; " & _
-        "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; " & _
-        "D=" & FormatStiffness(stability.StiffnessD2)
+        "ea=" & FormatLength(stability.AccidentalEcc2)
+    If stability.PlaneApplicable2 And LCase$(stability.PlaneBranch2) <> "sp35-table" Then _
+        AddValue "Плоскость 2: phi_l и D", "phi_l=" & FormatNumberInvariant(stability.PhiL2) & "; D=" & FormatStiffness(stability.StiffnessD2)
 End Sub
 
 ' Поясняет в txt-отчете стартовую логику поиска образования нормальной трещины.

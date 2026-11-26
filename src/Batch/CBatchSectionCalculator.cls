@@ -873,9 +873,9 @@ End Sub
 ' проверки трещин используют собственные материальные модели выбранного профиля.
 Private Sub RunCombination(ByVal index As Long)
     On Error GoTo Failed
-    ReportSection "Сочетание " & CStr(index) & ": " & mInputs(index).CombinationID
+    ReportSection "Сочетание ID " & mInputs(index).CombinationID & " (номер в пакете " & CStr(index) & ")"
     ReportValue "Комментарий", mInputs(index).Comment
-    ReportValue "ID профиля", mInputs(index).ProfileId
+    If Not IsAdditionalLoadOnly(index) Then ReportValue "ID профиля НДМ", mInputs(index).ProfileId
     If Not mInputs(index).InputValid Then
         ReportStep "Решение НДС не запущено из-за ошибки исходных данных: " & mInputs(index).InputError
         MarkInvalid index, mInputs(index).InputError
@@ -883,7 +883,9 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
     If IsAdditionalLoadOnly(index) Then
-        ReportStep "НДС не рассчитывается: N, Mx и My равны нулю после фильтрации; запрошена отдельная проверка дополнительных нагрузок."
+        ReportValue "Профиль НДМ", "не требуется: сочетание обрабатывается только по T (кручение)"
+        ReportStep "Сочетание не исключено. НДС не рассчитывается: N, Mx и My равны нулю после фильтрации; " & _
+            "выполняется отдельная проверка T, добавки NM в сумме NMT равны нулю."
         Exit Sub
     End If
 
@@ -922,9 +924,14 @@ Private Sub RunCombination(ByVal index As Long)
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
     mResults(index).SetProfileId profile.ProfileId
     ReportValue "Профиль", profile.ProfileId & " / " & profile.DisplayName
-    ReportValue "N", mReport.FormatForce(mWorkingLoads(index).N)
-    ReportValue "Mx расчетный", mReport.FormatMx(mWorkingLoads(index).InternalMx)
-    ReportValue "My расчетный", mReport.FormatMy(mWorkingLoads(index).InternalMy)
+    If Not mReport Is Nothing Then
+        mReport.ReportLoads "Исходные заданные усилия", mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+            "точки приложения нагрузки", mLoadReferenceX, mLoadReferenceY
+        mReport.ReportLoads "Усилия после фильтрации N и M", mWorkingLoads(index).N, mWorkingLoads(index).LoadPointMx, mWorkingLoads(index).LoadPointMy, _
+            "точки приложения нагрузки", mLoadReferenceX, mLoadReferenceY
+        mReport.ReportLoads "Рабочие усилия решателя", mWorkingLoads(index).N, mWorkingLoads(index).InternalMx, mWorkingLoads(index).InternalMy, _
+            "начала O внутренней расчетной системы", 0#, 0#
+    End If
 
     Dim profileError As String
     If Not profile.ValidateForCalculation(profileError) Then
@@ -943,7 +950,7 @@ Private Sub RunCombination(ByVal index As Long)
         mResults(index).SetStabilityMeta NotRequestedMeta(rkStability)
     End If
 
-    ReportSection "Расчет по модели прочности"
+    ReportSection "Поиск несущей способности"
     If profile.StrengthCapacityEnabled Then
         ReportStep "Запускается проверка несущей способности по профилю."
         RunCapacity index, profile.StrengthSpec
@@ -952,9 +959,12 @@ Private Sub RunCombination(ByVal index As Long)
         StoreNotCalculatedCapacity index
     End If
 
+    ReportSection "Текущее НДС по модели прочности"
     If profile.StrengthDirectStateEnabled Then
         ReportStep "Запускается прямое НДС по модели прочности профиля."
         RunProfileState index, sstStrengthState, cpStrength, profile.StrengthSpec
+    Else
+        ReportStep "НДС по модели прочности не запрошено профилем."
     End If
 
     ReportSection "Расчет нормальных и продольных трещин"
@@ -966,6 +976,7 @@ Private Sub RunCombination(ByVal index As Long)
 
 FinalizeCombination:
     AppendDiagnostic index
+    ReportSection "Итог сочетания ID " & mInputs(index).CombinationID
     ReportCombinationSummary index
     Exit Sub
 
@@ -1042,12 +1053,15 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     ReportValue "Нормативный блок", mReport.StabilityCodeDisplayName(stability.Code)
     ReportValue "Материалы для устойчивости", MaterialValueSetToText(valueSet)
     ReportValue "Расчетная ветвь", mReport.StabilityBranchDisplayName(stability.Branch)
-    ReportValue "Контрольная сила устойчивости", mReport.FormatCompressionForce(stability.CriticalForce)
-    ReportValue "Минимальный запас устойчивости", FormatNumberInvariant(stability.ReserveFactor)
-    ReportValue "Итоговые N/Mx/My после фильтра", _
-        "N=" & mReport.FormatForce(mWorkingLoads(index).N) & "; " & _
-        "Mx=" & mReport.FormatMx(mWorkingLoads(index).InternalMx) & "; " & _
-        "My=" & mReport.FormatMy(mWorkingLoads(index).InternalMy)
+    If stability.Applicable And stability.InputValid Then
+        ReportValue "Контрольная сила устойчивости", mReport.FormatCompressionForce(stability.CriticalForce)
+        ReportValue "Минимальный запас устойчивости", FormatNumberInvariant(stability.ReserveFactor)
+    Else
+        ReportStep "Контрольная сила и запас устойчивости не определялись; см. применимость и пояснение результата."
+    End If
+    If Not mReport Is Nothing Then mReport.ReportLoads "Усилия после учета устойчивости", _
+        mWorkingLoads(index).N, mWorkingLoads(index).InternalMx, mWorkingLoads(index).InternalMy, _
+        "начала O внутренней расчетной системы", 0#, 0#
     If Not mReport Is Nothing Then mReport.ReportStabilityDetails mResults(index).StabilityResult
     Exit Sub
 
@@ -1227,6 +1241,12 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Dim strengthReferenceX As Double
     Dim strengthReferenceY As Double
     StrengthReferencePointForCombination index, strengthReferenceX, strengthReferenceY
+    If Not mReport Is Nothing Then
+        mReport.ReportLoads "Усилия для выбора метода несущей", loadState.N, loadState.MxAboutPoint(strengthReferenceY), loadState.MyAboutPoint(strengthReferenceX), _
+            "центра приведенного сечения модели прочности", strengthReferenceX, strengthReferenceY
+        mReport.ReportLoads "Исходная точка траектории несущей", loadState.N, loadState.LoadPointMx, loadState.LoadPointMy, _
+            "точки приложения нагрузки", mLoadReferenceX, mLoadReferenceY
+    End If
 
     Dim capacityResult As CCapacityResult
     Set capacityResult = capacityCalculator.Calculate(mSection, _
@@ -1251,6 +1271,10 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     ReportValue "Фактический метод несущей", mResults(index).StrengthResult.Capacity.SolutionMethod
     ReportValue "lambda несущей", FormatNumberInvariant(mResults(index).StrengthResult.Capacity.LambdaCapacity)
     ReportValue "Фактический путь несущей", mResults(index).CapacityPathDisplayName
+    If capacityResult.CapacityStateAvailable And Not mReport Is Nothing Then
+        mReport.ReportLoads "Найденные предельные усилия", capacityResult.NUltimate, capacityResult.MxUltimate, capacityResult.MyUltimate, _
+            "точки приложения нагрузки", mLoadReferenceX, mLoadReferenceY
+    End If
     ReportBlock "Диагностика поиска несущей способности", capacityResult.DiagnosticLog
     reportText = capacityResult.LastSolverDiagnosticLog
     If Len(reportText) > 0 Then _
@@ -1267,6 +1291,11 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     mResults(index).SetDiagramExtensionEnabled mMaterialProvider.DiagramExtensionEnabled
     Dim effectiveDiagramExtension As Boolean
     effectiveDiagramExtension = (useDiagramExtension And mResults(index).DiagramExtensionEnabled)
+    Dim reportStateName As String: reportStateName = SectionStateDisplayName(stateType)
+    If stateType = sstCrackedState Then reportStateName = "по модели CrackedState для проверки трещин"
+    If Not mReport Is Nothing Then mReport.ReportLoads "Заданные усилия для НДС " & reportStateName, _
+        mWorkingLoads(index).N, mWorkingLoads(index).InternalMx, mWorkingLoads(index).InternalMy, _
+        "начала O внутренней расчетной системы", 0#, 0#
 
     Dim request As CStateRequest
     Set request = New CStateRequest
@@ -1295,7 +1324,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult, _
         mMaterialProvider.ConcreteMaterialFromSpec(spec), mMaterialProvider.SteelMaterialFromSpec(spec)
 
-    ReportValue "НДС " & SectionStateDisplayName(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
+    ReportValue "НДС " & reportStateName & " сошлось", IIf(stateResult.Converged, "да", "нет")
     If provider.LastStateWasReused Then
         ReportStep "Прямое НДС " & SectionStateDisplayName(stateType) & " взято из сохранённого результата без повторного решения равновесия."
     ElseIf Not runner Is Nothing Then
@@ -1319,7 +1348,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     Else
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
     End If
-    ReportValue "Статус прямого НДС", stateStatus
+    ReportValue "Статус НДС " & reportStateName, stateStatus
     ReportMetaComment "Комментарий результата НДС", stateResult.ResultMeta
     ReportValue "Использовано продолжение диаграммы", IIf(stateResult.ExtensionUsed, "да", "нет")
     Set RunProfileState = runner
@@ -1335,6 +1364,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
+    ReportSection "Образование нормальной трещины"
     ReportStep "Запускается проверка образования нормальной трещины."
     ReportValue "Путь образования трещины", mWorkingPaths(index)
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
@@ -1346,6 +1376,9 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
 
     Dim loadState As CSectionLoadState
     Set loadState = LoadStateForCombination(index)
+    If Not mReport Is Nothing Then mReport.ReportLoads "Усилия для поиска образования трещины", _
+        loadState.N, loadState.MxAboutPoint(crackReferenceY), loadState.MyAboutPoint(crackReferenceX), _
+        "центра приведенного сечения модели трещин", crackReferenceX, crackReferenceY
 
     ' Центральная ветка трещин проверяется относительно центра тяжести
     ' приведенного сечения той материальной модели, по которой определяется
@@ -1365,14 +1398,21 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not formationResult.PreCrackState Is Nothing Then mResults(index).AddState formationResult.PreCrackState
     If Not formationResult.PostCrackState Is Nothing Then mResults(index).AddState formationResult.PostCrackState
     ReportValue "Фактический путь образования трещины", formationResult.FormationMethod
-    ReportValue "lambda образования трещины", FormatNumberInvariant(formationResult.LambdaCrc)
-    ReportValue "Ncrc", mReport.FormatForce(formationResult.FormationNcrc)
-    ReportValue "Mxy,crc", mReport.FormatMomentMagnitude(formationResult.Mcrc)
+    If formationResult.HasLimitPoint Then
+        ReportValue "lambda образования трещины", FormatNumberInvariant(formationResult.LambdaCrc)
+        ReportValue "Ncrc (сила в найденной пороговой точке)", mReport.FormatForce(formationResult.FormationNcrc)
+        ReportValue "Mxy,crc — модуль момента относительно центра приведенного сечения модели трещин", mReport.FormatMomentMagnitude(formationResult.Mcrc)
+        ReportValue "Точка отсчета Mxy,crc", mReport.FormatPoint(crackReferenceX, crackReferenceY)
+    Else
+        ReportStep "Пороговые lambda_crc, Ncrc и Mxy,crc не определялись либо не найдены; см. причину поиска."
+    End If
     ReportValue "Причина остановки поиска трещины", crack.StopReason
     If Not mReport Is Nothing Then mReport.ReportCrackFormationChoice formationResult
     ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
 
-    ReportStep "Запускается расчёт НДС с трещинами от полной нагрузки сочетания по выбранному профилю."
+    ReportSection "Текущее НДС для проверки трещин"
+    ReportStep "Решается НДС от полной нагрузки по модели CrackedState выбранного профиля. " & _
+        "Название модели не означает, что нормальная трещина образована; это отдельно устанавливает проверка образования."
     Dim runner As CStateSolutionRunner
     Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec, True, False)
     Dim currentCrackedState As CSectionStateResult
@@ -1396,8 +1436,10 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
 
     Set longitudinalResult = longitudinalCalculator.Calculate(currentCrackedState, _
         mMaterialProvider.ConcreteParameters.RbMc2)
+    ReportSection "Проверка продольных трещин"
     If Not mReport Is Nothing Then mReport.ReportLongitudinalCrackResult longitudinalResult
 
+    ReportSection "Ширина раскрытия нормальных трещин"
     If Not crack.CrackFormed Then
         ReportStep "Ширина раскрытия не считается: нормальная трещина не образуется при текущей нагрузке."
         GoTo ReportCrackResult
@@ -1412,24 +1454,35 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
 ReportCrackResult:
     StoreCrackAggregateSnapshot index, crack, formationResult, currentStateMeta, _
         crackWidthMetaOverride, longitudinalResult
+    ReportSection "Итоги проверки нормальных и продольных трещин"
     ReportValue "Статус нормальных трещин", mResults(index).NormalCrackStatus
     ReportMetaComment "Комментарий образования трещины", mResults(index).CrackFormationMeta
     ReportMetaComment "Комментарий равновесия CrackedState", mResults(index).CrackCurrentStateMeta
     ReportMetaComment "Комментарий ширины нормальных трещин", mResults(index).CrackWidthMeta
     ReportMetaComment "Комментарий продольных трещин", mResults(index).LongitudinalCrackMeta
     ReportValue "Фактический путь образования трещины", mResults(index).CrackResult.Formation.FormationMethod
-    ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackResult.Formation.LambdaCrc)
+    If mResults(index).CrackResult.Formation.HasLimitPoint Then _
+        ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackResult.Formation.LambdaCrc)
     If mResults(index).CrackResult.Formation.HasLimitPoint Then
         ReportValue "Трещина образована", IIf(mResults(index).CrackResult.Formation.CrackFormed, "да", "нет")
     Else
         ReportValue "Трещина образована", "пороговая точка не определена; см. результат поиска"
     End If
-    ReportValue "a_crc", mReport.FormatLength(mResults(index).CrackResult.Width.CrackWidth)
-    ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackResult.Width.PsiS)
-    ReportValue "As", mReport.FormatArea(mResults(index).CrackResult.Width.AsTension)
-    ReportValue "Abt", mReport.FormatArea(mResults(index).CrackResult.Width.Abt)
-    ReportValue "ds_eq", mReport.FormatLength(mResults(index).CrackResult.Width.DsEquivalent)
-    ReportValue "ls", mReport.FormatLength(mResults(index).CrackResult.Width.CrackSpacing)
+    If mResults(index).CrackResult.Width.ResultMeta.Calculated Then
+        ReportValue "a_crc", mReport.FormatLength(mResults(index).CrackResult.Width.CrackWidth)
+        ReportValue "As", mReport.FormatArea(mResults(index).CrackResult.Width.AsTension)
+        If mResults(index).CrackResult.Width.StandardCode = "SP63" Then
+            ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackResult.Width.PsiS)
+            ReportValue "Abt", mReport.FormatArea(mResults(index).CrackResult.Width.Abt)
+            ReportValue "ds_eq", mReport.FormatLength(mResults(index).CrackResult.Width.DsEquivalent)
+            ReportValue "ls", mReport.FormatLength(mResults(index).CrackResult.Width.CrackSpacing)
+        ElseIf mResults(index).CrackResult.Width.StandardCode = "SP35" Then
+            ReportValue "Rr", mReport.FormatLength(mResults(index).CrackResult.Width.SP35ReinforcementRadius)
+            ReportValue "psi по СП 35", FormatNumberInvariant(mResults(index).CrackResult.Width.SP35PsiCm) & " см"
+        End If
+    Else
+        ReportStep "Ширина a_crc и ее параметры не рассчитывались; нулевые значения As, Abt, ds_eq, ls и psi_s не выводятся."
+    End If
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
 
@@ -1721,7 +1774,8 @@ End Sub
 ' Основная сводка остаётся на Results; отчёт показывает ход расчёта.
 Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "Итоговый статус", mResults(index).Status
-    ReportValue "Статус прямого НДС", mResults(index).StrengthResult.DirectState.Status
+    ReportValue "Статус текущего НДС по прочности (StrengthState)", mResults(index).StrengthResult.DirectState.Status
+    ReportValue "Статус текущего НДС для трещин (CrackedState)", mStatusPolicy.ExternalStatus(mResults(index).CrackCurrentStateMeta)
     ReportValue "Использовано продолжение диаграммы", mReport.YesNoRu(mResults(index).ExtensionUsed)
     ReportValue "Статус несущей способности", mResults(index).StrengthResult.Capacity.Status
     ReportValue "Статус нормальных трещин", mResults(index).NormalCrackStatus

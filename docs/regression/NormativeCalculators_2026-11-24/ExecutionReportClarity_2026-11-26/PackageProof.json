@@ -1,0 +1,21 @@
+{
+  "Status": "PASS",
+  "NativeComponents": 209,
+  "ChangedComponents": [
+    "CBatchSectionCalculator",
+    "CCapacityCalculator",
+    "CCapacityResult",
+    "CExecutionReport",
+    "modTestBatchCalculation",
+    "modTestWorkbookInterface",
+    "modWorkbookCalculation"
+  ],
+  "SourceEquality": true,
+  "BaselineSHA256": "22524F5A0FC00B4F40180D933385EE2695507C96671D953BBB557389EDD893BB",
+  "CandidateSHA256": "B14152C0E3AAB8B5ACE85B311A667F3F712CEB51124DB5FD853F78E557770B75",
+  "ExportSHA256": "FF16687121501D92957DA959E9D315CC369FA080DA838F570A22B9D9FDE925FF",
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllUserDataAndFormattingPreserved": true
+}

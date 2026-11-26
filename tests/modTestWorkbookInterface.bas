@@ -531,14 +531,14 @@ Public Function RunExecutionReportFormattingTests() As String
         "ultimateTrustRegion flat trial rejected; original recovery remains available")
     expected = Array(redirected, redirected, redirected & vbCrLf & redirected, "prefix " & axial, axial & " suffix", _
         axial & vbLf & axial, UCase$(axial), redirected, _
-        "итерация UltimateStrain по lambda-траектории lambda_crc=2; итерация=3", _
+        "lambda_crc проверяемой плоскости=2; итерация=3", _
         "невязка N=0; сошлось=да; сошлось=нет", "Кириллица: " & ChrW(&H3BB) & "; R2; мм" & ChrW(&HB2), _
-        "метод поиска=Brent; метод=Bisection; итераций=3; точка lambda=1; невязка Mx=0; невязка My=0", _
+        "метод поиска=Brent; метод=Bisection; итераций=3; проба №=1; невязка Mx=0; невязка My=0", _
         redirected & vbCrLf & "prefix " & axial & vbCrLf & redirected, _
         "initialGuess=предыдущее близкое решение", "initialGuess=активная зона прямого НДС", vbNullString, _
         "Резервный шаг на активном пределе: проба=2; соответствие прогноза=0.5", _
         "Резервная проба на плато отклонена; прежний подбор шага сохранен.")
-    titles = Array("Диагностика расчета трещин", "Сценарий прямого StateSolution", "Диагностика поиска несущей способности")
+    titles = Array("Диагностика расчета трещин", "Сценарий прямого StateSolution", "Диагностика поиска несущей способности", "Диагностика образования трещины")
     Dim kind As Long, i As Long, title As String, body As String
     For kind = 0 To UBound(titles)
         For i = 0 To UBound(bodies)
@@ -550,16 +550,21 @@ Public Function RunExecutionReportFormattingTests() As String
             report.AddStep "FORMAT_END_" & CStr(kind) & "_" & Format$(i, "00")
         Next i
     Next kind
+    report.ReportLoads "FORMAT_LOADS", -50000#, 400000000#, 300000000#, "точки приложения нагрузки", 357.894736842105, 507.894736842105
     report.Save "FORMAT_COMPLETE"
 
     Dim text As String, startAt As Long, endAt As Long, actual As String, wanted As String
     text = TestReadTextFile(report.FilePath)
+    TestAssertTrue stats, "report.point.frame", InStr(text, "внутренняя расчетная система координат элементов сечения") > 0
+    TestAssertTrue stats, "report.loads.point", InStr(text, "FORMAT_LOADS — моменты относительно точки приложения нагрузки") > 0
+    TestAssertTrue stats, "report.diagnostic.units", InStr(text, "N, Nint, RN — Н") > 0 And InStr(text, "RMx, RMy — Н*мм") > 0
+    TestAssertTrue stats, "report.diagnostic.origin", InStr(text, "O(0; 0) внутренней расчетной системы сечения") > 0
     For kind = 0 To UBound(titles)
         For i = 0 To UBound(bodies)
             title = CStr(titles(kind)) & " FORMAT_CASE_" & CStr(kind) & "_" & Format$(i, "00")
             startAt = InStr(1, text, title, vbBinaryCompare)
             wanted = CStr(expected(i))
-            If i = 13 And kind = 0 Then wanted = "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: 1."
+            If i = 13 And (kind = 0 Or kind = 3) Then wanted = "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: 1."
             If i = 13 And kind = 1 Then wanted = "Стартовая плоскость: использовано предыдущее близкое решение; повторов: 1."
             If i = 14 And kind = 1 Then wanted = "Стартовая плоскость: подобрана по активной зоне сечения; повторов: 1."
             If Len(wanted) = 0 Then

@@ -1,0 +1,72 @@
+{
+  "Status": "PASS",
+  "RelatedExecutions": 10,
+  "RelatedAssertions": 1448,
+  "SavedExampleExecutions": 12,
+  "PhysicalComparisons": [
+    {
+      "Case": "UserExample",
+      "ElementRows": 464,
+      "ElementsExactlyEqual": true,
+      "AllFourSummaryTablesExactlyEqual": true,
+      "SolverCountersExactlyEqual": true
+    },
+    {
+      "Case": "TOnlyBlankProfile",
+      "ElementRows": 464,
+      "ElementsExactlyEqual": true,
+      "AllFourSummaryTablesExactlyEqual": true,
+      "SolverCountersExactlyEqual": true
+    },
+    {
+      "Case": "SP63Stability",
+      "ElementRows": 464,
+      "ElementsExactlyEqual": true,
+      "AllFourSummaryTablesExactlyEqual": true,
+      "SolverCountersExactlyEqual": true
+    },
+    {
+      "Case": "SP35Width",
+      "ElementRows": 580,
+      "ElementsExactlyEqual": true,
+      "AllFourSummaryTablesExactlyEqual": true,
+      "SolverCountersExactlyEqual": true
+    },
+    {
+      "Case": "SP63Width",
+      "ElementRows": 580,
+      "ElementsExactlyEqual": true,
+      "AllFourSummaryTablesExactlyEqual": true,
+      "SolverCountersExactlyEqual": true
+    },
+    {
+      "Case": "CompressedNMT",
+      "ElementRows": 464,
+      "ElementsExactlyEqual": true,
+      "AllFourSummaryTablesExactlyEqual": true,
+      "SolverCountersExactlyEqual": true
+    }
+  ],
+  "SeparateSections": [
+    "Поиск несущей способности",
+    "Текущее НДС по модели прочности",
+    "Образование нормальной трещины",
+    "Текущее НДС для проверки трещин",
+    "Проверка продольных трещин",
+    "Ширина раскрытия нормальных трещин",
+    "Статистика всего пакетного расчета",
+    "Кручение и проверочная сумма напряжений NM+T",
+    "Запись результатов"
+  ],
+  "EffortReferencePointsAndCoordinateSystem": true,
+  "InternalDiagnosticUnitsAndProbeNumbers": true,
+  "InapplicableParametersNotInvented": true,
+  "ProfileOptionalForTOnly": true,
+  "TOnlyNotCountedAsFiltered": true,
+  "FilteredCountExcludesEmptyRows": true,
+  "NoAdditionalNDSSolvesForTOnly": true,
+  "FullRunStarted": false,
+  "CandidateSHA256": "B14152C0E3AAB8B5ACE85B311A667F3F712CEB51124DB5FD853F78E557770B75",
+  "Review01Note": "Case-sensitive SP35 branch rendering detected during report review; fixed, final reports explicitly checked.",
+  "ThresholdsTolerancesAndPhysicsUnchanged": true
+}

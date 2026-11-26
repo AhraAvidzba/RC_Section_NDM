@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -241,7 +241,7 @@ Public Function SearchPlanReport(ByVal loadPath As CLoadPathDescriptor, _
     Select Case SolutionStrategy
         Case "Auto"
             If pureAxialForMethod Then
-                SearchPlanReport = "Несущая способность: стратегия Auto. После переноса к центру приведенного сечения траектория является чисто осевой, поэтому сразу используется LoadMultiplier: для такой постановки UltimateStrain вырождается на горизонтальном участке диаграммы."
+                SearchPlanReport = "Несущая способность: стратегия Auto. Для выбора метода моменты относительно центра приведенного сечения признаны малыми по действующему фильтру. Используется LoadMultiplier. Фактические моменты сохраняются в траектории и масштабируются вместе с N; физически центральное сжатие этим не утверждается."
             ElseIf loadPath.ForceOnly Then
                 SearchPlanReport = "Несущая способность: стратегия Auto. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
             Else
@@ -249,7 +249,7 @@ Public Function SearchPlanReport(ByVal loadPath As CLoadPathDescriptor, _
             End If
         Case "UltimateStrain"
             If pureAxialForMethod Then
-                SearchPlanReport = "Несущая способность: выбран UltimateStrain, но после переноса к центру приведенного сечения траектория чисто осевая и считается через LoadMultiplier как более устойчивая одномерная постановка."
+                SearchPlanReport = "Несущая способность: выбран UltimateStrain, но моменты относительно центра приведенного сечения признаны малыми по действующему фильтру; используется LoadMultiplier. Фактические моменты переноса сохраняются в расчете."
             ElseIf loadPath.ForceOnly Then
                 SearchPlanReport = "Несущая способность: выбран UltimateStrain. Пользователь масштабирует только N, но относительно центра приведенного сечения есть изгибающий момент; сначала пробуем UltimateStrain, затем при неудаче LoadMultiplier."
             Else
