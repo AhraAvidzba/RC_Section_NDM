@@ -944,9 +944,7 @@ End Function
 ' Объясняет только реальные исключения заданных ненулевых NM; сочетания с T остаются в обработке.
 Private Function FilteredCombinationMessage(ByVal count As Long, ByVal identifiers As String) As String
     If count <= 0 Then Exit Function
-    FilteredCombinationMessage = "Не рассчитывались сочетания, в которых заданные N, Mx и My полностью обнулились после фильтрации, " & _
-        "а T (кручение) не задан." & vbCrLf & "Количество: " & CStr(count) & "." & vbCrLf & "ID: " & identifiers & "." & vbCrLf & _
-        "Изначально пустые и нулевые строки в это количество не входят. Сочетания с T обрабатываются отдельно и здесь не учитываются."
+    FilteredCombinationMessage = "Пропущено сочетаний, в которых N, Mx или My малы и обнулены фильтром, а T не задан: " & CStr(count) & ". ID: " & identifiers
 End Function
 
 ' Форматирует длину для отчёта выполнения в тех же единицах, что и лист Results.

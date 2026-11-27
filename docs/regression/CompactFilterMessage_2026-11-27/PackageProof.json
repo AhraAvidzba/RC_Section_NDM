@@ -1,0 +1,14 @@
+{
+  "Status": "PASS",
+  "ChangedComponents": [
+    "modWorkbookCalculation"
+  ],
+  "ChangedPackageParts": [
+    "xl/vbaProject.bin"
+  ],
+  "SheetsAndUserDataUnchanged": true,
+  "NoExplicitLineBreak": true,
+  "OnlyFormatterTextChanged": true,
+  "Components": 209,
+  "CandidateSHA256": "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2"
+}

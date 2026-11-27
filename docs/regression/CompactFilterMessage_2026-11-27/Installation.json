@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+  "ExportSHA256": "103F9E10E4144FEB13A0EF3A7B8FA77804EA5E0F2FE7D2BCF0D5A28A822092A8",
+  "OnlyVBAChanged": true,
+  "OriginalSavedLocally": true,
+  "WorkbookAlreadyClosedAtInstall": true,
+  "Assertions": 43
+}
