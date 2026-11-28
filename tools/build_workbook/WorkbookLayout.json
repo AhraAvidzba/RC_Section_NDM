@@ -1,4 +1,4 @@
-﻿{
+{
     "Schema":  1,
     "Names":  [
                   {
@@ -19,10 +19,10 @@
                   },
                   {
                       "Name":  "rngCircleGeometry",
-                      "RefersTo":  "=Сечения!$A$3:$K$18",
+                      "RefersTo":  "=Сечения!$A$3:$K$23",
                       "Sheet":  "Сечения",
-                      "Address":  "$A$3:$K$18",
-                      "Rows":  16,
+                      "Address":  "$A$3:$K$23",
+                      "Rows":  21,
                       "Columns":  11
                   },
                   {
@@ -43,9 +43,9 @@
                   },
                   {
                       "Name":  "rngHollowRectangleGeometry",
-                      "RefersTo":  "=Сечения!$A$94:$K$131",
+                      "RefersTo":  "=Сечения!$A$99:$K$136",
                       "Sheet":  "Сечения",
-                      "Address":  "$A$94:$K$131",
+                      "Address":  "$A$99:$K$136",
                       "Rows":  38,
                       "Columns":  11
                   },
@@ -139,17 +139,17 @@
                   },
                   {
                       "Name":  "rngPointedSectionGeometry",
-                      "RefersTo":  "=Сечения!$A$61:$K$90",
+                      "RefersTo":  "=Сечения!$A$66:$K$95",
                       "Sheet":  "Сечения",
-                      "Address":  "$A$61:$K$90",
+                      "Address":  "$A$66:$K$95",
                       "Rows":  30,
                       "Columns":  11
                   },
                   {
                       "Name":  "rngRectanglesGeometry",
-                      "RefersTo":  "=Сечения!$A$22:$K$57",
+                      "RefersTo":  "=Сечения!$A$27:$K$62",
                       "Sheet":  "Сечения",
-                      "Address":  "$A$22:$K$57",
+                      "Address":  "$A$27:$K$62",
                       "Rows":  36,
                       "Columns":  11
                   },
@@ -443,17 +443,17 @@
                                         "Hidden":  false
                                     },
                                     {
-                                        "Row":  21,
+                                        "Row":  26,
                                         "Height":  21,
                                         "Hidden":  false
                                     },
                                     {
-                                        "Row":  60,
+                                        "Row":  65,
                                         "Height":  21,
                                         "Hidden":  false
                                     },
                                     {
-                                        "Row":  93,
+                                        "Row":  98,
                                         "Height":  21,
                                         "Hidden":  false
                                     }
@@ -476,7 +476,7 @@
                                            "Type":  13,
                                            "ChartType":  null,
                                            "Left":  1044.75,
-                                           "Top":  419.25,
+                                           "Top":  494.25,
                                            "Width":  368.50393676757813,
                                            "Height":  368.50393676757813,
                                            "Placement":  2,
@@ -488,7 +488,7 @@
                                            "Type":  13,
                                            "ChartType":  null,
                                            "Left":  1044.75,
-                                           "Top":  972.75006103515625,
+                                           "Top":  1047.7500610351562,
                                            "Width":  368.50393676757813,
                                            "Height":  367.76400756835938,
                                            "Placement":  2,
@@ -500,7 +500,7 @@
                                            "Type":  13,
                                            "ChartType":  null,
                                            "Left":  1052.25,
-                                           "Top":  1481.2501220703125,
+                                           "Top":  1556.2501220703125,
                                            "Width":  368.50393676757813,
                                            "Height":  367.76400756835938,
                                            "Placement":  2,

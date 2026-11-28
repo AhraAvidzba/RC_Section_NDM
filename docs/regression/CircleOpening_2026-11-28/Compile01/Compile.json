@@ -1,0 +1,18 @@
+﻿{
+    "Compiled":  true,
+    "Components":  210,
+    "ChangedSources":  [
+                           "src/Common/modSectionRecipeApiGuide.bas",
+                           "src/Common/modSectionRecipeTypes.bas",
+                           "src/Geometry/CSectionRecipeCircle.cls",
+                           "src/Geometry/CSectionRecipeHollowRectangle.cls",
+                           "src/Section/CRebarRuleExecutor.cls",
+                           "src/Section/CRebarRuleOptions.cls",
+                           "src/Section/CSectionDefinitionBuilder.cls",
+                           "src/Section/CSectionInputReader.cls",
+                           "src/Section/CSectionInputTable.cls",
+                           "tests/modTestGeometryFixtures.bas",
+                           "tests/modTestShapeArchitecture.bas",
+                           "tests/modTestOptionalOpenings.bas"
+                       ]
+}

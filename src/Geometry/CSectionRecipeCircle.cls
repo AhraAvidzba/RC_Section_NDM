@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -37,26 +37,97 @@ Private Type TCircleRebar
     Source As String ' Адреса числа стержней и отступа основного ряда для сообщения об ошибке.
 End Type
 
+Private Type TCircleOpening
+    Diameter As Double ' Диаметр отверстия, мм; явный ноль отключает все его данные.
+    X As Double ' Смещение центра отверстия от центра наружного круга по X, мм.
+    Y As Double ' Смещение центра отверстия от центра наружного круга по Y, мм.
+    Rebar As TCircleRebar ' Основной проецируемый ряд и два зависимых ряда у отверстия.
+    Source As String ' Адреса активных полей отверстия для диагностики.
+End Type
+
 ' Читает диаметр сечения и параметры включённых рядов арматуры. Формирует описание
 ' круга бетона, расположения стержней и аннотаций схемы (размер диаметра сечения,
 ' суммарное количество стержней каждого диаметра) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
+    On Error GoTo InvalidGeometry
     Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
-    Dim diameter As Double, rebar As TCircleRebar
+    Dim diameter As Double, rebar As TCircleRebar, opening As TCircleOpening
     Set reader = context.Reader("rngCircleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
     diameter = reader.PositiveLength("General", "D")
     ReadRebarInputs reader, diameter, rebar ' Читаем только параметры включённых рядов.
+    ReadOpeningInputs reader, rebar, opening ' Нулевое отверстие не требует смещений и внутренней арматуры.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Circle" ' Создаём сборщик описания сечения.
     AddGeometry facade, diameter ' Добавляем круговую границу бетона.
+    If opening.Diameter > 0# Then AddOpeningGeometry facade, opening
     AddReinforcement facade, diameter, rebar ' Создаём линии арматуры и задаём правила размещения стержней.
+    If opening.Rebar.Diameter > 0# Then AddOpeningReinforcement facade, opening
     AddAnnotations facade, diameter, rebar ' Добавляем размер диаметра и общую подпись арматуры.
+    If opening.Diameter > 0# Then
+        facade.VerticalExtent "DIM_CIRCLE_DO", "CONTOUR_CIRCLE_OPENING", "D_o", diameter / 2#, 1#, "Диаметр отверстия круглого сечения." ' Отступ размерной линии отсчитывается от правого габарита наружного круга.
+        If opening.Rebar.Diameter > 0# Then facade.RebarRowExtremeLabel "Opening.Circle", "Opening.Circle.Main", 0#, 1#, 0#, -1# ' Подпись у верхней части отверстия направлена внутрь него, как у внутренней грани HollowRectangle.
+    End If
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
+    Exit Function
+InvalidGeometry:
+    SectionRecipeGeometryError "CSectionRecipeCircle", opening.Source
 End Function
+
+' Читает только включённое отверстие и диаметр его ряда. as нужен при активной проекции.
+' Число и угловые позиции внутренней арматуры определяются наружным основным рядом.
+Private Sub ReadOpeningInputs(ByVal reader As CSectionInputReader, ByRef rebar As TCircleRebar, ByRef opening As TCircleOpening)
+    opening.Source = reader.SourceReference("General", "D") & "; " & reader.SourceReference("General", "Do")
+    opening.Diameter = reader.NonNegativeLength("General", "Do")
+    If opening.Diameter = 0# Then Exit Sub
+    opening.X = reader.Length("General", "Xo"): opening.Y = reader.Length("General", "Yo")
+    opening.Source = opening.Source & "; " & reader.SourceReference("General", "Xo") & "; " & reader.SourceReference("General", "Yo")
+    If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
+    opening.Rebar.Diameter = reader.OptionalDiameter("Main", "OpeningCircle", "d")
+    If opening.Rebar.Diameter = 0# Then Exit Sub
+    opening.Rebar.AxisDistance = reader.NonNegativeLength("Main", "OpeningCircle", "as")
+    reader.Require "Main", "OpeningCircle", "as", opening.Rebar.AxisDistance > opening.Rebar.Diameter / 2#, "Расстояние от отверстия до оси должно быть больше половины диаметра стержня."
+    opening.Source = opening.Source & "; " & reader.SourceReferences("Main", "OpeningCircle", Array("as", "d"))
+    ReadExtraInputs reader, "OpeningCircle", opening.Rebar
+End Sub
+
+' Назначает круговой контур отверстием; вложенность и пересечения проверяет общее ядро.
+Private Sub AddOpeningGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef opening As TCircleOpening)
+    Dim path As CGeometryPath
+    Set path = facade.CirclePath("CONTOUR_CIRCLE_OPENING", opening.X, opening.Y, opening.Diameter / 2#)
+    facade.Opening "OPENING", path.ID, "OUTER", "Круговой контур отверстия."
+End Sub
+
+' Проецирует каждый наружный основной стержень по лучу к центру отверстия.
+' Координаты внутреннего ряда определяет пересечение луча с окружностью осей у отверстия.
+Private Sub AddOpeningReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef opening As TCircleOpening)
+    Dim path As CGeometryPath, options As CRebarRuleOptions, extraOptions As CRebarRuleOptions
+    Dim contact As CRebarContactBuilder, rowNumber As Long
+    Set path = facade.ArcPath("Opening.Circle.Axis", opening.X, opening.Y, opening.Diameter / 2# + opening.Rebar.AxisDistance, GEOM_PI / 2#, -2# * GEOM_PI)
+    Set options = New CRebarRuleOptions
+    options.AnnotationGroup = "Opening.Circle": options.Comment = "Круг: ряд арматуры у отверстия"
+    options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
+    options.ProjectTowardPoint = True
+    options.ProjectionPointX = opening.X: options.ProjectionPointY = opening.Y ' Отдельное направление каждого луча определяется центром смещённого отверстия.
+    options.SuccessfulProjectionOrdinal = True: options.NewPublicationRoot = True
+    options.PlacementCheck = CheckFullDisk: options.SourceReference = opening.Source
+    facade.RebarProjected "Opening.Circle.Main", path.ID, "Circle.Main", opening.Rebar.Diameter, options
+    facade.RebarContour "Opening.Circle.Main", "OPENING", "CONTOUR_CIRCLE_OPENING", opening.Rebar.AxisDistance, "Opening.Circle.Row2", "Opening.Circle.Row3", normalSign:=1# ' Нормаль внутреннего ряда направлена от отверстия в бетон.
+    Set extraOptions = New CRebarRuleOptions
+    extraOptions.AnnotationGroup = "Opening.Circle": extraOptions.Publication = PublishPerSourcePosition
+    extraOptions.Coincidence = RejectCoincidence: extraOptions.PlacementCheck = CheckFullDisk
+    Set contact = New CRebarContactBuilder
+    contact.Initialize opening.Rebar.Diameter, 1#, 1#, extraOptions ' Stacked направлен от отверстия в бетон, SideBySide — по часовой касательной.
+    For rowNumber = 2 To 3
+        If opening.Rebar.Diameters(rowNumber) > 0# Then
+            Set options = contact.AppendRow(opening.Rebar.Diameters(rowNumber), opening.Rebar.Locations(rowNumber), opening.Rebar.Bindings(rowNumber), opening.Rebar.ExtraSources(rowNumber), opening.Rebar.BaseOffsets(rowNumber))
+            options.Comment = "Круг: дополнительный ряд арматуры у отверстия " & CStr(rowNumber)
+            facade.RebarDependent "Opening.Circle.Row" & CStr(rowNumber), "Opening.Circle.Main", opening.Rebar.Diameters(rowNumber), options
+        End If
+    Next rowNumber
+End Sub
 
 ' Читает число и диаметры стержней, а для включённых рядов — отступ и привязки.
 ' Если основного ряда нет, его отступ и параметры дополнительных рядов не требуются.
 Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByVal diameter As Double, ByRef rebar As TCircleRebar)
-    Dim rowNumber As Long, suffix As String
     rebar.Count = reader.Count("Main", "Circle", "n")
     rebar.Diameter = reader.OptionalDiameter("Main", "Circle", "d")
     If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
@@ -68,14 +139,20 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByVal diameter 
     reader.Require "Main", "Circle", "s0", rebar.StartSetback + rebar.EndSetback < 2# * GEOM_PI * (diameter / 2# - rebar.AxisDistance) - GEOM_TOLERANCE, "Сумма концевых отступов должна быть меньше длины окружности центров стержней."
     rebar.EndMode = reader.RebarEndMode("Main", "Circle")
     rebar.Source = reader.SourceReferences("Main", "Circle", Array("as", "d", "n", "s0", "s1", "endMode"))
+    ReadExtraInputs reader, "Circle", rebar
+End Sub
+
+' Читает только включённые дополнительные ряды выбранной круговой семьи.
+Private Sub ReadExtraInputs(ByVal reader As CSectionInputReader, ByVal key As String, ByRef rebar As TCircleRebar)
+    Dim rowNumber As Long, suffix As String
     For rowNumber = 2 To 3
         suffix = CStr(rowNumber)
-        rebar.Diameters(rowNumber) = reader.OptionalDiameter("Extra", "Circle", "d" & suffix)
+        rebar.Diameters(rowNumber) = reader.OptionalDiameter("Extra", key, "d" & suffix)
         If rebar.Diameters(rowNumber) > 0# Then
-            rebar.BaseOffsets(rowNumber) = reader.OptionalRowOffset("Extra", "Circle", "a" & suffix)
-            rebar.Bindings(rowNumber) = reader.Choice("Extra", "Circle", Array("EachBar", "EverySecondBar"), "bind" & suffix)
-            rebar.Locations(rowNumber) = reader.Choice("Extra", "Circle", Array("Stacked", "SideBySide"), "pos" & suffix)
-            rebar.ExtraSources(rowNumber) = reader.SourceReferences("Extra", "Circle", Array("d" & suffix, "a" & suffix, "bind" & suffix, "pos" & suffix))
+            rebar.BaseOffsets(rowNumber) = reader.OptionalRowOffset("Extra", key, "a" & suffix)
+            rebar.Bindings(rowNumber) = reader.Choice("Extra", key, Array("EachBar", "EverySecondBar"), "bind" & suffix)
+            rebar.Locations(rowNumber) = reader.Choice("Extra", key, Array("Stacked", "SideBySide"), "pos" & suffix)
+            rebar.ExtraSources(rowNumber) = reader.SourceReferences("Extra", key, Array("d" & suffix, "a" & suffix, "bind" & suffix, "pos" & suffix))
         End If
     Next rowNumber
 End Sub

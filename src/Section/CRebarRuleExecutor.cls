@@ -831,7 +831,11 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
         If Not mRules(index).EverySecond Or position.SourceOrdinal Mod 2 = 1 Then
             bestID = "": bestRay = 1E+100
             directionX = mRules(index).DirectionX: directionY = mRules(index).DirectionY
-            If mRules(index).SourceNormalSign <> 0# Then
+            If mRules(index).ProjectTowardPoint Then
+                directionX = mRules(index).ProjectionPointX - position.X
+                directionY = mRules(index).ProjectionPointY - position.Y
+                If Sqr(directionX * directionX + directionY * directionY) <= GEOM_TOLERANCE Then RuleError index, "Исходный стержень совпадает с целевой точкой проекции; направление луча не определено.", "PROJECTION_DIRECTION_ZERO", position.SourcePositionID, position.X, position.Y
+            ElseIf mRules(index).SourceNormalSign <> 0# Then
                 directionX = -position.TangentY * mRules(index).SourceNormalSign
                 directionY = position.TangentX * mRules(index).SourceNormalSign
             End If
@@ -982,7 +986,11 @@ Private Sub ValidateOptions(ByVal index As Long)
         End If
         If .Mode = ProjectFrom Then
             If .SourceNormalSign <> -1# And .SourceNormalSign <> 0# And .SourceNormalSign <> 1# Then RuleError index, "Знак местной нормали должен быть -1, 0 или 1."
-            If .SourceNormalSign = 0# And Sqr(.DirectionX * .DirectionX + .DirectionY * .DirectionY) <= GEOM_TOLERANCE Then RuleError index, "Не задано направление проекции."
+            If .ProjectTowardPoint Then
+                If .SourceNormalSign <> 0# Then RuleError index, "Для проекции к точке местная нормаль не задаётся: SourceNormalSign должен быть равен 0."
+            ElseIf .SourceNormalSign = 0# And Sqr(.DirectionX * .DirectionX + .DirectionY * .DirectionY) <= GEOM_TOLERANCE Then
+                RuleError index, "Не задано направление проекции."
+            End If
         End If
     End With
 End Sub

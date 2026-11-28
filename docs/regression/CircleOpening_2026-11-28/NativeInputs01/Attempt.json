@@ -1,0 +1,13 @@
+{
+  "Status": "INCOMPLETE",
+  "SourceBookSHA256": "51EAAED4BCD473D4957F3CCD0E73C84C91CE2AC2B4B09CF9403C8EE9DF7993A7",
+  "Cause": "User reports monitor switched off; native screenshot failed FrameArrived timed out. Accessibility navigation reached E23 but keyboard dropdown selection could not be confirmed.",
+  "ObservedDefaults": {
+    "E23": "EachBar",
+    "F23": "Stacked",
+    "I23": "EachBar",
+    "J23": "Stacked"
+  },
+  "NativeDropdownAcceptance": false,
+  "PrimaryEvidencePreserved": true
+}

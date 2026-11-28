@@ -29,6 +29,9 @@ Public IncomingTangentAtJoint As Boolean ' В точке соединения д
 Public DirectionX As Double ' Компонента X заданного направления проекции; используется, если SourceNormalSign = 0.
 Public DirectionY As Double ' Компонента Y заданного направления проекции; вектор DirectionX/DirectionY должен быть ненулевым.
 Public SourceNormalSign As Double ' Направление проекции: +1 по левой нормали исходной линии, -1 в обратную сторону, 0 по вектору DirectionX/DirectionY.
+Public ProjectTowardPoint As Boolean ' Каждый луч направлен от исходного стержня к точке ProjectionPointX/Y; SourceNormalSign при этом равен 0.
+Public ProjectionPointX As Double ' Координата целевой точки проекции по X, мм.
+Public ProjectionPointY As Double ' Координата целевой точки проекции по Y, мм.
 Public SuccessfulProjectionOrdinal As Boolean ' True: заново нумеровать только стержни, для которых найдено пересечение с целевой линией, подряд по всей группе. False: сохранять исходные номера стержней с возможными пропусками отдельно на каждой линии.
 Public NewPublicationRoot As Boolean ' Для проекции задаёт новую последовательность добавления по успешно найденным позициям вместо порядка исходных стержней.
 Public SkipMissingProjection As Boolean ' Разрешает пропуск проекции без пересечения с записью PROJECTION_MISSING; иначе отсутствие пересечения вызывает ошибку.
@@ -92,6 +95,8 @@ Public Function Clone() As CRebarRuleOptions
     result.DirectionX = DirectionX
     result.DirectionY = DirectionY
     result.SourceNormalSign = SourceNormalSign
+    result.ProjectTowardPoint = ProjectTowardPoint
+    result.ProjectionPointX = ProjectionPointX: result.ProjectionPointY = ProjectionPointY
     result.SuccessfulProjectionOrdinal = SuccessfulProjectionOrdinal
     result.NewPublicationRoot = NewPublicationRoot
     result.SkipMissingProjection = SkipMissingProjection
@@ -121,6 +126,8 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.IncomingTangentAtJoint = IncomingTangentAtJoint
     rule.DirectionX = DirectionX: rule.DirectionY = DirectionY
     rule.SourceNormalSign = SourceNormalSign
+    rule.ProjectTowardPoint = ProjectTowardPoint
+    rule.ProjectionPointX = ProjectionPointX: rule.ProjectionPointY = ProjectionPointY
     rule.SuccessfulProjectionOrdinal = SuccessfulProjectionOrdinal: rule.NewPublicationRoot = NewPublicationRoot
     rule.SkipMissingProjection = SkipMissingProjection
     rule.Publication = Publication: rule.PlacementCheck = PlacementCheck

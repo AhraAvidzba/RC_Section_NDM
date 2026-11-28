@@ -4,7 +4,7 @@
   "bodySHA256": "cd2702074b86bc8989b464f1191d0d4f0a06a5f639313b4ca2c055b382c29124",
   "sourceHashes": {
     "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "581221db2684fff35a29bc7cefdef15a83526770b284379db1a51e4137234729",
-    "src/Common/modSectionRecipeApiGuide.bas": "f3fe07e878cabfc0f27f13edcfdb977236c3093a865f2950e592614429e0e639"
+    "src/Common/modSectionRecipeApiGuide.bas": "66948ba53106acf9316f7fc4391be7360e93931bd675821259e8184899e09c8b"
   },
   "rows": [
     {
@@ -179,5 +179,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 170
+  "members": 174
 }

@@ -1,0 +1,13 @@
+{
+  "Status": "USER_WILL_CHECK_LATER",
+  "UserReply": "Проверю новые списки сам позднее",
+  "SourceBookSHA256": "51EAAED4BCD473D4957F3CCD0E73C84C91CE2AC2B4B09CF9403C8EE9DF7993A7",
+  "Scope": [
+    "Extra/OpeningCircle/bind2 (E23)",
+    "Extra/OpeningCircle/pos2 (F23)",
+    "Extra/OpeningCircle/bind3 (I23)",
+    "Extra/OpeningCircle/pos3 (J23)"
+  ],
+  "NativeUIAcceptedByAgent": false,
+  "FullRunsStarted": false
+}

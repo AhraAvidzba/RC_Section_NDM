@@ -1,0 +1,177 @@
+{
+  "Status": "FAIL",
+  "Cases": 22,
+  "Ignored": "INPUT records only for three unrelated geometry types; no physical values or HollowRectangle inputs ignored",
+  "Checks": [
+    {
+      "Dataset": "HollowMatrix",
+      "ExpectedCases": 16,
+      "ActualCases": 16,
+      "CaseSetExact": true,
+      "BaselineRows": 50208,
+      "CandidateRows": 50208,
+      "Kinds": {
+        "MODEL": 16,
+        "PROPS": 16,
+        "BOUNDS": 16,
+        "CONCRETE": 13586,
+        "CONTOUR": 240,
+        "BAR": 1609,
+        "ANNOTATION": 186,
+        "FIBER": 13586,
+        "LAYOUT": 1609,
+        "INPUT": 19344
+      },
+      "PhysicalAndUsedInputRecordsExact": false,
+      "Differences": [
+        {
+          "Index": 2608,
+          "Baseline": "HollowMatrix.HollowCentered.case0\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case0\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 2613,
+          "Baseline": "HollowMatrix.HollowCentered.case0\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case0\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 5812,
+          "Baseline": "HollowMatrix.HollowCentered.case1\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case1\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 5817,
+          "Baseline": "HollowMatrix.HollowCentered.case1\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case1\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 9024,
+          "Baseline": "HollowMatrix.HollowCentered.case2\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case2\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 9029,
+          "Baseline": "HollowMatrix.HollowCentered.case2\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case2\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 12210,
+          "Baseline": "HollowMatrix.HollowCentered.case3\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case3\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 12215,
+          "Baseline": "HollowMatrix.HollowCentered.case3\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case3\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 15414,
+          "Baseline": "HollowMatrix.HollowCentered.case4\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case4\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 15419,
+          "Baseline": "HollowMatrix.HollowCentered.case4\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case4\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 18382,
+          "Baseline": "HollowMatrix.HollowCentered.case5\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case5\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 18387,
+          "Baseline": "HollowMatrix.HollowCentered.case5\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case5\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        }
+      ],
+      "BaselineSHA256": "feca2766cc6c2dde129ee7381e73159a532a1b45d8864872d347f92c510f309d",
+      "CandidateSHA256": "de79ec5a35fbe1684fec0db76c0fe36e99fe14d42ee36570425e149ec5e3092a"
+    },
+    {
+      "Dataset": "HollowEdgeMatrix",
+      "ExpectedCases": 6,
+      "ActualCases": 6,
+      "CaseSetExact": true,
+      "BaselineRows": 16112,
+      "CandidateRows": 16112,
+      "Kinds": {
+        "MODEL": 6,
+        "PROPS": 6,
+        "BOUNDS": 6,
+        "CONCRETE": 3761,
+        "CONTOUR": 56,
+        "BAR": 603,
+        "ANNOTATION": 56,
+        "FIBER": 3761,
+        "LAYOUT": 603,
+        "INPUT": 7254
+      },
+      "PhysicalAndUsedInputRecordsExact": false,
+      "Differences": [
+        {
+          "Index": 1804,
+          "Baseline": "HollowMatrix.HollowCentered.case8\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case8\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 1809,
+          "Baseline": "HollowMatrix.HollowCentered.case8\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case8\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 4450,
+          "Baseline": "HollowMatrix.HollowCentered.case9\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case9\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 4455,
+          "Baseline": "HollowMatrix.HollowCentered.case9\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case9\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 7626,
+          "Baseline": "HollowMatrix.HollowCentered.case10\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowCentered.case10\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 7631,
+          "Baseline": "HollowMatrix.HollowCentered.case10\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowCentered.case10\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 9852,
+          "Baseline": "HollowMatrix.HollowOffset.case8\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowOffset.case8\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 9857,
+          "Baseline": "HollowMatrix.HollowOffset.case8\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowOffset.case8\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 12496,
+          "Baseline": "HollowMatrix.HollowOffset.case9\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowOffset.case9\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 12501,
+          "Baseline": "HollowMatrix.HollowOffset.case9\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowOffset.case9\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 15688,
+          "Baseline": "HollowMatrix.HollowOffset.case10\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали.\ts:Размер отверстия по горизонтали.",
+          "Candidate": "HollowMatrix.HollowOffset.case10\tINPUT\trngHollowRectangleGeometry.7.5\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по горизонтали. Ноль любого размера отключает отверстие и все его данные."
+        },
+        {
+          "Index": 15693,
+          "Baseline": "HollowMatrix.HollowOffset.case10\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали.\ts:Размер отверстия по вертикали.",
+          "Candidate": "HollowMatrix.HollowOffset.case10\tINPUT\trngHollowRectangleGeometry.8.5\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные.\ts:Размер отверстия по вертикали. Ноль любого размера отключает отверстие и все его данные."
+        }
+      ],
+      "BaselineSHA256": "74b86c8cce5289534bf665a0e17d9b82571321cd57386625b654446ea17264cc",
+      "CandidateSHA256": "2cc66407c57c24b541007e5e55e21794c755b4b90bc361e633dc74554b45674c"
+    }
+  ]
+}

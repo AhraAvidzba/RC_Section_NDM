@@ -1,0 +1,335 @@
+{
+  "Purpose": "Primary addressed evidence with failures retained; no full suite PASS claimed. Canonical native export is mirrored at workbook/candidates/CircleOpening/VBA_All_Code.txt.",
+  "Files": [
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Acceptance.json",
+      "Bytes": 1798,
+      "SHA256": "33C3B8A5B95556F0A2007C20BF5199254645E4DCB08153B51EF0AED6F42EFCF3"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/BaselineHollow01/Acceptance.json",
+      "Bytes": 672,
+      "SHA256": "59F2AF89C479855AA6E17791B52D83300101072CF7686585536CD8631D4D4C64"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/BaselineHollow01/HollowEdgeMatrix.txt",
+      "Bytes": 3710800,
+      "SHA256": "74B86C8CCE5289534BF665A0E17D9B82571321CD57386625B654446EA17264CC"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/BaselineHollow01/HollowMatrix.txt",
+      "Bytes": 11646377,
+      "SHA256": "FECA2766CC6C2DDE129EE7381E73159A532A1B45D8864872D347F92C510F309D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/BaselineHollow01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "BE4DCDC81234E9CAEF34E7DEBA4DE67041B44E87F89D03AB1B4E28CDE64BEF68"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/BaselineHollow01/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "BF7B85332E722FB45028D903566B2A0BAEA3AFEC45469362A7E3AC28F947DAF6"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/BaselineHollow01/Started.json",
+      "Bytes": 289,
+      "SHA256": "70E3D898DC5C33C5E0CC3BA471858CE51F86B8BEC3637DF9662CD7A6E4EF1512"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build01/Build.log",
+      "Bytes": 178,
+      "SHA256": "7792554515A1840570F554CC902CDD9C3DDDB91F033BB9AC07D3A8833B8F6240"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build01/Memory.json",
+      "Bytes": 99,
+      "SHA256": "EA3735E064E740F0045C760C9E9A99846C58805E736032B955716B6801A3365B"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build02/Build.log",
+      "Bytes": 716,
+      "SHA256": "1E4AF275D384297FB042FBF6BE97AFF7C621370426D345E43F60281ACD3D0BDF"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build02/Diagnosis.json",
+      "Bytes": 281,
+      "SHA256": "CF922FEAAA44FF3095614111FD1C042760AB227171A4DAE808B5FD342043263D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build02/Memory.json",
+      "Bytes": 99,
+      "SHA256": "AA9DE6091ECFE8392961992F9612829A6F135B5487980158D4BC08279D0A527A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build03/Build.log",
+      "Bytes": 574,
+      "SHA256": "3288E43A095C6A8FCE3C6675D516924C070740286AA762A5EB6ABFA5E4A8F4D0"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build03/Memory.json",
+      "Bytes": 99,
+      "SHA256": "ACC2D980850806297F2A36E7AB0B94989B9A0169AF09E4EF8F2F40E6E71A548A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build04/Build.log",
+      "Bytes": 178,
+      "SHA256": "B5173BD33E459DBE27CF627AD71835658FB522D5F85FA78BFE389AFB11E4A2A6"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Build04/Memory.json",
+      "Bytes": 99,
+      "SHA256": "73B79327A2A28A147DBB1253156BE70144FA9041FBF679A5BCCAB18A14A276FE"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Compile01/Compile.json",
+      "Bytes": 928,
+      "SHA256": "BC1D157DCAABD07145CB7DE82B8DE80D9ACE24577D3B01AFADADD215BDE01207"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Compile01/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "CA56829F228A46FFD92174F0922EC9DD843B82B64CEA83AFB14D5336A53F8C50"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Acceptance.json",
+      "Bytes": 1689,
+      "SHA256": "AB95F643C53364843A26ACE19388236CBE1BACEBA1B51D0211323889DEAD8234"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/CircleOpening.png",
+      "Bytes": 37059,
+      "SHA256": "2FA7D05CB17D758FC6E8DC4824E0256E13C206E1EFF0D4F8C93AA04AF645829A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Diagnosis.json",
+      "Bytes": 847,
+      "SHA256": "3EEE8F583BC3EFBACD535E5F6F5E17288023F9E926D01B27879D298E787B699F"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "F52539E924A05254B5AEDE8CA70BB23FD205B20F4AD3ABE27B1BD1A6F113CC11"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/modTestOptionalOpenings.RunOptionalOpeningTests.txt",
+      "Bytes": 3485,
+      "SHA256": "F1281C919925D82A30DBB85662009D8B9634E246FD9263BDFC91E053CB91A94B"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests.txt",
+      "Bytes": 64,
+      "SHA256": "D48C7C3A23B626790516A7D53D5BB0E1255D54DC5A79FDBD32D5CD6EE67DF430"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/modTestSectionRecipes.RunCircleBindingTests.txt",
+      "Bytes": 449301,
+      "SHA256": "D01AD634E72D9CD23B2846BE14E04B52104F1F99FF123C0F76DD82CB27DEA4ED"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/modTestSectionRecipes.RunCircleRecipeInputTests.txt",
+      "Bytes": 155,
+      "SHA256": "0223F4A6365DEEDCAE17F58DA896CD15279662C58AA7877E39676E300681FB1E"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/modTestSectionRecipes.RunHollowRecipeInputTests.txt",
+      "Bytes": 542,
+      "SHA256": "3D04C3040A9C237E198D1985CC7C5AD396D06E36CD00225E57BD9ABDCE49671D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "56DC7DC02AC4965A7CDF787F6CE014EA0026B2CCB0C87D33FC16F81041D58166"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Preview.txt",
+      "Bytes": 18511,
+      "SHA256": "D35C3825D0E9125A3C0AD096D355DD1503ABE38B29CA82AD3A6777DBE51E35C9"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Progress.json",
+      "Bytes": 844,
+      "SHA256": "1DAF43326F3589ADE37206C98F8281F4B640FC75820D6676136900AEEF9A572B"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed01/Started.json",
+      "Bytes": 315,
+      "SHA256": "1165EECE4B1B11C93BF490ADC1CC85FE4E1962420668B7B53600CBC4A12E1DCE"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/Acceptance.json",
+      "Bytes": 3001,
+      "SHA256": "B93EC0370ED81A2E11AC9D5BA2DD9203C225B4160F6B6CD2B70E2F1809FD1908"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/CircleOpening.png",
+      "Bytes": 37721,
+      "SHA256": "72C563F316109E6982710B920B828BC9E3CF17EA62C4D91F07318F8DF5D2E291"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/HollowEdgeMatrix.txt",
+      "Bytes": 3742118,
+      "SHA256": "2CC66407C57C24B541007E5E55E21794C755B4B90BC361E633DC74554B45674C"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/HollowMatrix.txt",
+      "Bytes": 11729705,
+      "SHA256": "DE79EC5A35FBE1684FEC0DB76C0FE36E99FE14D42EE36570425E149EC5E3092A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "C0E421433159319F97AD0D0181D3D54B4FEA85E205ABC2D425AC05AF090350C5"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestOptionalOpenings.RunOptionalOpeningTests.txt",
+      "Bytes": 9037,
+      "SHA256": "DD50C1D3E95B53AA7F9479648A77798F526120E3DD6AB1B4109AA083216A6299"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestOptionalOpenings.RunOptionalOpeningWorkbookTests.txt",
+      "Bytes": 9201,
+      "SHA256": "E15318CD398F8DB400683BE6909EF41C98F89816DE59BF87B1774B3188249F4D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests.txt",
+      "Bytes": 64,
+      "SHA256": "D48C7C3A23B626790516A7D53D5BB0E1255D54DC5A79FDBD32D5CD6EE67DF430"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestRecipeOperations.RunRecipeOperationTests.txt",
+      "Bytes": 51,
+      "SHA256": "D43A6D615EC7E8E74CCF45CA0354173E49D2F903F4EA788C53900AF14EBE044E"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestSectionRecipes.RunCircleBindingTests.txt",
+      "Bytes": 449301,
+      "SHA256": "D01AD634E72D9CD23B2846BE14E04B52104F1F99FF123C0F76DD82CB27DEA4ED"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestSectionRecipes.RunCircleRecipeInputTests.txt",
+      "Bytes": 155,
+      "SHA256": "0223F4A6365DEEDCAE17F58DA896CD15279662C58AA7877E39676E300681FB1E"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestSectionRecipes.RunHollowRecipeInputTests.txt",
+      "Bytes": 542,
+      "SHA256": "3D04C3040A9C237E198D1985CC7C5AD396D06E36CD00225E57BD9ABDCE49671D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/modTestSectionRecipes.RunRecipeRuleTests.txt",
+      "Bytes": 12067,
+      "SHA256": "949385A2875AEC43DA2E159B618B086788AFC5B1BA5ED01FCBEDD33A0E3C8381"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "6FB956A3134A0A82C69415CFF6B1B6375A0A0DFAC399B91EF19EDCBA1A7DA267"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/Preview.txt",
+      "Bytes": 19735,
+      "SHA256": "21FB791E18703156798C30C9E304282DE60B38AF7991F202A64B68A28F2F9436"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/Progress.json",
+      "Bytes": 1356,
+      "SHA256": "E25D6562C38C9DB674684731E73B5E0949B84095244B317EF03F3383727F9F92"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/Started.json",
+      "Bytes": 315,
+      "SHA256": "E594D8EA0F2574B57FD4B793803879CBBC249DCF997D241535C43E9E44C583F2"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/HelpArtifactProof.json",
+      "Bytes": 445,
+      "SHA256": "2C17DBF378AC06381C384EB7FD0A63B3461DAA466F905C1B3576398AB28C2CF4"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/HollowParity.json",
+      "Bytes": 18607,
+      "SHA256": "EF6DF619603E4F551A12311AE5B279721FA049B332F737A40B08ACE2C8194F66"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/HollowParityFinal.json",
+      "Bytes": 1684,
+      "SHA256": "0302525682063F0724083749862B5F3D620DAC1212C9AEF3F0528AC2F6A91805"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/HollowPhysicalParity.json",
+      "Bytes": 1564,
+      "SHA256": "65EE152E644C2AE52B042275F81EDFC6B18A1CF7480E154AFFFEFB6D06853C6B"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/NativeInputs01/Attempt.json",
+      "Bytes": 510,
+      "SHA256": "34B6DB320313524543D902C38ED84313B1A4149CD3C9892A8060A763742A25FC"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/NativeInputs01/Closed_1.json",
+      "Bytes": 305,
+      "SHA256": "4FA0E3004E58C85A09DD9B45BC34AD981CC50FC142ECA7F13F2B35AA4F30041A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/NativeInputs01/Finish_1.json",
+      "Bytes": 96,
+      "SHA256": "40DAAE10904E3538F3F1D60814AB7E1C4D1B7FA500B94BEFF4FA571F1DC0AA6A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/NativeInputs01/Memory_1.json",
+      "Bytes": 111,
+      "SHA256": "C1B0B8A97E12DCB0A482F47A291C539D9A9CBDA6F0D3AD01FA222E4619A954A8"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/NativeInputs01/Ready_1.json",
+      "Bytes": 1591,
+      "SHA256": "BFEE8F255930FCCAEE03AB6084ECB77689EBD8F4B7652494DBA6B1BCBD664256"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/NativeInputs01/UserDecision.json",
+      "Bytes": 455,
+      "SHA256": "9AAF727662D30AE84CCF80069D895C8056058F93CDD91ABBB2551227FA5C716A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Package01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "CFD45200D6A1EAC47CA8679BB7B7A0580DC31891AF28991A93EEC34830A9F48C"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Package01/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "C4FFC9DC2BA1F330A7AA868282664BE62203FCDC1B88C70F0F440A1FF48071B8"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Package01/Package.json",
+      "Bytes": 27286,
+      "SHA256": "D9F1016BD0262164DDCDA597A456773BEBC96CB5A5D4EDEE644526B6FE95F61B"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Package02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "FE6D936BF4916FCABDAA0FBE7184C3C6B57C4AA95C96F8C5F54F85D805C54B8D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Package02/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "6B57B8423A19ED52F5A20FB4640AFB8A51A1D542206515A957FBF71EEE7D106F"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/Package02/Package.json",
+      "Bytes": 27362,
+      "SHA256": "3EB2D7E3505C600323DFC792C6D8A9239E3916751190F795078FF70B38F4782D"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/SourceEquality.json",
+      "Bytes": 98444,
+      "SHA256": "EDAC0D8CC90E9D5835C5E5E315D5989C684DE75955CB66EFC7F1D307991F2FA6"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/SourceEqualityFinal.json",
+      "Bytes": 98424,
+      "SHA256": "608BE9A7513B5D77AC26EE0EEFFFF472B7B51DC2BF4D9F0F473FF2F6EF3ED689"
+    }
+  ]
+}

@@ -30,6 +30,7 @@ Private Type THollowInput
     R As Double ' Радиус скругления наружного контура, мм.
     Bo As Double ' Ширина отверстия, мм.
     Ho As Double ' Высота отверстия, мм.
+    HasOpening As Boolean ' Отверстие включено только при двух ненулевых размерах.
     Ro As Double ' Радиус или размер фаски отверстия, мм.
     Xo As Double ' Смещение центра отверстия по X, мм.
     Yo As Double ' Смещение центра отверстия по Y, мм.
@@ -71,9 +72,9 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Dim outerPolygon As CPolygonSpec, openingPolygon As CPolygonSpec
     Set reader = context.Reader("rngHollowRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs reader, faces ' Читаем армирование наружных и внутренних сторон.
+    ReadRebarInputs reader, faces, sizes.HasOpening ' Внутренние стороны читаются только при включённом отверстии.
     Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
-    Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
+    If sizes.HasOpening Then Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle" ' Создаём сборщик описания сечения.
     AddGeometry facade, outerPolygon, openingPolygon, sizes.Chamfer ' Добавляем подготовленные границы бетона.
     AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon ' Создаём линии арматуры и задаём правила размещения стержней.
@@ -89,11 +90,14 @@ End Function
 Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As THollowInput)
     sizes.H = reader.PositiveLength("General", "H"): sizes.B = reader.PositiveLength("General", "B")
     sizes.R = reader.NonNegativeLength("General", "R")
-    sizes.Ho = reader.PositiveLength("General", "Ho"): sizes.Bo = reader.PositiveLength("General", "Bo")
-    sizes.Ro = reader.NonNegativeLength("General", "Ro")
-    sizes.Xo = reader.Length("General", "Xo"): sizes.Yo = reader.Length("General", "Yo")
     sizes.Chamfer = reader.UsesCornerChamfer()
     sizes.OuterSource = reader.SourceReference("General", "H") & "; " & reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "R")
+    sizes.GeometrySource = sizes.OuterSource
+    If reader.IsExplicitZero("General", "Ho") Or reader.IsExplicitZero("General", "Bo") Then Exit Sub
+    sizes.Ho = reader.PositiveLength("General", "Ho"): sizes.Bo = reader.PositiveLength("General", "Bo")
+    sizes.HasOpening = True
+    sizes.Ro = reader.NonNegativeLength("General", "Ro")
+    sizes.Xo = reader.Length("General", "Xo"): sizes.Yo = reader.Length("General", "Yo")
     sizes.OpeningSource = reader.SourceReference("General", "Ho") & "; " & reader.SourceReference("General", "Bo") & "; " & reader.SourceReference("General", "Ro")
     sizes.GeometrySource = sizes.OuterSource & "; " & sizes.OpeningSource & "; " & reader.SourceReference("General", "Xo") & "; " & reader.SourceReference("General", "Yo")
 End Sub
@@ -102,7 +106,7 @@ End Sub
 ' as читает у всех сторон: он ограничивает общий контур и при выключенном ряде.
 ' Пустой as выключенной стороны равен нулю; её параметры дополнительных рядов не читаются.
 ' Служебные n/endMode сторон отверстия не читаются: позиции определяет проекция наружного ряда.
-Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As THollowFace)
+Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As THollowFace, ByVal hasOpening As Boolean)
     Dim ids As Variant, captions As Variant, placementCaptions As Variant, keys As Variant, key As String, i As Long, base As Long, annotationSign As Double
     Dim rowNumber As Long, suffix As String
     keys = Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
@@ -112,6 +116,7 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
     placementCaptions = Array("B - верхняя внешняя грань", "B - нижняя внешняя грань", "H - левая внешняя грань", "H - правая внешняя грань", _
         "Bo - верхняя внутренняя грань", "Bo - нижняя внутренняя грань", "Ho - левая внутренняя грань", "Ho - правая внутренняя грань") ' B/H — наружные размеры, Bo/Ho — размеры отверстия, как в таблице геометрии.
     For i = 1 To 8
+        If i > 4 And Not hasOpening Then Exit For
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1)) ' faces нумеруется с 1, а массивы Array — с 0; поля таблицы читаются по ключам.
             .RowComment = "Пустотелый прямоугольник: " & CStr(placementCaptions(i - 1)) & ", ряд "
@@ -179,7 +184,7 @@ End Function
 ' Добавляет в описание сечения наружную границу и отверстие по двум подготовленным многоугольникам.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec, ByVal chamfer As Boolean)
     AddBoundary facade, "OUTER", "OUTER.Boundary", outerPolygon, False, chamfer
-    AddBoundary facade, "OPENING", "OPENING.Boundary", openingPolygon, True, chamfer
+    If Not openingPolygon Is Nothing Then AddBoundary facade, "OPENING", "OPENING.Boundary", openingPolygon, True, chamfer
 End Sub
 
 ' Создаёт готовый замкнутый контур по вершинам и радиусам без повторного обхода.
@@ -206,6 +211,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
     Dim contours(1 To 2) As CGeometryPath, groups As Variant, sourceID As String, loopID As String, start As Long, part As Long
     groups = Array("Edge.TL|Corner.TL|Corner.TR", "Edge.BR|Corner.BR|Corner.BL", "Edge.BL", "Edge.TR")
     For part = 1 To 2
+        If part = 2 And Not sizes.HasOpening Then Exit For
         start = (part - 1) * 4
         If part = 1 Then loopID = "OUTER" Else loopID = "OPENING"
         sourceID = loopID & ".Boundary"
@@ -305,6 +311,8 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     Next i
     facade.HorizontalExtent "DIM_B", "OUTER.Boundary", "B", sizes.H / 2#, 1#, "Наружная ширина HollowRectangle." ' Полная ширина по наружному контуру; размер вынесен вверх.
     facade.VerticalExtent "DIM_H", "OUTER.Boundary", "H", -sizes.B / 2#, -1#, "Наружная высота HollowRectangle." ' Полная высота сечения H; размер вынесен влево.
-    facade.HorizontalExtent "DIM_B_OPENING", "OPENING.Boundary", "B_o", -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening." ' Полная ширина по контуру отверстия; размер под сечением.
-    facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.B / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
+    If sizes.HasOpening Then
+        facade.HorizontalExtent "DIM_B_OPENING", "OPENING.Boundary", "B_o", -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening." ' Полная ширина по контуру отверстия; размер под сечением.
+        facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.B / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
+    End If
 End Sub

@@ -76,6 +76,12 @@ Public Function CellValue(ByVal blockKey As String, ByVal rowKey As String, Opti
     CellValue = mTable.CellValue(RowIndex(blockKey, rowKey), ColumnIndex(blockKey, columnKey))
 End Function
 
+' Проверяет явный ноль размера до валидации данных отключаемого отверстия.
+' Ключи таблицы обязательны; ошибочное значение не считается нулём.
+Public Function IsExplicitZero(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = "val") As Boolean
+    IsExplicitZero = mTable.IsExplicitZero(RowIndex(blockKey, rowKey), ColumnIndex(blockKey, columnKey))
+End Function
+
 ' Читает обязательный текст; явно переданное значение используется только для пустого поля.
 Public Function Text(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = "val", Optional ByVal defaultValue As Variant) As String
     If IsMissing(defaultValue) Then

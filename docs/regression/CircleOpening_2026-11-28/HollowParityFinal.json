@@ -1,0 +1,55 @@
+{
+  "Status": "PASS",
+  "Cases": 22,
+  "Ignored": "INPUT records for three unrelated geometry types and exactly two verified changed explanatory captions per case; no physical values or used numeric inputs ignored",
+  "Checks": [
+    {
+      "Dataset": "HollowMatrix",
+      "ExpectedCases": 16,
+      "ActualCases": 16,
+      "CaseSetExact": true,
+      "BaselineRows": 50176,
+      "CandidateRows": 50176,
+      "Kinds": {
+        "MODEL": 16,
+        "PROPS": 16,
+        "BOUNDS": 16,
+        "CONCRETE": 13586,
+        "CONTOUR": 240,
+        "BAR": 1609,
+        "ANNOTATION": 186,
+        "FIBER": 13586,
+        "LAYOUT": 1609,
+        "INPUT": 19312
+      },
+      "PhysicalAndUsedInputRecordsExact": true,
+      "Differences": [],
+      "BaselineSHA256": "feca2766cc6c2dde129ee7381e73159a532a1b45d8864872d347f92c510f309d",
+      "CandidateSHA256": "de79ec5a35fbe1684fec0db76c0fe36e99fe14d42ee36570425e149ec5e3092a"
+    },
+    {
+      "Dataset": "HollowEdgeMatrix",
+      "ExpectedCases": 6,
+      "ActualCases": 6,
+      "CaseSetExact": true,
+      "BaselineRows": 16100,
+      "CandidateRows": 16100,
+      "Kinds": {
+        "MODEL": 6,
+        "PROPS": 6,
+        "BOUNDS": 6,
+        "CONCRETE": 3761,
+        "CONTOUR": 56,
+        "BAR": 603,
+        "ANNOTATION": 56,
+        "FIBER": 3761,
+        "LAYOUT": 603,
+        "INPUT": 7242
+      },
+      "PhysicalAndUsedInputRecordsExact": true,
+      "Differences": [],
+      "BaselineSHA256": "74b86c8cce5289534bf665a0e17d9b82571321cd57386625b654446ea17264cc",
+      "CandidateSHA256": "2cc66407c57c24b541007e5e55e21794c755b4b90bc361e633dc74554b45674c"
+    }
+  ]
+}

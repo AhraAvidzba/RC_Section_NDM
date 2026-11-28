@@ -1,0 +1,691 @@
+﻿{
+    "Status":  "PASS",
+    "NativeDropdownAcceptance":  "Delegated to user explicitly; programmatic checks are not native UI acceptance",
+    "SourceSHA256":  "51EAAED4BCD473D4957F3CCD0E73C84C91CE2AC2B4B09CF9403C8EE9DF7993A7",
+    "Checks":  [
+                   {
+                       "Name":  "Circle.address",
+                       "Passed":  true,
+                       "Actual":  "$A$3:$K$23",
+                       "Expected":  "$A$3:$K$23"
+                   },
+                   {
+                       "Name":  "Circle.rowheight",
+                       "Passed":  true,
+                       "Actual":  15,
+                       "Expected":  15
+                   },
+                   {
+                       "Name":  "Circle.nowrap",
+                       "Passed":  true,
+                       "Actual":  false,
+                       "Expected":  false
+                   },
+                   {
+                       "Name":  "Circle.static",
+                       "Passed":  true,
+                       "Actual":  0,
+                       "Expected":  0
+                   },
+                   {
+                       "Name":  "Circle.border.7",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Circle.border.8",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Circle.border.9",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Circle.border.10",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Circle.border.11",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Circle.border.12",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Circle.block.0",
+                       "Passed":  true,
+                       "Actual":  "General",
+                       "Expected":  "General"
+                   },
+                   {
+                       "Name":  "Circle.rows.General",
+                       "Passed":  true,
+                       "Actual":  4,
+                       "Expected":  4
+                   },
+                   {
+                       "Name":  "Circle.block.1",
+                       "Passed":  true,
+                       "Actual":  "Main",
+                       "Expected":  "Main"
+                   },
+                   {
+                       "Name":  "Circle.rows.Main",
+                       "Passed":  true,
+                       "Actual":  2,
+                       "Expected":  2
+                   },
+                   {
+                       "Name":  "Circle.block.2",
+                       "Passed":  true,
+                       "Actual":  "Extra",
+                       "Expected":  "Extra"
+                   },
+                   {
+                       "Name":  "Circle.rows.Extra",
+                       "Passed":  true,
+                       "Actual":  2,
+                       "Expected":  2
+                   },
+                   {
+                       "Name":  "Rectangles.address",
+                       "Passed":  true,
+                       "Actual":  "$A$27:$K$62",
+                       "Expected":  "$A$27:$K$62"
+                   },
+                   {
+                       "Name":  "Rectangles.rowheight",
+                       "Passed":  true,
+                       "Actual":  15,
+                       "Expected":  15
+                   },
+                   {
+                       "Name":  "Rectangles.nowrap",
+                       "Passed":  true,
+                       "Actual":  false,
+                       "Expected":  false
+                   },
+                   {
+                       "Name":  "Rectangles.static",
+                       "Passed":  true,
+                       "Actual":  0,
+                       "Expected":  0
+                   },
+                   {
+                       "Name":  "Rectangles.border.7",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Rectangles.border.8",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Rectangles.border.9",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Rectangles.border.10",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Rectangles.border.11",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Rectangles.border.12",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "Rectangles.block.0",
+                       "Passed":  true,
+                       "Actual":  "General",
+                       "Expected":  "General"
+                   },
+                   {
+                       "Name":  "Rectangles.rows.General",
+                       "Passed":  true,
+                       "Actual":  7,
+                       "Expected":  7
+                   },
+                   {
+                       "Name":  "Rectangles.block.1",
+                       "Passed":  true,
+                       "Actual":  "Main",
+                       "Expected":  "Main"
+                   },
+                   {
+                       "Name":  "Rectangles.rows.Main",
+                       "Passed":  true,
+                       "Actual":  8,
+                       "Expected":  8
+                   },
+                   {
+                       "Name":  "Rectangles.block.2",
+                       "Passed":  true,
+                       "Actual":  "Extra",
+                       "Expected":  "Extra"
+                   },
+                   {
+                       "Name":  "Rectangles.rows.Extra",
+                       "Passed":  true,
+                       "Actual":  8,
+                       "Expected":  8
+                   },
+                   {
+                       "Name":  "PointedSection.address",
+                       "Passed":  true,
+                       "Actual":  "$A$66:$K$95",
+                       "Expected":  "$A$66:$K$95"
+                   },
+                   {
+                       "Name":  "PointedSection.rowheight",
+                       "Passed":  true,
+                       "Actual":  15,
+                       "Expected":  15
+                   },
+                   {
+                       "Name":  "PointedSection.nowrap",
+                       "Passed":  true,
+                       "Actual":  false,
+                       "Expected":  false
+                   },
+                   {
+                       "Name":  "PointedSection.static",
+                       "Passed":  true,
+                       "Actual":  0,
+                       "Expected":  0
+                   },
+                   {
+                       "Name":  "PointedSection.border.7",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "PointedSection.border.8",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "PointedSection.border.9",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "PointedSection.border.10",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "PointedSection.border.11",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "PointedSection.border.12",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "PointedSection.block.0",
+                       "Passed":  true,
+                       "Actual":  "General",
+                       "Expected":  "General"
+                   },
+                   {
+                       "Name":  "PointedSection.rows.General",
+                       "Passed":  true,
+                       "Actual":  9,
+                       "Expected":  9
+                   },
+                   {
+                       "Name":  "PointedSection.block.1",
+                       "Passed":  true,
+                       "Actual":  "Main",
+                       "Expected":  "Main"
+                   },
+                   {
+                       "Name":  "PointedSection.rows.Main",
+                       "Passed":  true,
+                       "Actual":  4,
+                       "Expected":  4
+                   },
+                   {
+                       "Name":  "PointedSection.block.2",
+                       "Passed":  true,
+                       "Actual":  "Extra",
+                       "Expected":  "Extra"
+                   },
+                   {
+                       "Name":  "PointedSection.rows.Extra",
+                       "Passed":  true,
+                       "Actual":  4,
+                       "Expected":  4
+                   },
+                   {
+                       "Name":  "HollowRectangle.address",
+                       "Passed":  true,
+                       "Actual":  "$A$99:$K$136",
+                       "Expected":  "$A$99:$K$136"
+                   },
+                   {
+                       "Name":  "HollowRectangle.rowheight",
+                       "Passed":  true,
+                       "Actual":  15,
+                       "Expected":  15
+                   },
+                   {
+                       "Name":  "HollowRectangle.nowrap",
+                       "Passed":  true,
+                       "Actual":  false,
+                       "Expected":  false
+                   },
+                   {
+                       "Name":  "HollowRectangle.static",
+                       "Passed":  true,
+                       "Actual":  0,
+                       "Expected":  0
+                   },
+                   {
+                       "Name":  "HollowRectangle.border.7",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "HollowRectangle.border.8",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "HollowRectangle.border.9",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "HollowRectangle.border.10",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "HollowRectangle.border.11",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "HollowRectangle.border.12",
+                       "Passed":  true,
+                       "Actual":  -4115,
+                       "Expected":  "-4115"
+                   },
+                   {
+                       "Name":  "HollowRectangle.block.0",
+                       "Passed":  true,
+                       "Actual":  "General",
+                       "Expected":  "General"
+                   },
+                   {
+                       "Name":  "HollowRectangle.rows.General",
+                       "Passed":  true,
+                       "Actual":  9,
+                       "Expected":  9
+                   },
+                   {
+                       "Name":  "HollowRectangle.block.1",
+                       "Passed":  true,
+                       "Actual":  "Main",
+                       "Expected":  "Main"
+                   },
+                   {
+                       "Name":  "HollowRectangle.rows.Main",
+                       "Passed":  true,
+                       "Actual":  8,
+                       "Expected":  8
+                   },
+                   {
+                       "Name":  "HollowRectangle.block.2",
+                       "Passed":  true,
+                       "Actual":  "Extra",
+                       "Expected":  "Extra"
+                   },
+                   {
+                       "Name":  "HollowRectangle.rows.Extra",
+                       "Passed":  true,
+                       "Actual":  8,
+                       "Expected":  8
+                   },
+                   {
+                       "Name":  "link.C16",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!G40",
+                       "Expected":  "=Расчет!G40"
+                   },
+                   {
+                       "Name":  "derived.fill.C16",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.G23",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!I52",
+                       "Expected":  "=Расчет!I52"
+                   },
+                   {
+                       "Name":  "derived.fill.G23",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.D16",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!H40",
+                       "Expected":  "=Расчет!H40"
+                   },
+                   {
+                       "Name":  "derived.fill.D16",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.C8",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!G30",
+                       "Expected":  "=Расчет!G30"
+                   },
+                   {
+                       "Name":  "derived.fill.C8",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.H23",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!J52",
+                       "Expected":  "=Расчет!J52"
+                   },
+                   {
+                       "Name":  "derived.fill.H23",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.C7",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!G29",
+                       "Expected":  "=Расчет!G29"
+                   },
+                   {
+                       "Name":  "derived.fill.C7",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.C9",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!G31",
+                       "Expected":  "=Расчет!G31"
+                   },
+                   {
+                       "Name":  "derived.fill.C9",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.C23",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!G52",
+                       "Expected":  "=Расчет!G52"
+                   },
+                   {
+                       "Name":  "derived.fill.C23",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "link.D23",
+                       "Passed":  true,
+                       "Actual":  "=Расчет!H52",
+                       "Expected":  "=Расчет!H52"
+                   },
+                   {
+                       "Name":  "derived.fill.D23",
+                       "Passed":  true,
+                       "Actual":  16777215,
+                       "Expected":  "Not input fill"
+                   },
+                   {
+                       "Name":  "service.E16",
+                       "Passed":  true,
+                       "Actual":  "—",
+                       "Expected":  "—"
+                   },
+                   {
+                       "Name":  "service.F16",
+                       "Passed":  true,
+                       "Actual":  "—",
+                       "Expected":  "—"
+                   },
+                   {
+                       "Name":  "service.G16",
+                       "Passed":  true,
+                       "Actual":  "—",
+                       "Expected":  "—"
+                   },
+                   {
+                       "Name":  "service.H16",
+                       "Passed":  true,
+                       "Actual":  "—",
+                       "Expected":  "—"
+                   },
+                   {
+                       "Name":  "editable.E23",
+                       "Passed":  true,
+                       "Actual":  15135487,
+                       "Expected":  15135487
+                   },
+                   {
+                       "Name":  "validation.E23",
+                       "Passed":  true,
+                       "Actual":  "EachBar;EverySecondBar",
+                       "Expected":  "EachBar;EverySecondBar"
+                   },
+                   {
+                       "Name":  "programmatic.accept.E23.EachBar",
+                       "Passed":  true,
+                       "Actual":  "EachBar",
+                       "Expected":  "EachBar"
+                   },
+                   {
+                       "Name":  "programmatic.accept.E23.EverySecondBar",
+                       "Passed":  true,
+                       "Actual":  "EverySecondBar",
+                       "Expected":  "EverySecondBar"
+                   },
+                   {
+                       "Name":  "programmatic.reject.E23.__INVALID__",
+                       "Passed":  true,
+                       "Actual":  "__INVALID__",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.E23.EachBar;EverySecondBar",
+                       "Passed":  true,
+                       "Actual":  "EachBar;EverySecondBar",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.E23.EachBar,EverySecondBar",
+                       "Passed":  true,
+                       "Actual":  "EachBar,EverySecondBar",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "editable.F23",
+                       "Passed":  true,
+                       "Actual":  15135487,
+                       "Expected":  15135487
+                   },
+                   {
+                       "Name":  "validation.F23",
+                       "Passed":  true,
+                       "Actual":  "Stacked;SideBySide",
+                       "Expected":  "Stacked;SideBySide"
+                   },
+                   {
+                       "Name":  "programmatic.accept.F23.Stacked",
+                       "Passed":  true,
+                       "Actual":  "Stacked",
+                       "Expected":  "Stacked"
+                   },
+                   {
+                       "Name":  "programmatic.accept.F23.SideBySide",
+                       "Passed":  true,
+                       "Actual":  "SideBySide",
+                       "Expected":  "SideBySide"
+                   },
+                   {
+                       "Name":  "programmatic.reject.F23.__INVALID__",
+                       "Passed":  true,
+                       "Actual":  "__INVALID__",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.F23.Stacked;SideBySide",
+                       "Passed":  true,
+                       "Actual":  "Stacked;SideBySide",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.F23.Stacked,SideBySide",
+                       "Passed":  true,
+                       "Actual":  "Stacked,SideBySide",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "editable.I23",
+                       "Passed":  true,
+                       "Actual":  15135487,
+                       "Expected":  15135487
+                   },
+                   {
+                       "Name":  "validation.I23",
+                       "Passed":  true,
+                       "Actual":  "EachBar;EverySecondBar",
+                       "Expected":  "EachBar;EverySecondBar"
+                   },
+                   {
+                       "Name":  "programmatic.accept.I23.EachBar",
+                       "Passed":  true,
+                       "Actual":  "EachBar",
+                       "Expected":  "EachBar"
+                   },
+                   {
+                       "Name":  "programmatic.accept.I23.EverySecondBar",
+                       "Passed":  true,
+                       "Actual":  "EverySecondBar",
+                       "Expected":  "EverySecondBar"
+                   },
+                   {
+                       "Name":  "programmatic.reject.I23.__INVALID__",
+                       "Passed":  true,
+                       "Actual":  "__INVALID__",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.I23.EachBar;EverySecondBar",
+                       "Passed":  true,
+                       "Actual":  "EachBar;EverySecondBar",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.I23.EachBar,EverySecondBar",
+                       "Passed":  true,
+                       "Actual":  "EachBar,EverySecondBar",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "editable.J23",
+                       "Passed":  true,
+                       "Actual":  15135487,
+                       "Expected":  15135487
+                   },
+                   {
+                       "Name":  "validation.J23",
+                       "Passed":  true,
+                       "Actual":  "Stacked;SideBySide",
+                       "Expected":  "Stacked;SideBySide"
+                   },
+                   {
+                       "Name":  "programmatic.accept.J23.Stacked",
+                       "Passed":  true,
+                       "Actual":  "Stacked",
+                       "Expected":  "Stacked"
+                   },
+                   {
+                       "Name":  "programmatic.accept.J23.SideBySide",
+                       "Passed":  true,
+                       "Actual":  "SideBySide",
+                       "Expected":  "SideBySide"
+                   },
+                   {
+                       "Name":  "programmatic.reject.J23.__INVALID__",
+                       "Passed":  true,
+                       "Actual":  "__INVALID__",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.J23.Stacked;SideBySide",
+                       "Passed":  true,
+                       "Actual":  "Stacked;SideBySide",
+                       "Expected":  "Invalid"
+                   },
+                   {
+                       "Name":  "programmatic.reject.J23.Stacked,SideBySide",
+                       "Passed":  true,
+                       "Actual":  "Stacked,SideBySide",
+                       "Expected":  "Invalid"
+                   }
+               ]
+}

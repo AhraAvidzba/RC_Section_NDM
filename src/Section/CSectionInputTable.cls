@@ -77,6 +77,17 @@ Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant
     CellValue = mValues(row, column)
 End Function
 
+' Проверяет только явный числовой ноль переключающего размера.
+' Остальные значения, включая ошибку Excel, здесь не валидируются: парный ноль может отключить поле.
+Public Function IsExplicitZero(ByVal row As Long, ByVal column As Long) As Boolean
+    CheckCell row, column
+    Dim value As Variant, number As Double
+    value = mValues(row, column)
+    If IsError(value) Or IsEmpty(value) Or IsNull(value) Or IsObject(value) Or IsArray(value) Then Exit Function
+    If VarType(value) = vbBoolean Then Exit Function
+    If TryReadStrictDouble(value, number) Then IsExplicitZero = (number = 0#)
+End Function
+
 ' Проверяет служебную подпись при поиске структуры, не читая данные остальных блоков.
 ' Ошибка формулы не считается подписью; обращение к самому полю через CellValue её отклонит.
 Friend Function HasTextAt(ByVal row As Long, ByVal column As Long, ByVal text As String) As Boolean

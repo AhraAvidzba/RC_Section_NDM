@@ -1,0 +1,35 @@
+﻿{
+    "Validation":  {
+                       "F23":  {
+                                   "Type":  3,
+                                   "Formula1":  "Stacked;SideBySide",
+                                   "ShowError":  true
+                               },
+                       "E23":  {
+                                   "Type":  3,
+                                   "Formula1":  "EachBar;EverySecondBar",
+                                   "ShowError":  true
+                               },
+                       "J23":  {
+                                   "Type":  3,
+                                   "Formula1":  "Stacked;SideBySide",
+                                   "ShowError":  true
+                               },
+                       "I23":  {
+                                   "Type":  3,
+                                   "Formula1":  "EachBar;EverySecondBar",
+                                   "ShowError":  true
+                               }
+                   },
+    "PID":  26580,
+    "Initial":  {
+                    "F23":  "Stacked",
+                    "E23":  "EachBar",
+                    "J23":  "Stacked",
+                    "I23":  "EachBar"
+                },
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\CircleOpening_2026-11-28\\NativeInputs01\\OptionalOpening_UI.xlsm",
+    "Phase":  1,
+    "StartTicksUTC":  "639314854927176870",
+    "SourceSHA256":  "51EAAED4BCD473D4957F3CCD0E73C84C91CE2AC2B4B09CF9403C8EE9DF7993A7"
+}

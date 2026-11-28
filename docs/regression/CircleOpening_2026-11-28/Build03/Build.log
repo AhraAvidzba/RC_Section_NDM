@@ -1,0 +1,11 @@
+True
+True
+True
+True
+Guide content is stale: src/Common/modSectionRecipeApiGuide.bas
+At C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\SectionRecipeGuide.ps1:126 char:17
++                 throw ('Guide content is stale: '+$property.Name)
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Guide content i...ipeApiGuide.bas:String) [], RuntimeException
+    + FullyQualifiedErrorId : Guide content is stale: src/Common/modSectionRecipeApiGuide.bas
+ 

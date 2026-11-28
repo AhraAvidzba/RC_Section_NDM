@@ -152,6 +152,7 @@ function Add-GeometryTableValidation {
             foreach($key in @($block.Columns.Keys)){
                 if($key -in @('key','name','unit','note')){continue}
                 $cell=$Range.Cells.Item($r,[int]$block.Columns[$key]);$options=@()
+                if($block.Key -eq 'Main' -and $rowKey -eq 'OpeningCircle' -and $key -notin @('as','d')){$cell.Validation.Delete();continue} # Число и позиции задаёт проекция, служебные поля не заполняются.
                 if($key -like 'bind*'){$options=@('EachBar','EverySecondBar')}
                 elseif($key -like 'pos*'){$options=@('Stacked','SideBySide')}
                 elseif($key -eq 'endMode' -and $rowKey -notlike 'Opening*'){$options=@('IncludeBoth','ExcludeBoth','IncludeStart','IncludeEnd')}

@@ -1,0 +1,169 @@
+﻿PASS circle.loops.0
+PASS circle.area.0; actual=714712.328691678; expected=714712.328691678
+PASS circle.void.0
+PASS circle.projection.to.hole.0.1; x=0; y=190
+PASS circle.projection.to.hole.0.2; x=134.350288425444; y=134.350288425444
+PASS circle.projection.to.hole.0.3; x=190; y=1.16337603613126E-14
+PASS circle.projection.to.hole.0.4; x=134.350288425444; y=-134.350288425444
+PASS circle.projection.to.hole.0.5; x=2.32675207226252E-14; y=-190
+PASS circle.projection.to.hole.0.6; x=-134.350288425444; y=-134.350288425444
+PASS circle.projection.to.hole.0.7; x=-190; y=-3.49012810839378E-14
+PASS circle.projection.to.hole.0.8; x=-134.350288425444; y=134.350288425444
+PASS circle.projected.count.0
+PASS circle.dimension.exists.0
+PASS circle.dimension.value.0; actual=300; expected=300
+PASS circle.dimension.right.0; actual=500; expected=500
+PASS circle.dimension.bottom.0; actual=-150; expected=-150
+PASS circle.dimension.direction.0
+PASS circle.label.exists.0
+PASS circle.label.into.opening.0
+PASS circle.loops.1
+PASS circle.area.1; actual=714712.328691678; expected=714712.328691678
+PASS circle.void.1
+PASS circle.projection.to.hole.1.1; x=63.4412524630079; y=126.44961243866
+PASS circle.projection.to.hole.1.2; x=194.949508441749; y=104.573967706531
+PASS circle.projection.to.hole.1.3; x=287.268228414521; y=-27.8968751289393
+PASS circle.projection.to.hole.1.4; x=222.638200413811; y=-205.120197764687
+PASS circle.projection.to.hole.1.5; x=52.8086834491363; y=-244.046134548369
+PASS circle.projection.to.hole.1.6; x=-61.6690295600758; y=-159.815454119607
+PASS circle.projection.to.hole.1.7; x=-88.879413555519; y=-39.3949730666707
+PASS circle.projection.to.hole.1.8; x=-40.9205647168815; y=67.441729586016
+PASS circle.projected.count.1
+PASS circle.dimension.exists.1
+PASS circle.dimension.value.1; actual=300; expected=300
+PASS circle.dimension.right.1; actual=500; expected=500
+PASS circle.dimension.bottom.1; actual=-210; expected=-210
+PASS circle.dimension.direction.1
+PASS circle.label.exists.1
+PASS circle.label.into.opening.1
+PASS circle.loops.2
+PASS circle.area.2; actual=777544.181763473; expected=777544.181763474
+PASS circle.void.2
+PASS circle.projection.to.hole.2.1; x=206.292136193923; y=78.6741548509384
+PASS circle.projection.to.hole.2.2; x=268.860990593403; y=88.0014944977388
+PASS circle.projection.to.hole.2.3; x=340; y=1.23991393324516E-14
+PASS circle.projection.to.hole.2.4; x=268.860990593404; y=-88.0014944977388
+PASS circle.projection.to.hole.2.5; x=206.292136193923; y=-78.6741548509384
+PASS circle.projection.to.hole.2.6; x=171.474879386447; y=-43.9750546631499
+PASS circle.projection.to.hole.2.7; x=160; y=-1.06278337135299E-14
+PASS circle.projection.to.hole.2.8; x=171.474879386447; y=43.9750546631499
+PASS circle.projected.count.2
+PASS circle.offset.all.rays.hit
+PASS circle.dimension.exists.2
+PASS circle.dimension.value.2; actual=100; expected=100
+PASS circle.dimension.right.2; actual=500; expected=500
+PASS circle.dimension.bottom.2; actual=-50; expected=-50
+PASS circle.dimension.direction.2
+PASS circle.label.exists.2
+PASS circle.label.into.opening.2
+PASS circle.loops.3
+PASS solid.area; actual=785398.163397448; expected=785398.163397448
+PASS solid.bars
+PASS solid.no.hole.dimension
+PASS solid.no.hole.label
+PASS circle.negative.rejected
+PASS circle.oversized.rejected
+PASS circle.tangent.rejected
+PASS circle.intersection.rejected
+PASS circle.no.inner.row
+PASS point.zero.direction.rejected
+PASS point.normal.conflict.rejected
+PASS point.options.clone
+PASS circle.extra.in.concrete.EachBarStacked17
+PASS circle.extra.diameter.EachBarStacked17; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked18
+PASS circle.extra.diameter.EachBarStacked18; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked19
+PASS circle.extra.diameter.EachBarStacked19; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked20
+PASS circle.extra.diameter.EachBarStacked20; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked21
+PASS circle.extra.diameter.EachBarStacked21; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked22
+PASS circle.extra.diameter.EachBarStacked22; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked23
+PASS circle.extra.diameter.EachBarStacked23; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarStacked24
+PASS circle.extra.diameter.EachBarStacked24; actual=12; expected=12
+PASS circle.extra.binding.EachBarStacked
+PASS circle.extra.label.EachBarStacked
+PASS circle.extra.in.concrete.EachBarSideBySide17
+PASS circle.extra.diameter.EachBarSideBySide17; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide18
+PASS circle.extra.diameter.EachBarSideBySide18; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide19
+PASS circle.extra.diameter.EachBarSideBySide19; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide20
+PASS circle.extra.diameter.EachBarSideBySide20; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide21
+PASS circle.extra.diameter.EachBarSideBySide21; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide22
+PASS circle.extra.diameter.EachBarSideBySide22; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide23
+PASS circle.extra.diameter.EachBarSideBySide23; actual=12; expected=12
+PASS circle.extra.in.concrete.EachBarSideBySide24
+PASS circle.extra.diameter.EachBarSideBySide24; actual=12; expected=12
+PASS circle.extra.binding.EachBarSideBySide
+PASS circle.extra.label.EachBarSideBySide
+PASS circle.extra.in.concrete.EverySecondBarStacked17
+PASS circle.extra.diameter.EverySecondBarStacked17; actual=12; expected=12
+PASS circle.extra.in.concrete.EverySecondBarStacked18
+PASS circle.extra.diameter.EverySecondBarStacked18; actual=12; expected=12
+PASS circle.extra.in.concrete.EverySecondBarStacked19
+PASS circle.extra.diameter.EverySecondBarStacked19; actual=12; expected=12
+PASS circle.extra.in.concrete.EverySecondBarStacked20
+PASS circle.extra.diameter.EverySecondBarStacked20; actual=12; expected=12
+PASS circle.extra.binding.EverySecondBarStacked
+PASS circle.extra.label.EverySecondBarStacked
+PASS circle.extra.in.concrete.EverySecondBarSideBySide17
+PASS circle.extra.diameter.EverySecondBarSideBySide17; actual=12; expected=12
+PASS circle.extra.in.concrete.EverySecondBarSideBySide18
+PASS circle.extra.diameter.EverySecondBarSideBySide18; actual=12; expected=12
+PASS circle.extra.in.concrete.EverySecondBarSideBySide19
+PASS circle.extra.diameter.EverySecondBarSideBySide19; actual=12; expected=12
+PASS circle.extra.in.concrete.EverySecondBarSideBySide20
+PASS circle.extra.diameter.EverySecondBarSideBySide20; actual=12; expected=12
+PASS circle.extra.binding.EverySecondBarSideBySide
+PASS circle.extra.label.EverySecondBarSideBySide
+PASS hollow.one.loop.Скругление0
+PASS hollow.solid.area.Скругление0; actual=477853.981633974; expected=477853.981633974
+PASS hollow.outer.bars.Скругление0
+PASS hollow.no.dimensions.Скругление0
+PASS hollow.one.loop.Скругление1
+PASS hollow.solid.area.Скругление1; actual=477853.981633974; expected=477853.981633974
+PASS hollow.outer.bars.Скругление1
+PASS hollow.no.dimensions.Скругление1
+PASS hollow.one.loop.Скругление2
+PASS hollow.solid.area.Скругление2; actual=477853.981633974; expected=477853.981633974
+PASS hollow.outer.bars.Скругление2
+PASS hollow.no.dimensions.Скругление2
+PASS hollow.one.loop.Скругление3
+PASS hollow.solid.area.Скругление3; actual=477853.981633974; expected=477853.981633974
+PASS hollow.outer.bars.Скругление3
+PASS hollow.no.dimensions.Скругление3
+PASS hollow.one.loop.Скругление4
+PASS hollow.solid.area.Скругление4; actual=477853.981633974; expected=477853.981633974
+PASS hollow.outer.bars.Скругление4
+PASS hollow.no.dimensions.Скругление4
+PASS hollow.one.loop.Фаска0
+PASS hollow.solid.area.Фаска0; actual=475000; expected=475000
+PASS hollow.outer.bars.Фаска0
+PASS hollow.no.dimensions.Фаска0
+PASS hollow.one.loop.Фаска1
+PASS hollow.solid.area.Фаска1; actual=475000; expected=475000
+PASS hollow.outer.bars.Фаска1
+PASS hollow.no.dimensions.Фаска1
+PASS hollow.one.loop.Фаска2
+PASS hollow.solid.area.Фаска2; actual=475000; expected=475000
+PASS hollow.outer.bars.Фаска2
+PASS hollow.no.dimensions.Фаска2
+PASS hollow.one.loop.Фаска3
+PASS hollow.solid.area.Фаска3; actual=475000; expected=475000
+PASS hollow.outer.bars.Фаска3
+PASS hollow.no.dimensions.Фаска3
+PASS hollow.one.loop.Фаска4
+PASS hollow.solid.area.Фаска4; actual=475000; expected=475000
+PASS hollow.outer.bars.Фаска4
+PASS hollow.no.dimensions.Фаска4
+TOTAL OPTIONAL OPENINGS: passed=167; failed=0
+

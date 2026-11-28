@@ -1,0 +1,42 @@
+﻿{
+    "Status":  "FAIL",
+    "SourceSHA256":  "9933B068D4FFA556214A2291193CCB6A0C63360C50681CA89DFE44086EB4DE9E",
+    "Results":  [
+                    {
+                        "Macro":  "modTestOptionalOpenings.RunOptionalOpeningTests",
+                        "Passed":  false,
+                        "Seconds":  4.1212767,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunCircleRecipeInputTests",
+                        "Passed":  true,
+                        "Seconds":  3.7208896,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunHollowRecipeInputTests",
+                        "Passed":  true,
+                        "Seconds":  29.8356502,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunCircleBindingTests",
+                        "Passed":  true,
+                        "Seconds":  5.7761705,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+                        "Passed":  true,
+                        "Seconds":  1.9586179,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "Preview",
+                        "Passed":  true,
+                        "Seconds":  0,
+                        "Error":  ""
+                    }
+                ]
+}

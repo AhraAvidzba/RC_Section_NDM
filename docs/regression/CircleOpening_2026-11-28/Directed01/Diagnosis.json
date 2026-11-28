@@ -1,0 +1,7 @@
+{
+  "Status": "TEST_EXPECTATION_CORRECTED",
+  "Failure": "circle.missing.diagnostic",
+  "Cause": "Общий HasGeometryWarnings не включает разрешённые проекции без пересечения. Запись PROJECTION_MISSING и счётчик присутствуют; эти штатные диагностические данные теперь проверяются напрямую.",
+  "ProductionChangeForFailure": false,
+  "OtherFindings": "По ревью добавлена отдельная проверка явного нуля до чтения ошибки Excel в отключённом парном размере HollowRectangle; расширены тесты. Пользователь уточнил необходимость внутренней строки Extra; добавлена."
+}

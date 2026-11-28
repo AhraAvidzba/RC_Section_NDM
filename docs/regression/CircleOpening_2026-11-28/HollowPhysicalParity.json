@@ -1,0 +1,53 @@
+{
+  "Status": "PASS",
+  "Cases": 22,
+  "Ignored": "All INPUT records: service/inapplicable values are not constrained. All physical output records are compared exactly.",
+  "Checks": [
+    {
+      "Dataset": "HollowMatrix",
+      "ExpectedCases": 16,
+      "ActualCases": 16,
+      "CaseSetExact": true,
+      "BaselineRows": 30864,
+      "CandidateRows": 30864,
+      "Kinds": {
+        "MODEL": 16,
+        "PROPS": 16,
+        "BOUNDS": 16,
+        "CONCRETE": 13586,
+        "CONTOUR": 240,
+        "BAR": 1609,
+        "ANNOTATION": 186,
+        "FIBER": 13586,
+        "LAYOUT": 1609
+      },
+      "PhysicalRecordsExact": true,
+      "Differences": [],
+      "BaselineSHA256": "feca2766cc6c2dde129ee7381e73159a532a1b45d8864872d347f92c510f309d",
+      "CandidateSHA256": "de79ec5a35fbe1684fec0db76c0fe36e99fe14d42ee36570425e149ec5e3092a"
+    },
+    {
+      "Dataset": "HollowEdgeMatrix",
+      "ExpectedCases": 6,
+      "ActualCases": 6,
+      "CaseSetExact": true,
+      "BaselineRows": 8858,
+      "CandidateRows": 8858,
+      "Kinds": {
+        "MODEL": 6,
+        "PROPS": 6,
+        "BOUNDS": 6,
+        "CONCRETE": 3761,
+        "CONTOUR": 56,
+        "BAR": 603,
+        "ANNOTATION": 56,
+        "FIBER": 3761,
+        "LAYOUT": 603
+      },
+      "PhysicalRecordsExact": true,
+      "Differences": [],
+      "BaselineSHA256": "74b86c8cce5289534bf665a0e17d9b82571321cd57386625b654446ea17264cc",
+      "CandidateSHA256": "2cc66407c57c24b541007e5e55e21794c755b4b90bc361e633dc74554b45674c"
+    }
+  ]
+}

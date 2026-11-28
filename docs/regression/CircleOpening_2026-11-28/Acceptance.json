@@ -1,0 +1,47 @@
+{
+  "Status": "ADDRESSED_PASS_NATIVE_LISTS_DELEGATED_TO_USER",
+  "BaseMain": "d227d0df5332c80e0557cf0f8ad224be67262db9",
+  "Branch": "codex/circle-opening",
+  "NativeAssertions": 5601,
+  "AssertionsFailed": 0,
+  "PackageChecks": 114,
+  "HollowParityCases": 22,
+  "HollowComparedRows": 39722,
+  "SourceComponents": 204,
+  "CompiledComponents": 210,
+  "VerifierSelfChecks": 12,
+  "Book": {
+    "Path": "workbook/candidates/CircleOpening/RC_Section_NDM.xlsm",
+    "SHA256": "51EAAED4BCD473D4957F3CCD0E73C84C91CE2AC2B4B09CF9403C8EE9DF7993A7"
+  },
+  "Export": {
+    "Path": "workbook/candidates/CircleOpening/VBA_All_Code.txt",
+    "SHA256": "42E5D48F8C4DD48179C0B5C2D7A24209B907FA52399AA0D96EB4260D1D2BB6CD"
+  },
+  "Example": {
+    "Path": "docs/regression/CircleOpening_2026-11-28/Directed02/CircleOpening.png",
+    "SHA256": "72C563F316109E6982710B920B828BC9E3CF17EA62C4D91F07318F8DF5D2E291",
+    "D_mm": 1000,
+    "Do_mm": 300,
+    "Xo_mm": 100,
+    "Yo_mm": -60,
+    "OuterBars": "8x20",
+    "OpeningBars": "8x16 + 8x12 (Stacked)"
+  },
+  "MainArtifactsUnchanged": {
+    "workbook/output/RC_Section_NDM.xlsm": "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+    "workbook/output/VBA_All_Code.txt": "103F9E10E4144FEB13A0EF3A7B8FA77804EA5E0F2FE7D2BCF0D5A28A822092A8"
+  },
+  "MTLIIncluded": false,
+  "FullRunsStarted": false,
+  "MainMerged": false,
+  "NativeDropdownAcceptance": "Not claimed; user explicitly chose to check new lists later",
+  "Evidence": {
+    "Directed": "Directed02/Acceptance.json",
+    "Package": "Package02/Package.json",
+    "Parity": "HollowPhysicalParity.json",
+    "SourceEquality": "SourceEqualityFinal.json",
+    "UserDecision": "NativeInputs01/UserDecision.json",
+    "Help": "HelpArtifactProof.json"
+  }
+}

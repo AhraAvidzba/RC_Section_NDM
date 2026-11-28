@@ -126,6 +126,9 @@ Public Type TRebarRule
     DirectionX As Double
     DirectionY As Double
     SourceNormalSign As Double
+    ProjectTowardPoint As Boolean ' Луч каждой исходной позиции направлен к заданной точке вместо общей нормали или вектора.
+    ProjectionPointX As Double ' Координата целевой точки по X, мм.
+    ProjectionPointY As Double ' Координата целевой точки по Y, мм.
     SuccessfulProjectionOrdinal As Boolean
     NewPublicationRoot As Boolean
     SkipMissingProjection As Boolean

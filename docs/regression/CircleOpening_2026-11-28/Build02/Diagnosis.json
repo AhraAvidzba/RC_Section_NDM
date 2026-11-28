@@ -1,0 +1,5 @@
+{
+  "Status": "COMPILE_TEST_IDENTIFIER_FIXED",
+  "Cause": "VBA reserved keyword input used as a reader variable in the new workbook test; renamed inputReader. Current native Compile01 compiled all changed sources successfully.",
+  "ProductionNumericsChangedForFailure": false
+}

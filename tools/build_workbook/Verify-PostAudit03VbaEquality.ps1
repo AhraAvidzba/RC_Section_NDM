@@ -13,8 +13,9 @@ $dependentRowsAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/D
 $structuredTablesAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/StructuredGeometryTables_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
 $sharedRebarAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/SharedRebarInput_2026-10-18"))+[IO.Path]::DirectorySeparatorChar
 $workflowAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/SectionWorkflowLayers_2026-10-21'))+[IO.Path]::DirectorySeparatorChar
+$circleOpeningAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/CircleOpening_2026-11-28'))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($export,$report)) {
-    if (-not $path.StartsWith($workflowAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($sharedRebarAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
+    if (-not $path.StartsWith($circleOpeningAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($workflowAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($sharedRebarAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($openIssuesAllowed,[StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($guardGuideAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside its regression directory.'}
 }
@@ -62,7 +63,10 @@ public static class PostAuditVbaCanonicalText {
             for(int i=0;i<line.Length;i++) {
                 char character=line[i];
                 if(!quoted && character=='\'') {
-                    result.Append(Code(chunk.ToString())); chunk.Clear();
+                    result.Append(Code(chunk.ToString()).TrimEnd(' ','\t')); chunk.Clear();
+                    // VBE сохраняет колонку комментария при сокращении записи Double.
+                    // Фиксируем саму колонку, чтобы произвольный сдвиг комментария оставался отказом.
+                    result.Append("<comment-column:").Append(i).Append(">");
                     result.Append(ansi.GetString(ansi.GetBytes(line.Substring(i)))); break;
                 }
                 if(character=='"') {
@@ -85,6 +89,8 @@ function ConvertTo-VbaCodeCase([string]$Body) {
     return [PostAuditVbaCanonicalText]::Normalize($Body)
 }
 # ДЛЯ ТЕСТОВ: нормализация не скрывает измененные строки, числа, типы и комментарии.
+$commentOriginal="x = 0.00000000000000177635683940025 ' Double guard"
+$commentVbe=('x = 1.77635683940025E-15').PadRight($commentOriginal.IndexOf("'"))+"' Double guard"
 $selfChecks=[ordered]@{
     CodeCase=(ConvertTo-VbaCodeCase 'Dim Target As Double') -ceq (ConvertTo-VbaCodeCase 'Dim target As Double')
     DoubleFormatting=(ConvertTo-VbaCodeCase 'x = 0.45# + 1E-8') -ceq (ConvertTo-VbaCodeCase 'x = 0.45 + 0.00000001')
@@ -95,6 +101,8 @@ $selfChecks=[ordered]@{
     NumberChangeRejected=(ConvertTo-VbaCodeCase 'x = 0.45') -cne (ConvertTo-VbaCodeCase 'x = 0.46')
     IntegerTypePreserved=(ConvertTo-VbaCodeCase 'x = 1#') -cne (ConvertTo-VbaCodeCase 'x = 1')
     WhitespacePreserved=(ConvertTo-VbaCodeCase 'x = 1') -cne (ConvertTo-VbaCodeCase 'x=1')
+    VbeInlineCommentAlignment=(ConvertTo-VbaCodeCase $commentOriginal) -ceq (ConvertTo-VbaCodeCase $commentVbe)
+    ChangedCommentColumnRejected=(ConvertTo-VbaCodeCase "x = 0.45 ' note") -cne (ConvertTo-VbaCodeCase "x = 0.45  ' note")
     CommentAnsiFormatting=(ConvertTo-VbaCodeCase "' 6Ø32") -ceq (ConvertTo-VbaCodeCase "' 6O32")
 }
 if(@($selfChecks.Values | Where-Object {-not $_}).Count -gt 0) {throw 'VBA canonical comparison self-test failed.'}
@@ -125,7 +133,7 @@ $passed=$missing.Count -eq 0 -and $differences.Count -eq 0 -and $extra.Count -eq
 [ordered]@{Passed=$passed; SourceComponents=$sourceNames.Count; ExportComponents=$components.Count;
     Missing=$missing; Differences=$differences; VbeCodeCaseDifferences=$rawDifferences; UnexpectedCodeComponents=$extra;
     GeneratedDocumentModules=$documents; ExportSHA256=(Get-FileHash -LiteralPath $export -Algorithm SHA256).Hash;
-    Normalization='VBE code case; Double G15 formatting; CP1251 comments; line endings/module tail; exact strings/whitespace/integer types';
+    Normalization='VBE code case; Double G15 formatting; CP1251 comments with exact comment column; line endings/module tail; exact strings/code whitespace/integer types';
     VerifierSelfChecks=$selfChecks; Components=$records} |
     ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $report -Encoding UTF8
 Write-Output "VBA_EQUALITY: passed=$passed; source=$($sourceNames.Count); export=$($components.Count); missing=$($missing.Count); differences=$($differences.Count); extra=$($extra.Count)"

@@ -1,0 +1,20 @@
+{
+  "Status": "PASS",
+  "Help": [
+    {
+      "Key": "CircleGeometry",
+      "Paragraphs": 6,
+      "ExactParagraphsPresent": true
+    },
+    {
+      "Key": "HollowRectangleGeometry",
+      "Paragraphs": 5,
+      "ExactParagraphsPresent": true
+    }
+  ],
+  "NoMTLISettings": true,
+  "CandidateNames": {
+    "rngCircleGeometry": "Сечения!$A$3:$K$23",
+    "rngHollowRectangleGeometry": "Сечения!$A$99:$K$136"
+  }
+}

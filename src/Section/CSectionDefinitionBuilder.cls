@@ -394,6 +394,7 @@ End Sub
 
 ' Задаёт проекцию исходных позиций на целевую линию. Концевые отступы ограничивают
 ' допустимый участок; поведение при отсутствии пересечения задаётся параметрами правила.
+' Направление берётся из options: фиксированный вектор, местная нормаль или луч к заданной точке.
 Public Sub RebarProjected(ByVal ruleID As String, ByVal target As String, ByVal sourceRuleID As String, ByVal diameter As Double, _
         ByVal options As CRebarRuleOptions, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule

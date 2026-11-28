@@ -179,6 +179,8 @@ Public Sub TestConfigureShapeFixture(ByVal fixture As String)
         Case "Circle"
             shapeName = "Circle"
             TestFixtureResetReinforcement shapeName
+            Set table = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
+            TestFixtureInputCell(table, "General", "Do").Value2 = 0#
             TestSetSetting "Circle.Diameter", 600# / factor
             TestSetSetting "Rebar.AxisDistance", 40# / factor
             TestSetSetting "Rebar.Count", 12: TestSetSetting "Rebar.Diameter", 20# / factor

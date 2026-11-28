@@ -95,6 +95,7 @@ Public Function TestFixtureCircleDefinition(ByVal parameters As Variant) As CSec
     Dim i As Long, value As Variant, row As String
     values = TestFixtureRecipeValues("rngCircleGeometry")
     Set reader = TestFixtureInput(values)
+    values(reader.RowIndex("General", "Do"), reader.ColumnIndex("General", "val")) = 0#
     keys = Array("val", "as", "n", "d", "d2", "d3", "pos2", "pos3", "bind2", "bind3", "a2", "a3")
     blocks = Array("General", "Main", "Main", "Main", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra")
     For i = 0 To 11

@@ -559,6 +559,28 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '
 '     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.IsExplicitZero
+'
+'       Проверяет только явный числовой ноль переключающего размера. Остальные значения не валидируются:
+'       парный ноль может отключить поле с ошибкой Excel. Структурные ключи и границы таблицы
+'       обязательны.
+'
+'       Объявление:
+'         Public Function IsExplicitZero(ByVal blockKey As String, ByVal rowKey As String, Optional
+'         ByVal columnKey As String = "val") As Boolean
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например General, Edges, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
 '     CSectionInputReader.Text
 '
 '       Находит поле по ключам блока, строки и столбца. Читает непустой текст либо переданное значение
@@ -1544,14 +1566,13 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.RoundedPolygon
 '
-'       Создаёт и регистрирует точный контур по завершённому CPolygonSpec с именами из AddVertex. Прямой
-'       участок идёт от касания у данной вершины к касанию у следующей; скругление относится к самой
-'       вершине. Исчезнувший участок сохраняет только именованную привязку. Исходное описание не
-'       меняется.
+'       Создаёт точный контур по завершённому CPolygonSpec с именами из AddVertex. Угловой участок
+'       относится к исходной вершине. Он строится дугой или прямой фаской согласно chamfer. Исчезнувший
+'       участок сохраняет именованную привязку. Фасад сразу добавляет контур в описание сечения.
 '
 '       Объявление:
-'         Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As
-'         CGeometryPath
+'         Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, Optional
+'         ByVal chamfer As Boolean = False) As CGeometryPath
 '
 '       Параметры:
 '         ByVal pathID As String
@@ -1560,6 +1581,10 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         ByVal polygon As CPolygonSpec
 '           Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal
 '           набор отклоняются; порядок, радиусы и источники сохраняются.
+'
+'         Optional ByVal chamfer As Boolean = False
+'           False трактует заданный размер угла как радиус дуги. True откладывает этот размер вдоль
+'           обеих смежных граней и соединяет концы отрезком.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -2121,8 +2146,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CSectionDefinitionBuilder.RebarProjected
 '
 '       Задаёт новый ряд проекцией центров стержней исходного ряда на целевую линию target. Направление
-'       — нормаль исходной линии или общий вектор DirectionX/Y. StartSetback и EndSetback ограничивают
-'       рабочий участок целевой линии; отсутствие пересечения отклоняется либо пропускается по
+'       — нормаль исходной линии, общий вектор DirectionX/Y или луч от каждого стержня к точке
+'       ProjectionPointX/Y при ProjectTowardPoint=True. StartSetback и EndSetback ограничивают рабочий
+'       участок целевой линии; отсутствие пересечения отклоняется либо пропускается по
 '       SkipMissingProjection.
 '
 '       Объявление:
@@ -2367,10 +2393,39 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.SourceNormalSign
 '
-'       -1/0/+1: локальная нормаль исходного ряда или глобальное DirectionX/Y при 0.
+'       -1/0/+1: локальная нормаль исходного ряда или глобальное DirectionX/Y при 0. При
+'       ProjectTowardPoint=True должен быть равен 0.
 '
 '       Объявление:
 '         Public SourceNormalSign As Double
+'       По умолчанию: 0.
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarRuleOptions.ProjectTowardPoint
+'
+'       Направляет отдельный луч от каждого исходного стержня к точке ProjectionPointX/Y. Совпадение
+'       стержня с этой точкой отклоняется: направление не определено.
+'
+'       Объявление:
+'         Public ProjectTowardPoint As Boolean
+'       По умолчанию: False.
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarRuleOptions.ProjectionPointX
+'
+'       Координата X целевой точки для ProjectTowardPoint=True, мм.
+'
+'       Объявление:
+'         Public ProjectionPointX As Double
+'       По умолчанию: 0.
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarRuleOptions.ProjectionPointY
+'
+'       Координата Y целевой точки для ProjectTowardPoint=True, мм.
+'
+'       Объявление:
+'         Public ProjectionPointY As Double
 '       По умолчанию: 0.
 '
 '     ----------------------------------------------------------------------------------------------

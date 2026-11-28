@@ -1,0 +1,11 @@
+True
+True
+True
+True
+Проект VBA не скомпилирован; новая книга не сохранена.
+At C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Build-Workbook.ps1:663 char:36
++ ... .Enabled) { throw 'Проект VBA не скомпилирован; новая книга не сохран ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Проект VBA не с...а не сохранена.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Проект VBA не скомпилирован; новая книга не сохранена.
+ 

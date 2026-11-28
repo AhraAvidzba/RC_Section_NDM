@@ -1,0 +1,72 @@
+﻿{
+    "Status":  "PASS",
+    "SourceSHA256":  "51EAAED4BCD473D4957F3CCD0E73C84C91CE2AC2B4B09CF9403C8EE9DF7993A7",
+    "Results":  [
+                    {
+                        "Macro":  "modTestOptionalOpenings.RunOptionalOpeningTests",
+                        "Passed":  true,
+                        "Seconds":  7.436433,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestOptionalOpenings.RunOptionalOpeningWorkbookTests",
+                        "Passed":  true,
+                        "Seconds":  5.7571293,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunCircleRecipeInputTests",
+                        "Passed":  true,
+                        "Seconds":  3.7314846999999998,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunHollowRecipeInputTests",
+                        "Passed":  true,
+                        "Seconds":  32.2161551,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunCircleBindingTests",
+                        "Passed":  true,
+                        "Seconds":  5.9460821,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+                        "Passed":  true,
+                        "Seconds":  2.180474,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                        "Passed":  true,
+                        "Seconds":  0.59628059999999994,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestRecipeOperations.RunRecipeOperationTests",
+                        "Passed":  true,
+                        "Seconds":  0.0137779,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.TestDumpHollowRecipeMatrix",
+                        "Passed":  true,
+                        "Seconds":  0,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "modTestSectionRecipes.TestDumpHollowRecipeEdgeMatrix",
+                        "Passed":  true,
+                        "Seconds":  0,
+                        "Error":  ""
+                    },
+                    {
+                        "Macro":  "Preview",
+                        "Passed":  true,
+                        "Seconds":  0,
+                        "Error":  ""
+                    }
+                ]
+}

@@ -1,0 +1,156 @@
+﻿PASS workbook.calc.Do
+PASS workbook.calc.Xo
+PASS workbook.calc.Yo
+PASS workbook.calc.inner.main
+PASS workbook.calc.inner.extra
+PASS workbook.link.Do; actual=300; expected=300
+PASS workbook.link.Xo; actual=100; expected=100
+PASS workbook.link.Yo; actual=-60; expected=-60
+PASS workbook.link.inner.as; actual=40; expected=40
+PASS workbook.link.inner.d; actual=16; expected=16
+PASS units.area.mm; actual=714712.328691678; expected=714712.328691678
+PASS excel.roundtrip.bars.mm
+PASS excel.roundtrip.dimension.mm
+PASS excel.roundtrip.Do.mm; actual=300; expected=300
+PASS file.shape.mm.Snapshot.Kind
+PASS file.shape.mm.rngNDMSectionGeometry
+PASS file.shape.mm.rngNDMSectionContours
+PASS file.shape.mm.rngNDMElementGeometry
+PASS file.shape.mm.rngNDMElementResults
+PASS file.shape.mm.rngNDMSectionProperties
+PASS file.shape.mm.rngNDMSectionAnnotations
+PASS file.shape.mm.rngNDMMaterialDiagrams
+PASS file.roundtrip.contours.mm
+PASS file.roundtrip.bars.mm
+PASS file.bar.x.mm1; actual=2.75536429610035E-14; expected=2.75536429610035E-14
+PASS file.bar.y.mm1; actual=450; expected=450
+PASS file.bar.x.mm2; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.y.mm2; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.x.mm3; actual=450; expected=450
+PASS file.bar.y.mm3; actual=0; expected=0
+PASS file.bar.x.mm4; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.y.mm4; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.x.mm5; actual=2.75536429610035E-14; expected=2.75536429610035E-14
+PASS file.bar.y.mm5; actual=-450; expected=-450
+PASS file.bar.x.mm6; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.y.mm6; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.x.mm7; actual=-450; expected=-450
+PASS file.bar.y.mm7; actual=3.44573002943049E-13; expected=3.44573002943049E-13
+PASS file.bar.x.mm8; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.y.mm8; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.x.mm9; actual=63.4412524630078; expected=63.4412524630078
+PASS file.bar.y.mm9; actual=126.44961243866; expected=126.44961243866
+PASS file.bar.x.mm10; actual=194.949508441749; expected=194.949508441749
+PASS file.bar.y.mm10; actual=104.573967706531; expected=104.573967706531
+PASS file.bar.x.mm11; actual=287.268228414521; expected=287.268228414521
+PASS file.bar.y.mm11; actual=-27.8968751289394; expected=-27.8968751289394
+PASS file.bar.x.mm12; actual=222.638200413811; expected=222.638200413811
+PASS file.bar.y.mm12; actual=-205.120197764687; expected=-205.120197764687
+PASS file.bar.x.mm13; actual=52.8086834491362; expected=52.8086834491362
+PASS file.bar.y.mm13; actual=-244.046134548369; expected=-244.046134548369
+PASS file.bar.x.mm14; actual=-61.6690295600758; expected=-61.6690295600758
+PASS file.bar.y.mm14; actual=-159.815454119607; expected=-159.815454119607
+PASS file.bar.x.mm15; actual=-88.879413555519; expected=-88.879413555519
+PASS file.bar.y.mm15; actual=-39.3949730666705; expected=-39.3949730666705
+PASS file.bar.x.mm16; actual=-40.9205647168815; expected=-40.9205647168815
+PASS file.bar.y.mm16; actual=67.441729586016; expected=67.441729586016
+PASS file.roundtrip.dimension.mm
+PASS file.roundtrip.Do.mm; actual=300; expected=300
+PASS units.area.cm; actual=714712.328691678; expected=714712.328691678
+PASS excel.roundtrip.bars.cm
+PASS excel.roundtrip.dimension.cm
+PASS excel.roundtrip.Do.cm; actual=300; expected=300
+PASS file.shape.cm.Snapshot.Kind
+PASS file.shape.cm.rngNDMSectionGeometry
+PASS file.shape.cm.rngNDMSectionContours
+PASS file.shape.cm.rngNDMElementGeometry
+PASS file.shape.cm.rngNDMElementResults
+PASS file.shape.cm.rngNDMSectionProperties
+PASS file.shape.cm.rngNDMSectionAnnotations
+PASS file.shape.cm.rngNDMMaterialDiagrams
+PASS file.roundtrip.contours.cm
+PASS file.roundtrip.bars.cm
+PASS file.bar.x.cm1; actual=2.75536429610035E-14; expected=2.75536429610035E-14
+PASS file.bar.y.cm1; actual=450; expected=450
+PASS file.bar.x.cm2; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.y.cm2; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.x.cm3; actual=450; expected=450
+PASS file.bar.y.cm3; actual=0; expected=0
+PASS file.bar.x.cm4; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.y.cm4; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.x.cm5; actual=2.75536429610035E-14; expected=2.75536429610035E-14
+PASS file.bar.y.cm5; actual=-450; expected=-450
+PASS file.bar.x.cm6; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.y.cm6; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.x.cm7; actual=-450; expected=-450
+PASS file.bar.y.cm7; actual=3.44573002943049E-13; expected=3.44573002943049E-13
+PASS file.bar.x.cm8; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.y.cm8; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.x.cm9; actual=63.4412524630078; expected=63.4412524630078
+PASS file.bar.y.cm9; actual=126.44961243866; expected=126.44961243866
+PASS file.bar.x.cm10; actual=194.949508441749; expected=194.949508441749
+PASS file.bar.y.cm10; actual=104.573967706531; expected=104.573967706531
+PASS file.bar.x.cm11; actual=287.268228414521; expected=287.268228414521
+PASS file.bar.y.cm11; actual=-27.8968751289394; expected=-27.8968751289394
+PASS file.bar.x.cm12; actual=222.638200413811; expected=222.638200413811
+PASS file.bar.y.cm12; actual=-205.120197764687; expected=-205.120197764687
+PASS file.bar.x.cm13; actual=52.8086834491362; expected=52.8086834491362
+PASS file.bar.y.cm13; actual=-244.046134548369; expected=-244.046134548369
+PASS file.bar.x.cm14; actual=-61.6690295600758; expected=-61.6690295600758
+PASS file.bar.y.cm14; actual=-159.815454119607; expected=-159.815454119607
+PASS file.bar.x.cm15; actual=-88.879413555519; expected=-88.879413555519
+PASS file.bar.y.cm15; actual=-39.3949730666705; expected=-39.3949730666705
+PASS file.bar.x.cm16; actual=-40.9205647168815; expected=-40.9205647168815
+PASS file.bar.y.cm16; actual=67.441729586016; expected=67.441729586016
+PASS file.roundtrip.dimension.cm
+PASS file.roundtrip.Do.cm; actual=300; expected=300
+PASS units.area.m; actual=714712.328691678; expected=714712.328691678
+PASS excel.roundtrip.bars.m
+PASS excel.roundtrip.dimension.m
+PASS excel.roundtrip.Do.m; actual=300; expected=300
+PASS file.shape.m.Snapshot.Kind
+PASS file.shape.m.rngNDMSectionGeometry
+PASS file.shape.m.rngNDMSectionContours
+PASS file.shape.m.rngNDMElementGeometry
+PASS file.shape.m.rngNDMElementResults
+PASS file.shape.m.rngNDMSectionProperties
+PASS file.shape.m.rngNDMSectionAnnotations
+PASS file.shape.m.rngNDMMaterialDiagrams
+PASS file.roundtrip.contours.m
+PASS file.roundtrip.bars.m
+PASS file.bar.x.m1; actual=2.75536429610035E-14; expected=2.75536429610035E-14
+PASS file.bar.y.m1; actual=450; expected=450
+PASS file.bar.x.m2; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.y.m2; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.x.m3; actual=450; expected=450
+PASS file.bar.y.m3; actual=0; expected=0
+PASS file.bar.x.m4; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.y.m4; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.x.m5; actual=2.75536429610035E-14; expected=2.75536429610035E-14
+PASS file.bar.y.m5; actual=-450; expected=-450
+PASS file.bar.x.m6; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.y.m6; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.x.m7; actual=-450; expected=-450
+PASS file.bar.y.m7; actual=3.44573002943049E-13; expected=3.44573002943049E-13
+PASS file.bar.x.m8; actual=-318.198051533946; expected=-318.198051533946
+PASS file.bar.y.m8; actual=318.198051533946; expected=318.198051533946
+PASS file.bar.x.m9; actual=63.4412524630078; expected=63.4412524630078
+PASS file.bar.y.m9; actual=126.44961243866; expected=126.44961243866
+PASS file.bar.x.m10; actual=194.949508441749; expected=194.949508441749
+PASS file.bar.y.m10; actual=104.573967706531; expected=104.573967706531
+PASS file.bar.x.m11; actual=287.268228414521; expected=287.268228414521
+PASS file.bar.y.m11; actual=-27.8968751289394; expected=-27.8968751289394
+PASS file.bar.x.m12; actual=222.638200413811; expected=222.638200413811
+PASS file.bar.y.m12; actual=-205.120197764687; expected=-205.120197764687
+PASS file.bar.x.m13; actual=52.8086834491362; expected=52.8086834491362
+PASS file.bar.y.m13; actual=-244.046134548369; expected=-244.046134548369
+PASS file.bar.x.m14; actual=-61.6690295600758; expected=-61.6690295600758
+PASS file.bar.y.m14; actual=-159.815454119607; expected=-159.815454119607
+PASS file.bar.x.m15; actual=-88.879413555519; expected=-88.879413555519
+PASS file.bar.y.m15; actual=-39.3949730666705; expected=-39.3949730666705
+PASS file.bar.x.m16; actual=-40.9205647168815; expected=-40.9205647168815
+PASS file.bar.y.m16; actual=67.441729586016; expected=67.441729586016
+PASS file.roundtrip.dimension.m
+PASS file.roundtrip.Do.m; actual=300; expected=300
+TOTAL OPTIONAL OPENING WORKBOOK: passed=154; failed=0
+
