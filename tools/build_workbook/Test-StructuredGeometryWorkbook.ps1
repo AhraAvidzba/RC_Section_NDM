@@ -62,7 +62,9 @@ try{
      $c=[int]$block.Columns[$key];$cell=$range.Cells.Item($row,$c)
      if($key -eq 'unit' -and $record[$c-1] -ceq 'мм'){$units.Add($cell)}
      if($key -in @('key','name','unit','note')){continue}
-     $editable=([string]$cell.Value2 -notin @('-','—') -and -not $cell.HasFormula)
+     $editable=$true # Назначение поля не зависит от формулы или текущего значения.
+     if($block.Key -eq 'Main' -and [string]$record[0] -like 'Opening*' -and $key -in @('n','endMode')){$editable=$false}
+     if($block.Key -eq 'Main' -and [string]$record[0] -eq 'OpeningCircle' -and $key -notin @('as','d')){$editable=$false}
      if($editable -and ($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108)){throw ('Input format: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)}
      if(-not $editable -and $cell.Interior.Color -eq 15135487){throw 'Derived field highlighted as input.'}
      if($CheckDefaults){if([string]$cell.Value2 -cne [string]$record[$c-1]){throw ('Default mismatch: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)};$defaults++}

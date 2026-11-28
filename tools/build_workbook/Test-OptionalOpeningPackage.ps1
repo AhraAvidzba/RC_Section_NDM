@@ -34,8 +34,9 @@ try{
   }
  }
  $sheet=$book.Worksheets.Item('Сечения');$formulas=@{C7='=Расчет!G29';C8='=Расчет!G30';C9='=Расчет!G31';C16='=Расчет!G40';D16='=Расчет!H40';C23='=Расчет!G52';D23='=Расчет!H52';G23='=Расчет!I52';H23='=Расчет!J52'}
- foreach($address in $formulas.Keys){$cell=$sheet.Range($address);Test-OpeningPackageCheck ('link.'+$address) ($cell.Formula-ceq$formulas[$address]) $cell.Formula $formulas[$address];Test-OpeningPackageCheck ('derived.fill.'+$address) ($cell.Interior.Color-ne15135487) $cell.Interior.Color 'Not input fill'}
+ foreach($address in $formulas.Keys){$cell=$sheet.Range($address);Test-OpeningPackageCheck ('link.'+$address) ($cell.Formula-ceq$formulas[$address]) $cell.Formula $formulas[$address];Test-OpeningPackageCheck ('input.link.fill.'+$address) ($cell.Interior.Color-eq15135487) $cell.Interior.Color 15135487}
  foreach($address in @('E16','F16','G16','H16')){Test-OpeningPackageCheck ('service.fill.'+$address) ($sheet.Range($address).Interior.Color-ne15135487) $sheet.Range($address).Interior.Color 'Not input fill'}
+ foreach($address in @('B8','B9','E16','F16','G16','H16')){$expectedText='-';if($address-eq'B8'){$expectedText='Смещение X'};if($address-eq'B9'){$expectedText='Смещение Y'};Test-OpeningPackageCheck ('requested.caption.'+$address) ($sheet.Range($address).Value2-ceq$expectedText) $sheet.Range($address).Value2 $expectedText}
  $separator=[string]$app.International(5)
  foreach($address in @('E23','F23','I23','J23')){
   $cell=$sheet.Range($address);$old=$cell.Formula;$options=@('EachBar','EverySecondBar');if($address-in@('F23','J23')){$options=@('Stacked','SideBySide')}

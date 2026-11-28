@@ -127,16 +127,20 @@ function Format-GeometrySettingsTable {
     Set-GeometryEditableCellFormat $Range
 }
 
-# Отдельно выделяет только вводимые значения. Формулы, ключи, единицы и комментарии не окрашивает.
+# Выделяет поля ввода по ключам блока, включая ссылки и пользовательские формулы.
+# Структурные колонки и вычисляемое количество проецируемого ряда не являются вводом.
 function Set-GeometryEditableCellFormat {
     param([object]$Range)
     foreach($block in @(Get-GeometryTableBlocks $Range)){
         foreach($key in @($block.Columns.Keys)){
             if($key -in @('key','name','unit','note')){continue}
             for($r=$block.FirstRow;$r -le $block.LastRow;$r++){
-                if([string]$Range.Cells.Item($r,1).Value2 -eq 'Units'){continue}
+                $rowKey=[string]$Range.Cells.Item($r,1).Value2
+                if(-not $rowKey -or $rowKey -eq 'Units'){continue}
+                if($block.Key -eq 'Main' -and $rowKey -like 'Opening*' -and $key -in @('n','endMode')){continue}
+                if($block.Key -eq 'Main' -and $rowKey -eq 'OpeningCircle' -and $key -notin @('as','d')){continue}
                 $cell=$Range.Cells.Item($r,[int]$block.Columns[$key])
-                if(-not $cell.HasFormula -and [string]$cell.Value2 -notin @('-','—')){$cell.Interior.Color=15135487}
+                $cell.Interior.Color=15135487
             }
         }
     }

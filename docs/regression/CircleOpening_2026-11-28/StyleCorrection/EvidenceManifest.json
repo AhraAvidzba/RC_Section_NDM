@@ -1,0 +1,65 @@
+{
+  "Purpose": "Local style/caption correction; no calculation code changes",
+  "Files": [
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/Acceptance.json",
+      "Bytes": 508,
+      "SHA256": "065E3D96922CAA2F243E21939FDC0443014360CF8C076AEF150A8924621A7152"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/InputFillMask.json",
+      "Bytes": 30318,
+      "SHA256": "F9E7B7D274F2A329A478B5E319044413759087646B23C0B7DCBE059927BE8F17"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/Memory.json",
+      "Bytes": 111,
+      "SHA256": "B8E9DD0E054FF36AE7188773703CDDA239EF9D7B0BAE96DE35D0A174A57AD94A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/NativeFieldCheck.json",
+      "Bytes": 183,
+      "SHA256": "84B0BED00196748DD4278B3F9617D50820168827C4F6163EE6467277167DA71E"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/NativeFields.log",
+      "Bytes": 31,
+      "SHA256": "22CA8F6887082DA06A10096FDCC2E8A747BABC22B84A430C197E0BE8CD769E54"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/NativePackage/Memory.json",
+      "Bytes": 111,
+      "SHA256": "F650BDF3A65B2FCEAC82FE85ABF5402F773130DEC75A258B480121A829D20D72"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/NativePackage/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "EECE71EFCFF3D4EC1D88D792ED54D3289415ADCA054444363A4F9DEB5413D64A"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/NativePackage/Package.json",
+      "Bytes": 28733,
+      "SHA256": "462C13911AD0458D7861DDDD104B41F3166537EA9CDF33C029B86A8B2F9BE5AD"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/Ownership.json",
+      "Bytes": 73,
+      "SHA256": "0238619E6FEDC2574966431084EF890F75DE3028DFDCBF20127AC8F7B8D14BCB"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/Repair-Styles.py",
+      "Bytes": 4208,
+      "SHA256": "8C016ABC50F565C09013FDA38FE2BB316DCA11ECF67164A87A225FC7421A5B33"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/StyleAcceptance.json",
+      "Bytes": 4411,
+      "SHA256": "50F42D081AA451F160F515088EEB88DB467F482B9B7F19DB5487484BE9A58C23"
+    },
+    {
+      "Path": "docs/regression/CircleOpening_2026-11-28/StyleCorrection/Test-NativeFields.ps1",
+      "Bytes": 4395,
+      "SHA256": "86ECF30419E64268D01DA06A91BD2AD3262DC40A6296235DF6DCC2E781BEC251"
+    }
+  ]
+}

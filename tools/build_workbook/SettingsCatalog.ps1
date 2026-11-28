@@ -444,13 +444,9 @@ function Apply-ConfigShortColumnAlignment {
     }
 }
 
-# Применяет единое правило выравнивания пользовательских ячеек ввода на Config.
-# Список колонок задан явно по именованным диапазонам, чтобы не центрировать
-# описательные поля и не ломать читаемость комментариев.
-function Apply-ConfigUserInputAlignment {
-    param([object]$Workbook)
-
-    $items = @(
+# Возвращает колонки полей ввода по назначению именованной таблицы; формулы и значения не меняют роль поля.
+function Get-ConfigUserInputTableSpecs {
+    @(
         @{ Name = "rngSystemSettings"; Columns = @(2) },
         @{ Name = "rngUnitSettings"; Columns = @(2, 4) },
         @{ Name = "rngSignConventionSettings"; Columns = @(2) },
@@ -460,8 +456,19 @@ function Apply-ConfigUserInputAlignment {
         @{ Name = "rngPlotAnnotationSettings"; Columns = @(2, 3) },
         @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6, 7); CommentColumns = @(7) },
         @{ Name = "rngStabilityDurationLoads"; Columns = @(1, 2, 3, 4) },
+        @{ Name = "rngTorsionSettings"; Columns = @(2) },
+        @{ Name = "rngTorsionCombinations"; Columns = @(2) },
         @{ Name = "rngSP35Table721"; Columns = @(1, 2, 3, 4, 5, 6) }
     )
+}
+
+# Применяет единое правило выравнивания пользовательских ячеек ввода на Config.
+# Список колонок задан явно по именованным диапазонам, чтобы не центрировать
+# описательные поля и не ломать читаемость комментариев.
+function Apply-ConfigUserInputAlignment {
+    param([object]$Workbook)
+
+    $items = @(Get-ConfigUserInputTableSpecs)
 
     foreach ($item in $items) {
         try {
@@ -482,7 +489,7 @@ function Apply-ConfigUserInputAlignment {
                         $inputArea=$cell.MergeArea
                         if($inputArea.Row -ne $cell.Row -or $inputArea.Column -ne $cell.Column){continue}
                     }
-                    if($columnIndex -in $item.CommentColumns -or (-not $cell.HasFormula -and [string]$cell.Value2 -notin @('-','—'))){$inputArea.Interior.Color=15135487}
+                    $inputArea.Interior.Color=15135487 # Ссылка или пользовательская формула сохраняет назначение поля ввода.
                 }
             }
         } catch {

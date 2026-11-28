@@ -1,0 +1,15 @@
+{
+  "Status": "PASS",
+  "InputFields": 1096,
+  "ChangedFills": 212,
+  "ConfigFillChanges": 37,
+  "SectionsFillChanges": 175,
+  "NativePackageChecks": 120,
+  "VBAAndOtherPartsByteExact": true,
+  "AllFormulasAndOtherValuesExact": true,
+  "BuilderRoundtrip": "PASS",
+  "CandidateSHA256": "960628070C66D85EE6887C5503F284820E31E5AEF36C2CEC449B35E98215497B",
+  "AcceptedMainNotReplaced": true,
+  "NativeLists": "User check remains unchanged; no validation rules changed",
+  "FullRunsStarted": false
+}

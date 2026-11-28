@@ -351,6 +351,39 @@ def apply_input_formatting(sheet, formatting):
         sheet.find(M + 'dimension').set('ref', f'A1:{column_letters(last_column)}{last_row}')
 
 
+def user_input_fill_cells(sheet, styles):
+    """Сохраняет назначенные сборщиком поля ввода до наложения оформления шаблона."""
+    fills, formats = styles.find(M + 'fills'), styles.find(M + 'cellXfs')
+    input_fills = {i for i, fill in enumerate(fills)
+                   if fill.find(M + 'patternFill/' + M + 'fgColor') is not None
+                   and fill.find(M + 'patternFill/' + M + 'fgColor').get('rgb', '').upper() == 'FFFFF2E6'}
+    return {cell.get('r') for cell in sheet.iter(M + 'c')
+            if int(formats[int(cell.get('s', '0'))].get('fillId', '0')) in input_fills}
+
+
+def apply_user_input_fills(sheet, styles, addresses):
+    """Меняет только заливку полей ввода; формулы и остальные свойства оформления сохраняются."""
+    fills, formats = styles.find(M + 'fills'), styles.find(M + 'cellXfs')
+    fill_id = next(i for i, fill in enumerate(fills)
+                   if fill.find(M + 'patternFill/' + M + 'fgColor') is not None
+                   and fill.find(M + 'patternFill/' + M + 'fgColor').get('rgb', '').upper() == 'FFFFF2E6')
+    replacements = {}
+    for cell in sheet.iter(M + 'c'):
+        if cell.get('r') not in addresses:
+            continue
+        original = int(cell.get('s', '0'))
+        if int(formats[original].get('fillId', '0')) == fill_id:
+            continue
+        if original not in replacements:
+            value = deepcopy(formats[original])
+            value.set('fillId', str(fill_id))
+            value.set('applyFill', '1')
+            replacements[original] = len(formats)
+            formats.append(value)
+        cell.set('s', str(replacements[original]))
+    formats.set('count', str(len(formats)))
+
+
 def capture_result_header(parts, path):
     """Сохраняет только постоянную шапку нагрузок Results, без результатов и метаданных запуска."""
     original = xml(parts, path)
@@ -664,6 +697,7 @@ def apply(source, template_path, destination):
     for name, reference in metadata['inputNames'].items():
         require(input_names.get(name) == reference, f'Изменилось расположение входного диапазона {name}')
     styles = xml(parts, 'xl/styles.xml')
+    editable_fills = {name: user_input_fill_cells(xml(parts, locations[name][1]), styles) for name in INPUTS}
     donor_styles = xml(template, 'styles.xml')
     if metadata.get('resultHeader'):
         header = xml(template, metadata['resultHeader'])
@@ -683,6 +717,7 @@ def apply(source, template_path, destination):
             formatting = xml(template, metadata['inputFormatting'][name])
             merge_styles(styles, donor_styles, formatting)
             apply_input_formatting(sheet, formatting)
+        apply_user_input_fills(sheet, styles, editable_fills[name])
         parts[part] = serialize(sheet)
     calc = xml(template, metadata['sheet'])
     require(calc.find(M + 'sheetPr').get('codeName') == xml(parts, calc_path).find(M + 'sheetPr').get('codeName'),
