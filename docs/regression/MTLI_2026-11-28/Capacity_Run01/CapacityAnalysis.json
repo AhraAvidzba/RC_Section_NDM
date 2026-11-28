@@ -1,0 +1,689 @@
+{
+  "scope": "CcapacitySolver only, single observations per case, not whole command benchmark",
+  "rows": [
+    {
+      "shape": 1,
+      "path": 1,
+      "mtli": 0,
+      "precision": 0,
+      "sec": 0.12109375,
+      "iterations": 21,
+      "converged": true,
+      "values": [
+        2.15018328885607,
+        0.0,
+        172014663.108485,
+        64505498.665682
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.0
+    },
+    {
+      "shape": 1,
+      "path": 1,
+      "mtli": 1,
+      "precision": 0,
+      "sec": 0.125,
+      "iterations": 21,
+      "converged": true,
+      "values": [
+        2.14045725551141,
+        0.0,
+        171236580.440913,
+        64213717.6653423
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.4523350820866272,
+      "speedup": 0.96875
+    },
+    {
+      "shape": 1,
+      "path": 1,
+      "mtli": 0,
+      "precision": 1,
+      "sec": 0.0859375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.15018014305294,
+        0.0,
+        172014411.444235,
+        64505404.2915882
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.00014630395214645855,
+      "speedup": 1.4090909090909092
+    },
+    {
+      "shape": 1,
+      "path": 1,
+      "mtli": 1,
+      "precision": 1,
+      "sec": 0.12109375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.14045754372105,
+        0.0,
+        171236603.497684,
+        64213726.3116315
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.452321678129781,
+      "speedup": 1.0
+    },
+    {
+      "shape": 1,
+      "path": 1,
+      "mtli": 0,
+      "precision": 2,
+      "sec": 0.08984375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.15018014301671,
+        0.0,
+        172014411.441337,
+        64505404.2905014
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.00014630563712513897,
+      "speedup": 1.3478260869565217
+    },
+    {
+      "shape": 1,
+      "path": 1,
+      "mtli": 1,
+      "precision": 2,
+      "sec": 0.078125,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.14309754338164,
+        0.0,
+        171447803.470531,
+        64292926.3014491
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.3295414633326403,
+      "speedup": 1.55
+    },
+    {
+      "shape": 1,
+      "path": 2,
+      "mtli": 0,
+      "precision": 0,
+      "sec": 0.109375,
+      "iterations": 21,
+      "converged": true,
+      "values": [
+        2.18026156071522,
+        -654078.468214566,
+        174420924.857218,
+        65407846.8214566
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.0
+    },
+    {
+      "shape": 1,
+      "path": 2,
+      "mtli": 1,
+      "precision": 0,
+      "sec": 0.1171875,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.16708360428107,
+        -650125.081284321,
+        173366688.342485,
+        65012508.1284321
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.604420894795731,
+      "speedup": 0.9333333333333333
+    },
+    {
+      "shape": 1,
+      "path": 2,
+      "mtli": 0,
+      "precision": 1,
+      "sec": 0.08984375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.18026123106912,
+        -654078.369320737,
+        174420898.48553,
+        65407836.9320737
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 1.5119566663172112e-05,
+      "speedup": 1.2173913043478262
+    },
+    {
+      "shape": 1,
+      "path": 2,
+      "mtli": 1,
+      "precision": 1,
+      "sec": 0.125,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.16708360428107,
+        -650125.081284321,
+        173366688.342485,
+        65012508.1284321
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.604420894795731,
+      "speedup": 0.875
+    },
+    {
+      "shape": 1,
+      "path": 2,
+      "mtli": 0,
+      "precision": 2,
+      "sec": 0.06640625,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.18097630184291,
+        -654292.890552873,
+        174478104.147433,
+        65429289.0552873
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.03278235696893837,
+      "speedup": 1.6470588235294117
+    },
+    {
+      "shape": 1,
+      "path": 2,
+      "mtli": 1,
+      "precision": 2,
+      "sec": 0.078125,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.16784954637218,
+        -650354.863911654,
+        173427963.709774,
+        65035486.3911654
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5692901515439467,
+      "speedup": 1.4
+    },
+    {
+      "shape": 2,
+      "path": 1,
+      "mtli": 0,
+      "precision": 0,
+      "sec": 0.08203125,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.11995193165362,
+        0.0,
+        169596154.532289,
+        63598557.9496085
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.0
+    },
+    {
+      "shape": 2,
+      "path": 1,
+      "mtli": 1,
+      "precision": 0,
+      "sec": 0.1015625,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.10708620098806,
+        0.0,
+        168566896.079044,
+        63212586.0296417
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.6068878484205408,
+      "speedup": 0.8076923076923077
+    },
+    {
+      "shape": 2,
+      "path": 1,
+      "mtli": 0,
+      "precision": 1,
+      "sec": 0.0859375,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.11987832613777,
+        0.0,
+        169590266.091022,
+        63596349.7841332
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.003472037018899794,
+      "speedup": 0.9545454545454546
+    },
+    {
+      "shape": 2,
+      "path": 1,
+      "mtli": 1,
+      "precision": 1,
+      "sec": 0.078125,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.1070634632053,
+        0.0,
+        168565077.056424,
+        63211903.8961589
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.6079604096620576,
+      "speedup": 1.05
+    },
+    {
+      "shape": 2,
+      "path": 1,
+      "mtli": 0,
+      "precision": 2,
+      "sec": 0.05859375,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.11987832564326,
+        0.0,
+        169590266.05146,
+        63596349.7692977
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0034720603454952625,
+      "speedup": 1.4
+    },
+    {
+      "shape": 2,
+      "path": 1,
+      "mtli": 1,
+      "precision": 2,
+      "sec": 0.06640625,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.10706346328236,
+        0.0,
+        168565077.062589,
+        63211903.8984708
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.607960406027057,
+      "speedup": 1.2352941176470589
+    },
+    {
+      "shape": 2,
+      "path": 2,
+      "mtli": 0,
+      "precision": 0,
+      "sec": 0.07421875,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.1310266396675,
+        -639307.991900249,
+        170482131.1734,
+        63930799.1900249
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.0
+    },
+    {
+      "shape": 2,
+      "path": 2,
+      "mtli": 1,
+      "precision": 0,
+      "sec": 0.1171875,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.11890486214726,
+        -635671.458644178,
+        169512388.971781,
+        63567145.8644178
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5688233687276466,
+      "speedup": 0.6333333333333333
+    },
+    {
+      "shape": 2,
+      "path": 2,
+      "mtli": 0,
+      "precision": 1,
+      "sec": 0.0625,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.1310266396675,
+        -639307.991900249,
+        170482131.1734,
+        63930799.1900249
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.1875
+    },
+    {
+      "shape": 2,
+      "path": 2,
+      "mtli": 1,
+      "precision": 1,
+      "sec": 0.10546875,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        2.11890486214726,
+        -635671.458644178,
+        169512388.971781,
+        63567145.8644178
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5688233687276466,
+      "speedup": 0.7037037037037037
+    },
+    {
+      "shape": 2,
+      "path": 2,
+      "mtli": 0,
+      "precision": 2,
+      "sec": 0.03125,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.13109625306558,
+        -639328.875919674,
+        170487700.245247,
+        63932887.5919674
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.003266660152979545,
+      "speedup": 2.375
+    },
+    {
+      "shape": 2,
+      "path": 2,
+      "mtli": 1,
+      "precision": 2,
+      "sec": 0.046875,
+      "iterations": 11,
+      "converged": true,
+      "values": [
+        2.11908486627186,
+        -635725.459881558,
+        169526789.301749,
+        63572545.9881558
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5603765421488784,
+      "speedup": 1.5833333333333333
+    },
+    {
+      "shape": 3,
+      "path": 1,
+      "mtli": 0,
+      "precision": 0,
+      "sec": 0.11328125,
+      "iterations": 21,
+      "converged": true,
+      "values": [
+        1.44172115826272,
+        0.0,
+        115337692.661018,
+        43251634.7478817
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.0
+    },
+    {
+      "shape": 3,
+      "path": 1,
+      "mtli": 1,
+      "precision": 0,
+      "sec": 0.109375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.42960954952374,
+        0.0,
+        114368763.961899,
+        42888286.4857122
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.8400798357972368,
+      "speedup": 1.0357142857142858
+    },
+    {
+      "shape": 3,
+      "path": 1,
+      "mtli": 0,
+      "precision": 1,
+      "sec": 0.0859375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.44171370589355,
+        0.0,
+        115337096.471484,
+        43251411.1768066
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0005169078037184481,
+      "speedup": 1.3181818181818181
+    },
+    {
+      "shape": 3,
+      "path": 1,
+      "mtli": 1,
+      "precision": 1,
+      "sec": 0.078125,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.42960954952199,
+        0.0,
+        114368763.96176,
+        42888286.4856598
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.8400798359181049,
+      "speedup": 1.45
+    },
+    {
+      "shape": 3,
+      "path": 1,
+      "mtli": 0,
+      "precision": 2,
+      "sec": 0.07421875,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.44171370588921,
+        0.0,
+        115337096.471137,
+        43251411.1766763
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0005169081046373169,
+      "speedup": 1.5263157894736843
+    },
+    {
+      "shape": 3,
+      "path": 1,
+      "mtli": 1,
+      "precision": 2,
+      "sec": 0.09375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.42960954952258,
+        0.0,
+        114368763.961806,
+        42888286.4856773
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.8400798358778679,
+      "speedup": 1.2083333333333333
+    },
+    {
+      "shape": 3,
+      "path": 2,
+      "mtli": 0,
+      "precision": 0,
+      "sec": 0.078125,
+      "iterations": 21,
+      "converged": true,
+      "values": [
+        1.39666268165652,
+        -418998.804496955,
+        111733014.532521,
+        41899880.4496955
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.0,
+      "speedup": 1.0
+    },
+    {
+      "shape": 3,
+      "path": 2,
+      "mtli": 1,
+      "precision": 0,
+      "sec": 0.1015625,
+      "iterations": 21,
+      "converged": true,
+      "values": [
+        1.3886599365604,
+        -416597.980968121,
+        111092794.924832,
+        41659798.0968121
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5729905439034338,
+      "speedup": 0.7692307692307693
+    },
+    {
+      "shape": 3,
+      "path": 2,
+      "mtli": 0,
+      "precision": 1,
+      "sec": 0.0859375,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.397253446087,
+        -419176.033826101,
+        111780275.68696,
+        41917603.3826101
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.04229828993403418,
+      "speedup": 0.9090909090909091
+    },
+    {
+      "shape": 3,
+      "path": 2,
+      "mtli": 1,
+      "precision": 1,
+      "sec": 0.06640625,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.38896066105863,
+        -416688.19831759,
+        111116852.884691,
+        41668819.831759
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5514588954832608,
+      "speedup": 1.1764705882352942
+    },
+    {
+      "shape": 3,
+      "path": 2,
+      "mtli": 0,
+      "precision": 2,
+      "sec": 0.05078125,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.397253446087,
+        -419176.033826101,
+        111780275.68696,
+        41917603.3826101
+      ],
+      "critical": "C1:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.04229828993403418,
+      "speedup": 1.5384615384615385
+    },
+    {
+      "shape": 3,
+      "path": 2,
+      "mtli": 1,
+      "precision": 2,
+      "sec": 0.07421875,
+      "iterations": 16,
+      "converged": true,
+      "values": [
+        1.38896066105863,
+        -416688.19831759,
+        111116852.884691,
+        41668819.831759
+      ],
+      "critical": "Contour:Compression",
+      "method": "UltimateStrain",
+      "max_error_pct": 0.5514588954832608,
+      "speedup": 1.0526315789473684
+    }
+  ]
+}

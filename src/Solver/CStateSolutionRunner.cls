@@ -28,6 +28,8 @@ Private mToleranceMx As Double ' Допуск равновесия по Mx, Н*�
 Private mToleranceMy As Double ' Допуск равновесия по My, Н*мм.
 Private mSecantMaxRestarts As Long ' Лимит перезапуска матрицы в secant-ветке.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить подробный журнал итераций.
+Private mUseThickLayerIntegration As Boolean ' Явный выбор непрерывного интегратора экспериментального расчёта.
+Private mRelativeEquilibriumTolerance As Double ' Дополнительный относительный допуск; ноль оставляет исходные абсолютные допуски.
 
 Private mSolver As CSectionSolver ' Объект последней попытки решения НДС, в том числе неуспешной.
 Private mExtensionUsed As Boolean ' Признак использования вспомогательного продолжения диаграмм в найденном НДС.
@@ -343,6 +345,8 @@ Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
     solver.ToleranceMy = mToleranceMy
     solver.SecantMaxRestarts = mSecantMaxRestarts
     solver.DiagnosticsEnabled = mDiagnosticsEnabled
+    solver.UseThickLayerIntegration = mUseThickLayerIntegration
+    solver.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Строит начальную плоскость для случаев, где нулевая плоскость является плохой
@@ -575,6 +579,13 @@ Public Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver 
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
+    If solver.UseThickLayerIntegration And Not concreteDiagram Is Nothing Then
+        If concreteDiagram.IsInExtensionRange(solver.MinConcreteStrain) Or concreteDiagram.IsInExtensionRange(solver.MaxConcreteStrain) Then
+            StateUsesExtension = True
+            Exit Function
+        End If
+    End If
+
     Dim concreteMin As Double, concreteMax As Double, steelMin As Double, steelMax As Double
     ' Выход за допуск возможен только у минимальной или максимальной деформации материала.
     If solver.TryGetMaterialStrainBounds(section, concreteMin, concreteMax, steelMin, steelMax) Then
@@ -629,6 +640,10 @@ Public Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal s
     Dim steelDiagram As CMaterialDiagram
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
+
+    If solver.UseThickLayerIntegration And Not concreteDiagram Is Nothing Then
+        If Not concreteDiagram.IsInPhysicalRange(solver.MinConcreteStrain) Or Not concreteDiagram.IsInPhysicalRange(solver.MaxConcreteStrain) Then Exit Function
+    End If
 
     Dim concreteMin As Double, concreteMax As Double, steelMin As Double, steelMax As Double
     ' Весь диапазон допустим, если обе крайние деформации входят в физический интервал.
@@ -807,6 +822,19 @@ End Property
 ' Нужно ли копить подробный журнал итераций.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
+End Property
+
+' Передаёт явный выбор MTLI всем попыткам одной экспериментальной задачи.
+Public Property Let UseThickLayerIntegration(ByVal value As Boolean)
+    If value <> mUseThickLayerIntegration Then Set mRetryAttemptFailures = Nothing
+    mUseThickLayerIntegration = value
+End Property
+
+' Передаёт относительную точность всем попыткам; смена настройки запрещает
+' повторно использовать ранее сохранённые итоги неудачных попыток.
+Public Property Let RelativeEquilibriumTolerance(ByVal value As Double)
+    If value <> mRelativeEquilibriumTolerance Then Set mRetryAttemptFailures = Nothing
+    mRelativeEquilibriumTolerance = value
 End Property
 
 ' ==========================================================================

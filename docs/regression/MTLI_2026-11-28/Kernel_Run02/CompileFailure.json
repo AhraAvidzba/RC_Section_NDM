@@ -1,0 +1,6 @@
+﻿{
+    "Module":  "CThickLayerIntegrator",
+    "Line":  64,
+    "Column":  1,
+    "Code":  "    Erase mR: Erase mK: Erase mF: Erase mH\r\n    mEps = epsilon: mEvaluations = 0\r\n    Dim scale As Double: scale = Abs(kx): If Abs(ky) \u003e scale Then scale = Abs(ky)\r\n    mGradient = 0#: mNX = 0#: mNY = 1#\r\n    If scale \u003e 0# Then"
+}

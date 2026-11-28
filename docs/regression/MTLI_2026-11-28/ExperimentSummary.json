@@ -1,0 +1,174 @@
+{
+  "Status": "EXPERIMENT_COMPLETE_WITH_LIMITATIONS",
+  "ProductionAdoptionAccepted": false,
+  "Branch": "codex/experimental-mtli",
+  "Base": "d227d0df5332c80e0557cf0f8ad224be67262db9",
+  "FullAcceptanceRun": false,
+  "BookSHA256": "8D10C884589BED7586FFC26E6C30B3284C44313A0E6877420A9344D018CD86F1",
+  "ExportSHA256": "69335AB56DC4F6363179818579254D34BB046FF1E4F45A610E0AAF7F4CE08E56",
+  "CompiledComponents": 211,
+  "SourceComponents": 205,
+  "DirectedTotals": [
+    {
+      "Name": "TOTAL_MTLI_SOLVER",
+      "Passed": 662,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_MTLI_CAPACITY",
+      "Passed": 186,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_MTLI_EDGE",
+      "Passed": 458,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_MTLI_ORACLE",
+      "Passed": 16,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_CENTERED_NUMERICAL",
+      "Passed": 449,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_CONTINUATION_STATES",
+      "Passed": 291,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_COMMON_STRAIN_LIMITS",
+      "Passed": 204,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_AXIAL_CAPACITY",
+      "Passed": 105,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_ULTIMATE_FRAME",
+      "Passed": 385,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_FORMATION_OUTCOME",
+      "Passed": 16,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL PREPARED SNAPSHOT REUSE",
+      "Passed": 69,
+      "Failed": 0
+    },
+    {
+      "Name": "TOTAL_AUDIT02_CACHE",
+      "Passed": 48,
+      "Failed": 0
+    }
+  ],
+  "NativeAssertions": 2889,
+  "IndependentAreaChecks": 192,
+  "WorkflowExecutions": 40,
+  "Accuracy": {
+    "0": {
+      "1": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0
+      }
+    },
+    "1": {
+      "1": {
+        "WithinTwoPercent": false,
+        "MaxErrorPct": 5.877732096024482
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 1.1563286210148351
+      }
+    },
+    "2": {
+      "1": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0.2699073772393021
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0.32228343387314207
+      }
+    },
+    "3": {
+      "1": {
+        "WithinTwoPercent": false,
+        "MaxErrorPct": 5.878004485642739
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 1.158424388623046
+      }
+    },
+    "4": {
+      "1": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0.6787924035389238
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0.6166637684206326
+      }
+    },
+    "5": {
+      "1": {
+        "WithinTwoPercent": false,
+        "MaxErrorPct": 5.878004483757833
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 1.1584243900159261
+      }
+    },
+    "6": {
+      "1": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0.6787924035389238
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 0.6166637684206326
+      }
+    },
+    "7": {
+      "1": {
+        "WithinTwoPercent": false,
+        "MaxErrorPct": 5.878004483757833
+      },
+      "2": {
+        "WithinTwoPercent": true,
+        "MaxErrorPct": 1.1584243900159261
+      }
+    }
+  },
+  "DefaultDiscreteIdentical": true,
+  "FullCommandSpeedupConfirmed": false,
+  "TimingLimitation": "Dense benchmark: one observation per variant; release control126.8s vs experimental control174.1s. Cannot separate runtime drift from optimization effect. Small benchmark three repeats gives no stable gain.",
+  "NativeUI": "PASS on saved/reopened private copy; exact rules match final artifact; only twenty cell styles changed after that copy was built.",
+  "ProtectedRelease": [
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+      "Unchanged": true
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "103F9E10E4144FEB13A0EF3A7B8FA77804EA5E0F2FE7D2BCF0D5A28A822092A8",
+      "Unchanged": true
+    }
+  ]
+}

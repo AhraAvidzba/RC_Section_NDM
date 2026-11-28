@@ -1,0 +1,5 @@
+﻿{
+    "Status":  "FAIL",
+    "Reason":  "Unable to cast object of type \u0027System.Object[,]\u0027 to type \u0027System.String\u0027.",
+    "ScriptStackTrace":  "at Add-ExperimentalNumericsSettings, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\SettingsCatalog.ps1: line 25\r\nat \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Build-Workbook.ps1: line 553\r\nat \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\outputs\\MTLIExperiment_2026-11-28\\Complete-ExperimentalBuild.ps1: line 18"
+}

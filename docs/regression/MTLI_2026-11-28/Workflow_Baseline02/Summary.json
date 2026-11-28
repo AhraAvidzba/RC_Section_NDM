@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS",
+    "Compiled":  true,
+    "Components":  210,
+    "BaselineRelease":  true,
+    "Macro":  "modTestMTLIWorkflowBaseline.RunThickLayerWorkflowBaselineBenchmarkTests",
+    "ElapsedSec":  953.616909,
+    "SourceSHA256":  "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+    "CandidateSHA256":  "71FAE08C152A5EC7566F893C1E96A69D03EF33D8DA2545C386222A833D41DFCE",
+    "UserWorkbookOpened":  false,
+    "Report":  "Native.txt"
+}

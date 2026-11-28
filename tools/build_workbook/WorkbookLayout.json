@@ -219,6 +219,14 @@
                       "Columns":  5
                   },
                   {
+                      "Name":  "rngExperimentalNumericsSettings",
+                      "RefersTo":  "=Config!$A$160:$E$162",
+                      "Sheet":  "Config",
+                      "Address":  "$A$160:$E$162",
+                      "Rows":  3,
+                      "Columns":  5
+                  },
+                  {
                       "Name":  "rngTorsionBarForces",
                       "RefersTo":  "=Results!$DW$192",
                       "Sheet":  "Results",

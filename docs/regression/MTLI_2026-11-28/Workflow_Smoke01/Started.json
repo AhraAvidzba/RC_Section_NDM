@@ -1,0 +1,7 @@
+﻿{
+    "PID":  56800,
+    "StartTicksUTC":  "639314720645565953",
+    "SourceSHA256":  "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+    "Macro":  "modTestThickLayerIntegration.RunThickLayerWorkflowSmokeTests",
+    "StartedUTC":  "2026-11-28T14:14:25.6919325+00:00"
+}

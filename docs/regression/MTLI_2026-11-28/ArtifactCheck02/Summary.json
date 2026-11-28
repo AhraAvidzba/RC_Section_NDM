@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS",
+    "Compiled":  true,
+    "Components":  211,
+    "BaselineRelease":  false,
+    "Macro":  "modTestThickLayerIntegration.RunThickLayerOracleTests",
+    "ElapsedSec":  0.0273728,
+    "SourceSHA256":  "8D10C884589BED7586FFC26E6C30B3284C44313A0E6877420A9344D018CD86F1",
+    "CandidateSHA256":  "63B99E0FC5E2C10CF83AD82C610E734FC41D8D2828C9B82FA869A13E400AEA46",
+    "UserWorkbookOpened":  false,
+    "Report":  "Native.txt"
+}

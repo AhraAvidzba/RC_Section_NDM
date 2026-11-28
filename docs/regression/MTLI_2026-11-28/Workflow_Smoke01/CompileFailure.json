@@ -1,0 +1,6 @@
+﻿{
+    "Module":  "modTestThickLayerIntegration",
+    "Line":  44,
+    "Column":  1,
+    "Code":  "    mPassed = 0: mFailed = 0: mReport = vbNullString\r\n    Dim family As String, caseNumber As Long, caseCount As Long, repeats As Long, repeat As Long, position As Long\r\n    Dim variant As Long, variantCount As Long, relative As Double, stepSize As Double, method As String\r\n    caseCount = 2: repeats = 3: variantCount = 6\r\n    If smoke Then caseCount = 1: repeats = 1: variantCount = 4"
+}

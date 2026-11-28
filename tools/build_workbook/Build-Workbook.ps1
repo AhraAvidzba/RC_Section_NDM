@@ -550,6 +550,7 @@ try {
     $results.Rows.RowHeight = 15
 
     $systemRanges = Add-SystemSettings $system
+    Add-ExperimentalNumericsSettings $workbook $script:WorkbookLayout
     Add-TorsionPostprocessTables $workbook $script:WorkbookLayout
     Add-SettingsInstructions $workbook $system $instructions
     # Руководство по рецептам добавляется после остальных разделов и формульных изображений справки.
@@ -643,6 +644,7 @@ try {
     Add-SectionIllustrationPictures $workbook $script:WorkbookLayout
     Initialize-SectionIllustrationSelectorName $workbook $script:WorkbookLayout
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    Add-ExperimentalNumericsSettings $workbook $script:WorkbookLayout
     Set-PlotRebarScaleDefaultFormula $workbook
     $excel.Run("'" + $workbook.Name + "'!modTorsionPostTables.InitializeTorsionPostOutput")
     Set-ResultsSnapshotTitleBand $workbook

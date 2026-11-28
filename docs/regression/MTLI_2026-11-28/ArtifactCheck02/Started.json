@@ -1,0 +1,7 @@
+﻿{
+    "PID":  21096,
+    "StartTicksUTC":  "639314770434028581",
+    "SourceSHA256":  "8D10C884589BED7586FFC26E6C30B3284C44313A0E6877420A9344D018CD86F1",
+    "Macro":  "modTestThickLayerIntegration.RunThickLayerOracleTests",
+    "StartedUTC":  "2026-11-28T15:37:24.5286881+00:00"
+}

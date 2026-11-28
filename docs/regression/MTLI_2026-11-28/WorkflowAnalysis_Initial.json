@@ -1,0 +1,3509 @@
+{
+  "Reference": "Unchanged release working VBA; same fixtures and geometry",
+  "Criterion": "All meaningful numeric cells: absolute floor + 2% of reference; path changes listed separately",
+  "FullAcceptance": false,
+  "Timings": {
+    "Baseline_1_0": {
+      "Samples": 3,
+      "MedianSec": 4.00506920000771,
+      "MinSec": 3.98187300004065,
+      "MaxSec": 4.31708329997491
+    },
+    "Baseline_2_0": {
+      "Samples": 1,
+      "MedianSec": 126.799179300026,
+      "MinSec": 126.799179300026,
+      "MaxSec": 126.799179300026
+    },
+    "Candidate_1_1": {
+      "Samples": 3,
+      "MedianSec": 4.30075850000139,
+      "MinSec": 3.96745149994968,
+      "MaxSec": 4.39482380001573,
+      "SpeedupAgainstRelease": 0.9312471741918119
+    },
+    "Candidate_1_2": {
+      "Samples": 3,
+      "MedianSec": 4.22349330002908,
+      "MinSec": 4.10063370002899,
+      "MaxSec": 4.37463879998541,
+      "SpeedupAgainstRelease": 0.9482835452775865
+    },
+    "Candidate_1_3": {
+      "Samples": 3,
+      "MedianSec": 4.20448449999094,
+      "MinSec": 3.94318200001726,
+      "MaxSec": 4.36147079995135,
+      "SpeedupAgainstRelease": 0.9525708086250145
+    },
+    "Candidate_1_4": {
+      "Samples": 3,
+      "MedianSec": 4.16527060000226,
+      "MinSec": 3.92497519997414,
+      "MaxSec": 4.21159769996302,
+      "SpeedupAgainstRelease": 0.9615387773379086
+    },
+    "Candidate_1_5": {
+      "Samples": 3,
+      "MedianSec": 4.13620010000886,
+      "MinSec": 4.05895180004882,
+      "MaxSec": 4.16474640002707,
+      "SpeedupAgainstRelease": 0.9682967707483809
+    },
+    "Candidate_1_6": {
+      "Samples": 3,
+      "MedianSec": 4.09079410001868,
+      "MinSec": 4.08511819998967,
+      "MaxSec": 4.19636410003295,
+      "SpeedupAgainstRelease": 0.9790444354042216
+    },
+    "Candidate_1_7": {
+      "Samples": 3,
+      "MedianSec": 4.10402770002838,
+      "MinSec": 4.08215139998356,
+      "MaxSec": 4.22735800000373,
+      "SpeedupAgainstRelease": 0.9758874678111978
+    },
+    "Candidate_1_0": {
+      "Samples": 3,
+      "MedianSec": 4.16434700001264,
+      "MinSec": 4.12043770001037,
+      "MaxSec": 4.78711090004072,
+      "SpeedupAgainstRelease": 0.9617520345916306
+    },
+    "Candidate_2_1": {
+      "Samples": 1,
+      "MedianSec": 137.571989899967,
+      "MinSec": 137.571989899967,
+      "MaxSec": 137.571989899967,
+      "SpeedupAgainstRelease": 0.9216932850373519
+    },
+    "Candidate_2_2": {
+      "Samples": 1,
+      "MedianSec": 175.754168799962,
+      "MinSec": 175.754168799962,
+      "MaxSec": 175.754168799962,
+      "SpeedupAgainstRelease": 0.7214575913948587
+    },
+    "Candidate_2_3": {
+      "Samples": 1,
+      "MedianSec": 166.742703699972,
+      "MinSec": 166.742703699972,
+      "MaxSec": 166.742703699972,
+      "SpeedupAgainstRelease": 0.7604481424757376
+    },
+    "Candidate_2_4": {
+      "Samples": 1,
+      "MedianSec": 170.303842100024,
+      "MinSec": 170.303842100024,
+      "MaxSec": 170.303842100024,
+      "SpeedupAgainstRelease": 0.7445467919951767
+    },
+    "Candidate_2_5": {
+      "Samples": 1,
+      "MedianSec": 178.756627299997,
+      "MinSec": 178.756627299997,
+      "MaxSec": 178.756627299997,
+      "SpeedupAgainstRelease": 0.709339738700855
+    },
+    "Candidate_2_6": {
+      "Samples": 1,
+      "MedianSec": 182.211150599993,
+      "MinSec": 182.211150599993,
+      "MaxSec": 182.211150599993,
+      "SpeedupAgainstRelease": 0.6958914362951774
+    },
+    "Candidate_2_7": {
+      "Samples": 1,
+      "MedianSec": 175.848914299975,
+      "MinSec": 175.848914299975,
+      "MaxSec": 175.848914299975,
+      "SpeedupAgainstRelease": 0.7210688778193043
+    },
+    "Candidate_2_0": {
+      "Samples": 1,
+      "MedianSec": 174.091642300016,
+      "MinSec": 174.091642300016,
+      "MaxSec": 174.091642300016,
+      "SpeedupAgainstRelease": 0.7283473096400007
+    }
+  },
+  "Comparisons": [
+    {
+      "Case": 1,
+      "Variant": 0,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_0_0.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0,
+        "Cracks.Data": 0,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 0,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_0_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0,
+        "Cracks.Data": 0,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 0,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_0_2.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0,
+        "Cracks.Data": 0,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 0,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_0_3.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0,
+        "Cracks.Data": 0,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 1,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_1_0.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.877732096024482,
+        "Cracks.Data": 4.202871330776949,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.000498800896311154,
+          "ErrorPct": 4.7517793259349945,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01682780821766,
+          "ErrorPct": 4.536227791558474,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000000001,
+          "ErrorPct": 5.3392716928833455,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284493467944e-05,
+          "ErrorPct": 5.755691176455881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276718008811e-06,
+          "ErrorPct": 5.861379830970278,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066245564708,
+          "ErrorPct": 5.152350475829853,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.012448753478515,
+          "ErrorPct": 5.877732096024482,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225616063224444,
+          "ErrorPct": 2.9015480066719115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130798311917,
+          "ErrorPct": 2.8197321253942698,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346745928167244,
+          "ErrorPct": 2.39941777022683,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.7399442493575e-06,
+          "ErrorPct": 2.3247666860178042,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01382939376977e-06,
+          "ErrorPct": 3.033966719470265,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296092837846688,
+          "ErrorPct": 2.358736045327883,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292838766013909,
+          "ErrorPct": 2.3395335130064403,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328960585929126,
+          "ErrorPct": 2.433822594600862,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645045511302323,
+          "ErrorPct": 4.202871330776949,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349096261139426,
+          "ErrorPct": 2.4165423516573363,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 1,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_1_1.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.877732096024482,
+        "Cracks.Data": 4.202871330776949,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.000498800896311154,
+          "ErrorPct": 4.7517793259349945,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01682780821766,
+          "ErrorPct": 4.536227791558474,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000000001,
+          "ErrorPct": 5.3392716928833455,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284493467944e-05,
+          "ErrorPct": 5.755691176455881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276718008811e-06,
+          "ErrorPct": 5.861379830970278,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066245564708,
+          "ErrorPct": 5.152350475829853,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.012448753478515,
+          "ErrorPct": 5.877732096024482,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225616063224444,
+          "ErrorPct": 2.9015480066719115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130798311917,
+          "ErrorPct": 2.8197321253942698,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346745928167244,
+          "ErrorPct": 2.39941777022683,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.7399442493575e-06,
+          "ErrorPct": 2.3247666860178042,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01382939376977e-06,
+          "ErrorPct": 3.033966719470265,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296092837846688,
+          "ErrorPct": 2.358736045327883,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292838766013909,
+          "ErrorPct": 2.3395335130064403,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328960585929126,
+          "ErrorPct": 2.433822594600862,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645045511302323,
+          "ErrorPct": 4.202871330776949,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349096261139426,
+          "ErrorPct": 2.4165423516573363,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 1,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_1_2.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.877732096024482,
+        "Cracks.Data": 4.202871330776949,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.000498800896311154,
+          "ErrorPct": 4.7517793259349945,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01682780821766,
+          "ErrorPct": 4.536227791558474,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000000001,
+          "ErrorPct": 5.3392716928833455,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284493467944e-05,
+          "ErrorPct": 5.755691176455881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276718008811e-06,
+          "ErrorPct": 5.861379830970278,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066245564708,
+          "ErrorPct": 5.152350475829853,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.012448753478515,
+          "ErrorPct": 5.877732096024482,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225616063224444,
+          "ErrorPct": 2.9015480066719115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130798311917,
+          "ErrorPct": 2.8197321253942698,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346745928167244,
+          "ErrorPct": 2.39941777022683,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.7399442493575e-06,
+          "ErrorPct": 2.3247666860178042,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01382939376977e-06,
+          "ErrorPct": 3.033966719470265,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296092837846688,
+          "ErrorPct": 2.358736045327883,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292838766013909,
+          "ErrorPct": 2.3395335130064403,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328960585929126,
+          "ErrorPct": 2.433822594600862,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645045511302323,
+          "ErrorPct": 4.202871330776949,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349096261139426,
+          "ErrorPct": 2.4165423516573363,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 1,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_1_3.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.877732096024482,
+        "Cracks.Data": 4.202871330776949,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.000498800896311154,
+          "ErrorPct": 4.7517793259349945,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01682780821766,
+          "ErrorPct": 4.536227791558474,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000000001,
+          "ErrorPct": 5.3392716928833455,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284493467944e-05,
+          "ErrorPct": 5.755691176455881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276718008811e-06,
+          "ErrorPct": 5.861379830970278,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066245564708,
+          "ErrorPct": 5.152350475829853,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.012448753478515,
+          "ErrorPct": 5.877732096024482,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225616063224444,
+          "ErrorPct": 2.9015480066719115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130798311917,
+          "ErrorPct": 2.8197321253942698,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346745928167244,
+          "ErrorPct": 2.39941777022683,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.7399442493575e-06,
+          "ErrorPct": 2.3247666860178042,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01382939376977e-06,
+          "ErrorPct": 3.033966719470265,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296092837846688,
+          "ErrorPct": 2.358736045327883,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292838766013909,
+          "ErrorPct": 2.3395335130064403,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328960585929126,
+          "ErrorPct": 2.433822594600862,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645045511302323,
+          "ErrorPct": 4.202871330776949,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349096261139426,
+          "ErrorPct": 2.4165423516573363,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 2,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_2_0.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.2699073772393021,
+        "Cracks.Data": 0.004775105244159373,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 2,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_2_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.2699073772393021,
+        "Cracks.Data": 0.004775105244159373,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 2,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_2_2.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.2699073772393021,
+        "Cracks.Data": 0.004775105244159373,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 2,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_2_3.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.2699073772393021,
+        "Cracks.Data": 0.004775105244159373,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 3,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_3_0.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004485642739,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000002542,
+          "ErrorPct": 5.339271692196115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206864665e-05,
+          "ErrorPct": 5.755912060782014,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637517791e-06,
+          "ErrorPct": 5.861408394779477,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400942541,
+          "ErrorPct": 5.152291305940258,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174518522,
+          "ErrorPct": 5.878004485642739,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.00022561612723511,
+          "ErrorPct": 2.901577201386708,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130754298992,
+          "ErrorPct": 2.8197596968880556,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147731233,
+          "ErrorPct": 2.405266959759879,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511316971e-06,
+          "ErrorPct": 2.327015637069656,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457569828e-06,
+          "ErrorPct": 3.041902721722881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855807437,
+          "ErrorPct": 2.357740825368351,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.0029282100352991,
+          "ErrorPct": 2.3454572248732806,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328961012736836,
+          "ErrorPct": 2.433955496678247,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 3,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_3_1.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004485642739,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000002542,
+          "ErrorPct": 5.339271692196115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206864665e-05,
+          "ErrorPct": 5.755912060782014,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637517791e-06,
+          "ErrorPct": 5.861408394779477,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400942541,
+          "ErrorPct": 5.152291305940258,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174518522,
+          "ErrorPct": 5.878004485642739,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.00022561612723511,
+          "ErrorPct": 2.901577201386708,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130754298992,
+          "ErrorPct": 2.8197596968880556,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147731233,
+          "ErrorPct": 2.405266959759879,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511316971e-06,
+          "ErrorPct": 2.327015637069656,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457569828e-06,
+          "ErrorPct": 3.041902721722881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855807437,
+          "ErrorPct": 2.357740825368351,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.0029282100352991,
+          "ErrorPct": 2.3454572248732806,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328961012736836,
+          "ErrorPct": 2.433955496678247,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 3,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_3_2.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004485642739,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000002542,
+          "ErrorPct": 5.339271692196115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206864665e-05,
+          "ErrorPct": 5.755912060782014,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637517791e-06,
+          "ErrorPct": 5.861408394779477,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400942541,
+          "ErrorPct": 5.152291305940258,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174518522,
+          "ErrorPct": 5.878004485642739,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.00022561612723511,
+          "ErrorPct": 2.901577201386708,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130754298992,
+          "ErrorPct": 2.8197596968880556,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147731233,
+          "ErrorPct": 2.405266959759879,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511316971e-06,
+          "ErrorPct": 2.327015637069656,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457569828e-06,
+          "ErrorPct": 3.041902721722881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855807437,
+          "ErrorPct": 2.357740825368351,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.0029282100352991,
+          "ErrorPct": 2.3454572248732806,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328961012736836,
+          "ErrorPct": 2.433955496678247,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 3,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_3_3.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004485642739,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.00350000000002542,
+          "ErrorPct": 5.339271692196115,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206864665e-05,
+          "ErrorPct": 5.755912060782014,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637517791e-06,
+          "ErrorPct": 5.861408394779477,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400942541,
+          "ErrorPct": 5.152291305940258,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174518522,
+          "ErrorPct": 5.878004485642739,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.00022561612723511,
+          "ErrorPct": 2.901577201386708,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5130754298992,
+          "ErrorPct": 2.8197596968880556,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147731233,
+          "ErrorPct": 2.405266959759879,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511316971e-06,
+          "ErrorPct": 2.327015637069656,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457569828e-06,
+          "ErrorPct": 3.041902721722881,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855807437,
+          "ErrorPct": 2.357740825368351,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.0029282100352991,
+          "ErrorPct": 2.3454572248732806,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000328961012736836,
+          "ErrorPct": 2.433955496678247,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 4,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_4_0.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 4,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_4_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 4,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_4_2.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 4,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_4_3.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 5,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_5_0.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 5,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_5_1.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 5,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_5_2.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 5,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_5_3.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 6,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_6_0.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 6,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_6_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 6,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_6_2.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 6,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_6_3.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6787924035389238,
+        "Cracks.Data": 0.14725568511458736,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 7,
+      "Repeat": 0,
+      "ReferenceFile": "Workflow_1_0_0.txt",
+      "CandidateFile": "Workflow_1_7_0.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 7,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_1_0_1.txt",
+      "CandidateFile": "Workflow_1_7_1.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 7,
+      "Repeat": 2,
+      "ReferenceFile": "Workflow_1_0_2.txt",
+      "CandidateFile": "Workflow_1_7_2.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 1,
+      "Variant": 7,
+      "Repeat": 3,
+      "ReferenceFile": "Workflow_1_0_3.txt",
+      "CandidateFile": "Workflow_1_7_3.txt",
+      "WithinTwoPercent": false,
+      "NumericCells": 200,
+      "MaxErrorPct": {
+        "Strength.Data": 5.878004483757833,
+        "Cracks.Data": 4.203344338637287,
+        "Stability.Data": 0
+      },
+      "Exceedances": [
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000476174151428145,
+          "Actual": -0.00049881218572855,
+          "ErrorPct": 4.754150184865951,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 7.35025198134501,
+          "Actual": 7.01666899915046,
+          "ErrorPct": 4.538388385067416,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": -0.00369741503429451,
+          "Actual": -0.0035000000000367,
+          "ErrorPct": 5.339271691891034,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": 1.29752655618601e-05,
+          "Actual": 1.22284206866876e-05,
+          "ErrorPct": 5.7559120590779935,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": 2.81793718170604e-06,
+          "Actual": 2.65276637511458e-06,
+          "ErrorPct": 5.861408397026855,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00262596117894559,
+          "Actual": -0.00249066400943514,
+          "ErrorPct": 5.152291305569741,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 1,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.0132261512134571,
+          "Actual": 0.0124487174521015,
+          "ErrorPct": 5.878004483757833,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 18,
+          "Header": "εbc",
+          "Reference": -0.000219254294609655,
+          "Actual": -0.000225703100972892,
+          "ErrorPct": 2.9412451759350935,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 29,
+          "Header": "запас (ε)",
+          "Reference": 15.9631992898071,
+          "Actual": 15.5070975317276,
+          "ErrorPct": 2.8572076925126924,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 32,
+          "Header": "ε0",
+          "Reference": 0.00355270348030228,
+          "Actual": 0.00346725147722645,
+          "ErrorPct": 2.4052669621771954,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 33,
+          "Header": "κx, 1/mm",
+          "Reference": -4.85275958760262e-06,
+          "Actual": -4.73983511315607e-06,
+          "ErrorPct": 2.327015637350746,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 34,
+          "Header": "κy, 1/mm",
+          "Reference": -2.07684002906834e-06,
+          "Actual": -2.01366457559349e-06,
+          "ErrorPct": 3.041902726768519,
+          "AbsoluteFloor": 1e-12
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 44,
+          "Header": "εsc",
+          "Reference": -0.00303245601146809,
+          "Actual": -0.00296095855811701,
+          "ErrorPct": 2.3577408239622324,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Strength.Data",
+          "Row": 2,
+          "Column": 45,
+          "Header": "εst",
+          "Reference": 0.00299853949656189,
+          "Actual": 0.00292821003522963,
+          "ErrorPct": 2.345457227190076,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 22,
+          "Header": "εbc",
+          "Reference": -0.000321144498561811,
+          "Actual": -0.000329550632730556,
+          "ErrorPct": 2.617555090119986,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 1,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000619028538335301,
+          "Actual": -0.000645048439355967,
+          "ErrorPct": 4.203344338637287,
+          "AbsoluteFloor": 1e-10
+        },
+        {
+          "Table": "Cracks.Data",
+          "Row": 2,
+          "Column": 26,
+          "Header": "εbc",
+          "Reference": -0.000340859252932763,
+          "Actual": -0.000349110587569454,
+          "ErrorPct": 2.4207453855796115,
+          "AbsoluteFloor": 1e-10
+        }
+      ],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 0,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_0_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 0,
+        "Cracks.Data": 0,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 1,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_1_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 1.1563286210148351,
+        "Cracks.Data": 0.8219278229764699,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 2,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_2_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 0.32228343387314207,
+        "Cracks.Data": 0.004645033855179248,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 3,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_3_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 1.158424388623046,
+        "Cracks.Data": 0.8223852444966412,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 4,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_4_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6166637684206326,
+        "Cracks.Data": 0.20540175192930815,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 5,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_5_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 1.1584243900159261,
+        "Cracks.Data": 0.8223852444966412,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 6,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_6_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 0.6166637684206326,
+        "Cracks.Data": 0.20540175192930815,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    },
+    {
+      "Case": 2,
+      "Variant": 7,
+      "Repeat": 1,
+      "ReferenceFile": "Workflow_2_0_1.txt",
+      "CandidateFile": "Workflow_2_7_1.txt",
+      "WithinTwoPercent": true,
+      "NumericCells": 221,
+      "MaxErrorPct": {
+        "Strength.Data": 1.1584243900159261,
+        "Cracks.Data": 0.8223852444966412,
+        "Stability.Data": 0
+      },
+      "Exceedances": [],
+      "ChangedText": []
+    }
+  ]
+}

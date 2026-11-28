@@ -106,6 +106,8 @@ Private mSolverMaxIterations As Long ' Максимальное число ит�
 Private mSolverToleranceN As Double ' Допуск равновесия по N, Н.
 Private mSolverToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mSolverToleranceMy As Double ' Допуск равновесия по My, Н*мм.
+Private mUseThickLayerIntegration As Boolean ' Экспериментальный непрерывный бетон; читается через общий reader.
+Private mRelativeEquilibriumTolerance As Double ' Дополнительная относительная точность; 0 оставляет абсолютные допуски.
 Private mSolverSecantMaxRestarts As Long ' Сколько раз Secant может перестроить приближенную матрицу.
 Private mCapacityInitialLambda As Double ' Начальная величина множителя нагрузки lambda для поиска LoadMultiplier.
 Private mCapacitySolutionStrategy As String ' Способ поиска предела: автоматически, изменением множителя нагрузки или по предельным деформациям.
@@ -253,6 +255,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     On Error GoTo InvalidSettings
     If settings Is Nothing Then Exit Sub
     Set mInputSettings = settings: Set mInputUnits = units
+    settings.ReadIntegrationSettings mUseThickLayerIntegration, mRelativeEquilibriumTolerance
     mInputOffsetsKnown = mInputOffsetsExplicit
     mSettingsValid = True
     mSettingsError = vbNullString
@@ -1659,6 +1662,8 @@ Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
     calculator.ConfigureEquilibriumSolver mSolverToleranceN, mSolverToleranceMx, _
         mSolverToleranceMy, mSolverMethod, mSolverSecantMaxRestarts, _
         DetailedDiagnosticsEnabled()
+    calculator.UseThickLayerIntegration = mUseThickLayerIntegration
+    calculator.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Создаёт CStateProvider для одного сочетания и подключает хранилище его НДС.
@@ -1682,6 +1687,8 @@ Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
     provider.ToleranceMy = mSolverToleranceMy
     provider.SecantMaxRestarts = mSolverSecantMaxRestarts
     provider.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
+    provider.UseThickLayerIntegration = mUseThickLayerIntegration
+    provider.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Передаёт параметры подготовки области и формулы ширины трещины.
@@ -1723,6 +1730,8 @@ Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormation
     formation.SolverToleranceMy = mSolverToleranceMy
     formation.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
     formation.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
+    formation.UseThickLayerIntegration = mUseThickLayerIntegration
+    formation.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Проверяет, нужен ли подробный журнал внутренних итераций.

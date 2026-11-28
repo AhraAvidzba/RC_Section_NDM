@@ -1,0 +1,9 @@
+{
+  "PID": 21096,
+  "StartTicksUTC": "639314770434028581",
+  "CPU": 24.296875,
+  "Title": "",
+  "SavedSummary": "PASS",
+  "Reason": "Own Excel remained in Quit after workbook close, saved export and summary",
+  "Stopped": true
+}

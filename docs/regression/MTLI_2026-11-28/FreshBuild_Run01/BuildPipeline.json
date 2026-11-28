@@ -1,0 +1,5 @@
+﻿{
+    "Status":  "FAIL",
+    "Error":  "System.InvalidCastException: Unable to cast object of type \u0027System.Object[,]\u0027 to type \u0027System.String\u0027.\r\n   at CallSite.Target(Closure , CallSite , ComObject , Object )\r\n   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)\r\n   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)\r\n   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)\r\n   at System.Management.Automation.Interpreter.DynamicInstruction`3.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)",
+    "UTC":  "2026-11-28T15:11:14.0555272+00:00"
+}

@@ -1,0 +1,14 @@
+﻿{
+    "Phase":  1,
+    "PID":  19000,
+    "StartTicksUTC":  "639314759089146099",
+    "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\MTLI_2026-11-28\\DropdownNative01\\MTLI_Dropdown.xlsm",
+    "MethodAddress":  "Config!B161",
+    "InitialMethod":  "Discrete",
+    "InitialTolerance":  "0",
+    "ListFormula":  "Discrete;MTLI",
+    "FinalMethod":  "MTLI",
+    "FinalTolerance":  "0",
+    "FinalList":  "Discrete;MTLI",
+    "SHA256":  "0BC12E46153EEFA7BDB7D2B3C0A28CB332704D294A3824F7C377D255B574BD2D"
+}

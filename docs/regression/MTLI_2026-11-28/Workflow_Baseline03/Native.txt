@@ -1,0 +1,23 @@
+﻿WORKFLOW_FORMATION|1|Геометрия взята из отдельно проверенного снимка; вне таймера команды.
+DATA_MTLI_WORKFLOW|1|0|0|6.68254770000931|0|Discrete|9|35|Workflow_1_0_0.txt
+WORKFLOW_MESSAGE|1|0|0|Расчет завершен.  Геометрия для расчёта загружена из файла «MTLI_Workflow_1.ndm».  Обработано сочетаний: 2.  Результаты и пояснения всех проверок — на листе Results.  Время расчёта: 6.68 с.  Данные сохранены в файле «MTLI_Workflow_1.ndm».
+WORKFLOW_SNAPSHOT|46354.7353125|1256|16
+PASS: Workflow_1_0_0
+DATA_MTLI_WORKFLOW|1|0|1|4.31708329997491|0|Discrete|9|35|Workflow_1_0_1.txt
+WORKFLOW_MESSAGE|1|0|1|Расчет завершен.  Геометрия для расчёта загружена из файла «MTLI_Workflow_1.ndm».  Обработано сочетаний: 2.  Результаты и пояснения всех проверок — на листе Results.  Время расчёта: 4.32 с.  Данные сохранены в файле «MTLI_Workflow_1.ndm».
+WORKFLOW_SNAPSHOT|46354.7353587963|1256|16
+PASS: Workflow_1_0_1
+DATA_MTLI_WORKFLOW|1|0|2|4.00506920000771|0|Discrete|9|35|Workflow_1_0_2.txt
+WORKFLOW_MESSAGE|1|0|2|Расчет завершен.  Геометрия для расчёта загружена из файла «MTLI_Workflow_1.ndm».  Обработано сочетаний: 2.  Результаты и пояснения всех проверок — на листе Results.  Время расчёта: 4.00 с.  Данные сохранены в файле «MTLI_Workflow_1.ndm».
+WORKFLOW_SNAPSHOT|46354.7354282407|1256|16
+PASS: Workflow_1_0_2
+DATA_MTLI_WORKFLOW|1|0|3|3.98187300004065|0|Discrete|9|35|Workflow_1_0_3.txt
+WORKFLOW_MESSAGE|1|0|3|Расчет завершен.  Геометрия для расчёта загружена из файла «MTLI_Workflow_1.ndm».  Обработано сочетаний: 2.  Результаты и пояснения всех проверок — на листе Results.  Время расчёта: 3.98 с.  Данные сохранены в файле «MTLI_Workflow_1.ndm».
+WORKFLOW_SNAPSHOT|46354.735474537|1256|16
+PASS: Workflow_1_0_3
+WORKFLOW_FORMATION|2|Геометрия взята из отдельно проверенного снимка; вне таймера команды.
+DATA_MTLI_WORKFLOW|2|0|1|126.799179300026|0|Discrete|9|36|Workflow_2_0_1.txt
+WORKFLOW_MESSAGE|2|0|1|Расчет завершен.  Геометрия для расчёта загружена из файла «MTLI_Workflow_2.ndm».  Обработано сочетаний: 2.  Результаты и пояснения всех проверок — на листе Results.  Время расчёта: 126.80 с.  Данные сохранены в файле «MTLI_Workflow_2.ndm».
+WORKFLOW_SNAPSHOT|46354.7360300926|30440|16
+PASS: Workflow_2_0_1
+TOTAL_MTLI_WORKFLOW: passed=5; failed=0

@@ -1,0 +1,741 @@
+{
+  "Purpose": "Primary numerical and artifact evidence; failed attempts retained; heavy private workbooks/ndm files remain local",
+  "FullAcceptance": false,
+  "Files": [
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/Cleanup.json",
+      "Bytes": 238,
+      "SHA256": "B33E493FEA8A8096EF7118E23287113C1E27F99C024932CE28CF8A53FFDB6300"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/IndependentAreaOracle.json",
+      "Bytes": 45720,
+      "SHA256": "C54A7C016CB4567373CAAE5B463162569306278EF1C82992E9A1C4A43B339D20"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/IndependentAreaOracle_StrictProtocol.json",
+      "Bytes": 46309,
+      "SHA256": "2CD4741898698C0E5F6152D498C92268A0EBEFB50FF122ADE764FFA4954ACE34"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "B61EF8D30DB633BFC5E9523AB29CFB0EFC078D7A4925BA1EAE664AD3C78EB068"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/Native.txt",
+      "Bytes": 4439,
+      "SHA256": "7E001312283C9A767BECC51DDC58F06A4F891D3248E8827030B51DB1E1BF72EE"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/Started.json",
+      "Bytes": 292,
+      "SHA256": "CA8541FAEE9F7C63AB08E40E98D3E22C664EE111C11B91A217D41C09A9E60CBC"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ArtifactCheck02/Summary.json",
+      "Bytes": 464,
+      "SHA256": "F6685964070C3513569BAAFC455167B52108E28C2DC501BF6C33C7B3078F8409"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Capacity_Run01/CapacityAnalysis.json",
+      "Bytes": 16141,
+      "SHA256": "A7CEE5BFB013439B5D41795A3271D46C30254F27564392DD4162F57B32B14820"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Capacity_Run01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "951019BFD805121A65BB8ECC3BE94EAC27342F1E7126A8481DF320108713BADC"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Capacity_Run01/Native.txt",
+      "Bytes": 10100,
+      "SHA256": "0497A58B4C1C60A348E0AC231C8FF93D3ED578D21CC98CA89835BDF25A31CFEB"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Capacity_Run01/Started.json",
+      "Bytes": 294,
+      "SHA256": "0BE345CC94C0C8ACB88788F7D005E728CD87403B21BDB462CE1AD4A1C54F521F"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Capacity_Run01/Summary.json",
+      "Bytes": 360,
+      "SHA256": "C63CE8A9D5B34D99581D3120E644FFD8F27CDD752DDE3B570C5915B2E8202975"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/DropdownNative01/Closed_1.json",
+      "Bytes": 583,
+      "SHA256": "6C80FD1FA012F4D5E97619BDE5D7A2CC2F9597A320987C8FE3C01D4B9AA9B82C"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/DropdownNative01/Closed_2.json",
+      "Bytes": 583,
+      "SHA256": "025402981654DA0930D6005B769A679E0759038252BCF630DF4B44165B7F2EFE"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/DropdownNative01/Memory_1.json",
+      "Bytes": 111,
+      "SHA256": "16E89D02812C3A2FAAD56349711A5FB84163C9B1616FF0E1BD9B74383332F30C"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/DropdownNative01/Memory_2.json",
+      "Bytes": 111,
+      "SHA256": "4E7A87F4CD74E4E5B2F1AFD3ED2C659079280307427C37B18B0115C86C153FBA"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/DropdownNative01/Ready_1.json",
+      "Bytes": 405,
+      "SHA256": "15A246A5F3D2DF58C6C0E71A13EDBC7B8B541AD0071BFBA8DCFD5AB9C5FEE9C8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/DropdownNative01/Ready_2.json",
+      "Bytes": 401,
+      "SHA256": "4AC94256C29670A9457BAFAE176617B8DC878062A05EE9D16D65434D5EB303E3"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/Diagnosis.json",
+      "Bytes": 825,
+      "SHA256": "DDF1BBDC57EBB80D91ECD25CAD9BB7712AE72D28FF1B3B1855FEFCF9AEF92119"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/Failure.json",
+      "Bytes": 360,
+      "SHA256": "7F610BAA9EF9F7B381EB5CF7F12D7EABEB659E9F3CABA38089E8634D7E2F7620"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "8003587957EBCD1F1C8F552751F57AE0CCE90AA0F49CD425F5FA3BEC68654EDC"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/Native.txt",
+      "Bytes": 19790,
+      "SHA256": "D7764E34D3330521C97185CD38650B12AA8A1F73CE01F03B8F2BD62E5CC99232"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/SourceHashes.json",
+      "Bytes": 1748,
+      "SHA256": "1234705710E8EE026186745F2B25521EB8A03BE4C18279837B142DDD15D55EA9"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/Started.json",
+      "Bytes": 290,
+      "SHA256": "38AD04B12CB47D32CCE2923891E0986F0A9CD652C2925C7C477A0F81E441A2BE"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run01/Summary.json",
+      "Bytes": 361,
+      "SHA256": "43ACA3CA6F07A1367E6CD1E4596DE49C74B54B59395F9753C6131252E1B7B0A5"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "C568F398576C257E5B2198692A052C138060883350F618F5F52221790A1A5FAA"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run02/Native.txt",
+      "Bytes": 23962,
+      "SHA256": "0A2F3755C97249E1A0EDD699017D1B4AA91BCFDCF393BFC819FC75BAA8A92FAB"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run02/SourceHashes.json",
+      "Bytes": 1748,
+      "SHA256": "2E509C8510CC7BB66C6F40B004A4D5322819A58432BE961340167648985C9E01"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run02/Started.json",
+      "Bytes": 290,
+      "SHA256": "AE93D5EF02502BCE3CD35A82E20F1D3F2DA541AD5F9E1BCD30A6F5D7D3476A92"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Edge_Run02/Summary.json",
+      "Bytes": 361,
+      "SHA256": "D38A57965624AF194214913E983B7BDEDD1DE8BBFBFFB001CBAD104E9540734D"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/ExperimentSummary.json",
+      "Bytes": 4337,
+      "SHA256": "FFF23EB97CBD6E87906823B2C26C4C3C571036EF4E474043BA55294DCC5888F0"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/IndependentAreaOracle.json",
+      "Bytes": 45720,
+      "SHA256": "C54A7C016CB4567373CAAE5B463162569306278EF1C82992E9A1C4A43B339D20"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/IndependentAreaOracle_Initial.json",
+      "Bytes": 42828,
+      "SHA256": "10538526898694034C30848B70C1AEF0F0D9289BA45FBDB27F8A6375A85C53E9"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/IndependentAreaOracle_StrictProtocol.json",
+      "Bytes": 46309,
+      "SHA256": "2CD4741898698C0E5F6152D498C92268A0EBEFB50FF122ADE764FFA4954ACE34"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "3D596AF260CBF6E96ADEF2680B8937AF5648250AD29D71944746116FCAB3ECF8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/Native.txt",
+      "Bytes": 209678,
+      "SHA256": "04D8841B367FF427079431BE1F721DFFFDDADF99D7F615A8F4BE08C24862875B"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/OracleParserFailure.json",
+      "Bytes": 178,
+      "SHA256": "EB49A588DBD0208C39202050A65F9F86A4DE84AA75081699CE0C1BD7C441CDF8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/Started.json",
+      "Bytes": 299,
+      "SHA256": "C48A68D0BE087273E25371418B3EE1D53FDB794DC9B26521FDD35E9578E63AE5"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FinalDirected01/Summary.json",
+      "Bytes": 473,
+      "SHA256": "325BEFB16F0DACD662F4C5238DF81B0FFCE0F48B0219E85654CDF604EBC345E8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FormattingIsolation.json",
+      "Bytes": 400,
+      "SHA256": "3F3A65DF10129A1A7B8379102C99DF60AE9D1CA3A7A5EA46154EB52626AB7E95"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run01/BuildFailed_20261128_181113.json",
+      "Bytes": 702,
+      "SHA256": "B3B80B7A04395356DFC8E481E00B149C55A0FA8727D25709973A169B8968822F"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run01/BuildMemory.json",
+      "Bytes": 111,
+      "SHA256": "DE1F63600889FF4953730D0337491FF05B0D8E59FC20E1431F2DC1998F4D5C17"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run01/BuildOwnership.json",
+      "Bytes": 313,
+      "SHA256": "577274A65E1D4AA6EA20CDE99502AEC6314AE21D18605B532A39349A8A6A4B99"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run01/BuildPipeline.json",
+      "Bytes": 808,
+      "SHA256": "DC1B93C9BE92C30B473C6717E15686EE36E9848D7A83FE79B27B661F088F2A00"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run02/BuildOwnership.json",
+      "Bytes": 313,
+      "SHA256": "5A3A419B8A35ED411FFCC930C3589481C4F105B91B052C0D74B29A5383ABF860"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run02/FreshBuild.log",
+      "Bytes": 298,
+      "SHA256": "8404C5EA6D6B03F5C22D3EBC8084EEDFB17E5D3AADFF87F2EECDD44798A07E2A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run02/PackageProof.json",
+      "Bytes": 52049,
+      "SHA256": "715084E0D60AAB58003178008218A3A0DFE6FDB1B7311A47934E390E02880662"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run03/BuildOwnership.json",
+      "Bytes": 295,
+      "SHA256": "C57BDE6CC09D10721A95BC5FB9D2B49842B85949E6124A8FF01C89C60550D41F"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run03/FreshBuild.log",
+      "Bytes": 164,
+      "SHA256": "D4E5CDE1D2C65ED4FBA1919D6A33A8A7D6777921E69AE2887751102755621D7A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/FreshBuild_Run03_Memory.json",
+      "Bytes": 99,
+      "SHA256": "1C0EB56AEFEF1D0F558A8BF54C22FBC24674EAA6CD275C7D433BC74D7A10C7BD"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "26942FFC11C5305C010D4D15873A640AD3DE0F06B4424E6D7B263776599E30BF"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run01/Started.json",
+      "Bytes": 296,
+      "SHA256": "3E21F574E42F4930471ABF45F3143029FE131C60A0568F7749906DF0356346D5"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run02/CompileFailure.json",
+      "Bytes": 349,
+      "SHA256": "6F6EB52B8AB9773132671EC5D2C107A01B0F0E4ED24A856DE19BCA7D9F29C039"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "0FCD704DD02F33B3C128C46BC701EA4C0F9A17B4A349C58680B60E47820EC1B9"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run02/Started.json",
+      "Bytes": 297,
+      "SHA256": "C05D31274D95F34B7BBECDC6DD6F328F925455645C6648C0C3DA8DBE6E76069A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run03/Memory.json",
+      "Bytes": 111,
+      "SHA256": "7257B59007F3B7C1A1FBC65CA01661CF7E5CEA5D0EF4090716C1FC687710F3D3"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run03/Native.txt",
+      "Bytes": 5203,
+      "SHA256": "214B60E39E87B512B45C71B3D03BD0B0F85FC5FE47345B9D39447466BF322F15"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run03/PostRunDiagnosis.json",
+      "Bytes": 437,
+      "SHA256": "8987B4AB68A34DEF31693C16CA17F92EB167474F0CF91D8D65362CE59E08EA75"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Kernel_Run03/Started.json",
+      "Bytes": 297,
+      "SHA256": "639638B7D80A4E942F892A5454E7818BB0718D6666CC2F45DE7E5EA12505B930"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/NativeUIAcceptance.json",
+      "Bytes": 26775,
+      "SHA256": "068418CB2CA247B60DCB32BFE1CE7848359C8069C8FA133EC7A070E81D52C755"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/PackageProof.json",
+      "Bytes": 52059,
+      "SHA256": "8FDC50DAF70DE817B8FB848A89D49777B2468787499FD9A75784506F1A63D2AD"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/SettingsAndSolver_Run01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "DD0748EFE5A49E9C4ADAE63E1A98504AF8511894A5D769F15667E10FBCAA3F39"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/SettingsAndSolver_Run01/SourceHashes.json",
+      "Bytes": 1748,
+      "SHA256": "9A9DB8F5D207960CD2204BF5CF00E23864551067005F7FE61B681346996CBE95"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/SettingsAndSolver_Run01/Started.json",
+      "Bytes": 292,
+      "SHA256": "AF12FF8A0E64564F7079FFA99F296D2BB83390438B74FAA81A28AD7C7EB4D515"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Solver_Run01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "558C9AE7050C729D4A8C38CDD1471C7D9BE5661028A2303A6BA3BF927F216985"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Solver_Run01/Native.txt",
+      "Bytes": 36942,
+      "SHA256": "5F4F1F400932AB08083CF9457B9839C0006272EA7FED78F69372BEE479EF4940"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Solver_Run01/SolverAnalysis.json",
+      "Bytes": 9606,
+      "SHA256": "8BD4614C47C9ED93BA795B4582ACC2C696DFABE112301181E630B4C6DA9E219E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Solver_Run01/Started.json",
+      "Bytes": 292,
+      "SHA256": "32BCA7D7728FAD91D75A68B6CD58880A3DE8EA09CA5F3A34C84724AAA005F701"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Solver_Run01/Summary.json",
+      "Bytes": 361,
+      "SHA256": "67E3076B3376DFFEB1AF4893EFF4ADE6D4954E56B7FD57B45033EFFBDB2A3EA1"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/SourceEquality.json",
+      "Bytes": 98911,
+      "SHA256": "66049AC7214DDD6E4EBED98A4A88B12B5E69410AC80750EFEADF6497C746A09C"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/SourceEquality_Initial.json",
+      "Bytes": 98931,
+      "SHA256": "61A49807B8715B62599DC050310A5A7A5C9FD99D69DFE58DD1920DC340CF4A8D"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "831397CCE7C24BF320432997CA47740DE0A2353E7063FEAC163388D9B72F2126"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline02/modTestMTLIWorkflowBaseline.bas",
+      "Bytes": 7685,
+      "SHA256": "BC78DCA0CE4E255ED2E7DCF762D6EAB02E36BE97D9F29C7966DBE035668D2783"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline02/Native.txt",
+      "Bytes": 5244,
+      "SHA256": "6ABD932C2A56B9B63D7808559A4909C674C6040687931171F16F07A9522BC930"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline02/SourceHashes.json",
+      "Bytes": 148,
+      "SHA256": "6B1A4CD76D2A239B7FB1E6BA74EF2592CF36EF586C9668B4628FA622E5A80695"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline02/Started.json",
+      "Bytes": 296,
+      "SHA256": "D06DE05D20EFBFBB097B62770595BAAE7BE3A8487F7261B0695FC065048FF8EC"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline02/Summary.json",
+      "Bytes": 482,
+      "SHA256": "79C655FB7CEE21D822A4E7B055B3E0B8F6CA78D11ADD54A53E4723307A736371"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/GeometryReuse.json",
+      "Bytes": 940,
+      "SHA256": "EE4FA6D8A12EB85982F9D20CAF1AF4439B3AC72E11EC14FBE93323E51B68FA9E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Memory.json",
+      "Bytes": 111,
+      "SHA256": "F98A68B6DAB1AEE8A878BA02CE9A1610CADAABB6C343AF81A487AA2012951D02"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/modTestMTLIWorkflowBaseline.bas",
+      "Bytes": 10407,
+      "SHA256": "71F407BCE80FD3FA33E0958463D3BF7A1E45B356453590169653EC39C1A813A8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Native.txt",
+      "Bytes": 3113,
+      "SHA256": "B18F1F4C3DB7874B208BFFB0AE505480FDFE0B29A793E6C65C2CEFCBC982C12A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/SourceHashes.json",
+      "Bytes": 148,
+      "SHA256": "DFBBB83667DA2E1C66F52B6699712518E0610F3D9FC699AE54FBD8CA2948B3F5"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Started.json",
+      "Bytes": 297,
+      "SHA256": "D337521B538AABB2BA4176E2D2E915AA307F7D04587EA11464D10686AE1ACF73"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Summary.json",
+      "Bytes": 490,
+      "SHA256": "9B21C03EF716F5B55565E0C9A56D1A28F31FBFBECD8149C2DF978BEDCB0E7C74"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Workflow_1_0_0.txt",
+      "Bytes": 271433,
+      "SHA256": "172723C5582B2FCB84749C6BFDF6B22DB49007EC6D53D6AA715D864F8FCE8914"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Workflow_1_0_1.txt",
+      "Bytes": 271433,
+      "SHA256": "7C29CF6254EDA9222E0B470BB631B6FB0C380845D9E37A93FEDF0AA13AADAAB6"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Workflow_1_0_2.txt",
+      "Bytes": 271430,
+      "SHA256": "C0FD3E0465FFFA455FFD7A16628FB531B264C2112F97CDC67BB9CA62992F3E06"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Workflow_1_0_3.txt",
+      "Bytes": 271432,
+      "SHA256": "EE88791BD3DD9252E5C5EF09CA025324F6AE8AAC7535DB52D9B42B8D9A780EF3"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Baseline03/Workflow_2_0_1.txt",
+      "Bytes": 271523,
+      "SHA256": "B90032D44DCE52680847D7B7D6A1B202ED1BB0A0BE763F1E9F07979B2AE79AF4"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/GeometryReuse.json",
+      "Bytes": 942,
+      "SHA256": "07A528A22C2898B3EC3785FB1724C7F09B55C59F2E16FD0223FC5D6209C4BEEC"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "04CA75C9CAC29E886534EEF7F9F26816FE2347042CF1F6FCF0AC5ACD07B717ED"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Native.txt",
+      "Bytes": 22536,
+      "SHA256": "8EDE414F4A17B90A9950261FB6E1DD0172EC0A64E8C2658F5759251CFF787D97"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/SourceHashes.json",
+      "Bytes": 1748,
+      "SHA256": "781A7B08707CB6E936A62DBDCC972395767FEEC5FA0CA6982F10690D02191C52"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Started.json",
+      "Bytes": 303,
+      "SHA256": "2AE2B107EB474DF395C79BEEDE65802AE8B3CA67C4FDA4CE5B08BB27178C214A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Summary.json",
+      "Bytes": 478,
+      "SHA256": "D574827654693F4E2148B7D6D89E48C22AC932F01224D05ACA3A5D9DE44921B5"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_0_0.txt",
+      "Bytes": 271426,
+      "SHA256": "7FD797CFF406E3DA1629F30AB40B0E5CADB94E85F90A16676352F5E106CAEF80"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_0_1.txt",
+      "Bytes": 271433,
+      "SHA256": "D2971CC4E39207CD95C24EE52D356EFA399C59D39D66AC995F2CEB8EF661585D"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_0_2.txt",
+      "Bytes": 271433,
+      "SHA256": "C01393959061CD340561E089B847E1B8009027B0DBE5240A15501864F7AB75F6"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_0_3.txt",
+      "Bytes": 271433,
+      "SHA256": "5EF98C0A0BAB91B939B4498828816EB4FCB8606B153E11F22C402FE033D5D3AF"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_1_0.txt",
+      "Bytes": 271435,
+      "SHA256": "481776EAEEEB78A48A11806362981DCD500892C508B93789199C8604B259417C"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_1_1.txt",
+      "Bytes": 271435,
+      "SHA256": "C24731081663F77A4A09F3A5480C86D93B79FA7C6F5D7AE6A8010D95432D4F08"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_1_2.txt",
+      "Bytes": 271431,
+      "SHA256": "23F15B1655F8DA609DB09506D10B0CAEF077185BB98EC4374AD157B41651F4D6"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_1_3.txt",
+      "Bytes": 271435,
+      "SHA256": "99AE96487177ADF776C64E180D5DED8065883BC8286FEE41448A115C9595185E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_2_0.txt",
+      "Bytes": 271427,
+      "SHA256": "D9131A76A23DAB667B57A2F8A7D193918797982C5580C8EB8A2705C9F5DA35E7"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_2_1.txt",
+      "Bytes": 271422,
+      "SHA256": "B54AB823F462D30B0A2F440FDDBF87B7DC66FDAA8392E2DAE1A4F903CD189BC7"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_2_2.txt",
+      "Bytes": 271426,
+      "SHA256": "CCF8BB98087FB00641A7207FEEB780861711A18FF6BCC099E99DC97043D2DC71"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_2_3.txt",
+      "Bytes": 271427,
+      "SHA256": "D77012C648AD2D07A856067000FC20709F467226EF3BFA99164DC433BF8E7AA8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_3_0.txt",
+      "Bytes": 271435,
+      "SHA256": "13EBF2E07620A05B033E236F86C21BCCBDF3C1E3247E3E394829DEEFC4E3F046"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_3_1.txt",
+      "Bytes": 271436,
+      "SHA256": "C0F9AE13CAF109D256E54CEC6816621B6775CAA6532A093F8D7FAE7ECF2CBBDA"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_3_2.txt",
+      "Bytes": 271434,
+      "SHA256": "DD2540E7D34F61C3308A325E7A30FA9249A184B5E18351BFCD3D59A8F7DA32CF"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_3_3.txt",
+      "Bytes": 271436,
+      "SHA256": "FF3A3A5CC41C28DE981E06150D1D32D3FB8F5D9F636F0E2572F77CF57EB0A0CA"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_4_0.txt",
+      "Bytes": 271429,
+      "SHA256": "A8FE796CC0770787308C493091C210D268B4F809BB0E73C6ED2FCFD9DEE6D87E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_4_1.txt",
+      "Bytes": 271427,
+      "SHA256": "DC2D573CA080E815BB6EF9768885493A70A67A3629EB0E65AA25A45DD7003FE2"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_4_2.txt",
+      "Bytes": 271428,
+      "SHA256": "BF386886E470139A00346F5B579A1160B567A3AA36BE5A291DD9E89C6F4B2F90"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_4_3.txt",
+      "Bytes": 271428,
+      "SHA256": "1BA461962BBBA0A761C0D11203E8C06CCF644E7EEF503C2B7576E3726242FB98"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_5_0.txt",
+      "Bytes": 271441,
+      "SHA256": "FB881FB1495C83DB320BDDC8EF9CECD76554D700035CCC906B180C72A7B34103"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_5_1.txt",
+      "Bytes": 271441,
+      "SHA256": "094FFB168D74DCBDC5A511AA1179FAA98A75ED72301977759652ACE579904E81"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_5_2.txt",
+      "Bytes": 271440,
+      "SHA256": "F6089627CD3CB14AC31D1AFCC9D1A8B30A2DD5CB079F490DEE647D0E42F8560B"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_5_3.txt",
+      "Bytes": 271441,
+      "SHA256": "43369229B8D6FE3C3EB3E96CC8497292D5A81C20A7B8D9CB472DAC65A96BE112"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_6_0.txt",
+      "Bytes": 271428,
+      "SHA256": "D5C8ADB566D80E6BB9BFC1210C099DF0E00CF2AC709BDE52AAC0E1A6E5879B23"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_6_1.txt",
+      "Bytes": 271429,
+      "SHA256": "D1590AEBFE9A03205CC66CA5E48B366134DED0C0198220F9786527374E341AB9"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_6_2.txt",
+      "Bytes": 271429,
+      "SHA256": "51412ADF7C64B74EBE165BCFA7178BD7E6382D8B7B867156A03E795D8F882F92"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_6_3.txt",
+      "Bytes": 271428,
+      "SHA256": "94B1BC1D3245EB3B3D1E9E3F13408C9C7A4934402E3A3D8C0C999CF98F5708DF"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_7_0.txt",
+      "Bytes": 271442,
+      "SHA256": "D514579028A28DCB63F4C9D2DE84644ED692AA1CBD581726D41A1E7192E6BD6E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_7_1.txt",
+      "Bytes": 271441,
+      "SHA256": "E53176314AE10F52296E29B94EAC313F6BEB54DEE7041D5A07FF12FD66EBF7C1"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_7_2.txt",
+      "Bytes": 271442,
+      "SHA256": "03927AC15324670EE352D79E94019420594A3732CC29FDFA89C613146C76BBD9"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_1_7_3.txt",
+      "Bytes": 271442,
+      "SHA256": "380281E725CBFDECE88A207466EA63F4CF2BF75B6884FC0C3153B0203748DB4A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_0_1.txt",
+      "Bytes": 271523,
+      "SHA256": "2E567CBF87D8BB228C69E55C0620C42F28F50214381C08E21A7D413997A1C878"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_1_1.txt",
+      "Bytes": 271522,
+      "SHA256": "7314F635945C3C36831AB1780E875759CB0D82BC6A8880AF4482D9058730A4F8"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_2_1.txt",
+      "Bytes": 271529,
+      "SHA256": "6E7808DF7EA6941C4741D73D56F8F405140B5195694469B2E09698A226708FCF"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_3_1.txt",
+      "Bytes": 271526,
+      "SHA256": "498CDD079436D4F3B787ECE4B62FB6A1D7E2658810583A428AFC16688BFBF949"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_4_1.txt",
+      "Bytes": 271527,
+      "SHA256": "9BD4E532358BE6373BABE386B56ECF293D449E66032F0971D775E1DB22E1FE34"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_5_1.txt",
+      "Bytes": 271532,
+      "SHA256": "B82494FFE3A82C054C3AD217CA25272E0ABEE91A64375DD97E6EB5EE97FABFA6"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_6_1.txt",
+      "Bytes": 271526,
+      "SHA256": "169DEFA5063EDEDBE678C041F65B436771E9B364E5CB9A3348F391C51747AC14"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Candidate01/Workflow_2_7_1.txt",
+      "Bytes": 271534,
+      "SHA256": "590920BED9D2FC1EF06020463060001CFDFAE2F40FC17761F448676AB3F58333"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke01/CompileFailure.json",
+      "Bytes": 506,
+      "SHA256": "63658648ADF95391C5E82CC2ED568BB08C46794F56C0D33669F63167FB136E54"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke01/Failure.json",
+      "Bytes": 360,
+      "SHA256": "0A9FAB769979CA54C5D307E87CD85E7B51AE0266231BD1C40272AFF5D99DAE6E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke01/Memory.json",
+      "Bytes": 111,
+      "SHA256": "DC15F97B20366F26C26E32841DD85E7672A2C6F33263B8A8A4988866C1B3F52D"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke01/SourceHashes.json",
+      "Bytes": 1748,
+      "SHA256": "DC14801FA45A42E8E3FA9C9CA3042B76369292DE5A9D0583A3C0FFC0687A4227"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke01/Started.json",
+      "Bytes": 299,
+      "SHA256": "A77EE9CC86DE355DDD7BC084E4D02432AA7377AC67F924B74DDE3A7D480B501A"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke02/Memory.json",
+      "Bytes": 111,
+      "SHA256": "624FC990206057A5BA9E79A020BBA4B0C858A7C854E1FB7B905B6509B940231E"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke02/Native.txt",
+      "Bytes": 4845,
+      "SHA256": "9CA8B656A5E5A718CFF5E50A870E7BA05D5061832039C74B8CC8B23973EB1BDC"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke02/SourceHashes.json",
+      "Bytes": 1748,
+      "SHA256": "8462F1CE3802029E5D177B41E66425F6D4A43E1A77E8A7CEBAAFA4E9C0A774F0"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke02/Started.json",
+      "Bytes": 299,
+      "SHA256": "DF2596F5E52327509C07F09E3284E92EF713502CF4EC183C4A6EBE7222E3A470"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/Workflow_Smoke02/Summary.json",
+      "Bytes": 361,
+      "SHA256": "EE9243B3ADA62CB790F8FDD28252BE65948890C1A1F14C31811D6BAD4B698844"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/WorkflowAnalysis.json",
+      "Bytes": 103195,
+      "SHA256": "870A479CDA396F1A6688E5AD692D31EA8D61ECAFA3E9D9AF533BBAC89A692C09"
+    },
+    {
+      "Path": "docs/regression/MTLI_2026-11-28/WorkflowAnalysis_Initial.json",
+      "Bytes": 103195,
+      "SHA256": "870A479CDA396F1A6688E5AD692D31EA8D61ECAFA3E9D9AF533BBAC89A692C09"
+    }
+  ]
+}

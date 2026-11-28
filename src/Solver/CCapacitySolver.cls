@@ -79,6 +79,8 @@ Private mDiagnosticLog As String ' Журнал проверенных знач�
 Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long ' Строки журнала, число записанных строк и вместимость массива.
 Private mDiagnosticJoined As String, mDiagnosticDirty As Boolean ' Собранный текст журнала и признак появления новых строк после его сборки.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
+Private mUseThickLayerIntegration As Boolean ' Экспериментальный выбор непрерывного бетона для всех проб одного поиска.
+Private mRelativeEquilibriumTolerance As Double ' Дополнительная относительная точность равновесия и силовой траектории.
 Private mProbeRunner As CStateSolutionRunner ' Общее решение НДС и сохранённые итоги точно совпадающих повторных попыток в пределах текущего поиска.
 Private mCriticalStrain As Double ' Деформация критического волокна или стержня.
 Private mCriticalElement As String ' ID элемента, который первым определил предельное состояние.
@@ -139,6 +141,7 @@ End Sub
 ' численные настройки не заменяются начальными значениями.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
+    settings.ReadIntegrationSettings mUseThickLayerIntegration, mRelativeEquilibriumTolerance
     mInitialLambdaStep = settings.GetDouble("Capacity.InitialLambda", mInitialLambdaStep, False)
     mMaxLambda = settings.GetDouble("Capacity.MaxLambda", mMaxLambda, False)
     mLambdaTolerance = settings.GetDouble("Capacity.ToleranceLambda", mLambdaTolerance, False)
@@ -321,6 +324,7 @@ Private Sub AcceptRetainedPhysicalCapacity(ByVal section As CSectionModel, _
     strainScale = 1# / mCriticalStrainUtilization
     Dim boundarySolver As CSectionSolver
     Set boundarySolver = New CSectionSolver
+    ConfigureExperimentalNumerics boundarySolver
     boundarySolver.ToleranceN = mSolverToleranceN
     boundarySolver.ToleranceMx = mSolverToleranceMx
     boundarySolver.ToleranceMy = mSolverToleranceMy
@@ -372,6 +376,7 @@ Private Sub AcceptRetainedPhysicalCapacity(ByVal section As CSectionModel, _
             strainScale = edgeLimit / (edgeStrain - anchorStrain)
             If strainScale > 1# Then
                 Set startSolver = New CSectionSolver
+                ConfigureExperimentalNumerics startSolver
                 startSolver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, _
                     (mLastAcceptableSolver.Epsilon0 - anchorStrain) * strainScale, _
                     mLastAcceptableSolver.KappaX * strainScale, _
@@ -395,6 +400,7 @@ Private Sub AcceptRetainedPhysicalCapacity(ByVal section As CSectionModel, _
             strainScale = (edgeLimit - anchorStrain) / (edgeStrain - anchorStrain)
             If strainScale <= 1# Then Exit Sub
             Set startSolver = New CSectionSolver
+            ConfigureExperimentalNumerics startSolver
             startSolver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, _
                 anchorStrain + (mLastAcceptableSolver.Epsilon0 - anchorStrain) * strainScale, _
                 mLastAcceptableSolver.KappaX * strainScale, _
@@ -546,6 +552,7 @@ Private Function EvaluateUltimateMomentResidual(ByVal section As CSectionModel, 
     On Error GoTo Failed
 
     If Not reuseTrialSolver Or solver Is Nothing Then Set solver = New CSectionSolver
+    ConfigureExperimentalNumerics solver
     If centeredPlane Then
         solver.EvaluatePhysicalCenterPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     Else
@@ -572,6 +579,10 @@ Private Function EvaluateUltimateMomentResidual(ByVal section As CSectionModel, 
     lambdaValue = (userMxInt * mxBase + userMyInt * myBase) / baseNorm2
 
     rN = (solver.Nint - nSpecified) / MaxDouble(mSolverToleranceN, Abs(nSpecified) * 0.000000001)
+    If mRelativeEquilibriumTolerance > 0# Then
+        rN = (solver.Nint - nSpecified) / MaxDouble(mSolverToleranceN, _
+            mRelativeEquilibriumTolerance * MaxDouble(Abs(nSpecified), Sqr(mxBase * mxBase + myBase * myBase) / mUltimatePathMath.NumericalFrame.LengthScale))
+    End If
     Dim perpendicularMoment As Double
     perpendicularMoment = (userMxInt * myBase - userMyInt * mxBase) / baseNorm
     rDir = perpendicularMoment / MaxDouble(MaxDouble(Abs(lambdaValue) * baseNorm, baseNorm), 1#)
@@ -611,6 +622,7 @@ Private Function EvaluateUltimateLoadPathResidual(ByVal section As CSectionModel
     On Error GoTo Failed
 
     If Not reuseTrialSolver Or solver Is Nothing Then Set solver = New CSectionSolver
+    ConfigureExperimentalNumerics solver
     If centeredPlane Then
         solver.EvaluatePhysicalCenterPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     Else
@@ -926,6 +938,7 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
     ' пути и не допуски. Переданную готовую плоскость выше не меняем.
     Dim initialState As CSectionSolver, builder As CStateGuessBuilder
     Set initialState = New CSectionSolver
+    ConfigureExperimentalNumerics initialState
     initialState.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     UpdateCriticalState section, concreteMaterial, initialState
     If mCriticalStrainUtilization > 1# Then
@@ -939,7 +952,24 @@ End Sub
 ' шести компонент пути и трех допусков; входной изменяемый path не сохраняется.
 Private Sub PrepareUltimateNumericalPath(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector)
     If mUltimatePathMath Is Nothing Then Set mUltimatePathMath = New CLoadPathMath
-    mUltimatePathMath.PrepareNumericalPath section, loadPath, mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy, True
+    Dim toleranceN As Double, toleranceMx As Double, toleranceMy As Double
+    toleranceN = mSolverToleranceN: toleranceMx = mSolverToleranceMx: toleranceMy = mSolverToleranceMy
+    If mRelativeEquilibriumTolerance > 0# Then
+        Dim experimentalFrame As CSectionNumericalFrame: Set experimentalFrame = New CSectionNumericalFrame
+        experimentalFrame.Initialize section
+        Dim experimentalForceScale As Double
+        experimentalForceScale = MaxDouble(Abs(loadPath.NOffset), Abs(loadPath.NBase))
+        experimentalForceScale = MaxDouble(experimentalForceScale, MaxDouble( _
+            Abs(experimentalFrame.CenterMx(loadPath.NOffset, loadPath.MxOffset)), _
+            Abs(experimentalFrame.CenterMy(loadPath.NOffset, loadPath.MyOffset))) / experimentalFrame.LengthScale)
+        experimentalForceScale = MaxDouble(experimentalForceScale, MaxDouble( _
+            Abs(experimentalFrame.CenterMx(loadPath.NBase, loadPath.MxBase)), _
+            Abs(experimentalFrame.CenterMy(loadPath.NBase, loadPath.MyBase))) / experimentalFrame.LengthScale)
+        toleranceN = MaxDouble(toleranceN, mRelativeEquilibriumTolerance * experimentalForceScale)
+        toleranceMx = MaxDouble(toleranceMx, mRelativeEquilibriumTolerance * experimentalForceScale * experimentalFrame.LengthScale)
+        toleranceMy = MaxDouble(toleranceMy, mRelativeEquilibriumTolerance * experimentalForceScale * experimentalFrame.LengthScale)
+    End If
+    mUltimatePathMath.PrepareNumericalPath section, loadPath, toleranceN, toleranceMx, toleranceMy, True
     Dim frame As CSectionNumericalFrame
     Set frame = mUltimatePathMath.NumericalFrame
     mUltimateOriginX = frame.OriginX: mUltimateOriginY = frame.OriginY
@@ -964,6 +994,7 @@ Public Function LimitSearchAlternativeUltimateStart(ByVal section As CSectionMod
     If Not builder.BuildForDirectState(section, concrete, steel, loadPath.TargetN(1#), _
             loadPath.TargetMx(1#), loadPath.TargetMy(1#), eps0, kx, ky) Then Exit Function
     Set solver = New CSectionSolver
+    ConfigureExperimentalNumerics solver
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     UpdateCriticalState section, concreteMaterial, solver
     If mCriticalStrainUtilization <= 0# Then Exit Function
@@ -1235,6 +1266,7 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
     Else
         Dim validation As CSectionSolver
         Set validation = New CSectionSolver ' Оба метода поиска используют общую проверку численных настроек без пробного решения НДС.
+        ConfigureExperimentalNumerics validation
         validation.SolverMethod = mSolverMethod: validation.MaxIterations = mSolverMaxIterations
         validation.ToleranceN = mSolverToleranceN: validation.ToleranceMx = mSolverToleranceMx
         validation.ToleranceMy = mSolverToleranceMy: validation.SecantMaxRestarts = mSolverSecantMaxRestarts
@@ -1477,6 +1509,8 @@ Private Sub ConfigureCapacityProbeRunner(ByVal runner As CStateSolutionRunner, B
     runner.ToleranceMy = mSolverToleranceMy
     runner.SecantMaxRestarts = mSolverSecantMaxRestarts
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
+    runner.UseThickLayerIntegration = mUseThickLayerIntegration
+    runner.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Показывает, нужна ли для пробы чистого изгиба начальная плоскость
@@ -1505,6 +1539,7 @@ Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
+    ConfigureExperimentalNumerics solver
     solver.SolverMethod = mSolverMethod
     solver.MaxIterations = mSolverMaxIterations
     solver.LoadSteps = mSolverBaseLoadSteps
@@ -2145,6 +2180,25 @@ End Property
 ' Настройка рестартов внутреннего secant-решателя.
 Public Property Let SolverSecantMaxRestarts(ByVal value As Long)
     mSolverSecantMaxRestarts = value
+End Property
+
+' Передаёт один и тот же выбор интегратора и точности каждой пробе поиска.
+' По умолчанию оба экспериментальных параметра выключены.
+Private Sub ConfigureExperimentalNumerics(ByVal solver As CSectionSolver)
+    solver.UseThickLayerIntegration = mUseThickLayerIntegration
+    solver.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
+End Sub
+
+' Выбирает непрерывное интегрирование в экспериментальном поиске предела.
+Public Property Let UseThickLayerIntegration(ByVal value As Boolean)
+    If value <> mUseThickLayerIntegration Then ClearProbeCache
+    mUseThickLayerIntegration = value
+End Property
+
+' Задаёт дополнительную относительную точность экспериментального поиска.
+Public Property Let RelativeEquilibriumTolerance(ByVal value As Double)
+    If value <> mRelativeEquilibriumTolerance Then ClearProbeCache
+    mRelativeEquilibriumTolerance = value
 End Property
 
 ' ==========================================================================

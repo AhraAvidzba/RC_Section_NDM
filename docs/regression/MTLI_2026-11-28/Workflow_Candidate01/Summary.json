@@ -1,0 +1,12 @@
+﻿{
+    "Status":  "PASS",
+    "Compiled":  true,
+    "Components":  211,
+    "BaselineRelease":  false,
+    "Macro":  "modTestThickLayerIntegration.RunThickLayerWorkflowBenchmarkTests",
+    "ElapsedSec":  1644.3202795,
+    "SourceSHA256":  "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+    "CandidateSHA256":  "3D8D32A37AAB73F518A3C972A2316F01A769467A72DC56AA6E85578EEE9AAAF8",
+    "UserWorkbookOpened":  false,
+    "Report":  "Native.txt"
+}

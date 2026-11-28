@@ -1,0 +1,7 @@
+﻿{
+    "PID":  51132,
+    "StartTicksUTC":  "639314704424223050",
+    "SourceSHA256":  "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+    "Macro":  "modTestThickLayerIntegration.RunThickLayerSolverTests",
+    "StartedUTC":  "2026-11-28T13:47:23.5368976+00:00"
+}

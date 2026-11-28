@@ -37,6 +37,8 @@ Private mDiagnosticLog As String ' Диагностика пути, критер
 Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long ' Строки журнала, число записанных строк и вместимость массива.
 Private mDiagnosticDirty As Boolean ' Журнал собирается при чтении, без копирования всего текста каждой пробы.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
+Private mUseThickLayerIntegration As Boolean ' Единая экспериментальная модель бетона для всех проб трещинообразования.
+Private mRelativeEquilibriumTolerance As Double ' Дополнительный относительный допуск равновесия.
 Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
 Private mSearchExecuted As Boolean ' Признак фактического запуска численного поиска для текущего сочетания; аналитическая формула Ncrc в него не входит.
 Private mFormationInternalStatus As EResultInternalStatus ' Машинный статус этапа образования нормальной трещины.
@@ -118,6 +120,7 @@ End Sub
 ' численная настройка Solver вызывает ошибку ввода.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
+    settings.ReadIntegrationSettings mUseThickLayerIntegration, mRelativeEquilibriumTolerance
 
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
     mCrackFormationSolutionStrategy = NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
@@ -854,6 +857,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
     Dim validation As CSectionSolver
     Set validation = New CSectionSolver ' Общие настройки равновесия проверяются и перед прямым поиском по деформациям, без пробного решения НДС.
+    ConfigureExperimentalNumerics validation
     validation.SolverMethod = mSolverMethod: validation.MaxIterations = mSolverMaxIterations
     validation.LoadSteps = mSolverLoadSteps: validation.SecantMaxRestarts = mSolverSecantMaxRestarts
     validation.ToleranceN = mSolverToleranceN: validation.ToleranceMx = mSolverToleranceMx
@@ -959,6 +963,7 @@ Private Sub InitializeCrcLoadPathGuess(ByVal section As CSectionModel, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
         Dim guessSolver As CSectionSolver, residual As Double, limitState As String
         Set guessSolver = New CSectionSolver
+        ConfigureExperimentalNumerics guessSolver
         guessSolver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
         If FirstFormationLimitResidual(section, guessSolver, concreteMaterial, steelMaterial, residual, limitState) Then
             If residual > 0# Then guessBuilder.ScaleToPhysicalLimit section, residual + 1#, eps0, kx, ky ' Уменьшаем лишь масштаб начального поля до первого предела; принятую точку затем проверяет общий поиск.
@@ -1029,6 +1034,7 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
     If FormationSearchStoppedTerminally() Then Exit Function
 
     If Not reuseTrialSolver Or solver Is Nothing Then Set solver = New CSectionSolver
+    ConfigureExperimentalNumerics solver
     mSolverCallCount = mSolverCallCount + 1
     If centeredPlane Then
         solver.EvaluatePhysicalCenterPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
@@ -1474,6 +1480,7 @@ Private Function LoadScalingProbeGuess(ByVal section As CSectionModel, _
 
     Dim initialSolver As CSectionSolver
     Set initialSolver = New CSectionSolver
+    ConfigureExperimentalNumerics initialSolver
     initialSolver.SetInitialState eps0, kx, ky
     Set LoadScalingProbeGuess = initialSolver
 End Function
@@ -1747,6 +1754,8 @@ Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
     runner.SolverMethod = mSolverMethod
     runner.SecantMaxRestarts = mSolverSecantMaxRestarts
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
+    runner.UseThickLayerIntegration = mUseThickLayerIntegration
+    runner.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Проверяет центральное растяжение по моментам относительно центра приведённого сечения.
@@ -1794,7 +1803,7 @@ Private Function CentralTensionCrackForce(ByVal section As CSectionModel) As Dou
     CentralTensionCrackForce = mAred * mConcreteRbtSer
 End Function
 
-' Максимальная растягивающая деформация бетонных КЭ по сохраненной плоскости.
+' Максимальная растягивающая деформация бетона по сохранённой плоскости и модели решателя.
 Private Function MaxConcreteStrain(ByVal solver As CSectionSolver, ByVal section As CSectionModel) As Double
     Dim minimum As Double, maximum As Double
     If solver.TryGetConcreteStrainBounds(section, minimum, maximum) Then
@@ -2148,6 +2157,22 @@ End Property
 ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
+End Property
+
+' Передаёт один численный способ всем прямым пробам трещинообразования.
+Private Sub ConfigureExperimentalNumerics(ByVal solver As CSectionSolver)
+    solver.UseThickLayerIntegration = mUseThickLayerIntegration
+    solver.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
+End Sub
+
+' Выбирает непрерывное интегрирование в экспериментальном расчёте трещин.
+Public Property Let UseThickLayerIntegration(ByVal value As Boolean)
+    mUseThickLayerIntegration = value
+End Property
+
+' Задаёт дополнительную относительную точность экспериментального расчёта.
+Public Property Let RelativeEquilibriumTolerance(ByVal value As Double)
+    mRelativeEquilibriumTolerance = value
 End Property
 
 ' Передаёт выбор и последовательную проверку способов изменения нагрузки общему поиску.

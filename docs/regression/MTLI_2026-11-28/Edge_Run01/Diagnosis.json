@@ -1,0 +1,10 @@
+{
+  "PrimaryResult": "561 pass, 13 fail; complete run retained",
+  "Diagnosis": [
+    "Unknown-method assertion assumed unquoted Config! text; now checks exact address returned by InputLocation",
+    "Eight curvature checks compared almost zero coefficients against 1e-10; final strain-field error at every actual element is the physically meaningful 2% criterion authorized by user",
+    "Four axial checks on L-section applied N at global origin but compared with uniform-field capacity; corrected load path now includes moments of the uniform-field resultant"
+  ],
+  "PhysicsTolerance": "User-authorized 2% final result comparison; material laws, physical limits, signs, geometry and applied loads are not relaxed",
+  "RepairScope": "Test fixtures and assertions only; no solver changes for these 13 failures"
+}

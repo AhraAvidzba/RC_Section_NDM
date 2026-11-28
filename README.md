@@ -30,6 +30,13 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 
 ## Разработка
 
+Ветка `codex/experimental-mtli` содержит отдельный [эксперимент интегрирования
+и численной точности](docs/reports/MTLIExperiment_2026-11-28.md). Его настройки
+по умолчанию — `Discrete` и относительный допуск 0. Исходная релизная книга
+в `workbook/output` этим экспериментом не обновляется.
+Отдельная книга: [RC_Section_NDM_MTLI.xlsm](workbook/experimental/RC_Section_NDM_MTLI.xlsm).
+Её можно воспроизвести командой `powershell -ExecutionPolicy Bypass -File tools/build_workbook/Build-Workbook.ps1 -OutputPath workbook/experimental/RC_Section_NDM_MTLI.xlsm -UseFormattedLayout`.
+
 Основная ветка — `main`: рабочая версия программы. Изменения выполняются в отдельных ветках `codex/...` от актуальной `main` и после проверок сливаются в `main`.
 
 - `src/` - VBA; `tests/` - тесты; `tools/` - сборка и проверки.

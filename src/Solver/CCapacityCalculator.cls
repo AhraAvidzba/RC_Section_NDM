@@ -17,6 +17,8 @@ Option Explicit
 ' Скрывает детали поиска от пакетного расчёта, который получает готовый итог
 ' и отдельно выбирает определяющее сочетание.
 
+Private mUseThickLayerIntegration As Boolean ' Выбор непрерывного бетона для экспериментального поиска.
+Private mRelativeEquilibriumTolerance As Double ' Дополнительный относительный допуск экспериментального поиска.
 Private mInitialLambdaStep As Double ' Первый шаг расширения lambda для LoadMultiplier.
 Private mSolutionStrategy As String ' Пользовательская стратегия Capacity.SolutionStrategy после чтения Config.
 Private mSearchMethod As String ' Алгоритм одномерного LoadMultiplier-поиска.
@@ -323,6 +325,18 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
     cap.SolverMethod = mSolverMethod
     cap.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
     cap.DiagnosticsEnabled = mDiagnosticsEnabled
+    cap.UseThickLayerIntegration = mUseThickLayerIntegration
+    cap.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 
     Set CreateConfiguredSolver = cap
 End Function
+
+' Передаёт численную модель бетона из общего пакета настроек расчёта.
+Public Property Let UseThickLayerIntegration(ByVal value As Boolean)
+    mUseThickLayerIntegration = value
+End Property
+
+' Передаёт точность равновесия каждому созданному поиску предела.
+Public Property Let RelativeEquilibriumTolerance(ByVal value As Double)
+    mRelativeEquilibriumTolerance = value
+End Property

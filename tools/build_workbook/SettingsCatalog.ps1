@@ -10,6 +10,39 @@ $script:ConfigGroupHeaderColor = 14277081
 $script:ConfigSubgroupHeaderColor = 15921906
 $script:ConfigTableHeaderColor = 14277081
 
+# Записывает массив настроек отдельным типизированным вызовом COM.
+function Set-ExperimentalNumericsMatrix {
+    param([object]$Target,[object[,]]$Matrix)
+    $Target.Value2=$Matrix # Типизированный call-site сохраняет SAFEARRAY после скалярных записей сборщика.
+}
+
+# Создаёт небольшой блок численного эксперимента в позиции WorkbookLayout
+# и проверки ввода; существующие таблицы не сдвигаются.
+function Add-ExperimentalNumericsSettings {
+    param([object]$Workbook,[object]$Layout)
+    $item=@($Layout.Names|Where-Object{$_.Name -eq 'rngExperimentalNumericsSettings'})
+    if($item.Count -ne 1){throw 'WorkbookLayout must define rngExperimentalNumericsSettings'}
+    $sheet=$Workbook.Worksheets.Item([string]$item[0].Sheet)
+    $table=$sheet.Range([string]$item[0].Address)
+    Set-WorkbookNameByBounds $Workbook 'rngExperimentalNumericsSettings' $sheet $table.Row $table.Column ($table.Row+2) ($table.Column+4)
+    $rows=@(@('Параметр','Значение','Ед.','Комментарий','Справка'),@('Solver.IntegrationMethod','Discrete','-','Discrete — исходная сетка; MTLI — непрерывная область по достоверному контуру.','Bonet et al. (2004), раздел 3, формулы (1)–(6).'),@('Solver.RelativeEquilibriumTolerance','0','-','Относительный допуск от силового масштаба задачи, 0…0,02; 0 оставляет абсолютные допуски.','Численный эксперимент. Не изменяет диаграммы и физические пределы.'))
+    $data=New-Object 'object[,]' 3,5
+    for($r=0;$r -lt 3;$r++){for($c=0;$c -lt 5;$c++){$data[$r,$c]=$rows[$r][$c]}}
+    Set-ExperimentalNumericsMatrix $table $data
+    $title=$sheet.Range($sheet.Cells.Item($table.Row-1,$table.Column),$sheet.Cells.Item($table.Row-1,$table.Column+4))
+    $title.Cells.Item(1,1).Value2='[Численный эксперимент: интегрирование и точность]'
+    $title.Font.Bold=$true;$title.Interior.Color=$script:ConfigGroupHeaderColor;$title.HorizontalAlignment=-4131
+    $table.Font.Name='Arial';$table.Font.Size=9;$table.WrapText=$false;$table.Borders.LineStyle=1
+    $table.Rows.Item(1).Font.Bold=$true;$table.Rows.Item(1).Interior.Color=$script:ConfigTableHeaderColor
+    $values=$table.Offset(1,1).Resize(2,1);$values.Interior.Color=15135487;$values.HorizontalAlignment=-4108
+    $table.Offset(1,3).Resize(2,2).HorizontalAlignment=-4131
+    $separator=[string]$Workbook.Application.International(5)
+    $table.Cells.Item(2,2).Validation.Delete();$table.Cells.Item(2,2).Validation.Add(3,1,1,('Discrete'+$separator+'MTLI'))
+    $table.Cells.Item(2,2).Validation.ShowError=$true
+    $table.Cells.Item(3,2).Validation.Delete();$table.Cells.Item(3,2).Validation.Add(2,1,1,0,0.02)
+    $table.Cells.Item(3,2).Validation.ShowError=$true
+}
+
 function Get-SystemSettingsCatalog {
     $lambda = [char]0x03BB
     $mu = [char]0x03BC

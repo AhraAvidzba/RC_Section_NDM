@@ -1,0 +1,6 @@
+﻿{
+    "Status":  "HARNESS_OR_TEST_FAILURE",
+    "Error":  "VBA compilation failed: modTestThickLayerIntegration:44",
+    "Stack":  "at \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Test-MTLIExperiment.ps1: line 59",
+    "UTC":  "2026-11-28T14:14:44.2087983+00:00"
+}

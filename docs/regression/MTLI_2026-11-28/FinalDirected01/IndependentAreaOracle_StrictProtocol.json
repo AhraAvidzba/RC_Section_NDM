@@ -1,0 +1,1993 @@
+{
+  "Status": "PASS",
+  "Checks": 192,
+  "CompleteCases": true,
+  "Cases": [
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      4,
+      4
+    ]
+  ],
+  "Results": [
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 0,
+      "actual": -1004325.86247086,
+      "expected": -1004325.8624708627,
+      "error": 2.6775524020195007e-09,
+      "limit": 0.10044258624708625,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 1,
+      "actual": 110248680.475614,
+      "expected": 110248680.47561413,
+      "error": 1.341104507446289e-07,
+      "limit": 11.025868047561412,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 2,
+      "actual": -19485918.523522,
+      "expected": -19485918.523521923,
+      "error": 7.82310962677002e-08,
+      "limit": 1.949591852352192,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 3,
+      "actual": 530905594.405595,
+      "expected": 530905594.40559494,
+      "error": 5.960464477539063e-08,
+      "limit": 53.10055944055949,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 4,
+      "actual": -28925283306.4372,
+      "expected": -28925283306.43717,
+      "error": 3.0517578125e-05,
+      "limit": 2893.528330643717,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 5,
+      "actual": 2879816698.45306,
+      "expected": 2879816698.4530563,
+      "error": 3.814697265625e-06,
+      "limit": 288.98166984530565,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 6,
+      "actual": -28925283306.4372,
+      "expected": -28925283306.43717,
+      "error": 3.0517578125e-05,
+      "limit": 2893.528330643717,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 7,
+      "actual": 4274888318436.99,
+      "expected": 4274888318436.9863,
+      "error": 0.00390625,
+      "limit": 427588.83184369863,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 8,
+      "actual": 922953469811.076,
+      "expected": 922953469811.0745,
+      "error": 0.0015869140625,
+      "limit": 92395.34698110745,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 9,
+      "actual": 2879816698.45306,
+      "expected": 2879816698.4530563,
+      "error": 3.814697265625e-06,
+      "limit": 288.98166984530565,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 10,
+      "actual": 922953469811.076,
+      "expected": 922953469811.0746,
+      "error": 0.00146484375,
+      "limit": 92395.34698110746,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 1,
+      "component": 11,
+      "actual": 1766161667051.96,
+      "expected": 1766161667051.9558,
+      "error": 0.004150390625,
+      "limit": 176716.16670519556,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 0,
+      "actual": 80000.0,
+      "expected": 80000.0,
+      "error": 0.0,
+      "limit": 0.00801,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 1,
+      "actual": -1.2732925824821e-11,
+      "expected": 0.0,
+      "error": 1.2732925824821e-11,
+      "limit": 0.001,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 2,
+      "actual": 0.0,
+      "expected": -1.1641532182693481e-10,
+      "error": 1.1641532182693481e-10,
+      "limit": 0.0010000000000000117,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 3,
+      "actual": 3200000000.0,
+      "expected": 3200000000.0,
+      "error": 0.0,
+      "limit": 320.01,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 4,
+      "actual": -1.40070915222168e-06,
+      "expected": 0.0,
+      "error": 1.40070915222168e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 5,
+      "actual": 0.0,
+      "expected": 7.62939453125e-06,
+      "error": 7.62939453125e-06,
+      "limit": 1.000000000000763,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 6,
+      "actual": -1.40070915222168e-06,
+      "expected": 0.0,
+      "error": 1.40070915222168e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 7,
+      "actual": 42666666666666.7,
+      "expected": 42666666666666.66,
+      "error": 0.046875,
+      "limit": 4266766.666666665,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 8,
+      "actual": -0.00182199478149414,
+      "expected": 0.0,
+      "error": 0.00182199478149414,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 9,
+      "actual": 0.0,
+      "expected": 7.62939453125e-06,
+      "error": 7.62939453125e-06,
+      "limit": 1.000000000000763,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 10,
+      "actual": -0.00182199478149414,
+      "expected": 0.0,
+      "error": 0.00182199478149414,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 2,
+      "component": 11,
+      "actual": 10666666666666.7,
+      "expected": 10666666666666.664,
+      "error": 0.03515625,
+      "limit": 1066766.6666666663,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 0,
+      "actual": -1575227.74327122,
+      "expected": -1575227.743271222,
+      "error": 2.0954757928848267e-09,
+      "limit": 0.1575327743271222,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 1,
+      "actual": -60631636.3501923,
+      "expected": -60631636.350192256,
+      "error": 4.470348358154297e-08,
+      "limit": 6.064163635019225,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 2,
+      "actual": 55816370.7354397,
+      "expected": 55816370.735439755,
+      "error": 5.21540641784668e-08,
+      "limit": 5.582637073543975,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 3,
+      "actual": 636024844.720497,
+      "expected": 636024844.7204973,
+      "error": 2.384185791015625e-07,
+      "limit": 63.61248447204972,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 4,
+      "actual": 4035788228.33481,
+      "expected": 4035788228.3348165,
+      "error": 6.67572021484375e-06,
+      "limit": 404.57882283348164,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 5,
+      "actual": 3022324241.6059,
+      "expected": 3022324241.60592,
+      "error": 2.002716064453125e-05,
+      "limit": 303.23242416059196,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 6,
+      "actual": 4035788228.33481,
+      "expected": 4035788228.3348165,
+      "error": 6.67572021484375e-06,
+      "limit": 404.57882283348164,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 7,
+      "actual": 8117669117336.38,
+      "expected": 8117669117336.376,
+      "error": 0.00390625,
+      "limit": 811866.9117336376,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 8,
+      "actual": 1889781290588.07,
+      "expected": 1889781290588.0698,
+      "error": 0.000244140625,
+      "limit": 189078.12905880698,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 9,
+      "actual": 3022324241.6059,
+      "expected": 3022324241.60592,
+      "error": 2.002716064453125e-05,
+      "limit": 303.23242416059196,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 10,
+      "actual": 1889781290588.07,
+      "expected": 1889781290588.0698,
+      "error": 0.000244140625,
+      "limit": 189078.12905880698,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 3,
+      "component": 11,
+      "actual": 1506650991949.34,
+      "expected": 1506650991949.3408,
+      "error": 0.000732421875,
+      "limit": 150765.09919493407,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 0,
+      "actual": -300000.0,
+      "expected": -300000.0000000001,
+      "error": 1.1641532182693481e-10,
+      "limit": 0.03001000000000001,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 1,
+      "actual": 47622589.5316805,
+      "expected": 47622589.53168043,
+      "error": 7.450580596923828e-08,
+      "limit": 4.763258953168043,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 2,
+      "actual": 4181818.18181819,
+      "expected": 4181818.18181818,
+      "error": 1.0244548320770264e-08,
+      "limit": 0.41918181818181793,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 3,
+      "actual": 418181818.181818,
+      "expected": 418181818.1818182,
+      "error": 1.7881393432617188e-07,
+      "limit": 41.82818181818182,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 4,
+      "actual": -56363636363.6364,
+      "expected": -56363636363.63634,
+      "error": 6.103515625e-05,
+      "limit": 5637.363636363633,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 5,
+      "actual": -1818181818.18182,
+      "expected": -1818181818.181813,
+      "error": 6.9141387939453125e-06,
+      "limit": 182.8181818181813,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 6,
+      "actual": -56363636363.6364,
+      "expected": -56363636363.63634,
+      "error": 6.103515625e-05,
+      "limit": 5637.363636363633,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 7,
+      "actual": 8068620085149.01,
+      "expected": 8068620085149.006,
+      "error": 0.00390625,
+      "limit": 806962.0085149006,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 8,
+      "actual": -16528925619.8345,
+      "expected": -16528925619.834877,
+      "error": 0.000377655029296875,
+      "limit": 1752.8925619834877,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 9,
+      "actual": -1818181818.18182,
+      "expected": -1818181818.181813,
+      "error": 6.9141387939453125e-06,
+      "limit": 182.8181818181813,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 10,
+      "actual": -16528925619.8345,
+      "expected": -16528925619.834816,
+      "error": 0.000316619873046875,
+      "limit": 1752.8925619834815,
+      "passed": true
+    },
+    {
+      "kind": 1,
+      "case": 4,
+      "component": 11,
+      "actual": 1393939393939.39,
+      "expected": 1393939393939.3926,
+      "error": 0.002685546875,
+      "limit": 139493.93939393925,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 0,
+      "actual": -816159.988344989,
+      "expected": -816159.9883449886,
+      "error": 4.656612873077393e-10,
+      "limit": 0.08162599883449885,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 1,
+      "actual": 100119895.358167,
+      "expected": 100119895.35816747,
+      "error": 4.76837158203125e-07,
+      "limit": 10.012989535816747,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 2,
+      "actual": -17646640.5832804,
+      "expected": -17646640.583280347,
+      "error": 5.21540641784668e-08,
+      "limit": 1.7656640583280345,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 3,
+      "actual": 330583916.083917,
+      "expected": 330583916.08391666,
+      "error": 3.5762786865234375e-07,
+      "limit": 33.068391608391664,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 4,
+      "actual": -23367413483.9519,
+      "expected": -23367413483.951965,
+      "error": 6.4849853515625e-05,
+      "limit": 2337.7413483951964,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 5,
+      "actual": 2194896164.44162,
+      "expected": 2194896164.4416122,
+      "error": 7.62939453125e-06,
+      "limit": 220.48961644416121,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 6,
+      "actual": -23367413483.9519,
+      "expected": -23367413483.951965,
+      "error": 6.4849853515625e-05,
+      "limit": 2337.7413483951964,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 7,
+      "actual": 3829946168673.54,
+      "expected": 3829946168673.5347,
+      "error": 0.00537109375,
+      "limit": 383094.61686735344,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 8,
+      "actual": 849962604732.099,
+      "expected": 849962604732.0974,
+      "error": 0.0015869140625,
+      "limit": 85096.26047320974,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 9,
+      "actual": 2194896164.44162,
+      "expected": 2194896164.4416122,
+      "error": 7.62939453125e-06,
+      "limit": 220.48961644416121,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 10,
+      "actual": 849962604732.099,
+      "expected": 849962604732.0975,
+      "error": 0.00146484375,
+      "limit": 85096.26047320975,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 1,
+      "component": 11,
+      "actual": 1599771642200.78,
+      "expected": 1599771642200.774,
+      "error": 0.006103515625,
+      "limit": 160077.1642200774,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 0,
+      "actual": 60000.0,
+      "expected": 60000.0,
+      "error": 0.0,
+      "limit": 0.00601,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 1,
+      "actual": -5.66160451853648e-11,
+      "expected": 0.0,
+      "error": 5.66160451853648e-11,
+      "limit": 0.001,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 2,
+      "actual": 0.0,
+      "expected": -1.0186340659856796e-10,
+      "error": 1.0186340659856796e-10,
+      "limit": 0.0010000000000000102,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 3,
+      "actual": 2400000000.0,
+      "expected": 2400000000.0,
+      "error": 0.0,
+      "limit": 240.01,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 4,
+      "actual": -1.73225998878479e-06,
+      "expected": 0.0,
+      "error": 1.73225998878479e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 5,
+      "actual": 0.0,
+      "expected": 6.67572021484375e-06,
+      "error": 6.67572021484375e-06,
+      "limit": 1.0000000000006675,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 6,
+      "actual": -1.73225998878479e-06,
+      "expected": 0.0,
+      "error": 1.73225998878479e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 7,
+      "actual": 40000000000000.0,
+      "expected": 39999999999999.99,
+      "error": 0.0078125,
+      "limit": 4000099.999999999,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 8,
+      "actual": -0.00194492936134338,
+      "expected": 0.0,
+      "error": 0.00194492936134338,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 9,
+      "actual": 0.0,
+      "expected": 6.67572021484375e-06,
+      "error": 6.67572021484375e-06,
+      "limit": 1.0000000000006675,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 10,
+      "actual": -0.00194492936134338,
+      "expected": 0.0,
+      "error": 0.00194492936134338,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 2,
+      "component": 11,
+      "actual": 10000000000000.0,
+      "expected": 9999999999999.998,
+      "error": 0.001953125,
+      "limit": 1000099.9999999998,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 0,
+      "actual": -1158480.20186336,
+      "expected": -1158480.2018633548,
+      "error": 5.122274160385132e-09,
+      "limit": 0.11585802018633547,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 1,
+      "actual": -54961072.6763532,
+      "expected": -54961072.67635316,
+      "error": 4.470348358154297e-08,
+      "limit": 5.497107267635315,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 2,
+      "actual": 51141422.1436448,
+      "expected": 51141422.14364481,
+      "error": 7.450580596923828e-09,
+      "limit": 5.115142214364481,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 3,
+      "actual": 400815217.391305,
+      "expected": 400815217.39130473,
+      "error": 2.980232238769531e-07,
+      "limit": 40.09152173913047,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 4,
+      "actual": 5624722715.17302,
+      "expected": 5624722715.173031,
+      "error": 1.049041748046875e-05,
+      "limit": 563.472271517303,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 5,
+      "actual": 1088813124.49365,
+      "expected": 1088813124.4936697,
+      "error": 1.9788742065429688e-05,
+      "limit": 109.88131244936697,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 6,
+      "actual": 5624722715.17302,
+      "expected": 5624722715.173031,
+      "error": 1.049041748046875e-05,
+      "limit": 563.472271517303,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 7,
+      "actual": 7385733893712.77,
+      "expected": 7385733893712.766,
+      "error": 0.00390625,
+      "limit": 738673.3893712765,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 8,
+      "actual": 1832680659102.02,
+      "expected": 1832680659102.016,
+      "error": 0.00390625,
+      "limit": 183368.0659102016,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 9,
+      "actual": 1088813124.49365,
+      "expected": 1088813124.4936697,
+      "error": 1.9788742065429688e-05,
+      "limit": 109.88131244936697,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 10,
+      "actual": 1832680659102.02,
+      "expected": 1832680659102.016,
+      "error": 0.00390625,
+      "limit": 183368.0659102016,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 3,
+      "component": 11,
+      "actual": 1325144192478.09,
+      "expected": 1325144192478.0935,
+      "error": 0.00341796875,
+      "limit": 132614.41924780933,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 0,
+      "actual": -296590.909090909,
+      "expected": -296590.90909090923,
+      "error": 2.3283064365386963e-10,
+      "limit": 0.029669090909090923,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 1,
+      "actual": 47295454.5454546,
+      "expected": 47295454.54545453,
+      "error": 6.705522537231445e-08,
+      "limit": 4.730545454545453,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 2,
+      "actual": 4090909.09090909,
+      "expected": 4090909.090909089,
+      "error": 9.313225746154785e-10,
+      "limit": 0.4100909090909089,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 3,
+      "actual": 381818181.818182,
+      "expected": 381818181.8181819,
+      "error": 1.1920928955078125e-07,
+      "limit": 38.191818181818185,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 4,
+      "actual": -53037190082.6446,
+      "expected": -53037190082.64461,
+      "error": 7.62939453125e-06,
+      "limit": 5304.71900826446,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 5,
+      "actual": -1363636363.63636,
+      "expected": -1363636363.6363597,
+      "error": 2.384185791015625e-07,
+      "limit": 137.36363636363598,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 6,
+      "actual": -53037190082.6446,
+      "expected": -53037190082.64461,
+      "error": 7.62939453125e-06,
+      "limit": 5304.71900826446,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 7,
+      "actual": 7764462809917.36,
+      "expected": 7764462809917.351,
+      "error": 0.009765625,
+      "limit": 776546.280991735,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 8,
+      "actual": -53719008264.4624,
+      "expected": -53719008264.462906,
+      "error": 0.0005035400390625,
+      "limit": 5471.90082644629,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 9,
+      "actual": -1363636363.63636,
+      "expected": -1363636363.6363597,
+      "error": 2.384185791015625e-07,
+      "limit": 137.36363636363598,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 10,
+      "actual": -53719008264.4624,
+      "expected": -53719008264.46285,
+      "error": 0.00045013427734375,
+      "limit": 5471.900826446285,
+      "passed": true
+    },
+    {
+      "kind": 2,
+      "case": 4,
+      "component": 11,
+      "actual": 1363636363636.36,
+      "expected": 1363636363636.3623,
+      "error": 0.002197265625,
+      "limit": 136463.63636363624,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 0,
+      "actual": -301842.040354178,
+      "expected": -301842.0403541776,
+      "error": 4.0745362639427185e-10,
+      "limit": 0.030194204035417758,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 1,
+      "actual": 11457463.4781862,
+      "expected": 11457463.478186205,
+      "error": 5.587935447692871e-09,
+      "limit": 1.1467463478186204,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 2,
+      "actual": -9694776.78923448,
+      "expected": -9694776.78923448,
+      "error": 0.0,
+      "limit": 0.9704776789234479,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 3,
+      "actual": 308338569.216257,
+      "expected": 308338569.21625715,
+      "error": 1.7881393432617188e-07,
+      "limit": 30.843856921625715,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 4,
+      "actual": -5832143775.64104,
+      "expected": -5832143775.641178,
+      "error": 0.00013828277587890625,
+      "limit": 584.2143775641177,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 5,
+      "actual": 4934890887.08088,
+      "expected": 4934890887.080925,
+      "error": 4.482269287109375e-05,
+      "limit": 494.4890887080925,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 6,
+      "actual": -5832143775.64104,
+      "expected": -5832143775.641178,
+      "error": 0.00013828277587890625,
+      "limit": 584.2143775641177,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 7,
+      "actual": 623771210371.695,
+      "expected": 623771210371.7083,
+      "error": 0.0133056640625,
+      "limit": 62477.12103717082,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 8,
+      "actual": 217945651934.296,
+      "expected": 217945651934.295,
+      "error": 0.0009765625,
+      "limit": 21894.565193429502,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 9,
+      "actual": 4934890887.08088,
+      "expected": 4934890887.080925,
+      "error": 4.482269287109375e-05,
+      "limit": 494.4890887080925,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 10,
+      "actual": 217945651934.296,
+      "expected": 217945651934.295,
+      "error": 0.0009765625,
+      "limit": 21894.565193429502,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 1,
+      "component": 11,
+      "actual": 696927792839.15,
+      "expected": 696927792839.1626,
+      "error": 0.0125732421875,
+      "limit": 69792.77928391626,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 0,
+      "actual": 31415.9265358979,
+      "expected": 31415.926535897932,
+      "error": 3.2741809263825417e-11,
+      "limit": 0.003151592653589793,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 1,
+      "actual": -5.72003645837871e-10,
+      "expected": 0.0,
+      "error": 5.72003645837871e-10,
+      "limit": 0.001,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 2,
+      "actual": -1.86406001745354e-10,
+      "expected": 0.0,
+      "error": 1.86406001745354e-10,
+      "limit": 0.001,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 3,
+      "actual": 1256637061.43592,
+      "expected": 1256637061.4359174,
+      "error": 2.6226043701171875e-06,
+      "limit": 125.67370614359174,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 4,
+      "actual": 2.70525788437226e-06,
+      "expected": 0.0,
+      "error": 2.70525788437226e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 5,
+      "actual": -6.24841777607799e-06,
+      "expected": 0.0,
+      "error": 6.24841777607799e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 6,
+      "actual": 2.70525788437226e-06,
+      "expected": 0.0,
+      "error": 2.70525788437226e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 7,
+      "actual": 3141592653589.79,
+      "expected": 3141592653589.793,
+      "error": 0.0029296875,
+      "limit": 314259.2653589793,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 8,
+      "actual": -4.69303777208552e-05,
+      "expected": 0.0,
+      "error": 4.69303777208552e-05,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 9,
+      "actual": -6.24841777607799e-06,
+      "expected": 0.0,
+      "error": 6.24841777607799e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 10,
+      "actual": -4.69303777208552e-05,
+      "expected": 0.0,
+      "error": 4.69303777208552e-05,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 2,
+      "component": 11,
+      "actual": 3141592653589.79,
+      "expected": 3141592653589.794,
+      "error": 0.00390625,
+      "limit": 314259.2653589794,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 0,
+      "actual": -618909.684007043,
+      "expected": -618909.6840070419,
+      "error": 1.1641532182693481e-09,
+      "limit": 0.061900968400704186,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 1,
+      "actual": -5801434.07545792,
+      "expected": -5801434.075457917,
+      "error": 3.725290298461914e-09,
+      "limit": 0.5811434075457916,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 2,
+      "actual": 19061854.8193618,
+      "expected": 19061854.819361627,
+      "error": 1.7136335372924805e-07,
+      "limit": 1.9071854819361624,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 3,
+      "actual": 287814780.632404,
+      "expected": 287814780.6324039,
+      "error": 1.1920928955078125e-07,
+      "limit": 28.79147806324039,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 4,
+      "actual": -430379827.471996,
+      "expected": -430379827.47193426,
+      "error": 6.175041198730469e-05,
+      "limit": 44.037982747193425,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 5,
+      "actual": 1414105147.40797,
+      "expected": 1414105147.4079585,
+      "error": 1.1444091796875e-05,
+      "limit": 142.41051474079583,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 6,
+      "actual": -430379827.471996,
+      "expected": -430379827.47193426,
+      "error": 6.175041198730469e-05,
+      "limit": 44.037982747193425,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 7,
+      "actual": 791733196834.917,
+      "expected": 791733196834.9159,
+      "error": 0.0010986328125,
+      "limit": 79273.31968349159,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 8,
+      "actual": 121713041736.952,
+      "expected": 121713041736.95099,
+      "error": 0.001007080078125,
+      "limit": 12271.304173695098,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 9,
+      "actual": 1414105147.40797,
+      "expected": 1414105147.4079585,
+      "error": 1.1444091796875e-05,
+      "limit": 142.41051474079583,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 10,
+      "actual": 121713041736.952,
+      "expected": 121713041736.95099,
+      "error": 0.001007080078125,
+      "limit": 12271.304173695098,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 3,
+      "component": 11,
+      "actual": 428862016501.146,
+      "expected": 428862016501.1477,
+      "error": 0.001708984375,
+      "limit": 42986.20165011477,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 0,
+      "actual": -2254.30889890553,
+      "expected": -2254.308898905571,
+      "error": 4.092726157978177e-11,
+      "limit": 0.0002354308898905571,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 1,
+      "actual": 216631.395124808,
+      "expected": 216631.3951248032,
+      "error": 4.802132025361061e-09,
+      "limit": 0.02266313951248032,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 2,
+      "actual": 59081.2895794932,
+      "expected": 59081.28957950128,
+      "error": 8.083588909357786e-09,
+      "limit": 0.006908128957950128,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 3,
+      "actual": 33560531.805648,
+      "expected": 33560531.80564807,
+      "error": 7.450580596923828e-08,
+      "limit": 3.366053180564807,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 4,
+      "actual": -2951340791.7792,
+      "expected": -2951340791.7791996,
+      "error": 4.76837158203125e-07,
+      "limit": 296.13407917791994,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 5,
+      "actual": -804911125.030691,
+      "expected": -804911125.0306883,
+      "error": 2.7418136596679688e-06,
+      "limit": 81.49111250306882,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 6,
+      "actual": -2951340791.7792,
+      "expected": -2951340791.7791996,
+      "error": 4.76837158203125e-07,
+      "limit": 296.13407917791994,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 7,
+      "actual": 258743471649.645,
+      "expected": 258743471649.643,
+      "error": 0.001983642578125,
+      "limit": 25974.3471649643,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 8,
+      "actual": 65195375033.5856,
+      "expected": 65195375033.58501,
+      "error": 0.0005950927734375,
+      "limit": 6619.5375033585005,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 9,
+      "actual": -804911125.030691,
+      "expected": -804911125.0306883,
+      "error": 2.7418136596679688e-06,
+      "limit": 81.49111250306882,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 10,
+      "actual": 65195375033.5856,
+      "expected": 65195375033.58501,
+      "error": 0.0005950927734375,
+      "limit": 6619.5375033585005,
+      "passed": true
+    },
+    {
+      "kind": 3,
+      "case": 4,
+      "component": 11,
+      "actual": 37474320020.5062,
+      "expected": 37474320020.504906,
+      "error": 0.0012969970703125,
+      "limit": 3847.4320020504906,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 0,
+      "actual": -244310.574666594,
+      "expected": -244310.5746665939,
+      "error": 1.1641532182693481e-10,
+      "limit": 0.024441057466659387,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 1,
+      "actual": 10450585.3842848,
+      "expected": 10450585.384283563,
+      "error": 1.2367963790893555e-06,
+      "limit": 1.046058538428356,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 2,
+      "actual": -8842803.01747175,
+      "expected": -8842803.017470706,
+      "error": 1.043081283569336e-06,
+      "limit": 0.8852803017470706,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 3,
+      "actual": 197670280.957458,
+      "expected": 197670280.9574582,
+      "error": 2.086162567138672e-07,
+      "limit": 19.77702809574582,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 4,
+      "actual": -4913565985.61224,
+      "expected": -4913565985.612385,
+      "error": 0.00014495849609375,
+      "limit": 492.35659856123846,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 5,
+      "actual": 4157632757.05651,
+      "expected": 4157632757.0565615,
+      "error": 5.14984130859375e-05,
+      "limit": 416.76327570565616,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 6,
+      "actual": -4913565985.61224,
+      "expected": -4913565985.612385,
+      "error": 0.00014495849609375,
+      "limit": 492.35659856123846,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 7,
+      "actual": 565630459969.704,
+      "expected": 565630459969.7179,
+      "error": 0.013916015625,
+      "limit": 56663.045996971785,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 8,
+      "actual": 201605227523.462,
+      "expected": 201605227523.44717,
+      "error": 0.01483154296875,
+      "limit": 20260.522752344717,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 9,
+      "actual": 4157632757.05651,
+      "expected": 4157632757.0565615,
+      "error": 5.14984130859375e-05,
+      "limit": 416.76327570565616,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 10,
+      "actual": 201605227523.462,
+      "expected": 201605227523.44717,
+      "error": 0.01483154296875,
+      "limit": 20260.522752344717,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 1,
+      "component": 11,
+      "actual": 633302144732.824,
+      "expected": 633302144732.835,
+      "error": 0.010986328125,
+      "limit": 63430.21447328349,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 0,
+      "actual": 23561.9449019235,
+      "expected": 23561.94490192345,
+      "error": 5.093170329928398e-11,
+      "limit": 0.002366194490192345,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 1,
+      "actual": -5.01496630985929e-10,
+      "expected": 0.0,
+      "error": 5.01496630985929e-10,
+      "limit": 0.001,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 2,
+      "actual": -1.85697361590211e-10,
+      "expected": 0.0,
+      "error": 1.85697361590211e-10,
+      "limit": 0.001,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 3,
+      "actual": 942477796.076938,
+      "expected": 942477796.076938,
+      "error": 0.0,
+      "limit": 94.2577796076938,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 4,
+      "actual": 4.42267149725062e-06,
+      "expected": 0.0,
+      "error": 4.42267149725062e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 5,
+      "actual": -1.39801604258707e-06,
+      "expected": 0.0,
+      "error": 1.39801604258707e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 6,
+      "actual": 4.42267149725062e-06,
+      "expected": 0.0,
+      "error": 4.42267149725062e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 7,
+      "actual": 2945243112740.42,
+      "expected": 2945243112740.4307,
+      "error": 0.0107421875,
+      "limit": 294624.31127404305,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 8,
+      "actual": 6.42774875542207e-05,
+      "expected": 0.0,
+      "error": 6.42774875542207e-05,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 9,
+      "actual": -1.39801604258707e-06,
+      "expected": 0.0,
+      "error": 1.39801604258707e-06,
+      "limit": 1.0,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 10,
+      "actual": 6.42774875542207e-05,
+      "expected": 0.0,
+      "error": 6.42774875542207e-05,
+      "limit": 100.0,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 2,
+      "component": 11,
+      "actual": 2945243112740.43,
+      "expected": 2945243112740.4316,
+      "error": 0.00146484375,
+      "limit": 294624.31127404317,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 0,
+      "actual": -449602.62748999,
+      "expected": -449602.62748998933,
+      "error": 6.402842700481415e-10,
+      "limit": 0.044970262748998936,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 1,
+      "actual": -5371175.42953578,
+      "expected": -5371175.429535782,
+      "error": 1.862645149230957e-09,
+      "limit": 0.5381175429535782,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 2,
+      "actual": 17648147.8399033,
+      "expected": 17648147.839903187,
+      "error": 1.1175870895385742e-07,
+      "limit": 1.7658147839903184,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 3,
+      "actual": 188300250.632255,
+      "expected": 188300250.63225558,
+      "error": 5.960464477539062e-07,
+      "limit": 18.84002506322556,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 4,
+      "actual": -144874948.247253,
+      "expected": -144874948.24719518,
+      "error": 5.7816505432128906e-05,
+      "limit": 15.487494824719517,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 5,
+      "actual": 476017687.098105,
+      "expected": 476017687.0980971,
+      "error": 7.927417755126953e-06,
+      "limit": 48.601768709809704,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 6,
+      "actual": -144874948.247253,
+      "expected": -144874948.24719518,
+      "error": 5.7816505432128906e-05,
+      "limit": 15.487494824719517,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 7,
+      "actual": 730019773152.915,
+      "expected": 730019773152.9153,
+      "error": 0.000244140625,
+      "limit": 73101.97731529153,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 8,
+      "actual": 122527579626.612,
+      "expected": 122527579626.61089,
+      "error": 0.0011138916015625,
+      "limit": 12352.757962661088,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 9,
+      "actual": 476017687.098105,
+      "expected": 476017687.0980971,
+      "error": 7.927417755126953e-06,
+      "limit": 48.601768709809704,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 10,
+      "actual": 122527579626.612,
+      "expected": 122527579626.61089,
+      "error": 0.0011138916015625,
+      "limit": 12352.757962661088,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 3,
+      "component": 11,
+      "actual": 364720156874.816,
+      "expected": 364720156874.81757,
+      "error": 0.0015869140625,
+      "limit": 36572.015687481755,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 0,
+      "actual": -2254.30889890553,
+      "expected": -2254.308898905571,
+      "error": 4.092726157978177e-11,
+      "limit": 0.0002354308898905571,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 1,
+      "actual": 216631.395124808,
+      "expected": 216631.3951248032,
+      "error": 4.802132025361061e-09,
+      "limit": 0.02266313951248032,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 2,
+      "actual": 59081.2895794931,
+      "expected": 59081.28957950128,
+      "error": 8.17817635834217e-09,
+      "limit": 0.006908128957950128,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 3,
+      "actual": 33560531.805648,
+      "expected": 33560531.80564807,
+      "error": 7.450580596923828e-08,
+      "limit": 3.366053180564807,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 4,
+      "actual": -2951340791.7792,
+      "expected": -2951340791.7791996,
+      "error": 4.76837158203125e-07,
+      "limit": 296.13407917791994,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 5,
+      "actual": -804911125.030691,
+      "expected": -804911125.0306883,
+      "error": 2.7418136596679688e-06,
+      "limit": 81.49111250306882,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 6,
+      "actual": -2951340791.7792,
+      "expected": -2951340791.7791996,
+      "error": 4.76837158203125e-07,
+      "limit": 296.13407917791994,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 7,
+      "actual": 258743471649.645,
+      "expected": 258743471649.643,
+      "error": 0.001983642578125,
+      "limit": 25974.3471649643,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 8,
+      "actual": 65195375033.5855,
+      "expected": 65195375033.58501,
+      "error": 0.00049591064453125,
+      "limit": 6619.5375033585005,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 9,
+      "actual": -804911125.030691,
+      "expected": -804911125.0306883,
+      "error": 2.7418136596679688e-06,
+      "limit": 81.49111250306882,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 10,
+      "actual": 65195375033.5855,
+      "expected": 65195375033.58501,
+      "error": 0.00049591064453125,
+      "limit": 6619.5375033585005,
+      "passed": true
+    },
+    {
+      "kind": 4,
+      "case": 4,
+      "component": 11,
+      "actual": 37474320020.5062,
+      "expected": 37474320020.504906,
+      "error": 0.0012969970703125,
+      "limit": 3847.4320020504906,
+      "passed": true
+    }
+  ]
+}

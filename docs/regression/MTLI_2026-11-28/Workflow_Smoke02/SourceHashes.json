@@ -1,0 +1,46 @@
+﻿[
+    {
+        "Path":  "src/Solver/CThickLayerIntegrator.cls",
+        "SHA256":  "DA701BADCD8D348C4C311053317258BF81B96795FEC18A3D7825FA80DAAB29FA"
+    },
+    {
+        "Path":  "src/Solver/CSectionSolver.cls",
+        "SHA256":  "D1BD911263FE407DE9B337D7F6AFA08846CE365B64101172DB76AE758B74B1DE"
+    },
+    {
+        "Path":  "src/Solver/CCapacitySolver.cls",
+        "SHA256":  "31BC740ACFB3FCFA0BB3948D1AA69B16C0E19525C3C7CF0C5AB5AC10360A6C9F"
+    },
+    {
+        "Path":  "src/Solver/CStateSolutionRunner.cls",
+        "SHA256":  "69AA4F466BB902EE13D2953482F779EA67CD3C4B4C21E61B0D15DC0D120625DE"
+    },
+    {
+        "Path":  "src/Solver/CSectionStrainLimits.cls",
+        "SHA256":  "4E7EF635A0C3AF7AC63A15ABEEE2D16876141BC87BB8D71B7DF3998E7123C04B"
+    },
+    {
+        "Path":  "src/Solver/CCapacityCalculator.cls",
+        "SHA256":  "69D91F3E7501D571DBF90F612E2C9529362729CCE8A8E78601769305B821DEC6"
+    },
+    {
+        "Path":  "src/Batch/CStateProvider.cls",
+        "SHA256":  "5C9CB4EF7988FA981384A8C9DEC01B8ED9C0292705E2C677FAF27CB547A90E9B"
+    },
+    {
+        "Path":  "src/Batch/CBatchSectionCalculator.cls",
+        "SHA256":  "17BEC43FD81CADF27877C4293A5B6F05EB5EB3AA8A44C5FF14032D430DC0D55A"
+    },
+    {
+        "Path":  "src/Crack/CCrackFormationCalculator.cls",
+        "SHA256":  "C7CF082BA2A4EB57A2C41E19930EA5929670968C13539B59E5A95943A7F6B89A"
+    },
+    {
+        "Path":  "src/Excel/CSystemSettingsReader.cls",
+        "SHA256":  "F14D66203F8CF1A44632296AD467A515F461420B5BD31E13858495475FA8E721"
+    },
+    {
+        "Path":  "tests/modTestThickLayerIntegration.bas",
+        "SHA256":  "8CC2E822230AAFEE185AB31C3C03BEC19E12A8C33B05F4F160391B65DBB79AAF"
+    }
+]

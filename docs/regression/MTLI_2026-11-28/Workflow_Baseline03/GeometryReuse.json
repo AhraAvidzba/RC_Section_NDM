@@ -1,0 +1,12 @@
+﻿[
+    {
+        "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\MTLI_2026-11-28\\Workflow_Baseline02\\MTLI_Workflow_1.ndm",
+        "Target":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\MTLI_2026-11-28\\Workflow_Baseline03\\MTLI_Workflow_1.ndm",
+        "SHA256":  "A7E1B904DC63F443892347DAF70A650C25AFEC5D9F2D3ED8CECB6E5ABB1DE92A"
+    },
+    {
+        "Source":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\MTLI_2026-11-28\\Workflow_Baseline02\\MTLI_Workflow_2.ndm",
+        "Target":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\MTLI_2026-11-28\\Workflow_Baseline03\\MTLI_Workflow_2.ndm",
+        "SHA256":  "6F37A1A4A1B066C3FA52F74B1AD9C9B7BED9BA6D4063B72D81CB1252A747159D"
+    }
+]

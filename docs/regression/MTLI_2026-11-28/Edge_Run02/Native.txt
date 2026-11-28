@@ -1,0 +1,576 @@
+﻿PASS: Settings_CommonReader_MTLI
+PASS: Settings_CommonReader_Relative
+PASS: Settings_Solver_MTLI
+PASS: Settings_UnknownMethod
+SETTINGS_DIAGNOSTIC: Настройка Solver.IntegrationMethod (лист Config, ячейка B161): Недопустимый вариант: "OtherMethod". Введённое значение: «OtherMethod». Выберите из списка: Discrete, MTLI.
+PASS: Settings_OutOfRange
+PASS: Boundary_Confirm
+PASS: Boundary_ExactMinimum
+PASS: Boundary_Extension
+PASS: Boundary_PhysicalRange
+PASS: Snapshot_Restored
+PASS: Snapshot_N
+PASS: Snapshot_Mx
+PASS: Snapshot_Minimum
+PASS: MissingContour_Stopped
+PASS: SignedBaseline_1_1
+PASS: Signed_1_1_Newton_0_0_Converged
+PASS: Signed_1_1_Newton_0_0_eps
+PASS: Signed_1_1_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_1_1_Newton_0_0|0|0.0008
+PASS: Signed_1_1_Newton_0_1_Converged
+PASS: Signed_1_1_Newton_0_1_eps
+PASS: Signed_1_1_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_1_1_Newton_0_1|0|0.0008
+PASS: Signed_1_1_Newton_1_0_Converged
+PASS: Signed_1_1_Newton_1_0_eps
+PASS: Signed_1_1_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_1_1_Newton_1_0|0|0.0008
+PASS: Signed_1_1_Newton_1_1_Converged
+PASS: Signed_1_1_Newton_1_1_eps
+PASS: Signed_1_1_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_1_1_Newton_1_1|0|0.0008
+PASS: Signed_1_1_Secant_0_0_Converged
+PASS: Signed_1_1_Secant_0_0_eps
+PASS: Signed_1_1_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_1_1_Secant_0_0|1.83880688453542E-16|0.0008
+PASS: Signed_1_1_Secant_0_1_Converged
+PASS: Signed_1_1_Secant_0_1_eps
+PASS: Signed_1_1_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_1_1_Secant_0_1|1.83880688453542E-16|0.0008
+PASS: Signed_1_1_Secant_1_0_Converged
+PASS: Signed_1_1_Secant_1_0_eps
+PASS: Signed_1_1_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_1_1_Secant_1_0|1.0842021724855E-19|0.0008
+PASS: Signed_1_1_Secant_1_1_Converged
+PASS: Signed_1_1_Secant_1_1_eps
+PASS: Signed_1_1_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_1_1_Secant_1_1|1.0842021724855E-19|0.0008
+PASS: SignedBaseline_1_2
+PASS: Signed_1_2_Newton_0_0_Converged
+PASS: Signed_1_2_Newton_0_0_eps
+PASS: Signed_1_2_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_1_2_Newton_0_0|0|0.001
+PASS: Signed_1_2_Newton_0_1_Converged
+PASS: Signed_1_2_Newton_0_1_eps
+PASS: Signed_1_2_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_1_2_Newton_0_1|0|0.001
+PASS: Signed_1_2_Newton_1_0_Converged
+PASS: Signed_1_2_Newton_1_0_eps
+PASS: Signed_1_2_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_1_2_Newton_1_0|0|0.001
+PASS: Signed_1_2_Newton_1_1_Converged
+PASS: Signed_1_2_Newton_1_1_eps
+PASS: Signed_1_2_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_1_2_Newton_1_1|0|0.001
+PASS: Signed_1_2_Secant_0_0_Converged
+PASS: Signed_1_2_Secant_0_0_eps
+PASS: Signed_1_2_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_1_2_Secant_0_0|0|0.001
+PASS: Signed_1_2_Secant_0_1_Converged
+PASS: Signed_1_2_Secant_0_1_eps
+PASS: Signed_1_2_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_1_2_Secant_0_1|0|0.001
+PASS: Signed_1_2_Secant_1_0_Converged
+PASS: Signed_1_2_Secant_1_0_eps
+PASS: Signed_1_2_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_1_2_Secant_1_0|4.33680868994202E-19|0.001
+PASS: Signed_1_2_Secant_1_1_Converged
+PASS: Signed_1_2_Secant_1_1_eps
+PASS: Signed_1_2_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_1_2_Secant_1_1|4.33680868994202E-19|0.001
+PASS: SignedBaseline_1_3
+PASS: Signed_1_3_Newton_0_0_Converged
+PASS: Signed_1_3_Newton_0_0_eps
+PASS: Signed_1_3_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_1_3_Newton_0_0|0|2.28800000000001E-03
+PASS: Signed_1_3_Newton_0_1_Converged
+PASS: Signed_1_3_Newton_0_1_eps
+PASS: Signed_1_3_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_1_3_Newton_0_1|1.77901180615668E-07|2.28800000000001E-03
+PASS: Signed_1_3_Newton_1_0_Converged
+PASS: Signed_1_3_Newton_1_0_eps
+PASS: Signed_1_3_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_1_3_Newton_1_0|3.11815278241853E-08|2.28800000000001E-03
+PASS: Signed_1_3_Newton_1_1_Converged
+PASS: Signed_1_3_Newton_1_1_eps
+PASS: Signed_1_3_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_1_3_Newton_1_1|2.0859404646135E-07|2.28800000000001E-03
+PASS: Signed_1_3_Secant_0_0_Converged
+PASS: Signed_1_3_Secant_0_0_eps
+PASS: Signed_1_3_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_1_3_Secant_0_0|8.76073287265494E-10|2.28800000000001E-03
+PASS: Signed_1_3_Secant_0_1_Converged
+PASS: Signed_1_3_Secant_0_1_eps
+PASS: Signed_1_3_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_1_3_Secant_0_1|2.08629435825662E-06|2.28800000000001E-03
+PASS: Signed_1_3_Secant_1_0_Converged
+PASS: Signed_1_3_Secant_1_0_eps
+PASS: Signed_1_3_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_1_3_Secant_1_0|3.03166411931219E-08|2.28800000000001E-03
+PASS: Signed_1_3_Secant_1_1_Converged
+PASS: Signed_1_3_Secant_1_1_eps
+PASS: Signed_1_3_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_1_3_Secant_1_1|2.1214243706171E-06|2.28800000000001E-03
+PASS: SignedBaseline_1_4
+PASS: Signed_1_4_Newton_0_0_Converged
+PASS: Signed_1_4_Newton_0_0_eps
+PASS: Signed_1_4_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_1_4_Newton_0_0|0|2.18799999999999E-03
+PASS: Signed_1_4_Newton_0_1_Converged
+PASS: Signed_1_4_Newton_0_1_eps
+PASS: Signed_1_4_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_1_4_Newton_0_1|2.20440673846583E-07|2.18799999999999E-03
+PASS: Signed_1_4_Newton_1_0_Converged
+PASS: Signed_1_4_Newton_1_0_eps
+PASS: Signed_1_4_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_1_4_Newton_1_0|5.72599274345324E-08|2.18799999999999E-03
+PASS: Signed_1_4_Newton_1_1_Converged
+PASS: Signed_1_4_Newton_1_1_eps
+PASS: Signed_1_4_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_1_4_Newton_1_1|2.75920443550256E-07|2.18799999999999E-03
+PASS: Signed_1_4_Secant_0_0_Converged
+PASS: Signed_1_4_Secant_0_0_eps
+PASS: Signed_1_4_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_1_4_Secant_0_0|1.77118763275766E-09|2.18799999999999E-03
+PASS: Signed_1_4_Secant_0_1_Converged
+PASS: Signed_1_4_Secant_0_1_eps
+PASS: Signed_1_4_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_1_4_Secant_0_1|6.50238328131839E-06|2.18799999999999E-03
+PASS: Signed_1_4_Secant_1_0_Converged
+PASS: Signed_1_4_Secant_1_0_eps
+PASS: Signed_1_4_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_1_4_Secant_1_0|5.4911029437419E-08|2.18799999999999E-03
+PASS: Signed_1_4_Secant_1_1_Converged
+PASS: Signed_1_4_Secant_1_1_eps
+PASS: Signed_1_4_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_1_4_Secant_1_1|6.44377533044836E-06|2.18799999999999E-03
+PASS: SignedBaseline_2_1
+PASS: Signed_2_1_Newton_0_0_Converged
+PASS: Signed_2_1_Newton_0_0_eps
+PASS: Signed_2_1_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_2_1_Newton_0_0|0|0.0008
+PASS: Signed_2_1_Newton_0_1_Converged
+PASS: Signed_2_1_Newton_0_1_eps
+PASS: Signed_2_1_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_2_1_Newton_0_1|0|0.0008
+PASS: Signed_2_1_Newton_1_0_Converged
+PASS: Signed_2_1_Newton_1_0_eps
+PASS: Signed_2_1_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_2_1_Newton_1_0|0|0.0008
+PASS: Signed_2_1_Newton_1_1_Converged
+PASS: Signed_2_1_Newton_1_1_eps
+PASS: Signed_2_1_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_2_1_Newton_1_1|0|0.0008
+PASS: Signed_2_1_Secant_0_0_Converged
+PASS: Signed_2_1_Secant_0_0_eps
+PASS: Signed_2_1_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_2_1_Secant_0_0|9.41087485717418E-17|0.0008
+PASS: Signed_2_1_Secant_0_1_Converged
+PASS: Signed_2_1_Secant_0_1_eps
+PASS: Signed_2_1_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_2_1_Secant_0_1|9.41087485717418E-17|0.0008
+PASS: Signed_2_1_Secant_1_0_Converged
+PASS: Signed_2_1_Secant_1_0_eps
+PASS: Signed_2_1_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_2_1_Secant_1_0|1.0842021724855E-19|0.0008
+PASS: Signed_2_1_Secant_1_1_Converged
+PASS: Signed_2_1_Secant_1_1_eps
+PASS: Signed_2_1_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_2_1_Secant_1_1|1.0842021724855E-19|0.0008
+PASS: SignedBaseline_2_2
+PASS: Signed_2_2_Newton_0_0_Converged
+PASS: Signed_2_2_Newton_0_0_eps
+PASS: Signed_2_2_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_2_2_Newton_0_0|0|0.001
+PASS: Signed_2_2_Newton_0_1_Converged
+PASS: Signed_2_2_Newton_0_1_eps
+PASS: Signed_2_2_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_2_2_Newton_0_1|0|0.001
+PASS: Signed_2_2_Newton_1_0_Converged
+PASS: Signed_2_2_Newton_1_0_eps
+PASS: Signed_2_2_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_2_2_Newton_1_0|0|0.001
+PASS: Signed_2_2_Newton_1_1_Converged
+PASS: Signed_2_2_Newton_1_1_eps
+PASS: Signed_2_2_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_2_2_Newton_1_1|0|0.001
+PASS: Signed_2_2_Secant_0_0_Converged
+PASS: Signed_2_2_Secant_0_0_eps
+PASS: Signed_2_2_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_2_2_Secant_0_0|4.33680868994202E-19|0.001
+PASS: Signed_2_2_Secant_0_1_Converged
+PASS: Signed_2_2_Secant_0_1_eps
+PASS: Signed_2_2_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_2_2_Secant_0_1|4.33680868994202E-19|0.001
+PASS: Signed_2_2_Secant_1_0_Converged
+PASS: Signed_2_2_Secant_1_0_eps
+PASS: Signed_2_2_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_2_2_Secant_1_0|0|0.001
+PASS: Signed_2_2_Secant_1_1_Converged
+PASS: Signed_2_2_Secant_1_1_eps
+PASS: Signed_2_2_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_2_2_Secant_1_1|0|0.001
+PASS: SignedBaseline_2_3
+PASS: Signed_2_3_Newton_0_0_Converged
+PASS: Signed_2_3_Newton_0_0_eps
+PASS: Signed_2_3_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_2_3_Newton_0_0|0|0.002288
+PASS: Signed_2_3_Newton_0_1_Converged
+PASS: Signed_2_3_Newton_0_1_eps
+PASS: Signed_2_3_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_2_3_Newton_0_1|4.8407835853085E-08|0.002288
+PASS: Signed_2_3_Newton_1_0_Converged
+PASS: Signed_2_3_Newton_1_0_eps
+PASS: Signed_2_3_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_2_3_Newton_1_0|2.16523972119964E-08|0.002288
+PASS: Signed_2_3_Newton_1_1_Converged
+PASS: Signed_2_3_Newton_1_1_eps
+PASS: Signed_2_3_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_2_3_Newton_1_1|7.73131611554474E-08|0.002288
+PASS: Signed_2_3_Secant_0_0_Converged
+PASS: Signed_2_3_Secant_0_0_eps
+PASS: Signed_2_3_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_2_3_Secant_0_0|1.7149585406287E-09|0.002288
+PASS: Signed_2_3_Secant_0_1_Converged
+PASS: Signed_2_3_Secant_0_1_eps
+PASS: Signed_2_3_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_2_3_Secant_0_1|2.29479576686117E-07|0.002288
+PASS: Signed_2_3_Secant_1_0_Converged
+PASS: Signed_2_3_Secant_1_0_eps
+PASS: Signed_2_3_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_2_3_Secant_1_0|2.02296611001313E-08|0.002288
+PASS: Signed_2_3_Secant_1_1_Converged
+PASS: Signed_2_3_Secant_1_1_eps
+PASS: Signed_2_3_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_2_3_Secant_1_1|2.53952794980038E-07|0.002288
+PASS: SignedBaseline_2_4
+PASS: Signed_2_4_Newton_0_0_Converged
+PASS: Signed_2_4_Newton_0_0_eps
+PASS: Signed_2_4_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_2_4_Newton_0_0|0|2.18800000000001E-03
+PASS: Signed_2_4_Newton_0_1_Converged
+PASS: Signed_2_4_Newton_0_1_eps
+PASS: Signed_2_4_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_2_4_Newton_0_1|2.06047263200939E-07|2.18800000000001E-03
+PASS: Signed_2_4_Newton_1_0_Converged
+PASS: Signed_2_4_Newton_1_0_eps
+PASS: Signed_2_4_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_2_4_Newton_1_0|4.05855907974033E-08|2.18800000000001E-03
+PASS: Signed_2_4_Newton_1_1_Converged
+PASS: Signed_2_4_Newton_1_1_eps
+PASS: Signed_2_4_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_2_4_Newton_1_1|2.41067436579758E-07|2.18800000000001E-03
+PASS: Signed_2_4_Secant_0_0_Converged
+PASS: Signed_2_4_Secant_0_0_eps
+PASS: Signed_2_4_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_2_4_Secant_0_0|7.5892955587499E-09|2.18800000000001E-03
+PASS: Signed_2_4_Secant_0_1_Converged
+PASS: Signed_2_4_Secant_0_1_eps
+PASS: Signed_2_4_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_2_4_Secant_0_1|6.26341509320271E-06|2.18800000000001E-03
+PASS: Signed_2_4_Secant_1_0_Converged
+PASS: Signed_2_4_Secant_1_0_eps
+PASS: Signed_2_4_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_2_4_Secant_1_0|3.30845911951372E-08|2.18800000000001E-03
+PASS: Signed_2_4_Secant_1_1_Converged
+PASS: Signed_2_4_Secant_1_1_eps
+PASS: Signed_2_4_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_2_4_Secant_1_1|6.22698007336992E-06|2.18800000000001E-03
+PASS: SignedBaseline_3_1
+PASS: Signed_3_1_Newton_0_0_Converged
+PASS: Signed_3_1_Newton_0_0_eps
+PASS: Signed_3_1_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_3_1_Newton_0_0|0|8.00000000000329E-04
+PASS: Signed_3_1_Newton_0_1_Converged
+PASS: Signed_3_1_Newton_0_1_eps
+PASS: Signed_3_1_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_3_1_Newton_0_1|0|8.00000000000329E-04
+PASS: Signed_3_1_Newton_1_0_Converged
+PASS: Signed_3_1_Newton_1_0_eps
+PASS: Signed_3_1_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_3_1_Newton_1_0|1.67834496300756E-16|8.00000000000329E-04
+PASS: Signed_3_1_Newton_1_1_Converged
+PASS: Signed_3_1_Newton_1_1_eps
+PASS: Signed_3_1_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_3_1_Newton_1_1|1.67834496300756E-16|8.00000000000329E-04
+PASS: Signed_3_1_Secant_0_0_Converged
+PASS: Signed_3_1_Secant_0_0_eps
+PASS: Signed_3_1_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_3_1_Secant_0_0|1.66858714345519E-16|8.00000000000329E-04
+PASS: Signed_3_1_Secant_0_1_Converged
+PASS: Signed_3_1_Secant_0_1_eps
+PASS: Signed_3_1_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_3_1_Secant_0_1|1.74596770186411E-06|8.00000000000329E-04
+PASS: Signed_3_1_Secant_1_0_Converged
+PASS: Signed_3_1_Secant_1_0_eps
+PASS: Signed_3_1_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_3_1_Secant_1_0|1.67942916518005E-16|8.00000000000329E-04
+PASS: Signed_3_1_Secant_1_1_Converged
+PASS: Signed_3_1_Secant_1_1_eps
+PASS: Signed_3_1_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_3_1_Secant_1_1|1.74610428012182E-06|8.00000000000329E-04
+PASS: SignedBaseline_3_2
+PASS: Signed_3_2_Newton_0_0_Converged
+PASS: Signed_3_2_Newton_0_0_eps
+PASS: Signed_3_2_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_3_2_Newton_0_0|0|0.001
+PASS: Signed_3_2_Newton_0_1_Converged
+PASS: Signed_3_2_Newton_0_1_eps
+PASS: Signed_3_2_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_3_2_Newton_0_1|0|0.001
+PASS: Signed_3_2_Newton_1_0_Converged
+PASS: Signed_3_2_Newton_1_0_eps
+PASS: Signed_3_2_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_3_2_Newton_1_0|0|0.001
+PASS: Signed_3_2_Newton_1_1_Converged
+PASS: Signed_3_2_Newton_1_1_eps
+PASS: Signed_3_2_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_3_2_Newton_1_1|0|0.001
+PASS: Signed_3_2_Secant_0_0_Converged
+PASS: Signed_3_2_Secant_0_0_eps
+PASS: Signed_3_2_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_3_2_Secant_0_0|4.33680868994202E-19|0.001
+PASS: Signed_3_2_Secant_0_1_Converged
+PASS: Signed_3_2_Secant_0_1_eps
+PASS: Signed_3_2_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_3_2_Secant_0_1|4.50910122643628E-06|0.001
+PASS: Signed_3_2_Secant_1_0_Converged
+PASS: Signed_3_2_Secant_1_0_eps
+PASS: Signed_3_2_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_3_2_Secant_1_0|2.16840434497101E-19|0.001
+PASS: Signed_3_2_Secant_1_1_Converged
+PASS: Signed_3_2_Secant_1_1_eps
+PASS: Signed_3_2_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_3_2_Secant_1_1|4.50912985783562E-06|0.001
+PASS: SignedBaseline_3_3
+PASS: Signed_3_3_Newton_0_0_Converged
+PASS: Signed_3_3_Newton_0_0_eps
+PASS: Signed_3_3_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_3_3_Newton_0_0|0|2.28799999999999E-03
+PASS: Signed_3_3_Newton_0_1_Converged
+PASS: Signed_3_3_Newton_0_1_eps
+PASS: Signed_3_3_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_3_3_Newton_0_1|1.15505969083872E-07|2.28799999999999E-03
+PASS: Signed_3_3_Newton_1_0_Converged
+PASS: Signed_3_3_Newton_1_0_eps
+PASS: Signed_3_3_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_3_3_Newton_1_0|2.90465229646486E-08|2.28799999999999E-03
+PASS: Signed_3_3_Newton_1_1_Converged
+PASS: Signed_3_3_Newton_1_1_eps
+PASS: Signed_3_3_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_3_3_Newton_1_1|1.50330767379825E-07|2.28799999999999E-03
+PASS: Signed_3_3_Secant_0_0_Converged
+PASS: Signed_3_3_Secant_0_0_eps
+PASS: Signed_3_3_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_3_3_Secant_0_0|3.37584119946416E-10|2.28799999999999E-03
+PASS: Signed_3_3_Secant_0_1_Converged
+PASS: Signed_3_3_Secant_0_1_eps
+PASS: Signed_3_3_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_3_3_Secant_0_1|1.20822263628717E-06|2.28799999999999E-03
+PASS: Signed_3_3_Secant_1_0_Converged
+PASS: Signed_3_3_Secant_1_0_eps
+PASS: Signed_3_3_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_3_3_Secant_1_0|2.8841066956756E-08|2.28799999999999E-03
+PASS: Signed_3_3_Secant_1_1_Converged
+PASS: Signed_3_3_Secant_1_1_eps
+PASS: Signed_3_3_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_3_3_Secant_1_1|1.24202277285396E-06|2.28799999999999E-03
+PASS: SignedBaseline_3_4
+PASS: Signed_3_4_Newton_0_0_Converged
+PASS: Signed_3_4_Newton_0_0_eps
+PASS: Signed_3_4_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_3_4_Newton_0_0|0|0.002188
+PASS: Signed_3_4_Newton_0_1_Converged
+PASS: Signed_3_4_Newton_0_1_eps
+PASS: Signed_3_4_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_3_4_Newton_0_1|2.89506889907757E-07|0.002188
+PASS: Signed_3_4_Newton_1_0_Converged
+PASS: Signed_3_4_Newton_1_0_eps
+PASS: Signed_3_4_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_3_4_Newton_1_0|3.64108761914932E-08|0.002188
+PASS: Signed_3_4_Newton_1_1_Converged
+PASS: Signed_3_4_Newton_1_1_eps
+PASS: Signed_3_4_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_3_4_Newton_1_1|3.203184809745E-07|0.002188
+PASS: Signed_3_4_Secant_0_0_Converged
+PASS: Signed_3_4_Secant_0_0_eps
+PASS: Signed_3_4_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_3_4_Secant_0_0|3.5066213279443E-10|0.002188
+PASS: Signed_3_4_Secant_0_1_Converged
+PASS: Signed_3_4_Secant_0_1_eps
+PASS: Signed_3_4_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_3_4_Secant_0_1|7.15697522583186E-08|0.002188
+PASS: Signed_3_4_Secant_1_0_Converged
+PASS: Signed_3_4_Secant_1_0_eps
+PASS: Signed_3_4_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_3_4_Secant_1_0|3.68660610461456E-08|0.002188
+PASS: Signed_3_4_Secant_1_1_Converged
+PASS: Signed_3_4_Secant_1_1_eps
+PASS: Signed_3_4_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_3_4_Secant_1_1|9.97114096880358E-08|0.002188
+PASS: SignedBaseline_4_1
+PASS: Signed_4_1_Newton_0_0_Converged
+PASS: Signed_4_1_Newton_0_0_eps
+PASS: Signed_4_1_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_4_1_Newton_0_0|0|0.0008
+PASS: Signed_4_1_Newton_0_1_Converged
+PASS: Signed_4_1_Newton_0_1_eps
+PASS: Signed_4_1_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_4_1_Newton_0_1|0|0.0008
+PASS: Signed_4_1_Newton_1_0_Converged
+PASS: Signed_4_1_Newton_1_0_eps
+PASS: Signed_4_1_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_4_1_Newton_1_0|2.94723908399446E-07|0.0008
+PASS: Signed_4_1_Newton_1_1_Converged
+PASS: Signed_4_1_Newton_1_1_eps
+PASS: Signed_4_1_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_4_1_Newton_1_1|2.94723908399446E-07|0.0008
+PASS: Signed_4_1_Secant_0_0_Converged
+PASS: Signed_4_1_Secant_0_0_eps
+PASS: Signed_4_1_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_4_1_Secant_0_0|4.60785923306339E-17|0.0008
+PASS: Signed_4_1_Secant_0_1_Converged
+PASS: Signed_4_1_Secant_0_1_eps
+PASS: Signed_4_1_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_4_1_Secant_0_1|3.69474249486317E-08|0.0008
+PASS: Signed_4_1_Secant_1_0_Converged
+PASS: Signed_4_1_Secant_1_0_eps
+PASS: Signed_4_1_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_4_1_Secant_1_0|2.94723908398579E-07|0.0008
+PASS: Signed_4_1_Secant_1_1_Converged
+PASS: Signed_4_1_Secant_1_1_eps
+PASS: Signed_4_1_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_4_1_Secant_1_1|2.56585835502307E-07|0.0008
+PASS: SignedBaseline_4_2
+PASS: Signed_4_2_Newton_0_0_Converged
+PASS: Signed_4_2_Newton_0_0_eps
+PASS: Signed_4_2_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_4_2_Newton_0_0|0|0.001
+PASS: Signed_4_2_Newton_0_1_Converged
+PASS: Signed_4_2_Newton_0_1_eps
+PASS: Signed_4_2_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_4_2_Newton_0_1|0|0.001
+PASS: Signed_4_2_Newton_1_0_Converged
+PASS: Signed_4_2_Newton_1_0_eps
+PASS: Signed_4_2_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_4_2_Newton_1_0|4.33680868994202E-19|0.001
+PASS: Signed_4_2_Newton_1_1_Converged
+PASS: Signed_4_2_Newton_1_1_eps
+PASS: Signed_4_2_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_4_2_Newton_1_1|4.33680868994202E-19|0.001
+PASS: Signed_4_2_Secant_0_0_Converged
+PASS: Signed_4_2_Secant_0_0_eps
+PASS: Signed_4_2_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_4_2_Secant_0_0|2.16840434497101E-19|0.001
+PASS: Signed_4_2_Secant_0_1_Converged
+PASS: Signed_4_2_Secant_0_1_eps
+PASS: Signed_4_2_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_4_2_Secant_0_1|2.16840434497101E-19|0.001
+PASS: Signed_4_2_Secant_1_0_Converged
+PASS: Signed_4_2_Secant_1_0_eps
+PASS: Signed_4_2_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_4_2_Secant_1_0|4.33680868994202E-19|0.001
+PASS: Signed_4_2_Secant_1_1_Converged
+PASS: Signed_4_2_Secant_1_1_eps
+PASS: Signed_4_2_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_4_2_Secant_1_1|4.33680868994202E-19|0.001
+PASS: SignedBaseline_4_3
+PASS: Signed_4_3_Newton_0_0_Converged
+PASS: Signed_4_3_Newton_0_0_eps
+PASS: Signed_4_3_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_4_3_Newton_0_0|0|0.001192
+PASS: Signed_4_3_Newton_0_1_Converged
+PASS: Signed_4_3_Newton_0_1_eps
+PASS: Signed_4_3_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_4_3_Newton_0_1|0|0.001192
+PASS: Signed_4_3_Newton_1_0_Converged
+PASS: Signed_4_3_Newton_1_0_eps
+PASS: Signed_4_3_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_4_3_Newton_1_0|6.13471328428762E-07|0.001192
+PASS: Signed_4_3_Newton_1_1_Converged
+PASS: Signed_4_3_Newton_1_1_eps
+PASS: Signed_4_3_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_4_3_Newton_1_1|6.13471328428762E-07|0.001192
+PASS: Signed_4_3_Secant_0_0_Converged
+PASS: Signed_4_3_Secant_0_0_eps
+PASS: Signed_4_3_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_4_3_Secant_0_0|1.24573730225655E-08|0.001192
+PASS: Signed_4_3_Secant_0_1_Converged
+PASS: Signed_4_3_Secant_0_1_eps
+PASS: Signed_4_3_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_4_3_Secant_0_1|6.65137393826738E-07|0.001192
+PASS: Signed_4_3_Secant_1_0_Converged
+PASS: Signed_4_3_Secant_1_0_eps
+PASS: Signed_4_3_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_4_3_Secant_1_0|6.12587942851401E-07|0.001192
+PASS: Signed_4_3_Secant_1_1_Converged
+PASS: Signed_4_3_Secant_1_1_eps
+PASS: Signed_4_3_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_4_3_Secant_1_1|1.6683167824923E-07|0.001192
+PASS: SignedBaseline_4_4
+PASS: Signed_4_4_Newton_0_0_Converged
+PASS: Signed_4_4_Newton_0_0_eps
+PASS: Signed_4_4_Newton_0_0_Field
+DATA_MTLI_FIELD|Signed_4_4_Newton_0_0|0|0.001358
+PASS: Signed_4_4_Newton_0_1_Converged
+PASS: Signed_4_4_Newton_0_1_eps
+PASS: Signed_4_4_Newton_0_1_Field
+DATA_MTLI_FIELD|Signed_4_4_Newton_0_1|4.82049317388769E-07|0.001358
+PASS: Signed_4_4_Newton_1_0_Converged
+PASS: Signed_4_4_Newton_1_0_eps
+PASS: Signed_4_4_Newton_1_0_Field
+DATA_MTLI_FIELD|Signed_4_4_Newton_1_0|7.4251648472779E-07|0.001358
+PASS: Signed_4_4_Newton_1_1_Converged
+PASS: Signed_4_4_Newton_1_1_eps
+PASS: Signed_4_4_Newton_1_1_Field
+DATA_MTLI_FIELD|Signed_4_4_Newton_1_1|4.79824191466872E-07|0.001358
+PASS: Signed_4_4_Secant_0_0_Converged
+PASS: Signed_4_4_Secant_0_0_eps
+PASS: Signed_4_4_Secant_0_0_Field
+DATA_MTLI_FIELD|Signed_4_4_Secant_0_0|4.32979428677781E-10|0.001358
+PASS: Signed_4_4_Secant_0_1_Converged
+PASS: Signed_4_4_Secant_0_1_eps
+PASS: Signed_4_4_Secant_0_1_Field
+DATA_MTLI_FIELD|Signed_4_4_Secant_0_1|1.83039648687933E-07|0.001358
+PASS: Signed_4_4_Secant_1_0_Converged
+PASS: Signed_4_4_Secant_1_0_eps
+PASS: Signed_4_4_Secant_1_0_Field
+DATA_MTLI_FIELD|Signed_4_4_Secant_1_0|7.4258996446289E-07|0.001358
+PASS: Signed_4_4_Secant_1_1_Converged
+PASS: Signed_4_4_Secant_1_1_eps
+PASS: Signed_4_4_Secant_1_1_Field
+DATA_MTLI_FIELD|Signed_4_4_Secant_1_1|5.62792508167122E-07|0.001358
+PASS: AxialCap_1_-1_0
+PASS: AxialExact_1_-1_0
+PASS: AxialCap_1_-1_1
+PASS: AxialExact_1_-1_1
+PASS: AxialCap_1_1_0
+PASS: AxialExact_1_1_0
+PASS: AxialCap_1_1_1
+PASS: AxialExact_1_1_1
+PASS: AxialCap_2_-1_0
+PASS: AxialExact_2_-1_0
+PASS: AxialCap_2_-1_1
+PASS: AxialExact_2_-1_1
+PASS: AxialCap_2_1_0
+PASS: AxialExact_2_1_0
+PASS: AxialCap_2_1_1
+PASS: AxialExact_2_1_1
+PASS: AxialCap_3_-1_0
+PASS: AxialExact_3_-1_0
+PASS: AxialCap_3_-1_1
+PASS: AxialExact_3_-1_1
+PASS: AxialCap_3_1_0
+PASS: AxialExact_3_1_0
+PASS: AxialCap_3_1_1
+PASS: AxialExact_3_1_1
+PASS: AxialCap_4_-1_0
+PASS: AxialExact_4_-1_0
+PASS: AxialCap_4_-1_1
+PASS: AxialExact_4_-1_1
+PASS: AxialCap_4_1_0
+PASS: AxialExact_4_1_0
+PASS: AxialCap_4_1_1
+PASS: AxialExact_4_1_1
+TOTAL_MTLI_EDGE: passed=446; failed=0

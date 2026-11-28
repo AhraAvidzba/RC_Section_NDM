@@ -1,0 +1,10 @@
+﻿{
+    "Status":  "PASS",
+    "Compiled":  true,
+    "Components":  211,
+    "ElapsedSec":  12.8837804,
+    "SourceSHA256":  "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2",
+    "CandidateSHA256":  "9400DFC9A8362C9DD1AE5AA38D80F325675796EE4A0F69C4E1BEAF7F63CBFC04",
+    "UserWorkbookOpened":  false,
+    "Report":  "Native.txt"
+}

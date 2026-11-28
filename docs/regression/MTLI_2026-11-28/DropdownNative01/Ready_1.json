@@ -1,0 +1,10 @@
+﻿{
+    "Phase":  1,
+    "PID":  19000,
+    "StartTicksUTC":  "639314759089146099",
+    "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\MTLI_2026-11-28\\DropdownNative01\\MTLI_Dropdown.xlsm",
+    "MethodAddress":  "Config!B161",
+    "InitialMethod":  "Discrete",
+    "InitialTolerance":  "0",
+    "ListFormula":  "Discrete;MTLI"
+}

@@ -17,6 +17,14 @@ Option Explicit
 ' Хранилище содержит конечные состояния, имеющие самостоятельный смысл
 ' в Results; промежуточные пробы поиска предела остаются внутри поиска.
 
+Private Type TAcceptanceNumber
+    Value As Double
+End Type
+Private Type TAcceptanceBits
+    Low As Long
+    High As Long
+End Type
+
 Private mSection As CSectionModel ' Модель сечения для решения равновесия.
 Private mMaterialProvider As CMaterialModelProvider ' Подготовка физических диаграмм и разрешённых вспомогательных продолжений.
 Private mRepository As CStateRepository ' Хранилище расчётных состояний этого сочетания нагрузок.
@@ -29,6 +37,8 @@ Private mToleranceMx As Double ' Абсолютный допуск равнов�
 Private mToleranceMy As Double ' Абсолютный допуск равновесия по My, Н*мм.
 Private mSecantMaxRestarts As Long ' Допустимое число обновлений матрицы секущих модулей.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить диагностический журнал.
+Private mUseThickLayerIntegration As Boolean ' Одинаковое интегрирование бетона для запросов и восстановления состояний.
+Private mRelativeEquilibriumTolerance As Double ' Дополнительная относительная точность экспериментального расчёта.
 
 Private mLastRunner As CStateSolutionRunner ' Объект последнего выполненного решения; Nothing, если использовано ранее сохранённое НДС.
 Private mLastStateWasReused As Boolean ' Показывает, взято ли НДС из ранее сохранённых результатов.
@@ -149,9 +159,18 @@ End Function
 Private Sub BindRepositoryContext()
     Dim acceptanceKey As String
     acceptanceKey = CStr(mMaterialProvider.DiagramExtensionEnabled) & "|" & _
-        CStr(mToleranceN) & "|" & CStr(mToleranceMx) & "|" & CStr(mToleranceMy)
+        AcceptanceNumberKey(mToleranceN) & "|" & AcceptanceNumberKey(mToleranceMx) & "|" & AcceptanceNumberKey(mToleranceMy) & "|" & _
+        CStr(mUseThickLayerIntegration) & "|" & AcceptanceNumberKey(mRelativeEquilibriumTolerance)
     mRepository.BindContext mSection, mMaterialProvider, acceptanceKey
 End Sub
+
+' Кодирует все биты Double: десятичный CStr может склеить два соседних
+' значения допуска. Оба UDT имеют размер 8 байт, LSet не округляет число.
+Private Function AcceptanceNumberKey(ByVal value As Double) As String
+    Dim number As TAcceptanceNumber, bits As TAcceptanceBits
+    number.Value = value: LSet bits = number
+    AcceptanceNumberKey = Right$("00000000" & Hex$(bits.High), 8) & Right$("00000000" & Hex$(bits.Low), 8)
+End Function
 
 ' Восстанавливает данные расчётного состояния для потребителя по сохранённому НДС.
 ' Повторное решение равновесия не выполняется, новая запись в хранилище не создаётся;
@@ -181,6 +200,8 @@ Private Sub ConfigureRunner(ByVal runner As CStateSolutionRunner)
     runner.SolverMethod = mSolverMethod
     runner.SecantMaxRestarts = mSecantMaxRestarts
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
+    runner.UseThickLayerIntegration = mUseThickLayerIntegration
+    runner.RelativeEquilibriumTolerance = mRelativeEquilibriumTolerance
 End Sub
 
 ' Выбирает диаграмму бетона по назначению и режиму материалов в запросе.
@@ -249,4 +270,14 @@ End Property
 ' Нужно ли копить диагностический журнал.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
+End Property
+
+' Выбирает единый способ интегрирования для получаемых и восстановленных НДС.
+Public Property Let UseThickLayerIntegration(ByVal value As Boolean)
+    mUseThickLayerIntegration = value
+End Property
+
+' Задаёт относительную точность; она входит в ключ пригодности хранилища.
+Public Property Let RelativeEquilibriumTolerance(ByVal value As Double)
+    mRelativeEquilibriumTolerance = value
 End Property

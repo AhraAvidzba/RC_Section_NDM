@@ -1,0 +1,8 @@
+{
+  "MathematicalResult": "TOTAL_MTLI_INTEGRATION: passed=227; failed=0",
+  "CompiledComponents": 211,
+  "HarnessFinalization": "Hash attempted while private file was open; file is now closed. Harness fixed for next run.",
+  "PrimaryLog": "Native.txt",
+  "CandidateSHA256": "82E43789A79EAD720D95E46209D31DACA92270E71E1827D896AE5244A8A25879",
+  "SourceSHA256": "CA57445B6AFFC701041B399ABBB57E16EFDFF5703BF02B568BA4EBA4200BC1D2"
+}

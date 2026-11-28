@@ -24,6 +24,7 @@ T = '{http://schemas.openxmlformats.org/package/2006/content-types}'
 XDR = '{http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing}'
 CALC = 'Расчет'
 INPUTS = ('Config', 'Сечения')
+NATIVE_SETTING_TABLE_STYLES = ('rngExperimentalNumericsSettings',)  # Дополнительные таблицы задаёт сборщик; в шаблоне оформления их нет.
 RESULT_LOAD_HEADER = 'AL8:AN9'  # Постоянная объединённая шапка рабочих нагрузок; строки результатов в шаблон не входят.
 SELECTOR = 'rngSectionIllustrationSelector'
 STORAGE_DEFAULTS = {'I13', *(f'L{row}' for row in range(71, 101))}
@@ -304,6 +305,28 @@ def capture_input_formatting(parts, path):
     if merges is not None:
         result.append(deepcopy(merges))
     return serialize(result)
+
+
+def capture_native_table_styles(sheet, sheet_name, input_names):
+    """Сохраняет стили дополнительных таблиц по их именам, включая строку названия.
+
+    Стили донорского шаблона добавляются к базовым, поэтому исходные индексы
+    остаются действительными. Значения, списки и размеры здесь не меняются.
+    """
+    protected = {}
+    for name in NATIVE_SETTING_TABLE_STYLES:
+        reference = input_names.get(name, '')
+        pattern = rf"(?:'{re.escape(sheet_name)}'|{re.escape(sheet_name)})!\$([A-Z]+)\$(\d+):\$([A-Z]+)\$(\d+)"
+        match = re.fullmatch(pattern, reference)
+        if not match:
+            continue
+        first_col, first_row, last_col, last_row = match.groups()
+        left, right = column_number(first_col), column_number(last_col)
+        for cell in sheet.iter(M + 'c'):
+            col, row = CELL_ADDRESS.fullmatch(cell.get('r')).groups()
+            if left <= column_number(col) <= right and int(first_row)-1 <= int(row) <= int(last_row):
+                protected[cell.get('r')] = cell.get('s', '0')
+    return protected
 
 
 def apply_input_formatting(sheet, formatting):
@@ -675,6 +698,7 @@ def apply(source, template_path, destination):
     for name in INPUTS:
         part = locations[name][1]
         sheet = xml(parts, part)
+        native_styles = capture_native_table_styles(sheet, name, input_names)
         cells = {cell.get('r'): cell for cell in sheet.iter(M + 'c')}
         for address, (kind, value) in metadata['inputCells'][name].items():
             require(address in cells, f'В новой книге отсутствует {name}!{address}')
@@ -683,6 +707,9 @@ def apply(source, template_path, destination):
             formatting = xml(template, metadata['inputFormatting'][name])
             merge_styles(styles, donor_styles, formatting)
             apply_input_formatting(sheet, formatting)
+        for cell in sheet.iter(M + 'c'):
+            if cell.get('r') in native_styles:
+                cell.set('s', native_styles[cell.get('r')])
         parts[part] = serialize(sheet)
     calc = xml(template, metadata['sheet'])
     require(calc.find(M + 'sheetPr').get('codeName') == xml(parts, calc_path).find(M + 'sheetPr').get('codeName'),

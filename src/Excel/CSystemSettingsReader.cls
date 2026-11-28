@@ -38,6 +38,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     AppendRequiredNamedSettingsRange workbook, "rngSignConventionSettings", "Система знаков"
     ValidateWorkbookUnitAndSignKeys
     AppendRequiredNamedSettingsRange workbook, "rngSystemSettings", "Системные настройки"
+    AppendNamedSettingsRangeIfExists workbook, "rngExperimentalNumericsSettings"
     AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
     AppendRequiredNamedSettingsRange workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
@@ -135,6 +136,19 @@ Private Function DiagramExtensionValue(ByVal rawValue As String, ByVal settingKe
                 InputErrorMessage(settingKey, "Значение переключателя не распознано.", "Выберите Yes или No.")
     End Select
 End Function
+
+' Читает необязательные настройки численного эксперимента. Без таблицы
+' действуют дискретная модель и абсолютные допуски. Явные пустые и
+' неизвестные значения не подменяются численными настройками по умолчанию.
+Public Sub ReadIntegrationSettings(ByRef useMTLI As Boolean, ByRef relativeTolerance As Double)
+    useMTLI = False: relativeTolerance = 0#
+    If HasKey("Solver.IntegrationMethod") Then useMTLI = (GetRequiredChoice("Solver.IntegrationMethod", Array("Discrete", "MTLI")) = "MTLI")
+    relativeTolerance = GetDouble("Solver.RelativeEquilibriumTolerance", 0#, False)
+    If relativeTolerance < 0# Or relativeTolerance > 0.02 Then
+        Err.Raise vbObjectError + 4311, "CSystemSettingsReader.ReadIntegrationSettings", _
+            InputErrorMessage("Solver.RelativeEquilibriumTolerance", "Относительный допуск вне диапазона от 0 до 0,02.", "Введите число от 0 до 0,02; 0 оставляет только абсолютные допуски.")
+    End If
+End Sub
 
 ' Добавляет одну непрерывную таблицу общих настроек. Несмежные области отвергаются до Value2:
 ' иначе Excel возвращает только первую область и часть ввода теряется.

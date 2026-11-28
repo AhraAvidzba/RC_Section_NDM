@@ -1,0 +1,223 @@
+﻿PASS: CapacityBaseline_1_1
+DATA_MTLI_CAPACITY|1|1|0|0|0.12109375|21|True|2.15018328885607|0|172014663.108485|64505498.665682|C1:Compression|UltimateStrain
+PASS: CapacitySolve_1_1_0_0
+PASS: CapacityLambda_1_1_0_0
+PASS: CapacityN_1_1_0_0
+PASS: CapacityMx_1_1_0_0
+PASS: CapacityMy_1_1_0_0
+DATA_MTLI_CAPACITY|1|1|1|0|0.125|21|True|2.14045725551141|0|171236580.440913|64213717.6653423|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_1_1_1_0
+PASS: CapacityLambda_1_1_1_0
+PASS: CapacityN_1_1_1_0
+PASS: CapacityMx_1_1_1_0
+PASS: CapacityMy_1_1_1_0
+DATA_MTLI_CAPACITY|1|1|0|1|0.0859375|16|True|2.15018014305294|0|172014411.444235|64505404.2915882|C1:Compression|UltimateStrain
+PASS: CapacitySolve_1_1_0_1
+PASS: CapacityLambda_1_1_0_1
+PASS: CapacityN_1_1_0_1
+PASS: CapacityMx_1_1_0_1
+PASS: CapacityMy_1_1_0_1
+DATA_MTLI_CAPACITY|1|1|1|1|0.12109375|16|True|2.14045754372105|0|171236603.497684|64213726.3116315|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_1_1_1_1
+PASS: CapacityLambda_1_1_1_1
+PASS: CapacityN_1_1_1_1
+PASS: CapacityMx_1_1_1_1
+PASS: CapacityMy_1_1_1_1
+DATA_MTLI_CAPACITY|1|1|0|2|0.08984375|16|True|2.15018014301671|0|172014411.441337|64505404.2905014|C1:Compression|UltimateStrain
+PASS: CapacitySolve_1_1_0_2
+PASS: CapacityLambda_1_1_0_2
+PASS: CapacityN_1_1_0_2
+PASS: CapacityMx_1_1_0_2
+PASS: CapacityMy_1_1_0_2
+DATA_MTLI_CAPACITY|1|1|1|2|0.078125|11|True|2.14309754338164|0|171447803.470531|64292926.3014491|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_1_1_1_2
+PASS: CapacityLambda_1_1_1_2
+PASS: CapacityN_1_1_1_2
+PASS: CapacityMx_1_1_1_2
+PASS: CapacityMy_1_1_1_2
+PASS: CapacityBaseline_1_2
+DATA_MTLI_CAPACITY|1|2|0|0|0.109375|21|True|2.18026156071522|-654078.468214566|174420924.857218|65407846.8214566|C1:Compression|UltimateStrain
+PASS: CapacitySolve_1_2_0_0
+PASS: CapacityLambda_1_2_0_0
+PASS: CapacityN_1_2_0_0
+PASS: CapacityMx_1_2_0_0
+PASS: CapacityMy_1_2_0_0
+DATA_MTLI_CAPACITY|1|2|1|0|0.1171875|16|True|2.16708360428107|-650125.081284321|173366688.342485|65012508.1284321|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_1_2_1_0
+PASS: CapacityLambda_1_2_1_0
+PASS: CapacityN_1_2_1_0
+PASS: CapacityMx_1_2_1_0
+PASS: CapacityMy_1_2_1_0
+DATA_MTLI_CAPACITY|1|2|0|1|0.08984375|16|True|2.18026123106912|-654078.369320737|174420898.48553|65407836.9320737|C1:Compression|UltimateStrain
+PASS: CapacitySolve_1_2_0_1
+PASS: CapacityLambda_1_2_0_1
+PASS: CapacityN_1_2_0_1
+PASS: CapacityMx_1_2_0_1
+PASS: CapacityMy_1_2_0_1
+DATA_MTLI_CAPACITY|1|2|1|1|0.125|16|True|2.16708360428107|-650125.081284321|173366688.342485|65012508.1284321|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_1_2_1_1
+PASS: CapacityLambda_1_2_1_1
+PASS: CapacityN_1_2_1_1
+PASS: CapacityMx_1_2_1_1
+PASS: CapacityMy_1_2_1_1
+DATA_MTLI_CAPACITY|1|2|0|2|0.06640625|11|True|2.18097630184291|-654292.890552873|174478104.147433|65429289.0552873|C1:Compression|UltimateStrain
+PASS: CapacitySolve_1_2_0_2
+PASS: CapacityLambda_1_2_0_2
+PASS: CapacityN_1_2_0_2
+PASS: CapacityMx_1_2_0_2
+PASS: CapacityMy_1_2_0_2
+DATA_MTLI_CAPACITY|1|2|1|2|0.078125|11|True|2.16784954637218|-650354.863911654|173427963.709774|65035486.3911654|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_1_2_1_2
+PASS: CapacityLambda_1_2_1_2
+PASS: CapacityN_1_2_1_2
+PASS: CapacityMx_1_2_1_2
+PASS: CapacityMy_1_2_1_2
+PASS: CapacityBaseline_2_1
+DATA_MTLI_CAPACITY|2|1|0|0|0.08203125|16|True|2.11995193165362|0|169596154.532289|63598557.9496085|C1:Compression|UltimateStrain
+PASS: CapacitySolve_2_1_0_0
+PASS: CapacityLambda_2_1_0_0
+PASS: CapacityN_2_1_0_0
+PASS: CapacityMx_2_1_0_0
+PASS: CapacityMy_2_1_0_0
+DATA_MTLI_CAPACITY|2|1|1|0|0.1015625|16|True|2.10708620098806|0|168566896.079044|63212586.0296417|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_2_1_1_0
+PASS: CapacityLambda_2_1_1_0
+PASS: CapacityN_2_1_1_0
+PASS: CapacityMx_2_1_1_0
+PASS: CapacityMy_2_1_1_0
+DATA_MTLI_CAPACITY|2|1|0|1|0.0859375|11|True|2.11987832613777|0|169590266.091022|63596349.7841332|C1:Compression|UltimateStrain
+PASS: CapacitySolve_2_1_0_1
+PASS: CapacityLambda_2_1_0_1
+PASS: CapacityN_2_1_0_1
+PASS: CapacityMx_2_1_0_1
+PASS: CapacityMy_2_1_0_1
+DATA_MTLI_CAPACITY|2|1|1|1|0.078125|11|True|2.1070634632053|0|168565077.056424|63211903.8961589|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_2_1_1_1
+PASS: CapacityLambda_2_1_1_1
+PASS: CapacityN_2_1_1_1
+PASS: CapacityMx_2_1_1_1
+PASS: CapacityMy_2_1_1_1
+DATA_MTLI_CAPACITY|2|1|0|2|0.05859375|11|True|2.11987832564326|0|169590266.05146|63596349.7692977|C1:Compression|UltimateStrain
+PASS: CapacitySolve_2_1_0_2
+PASS: CapacityLambda_2_1_0_2
+PASS: CapacityN_2_1_0_2
+PASS: CapacityMx_2_1_0_2
+PASS: CapacityMy_2_1_0_2
+DATA_MTLI_CAPACITY|2|1|1|2|0.06640625|11|True|2.10706346328236|0|168565077.062589|63211903.8984708|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_2_1_1_2
+PASS: CapacityLambda_2_1_1_2
+PASS: CapacityN_2_1_1_2
+PASS: CapacityMx_2_1_1_2
+PASS: CapacityMy_2_1_1_2
+PASS: CapacityBaseline_2_2
+DATA_MTLI_CAPACITY|2|2|0|0|0.07421875|16|True|2.1310266396675|-639307.991900249|170482131.1734|63930799.1900249|C1:Compression|UltimateStrain
+PASS: CapacitySolve_2_2_0_0
+PASS: CapacityLambda_2_2_0_0
+PASS: CapacityN_2_2_0_0
+PASS: CapacityMx_2_2_0_0
+PASS: CapacityMy_2_2_0_0
+DATA_MTLI_CAPACITY|2|2|1|0|0.1171875|16|True|2.11890486214726|-635671.458644178|169512388.971781|63567145.8644178|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_2_2_1_0
+PASS: CapacityLambda_2_2_1_0
+PASS: CapacityN_2_2_1_0
+PASS: CapacityMx_2_2_1_0
+PASS: CapacityMy_2_2_1_0
+DATA_MTLI_CAPACITY|2|2|0|1|0.0625|16|True|2.1310266396675|-639307.991900249|170482131.1734|63930799.1900249|C1:Compression|UltimateStrain
+PASS: CapacitySolve_2_2_0_1
+PASS: CapacityLambda_2_2_0_1
+PASS: CapacityN_2_2_0_1
+PASS: CapacityMx_2_2_0_1
+PASS: CapacityMy_2_2_0_1
+DATA_MTLI_CAPACITY|2|2|1|1|0.10546875|16|True|2.11890486214726|-635671.458644178|169512388.971781|63567145.8644178|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_2_2_1_1
+PASS: CapacityLambda_2_2_1_1
+PASS: CapacityN_2_2_1_1
+PASS: CapacityMx_2_2_1_1
+PASS: CapacityMy_2_2_1_1
+DATA_MTLI_CAPACITY|2|2|0|2|0.03125|11|True|2.13109625306558|-639328.875919674|170487700.245247|63932887.5919674|C1:Compression|UltimateStrain
+PASS: CapacitySolve_2_2_0_2
+PASS: CapacityLambda_2_2_0_2
+PASS: CapacityN_2_2_0_2
+PASS: CapacityMx_2_2_0_2
+PASS: CapacityMy_2_2_0_2
+DATA_MTLI_CAPACITY|2|2|1|2|0.046875|11|True|2.11908486627186|-635725.459881558|169526789.301749|63572545.9881558|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_2_2_1_2
+PASS: CapacityLambda_2_2_1_2
+PASS: CapacityN_2_2_1_2
+PASS: CapacityMx_2_2_1_2
+PASS: CapacityMy_2_2_1_2
+PASS: CapacityBaseline_3_1
+DATA_MTLI_CAPACITY|3|1|0|0|0.11328125|21|True|1.44172115826272|0|115337692.661018|43251634.7478817|C1:Compression|UltimateStrain
+PASS: CapacitySolve_3_1_0_0
+PASS: CapacityLambda_3_1_0_0
+PASS: CapacityN_3_1_0_0
+PASS: CapacityMx_3_1_0_0
+PASS: CapacityMy_3_1_0_0
+DATA_MTLI_CAPACITY|3|1|1|0|0.109375|16|True|1.42960954952374|0|114368763.961899|42888286.4857122|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_3_1_1_0
+PASS: CapacityLambda_3_1_1_0
+PASS: CapacityN_3_1_1_0
+PASS: CapacityMx_3_1_1_0
+PASS: CapacityMy_3_1_1_0
+DATA_MTLI_CAPACITY|3|1|0|1|0.0859375|16|True|1.44171370589355|0|115337096.471484|43251411.1768066|C1:Compression|UltimateStrain
+PASS: CapacitySolve_3_1_0_1
+PASS: CapacityLambda_3_1_0_1
+PASS: CapacityN_3_1_0_1
+PASS: CapacityMx_3_1_0_1
+PASS: CapacityMy_3_1_0_1
+DATA_MTLI_CAPACITY|3|1|1|1|0.078125|16|True|1.42960954952199|0|114368763.96176|42888286.4856598|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_3_1_1_1
+PASS: CapacityLambda_3_1_1_1
+PASS: CapacityN_3_1_1_1
+PASS: CapacityMx_3_1_1_1
+PASS: CapacityMy_3_1_1_1
+DATA_MTLI_CAPACITY|3|1|0|2|0.07421875|16|True|1.44171370588921|0|115337096.471137|43251411.1766763|C1:Compression|UltimateStrain
+PASS: CapacitySolve_3_1_0_2
+PASS: CapacityLambda_3_1_0_2
+PASS: CapacityN_3_1_0_2
+PASS: CapacityMx_3_1_0_2
+PASS: CapacityMy_3_1_0_2
+DATA_MTLI_CAPACITY|3|1|1|2|0.09375|16|True|1.42960954952258|0|114368763.961806|42888286.4856773|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_3_1_1_2
+PASS: CapacityLambda_3_1_1_2
+PASS: CapacityN_3_1_1_2
+PASS: CapacityMx_3_1_1_2
+PASS: CapacityMy_3_1_1_2
+PASS: CapacityBaseline_3_2
+DATA_MTLI_CAPACITY|3|2|0|0|0.078125|21|True|1.39666268165652|-418998.804496955|111733014.532521|41899880.4496955|C1:Compression|UltimateStrain
+PASS: CapacitySolve_3_2_0_0
+PASS: CapacityLambda_3_2_0_0
+PASS: CapacityN_3_2_0_0
+PASS: CapacityMx_3_2_0_0
+PASS: CapacityMy_3_2_0_0
+DATA_MTLI_CAPACITY|3|2|1|0|0.1015625|21|True|1.3886599365604|-416597.980968121|111092794.924832|41659798.0968121|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_3_2_1_0
+PASS: CapacityLambda_3_2_1_0
+PASS: CapacityN_3_2_1_0
+PASS: CapacityMx_3_2_1_0
+PASS: CapacityMy_3_2_1_0
+DATA_MTLI_CAPACITY|3|2|0|1|0.0859375|16|True|1.397253446087|-419176.033826101|111780275.68696|41917603.3826101|C1:Compression|UltimateStrain
+PASS: CapacitySolve_3_2_0_1
+PASS: CapacityLambda_3_2_0_1
+PASS: CapacityN_3_2_0_1
+PASS: CapacityMx_3_2_0_1
+PASS: CapacityMy_3_2_0_1
+DATA_MTLI_CAPACITY|3|2|1|1|0.06640625|16|True|1.38896066105863|-416688.19831759|111116852.884691|41668819.831759|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_3_2_1_1
+PASS: CapacityLambda_3_2_1_1
+PASS: CapacityN_3_2_1_1
+PASS: CapacityMx_3_2_1_1
+PASS: CapacityMy_3_2_1_1
+DATA_MTLI_CAPACITY|3|2|0|2|0.05078125|16|True|1.397253446087|-419176.033826101|111780275.68696|41917603.3826101|C1:Compression|UltimateStrain
+PASS: CapacitySolve_3_2_0_2
+PASS: CapacityLambda_3_2_0_2
+PASS: CapacityN_3_2_0_2
+PASS: CapacityMx_3_2_0_2
+PASS: CapacityMy_3_2_0_2
+DATA_MTLI_CAPACITY|3|2|1|2|0.07421875|16|True|1.38896066105863|-416688.19831759|111116852.884691|41668819.831759|Contour:Compression|UltimateStrain
+PASS: CapacitySolve_3_2_1_2
+PASS: CapacityLambda_3_2_1_2
+PASS: CapacityN_3_2_1_2
+PASS: CapacityMx_3_2_1_2
+PASS: CapacityMy_3_2_1_2
+TOTAL_MTLI_CAPACITY: passed=186; failed=0

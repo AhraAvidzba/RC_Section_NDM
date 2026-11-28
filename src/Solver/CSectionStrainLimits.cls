@@ -37,9 +37,11 @@ End Sub
 
 ' Максимальное отношение деформации к своему пределу определяет ближайшую
 ' границу. При равенстве учитывается порядок элементов: бетон, затем арматура.
+' В MTLI первой проверяется точная граница бетонной области.
 Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolver)
     mUtilization = 0#: mStrain = 0#: mElement = vbNullString
     mState = "NumericalFailure": mDescription = vbNullString
+    If solver.UseThickLayerIntegration Then EvaluateContinuousBoundary solver
     Dim i As Long, strain As Double, epsilon As Double, kx As Double, ky As Double
     Dim originX As Double, originY As Double, x As Double, y As Double, area As Double
     Dim cMin As Double, cMax As Double, sMin As Double, sMax As Double
@@ -73,6 +75,18 @@ Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolv
         EvaluateSteel section, sMaxIndex, sMax
         EvaluateSteel section, sMinIndex, sMin
     End If
+End Sub
+
+' Для непрерывного MTLI проверяет границу материала, а не только центры
+' ячеек. Имя Contour прямо обозначает точку границы без ложного ID элемента.
+Private Sub EvaluateContinuousBoundary(ByVal solver As CSectionSolver)
+    Dim strain As Double
+    strain = solver.MinConcreteStrain
+    If strain < 0# And mConcreteCompression < 0# Then StoreIfLarger strain / mConcreteCompression, strain, _
+        "Contour:Compression", "ConcreteStrainLimit", "сжатие бетона на точной границе"
+    strain = solver.MaxConcreteStrain
+    If strain > 0# And mTensionEnabled And mConcreteTension > 0# Then StoreIfLarger strain / mConcreteTension, strain, _
+        "Contour:Tension", "ConcreteTensionStrainLimit", "растяжение бетона на точной границе"
 End Sub
 
 ' Проверяет экстремумы сжатия и активного растяжения бетона по подготовленным предельным

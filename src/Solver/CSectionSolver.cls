@@ -22,6 +22,13 @@ Option Explicit
 
 Private Const STRAIN_EXTREMA_ROUNDING_MARGIN As Double = 1.77635683940025E-15            ' Допуск в восемь машинных погрешностей Double для близких экстремумов деформаций; при неоднозначном сравнении используется полный обход.
 
+Private mUseThickLayerIntegration As Boolean ' Экспериментальный непрерывный бетон; по умолчанию выключен.
+Private mThickLayerIntegrator As CThickLayerIntegrator ' Подготовленный контур в том же центре, что у дискретного решателя.
+Private mThickLayerSection As CSectionModel, mThickLayerRevision As Long ' Точная модель и ревизия геометрии интегратора.
+Private mThickLayerOriginX As Double, mThickLayerOriginY As Double ' Численный центр подготовленного контура.
+Private mThickLayerStateValid As Boolean ' Геометрический кэш не является результатом после ClearResult или смены режима.
+Private mRelativeEquilibriumTolerance As Double ' Экспериментальная относительная точность; 0 сохраняет абсолютные допуски.
+
 ' Рабочие результаты и настройки решения равновесия.
 
 Private mConverged As Boolean ' True, если равновесие достигнуто в заданных допусках по N/Mx/My.
@@ -135,6 +142,7 @@ End Sub
 ' без подстановки начальных значений.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
+    settings.ReadIntegrationSettings mUseThickLayerIntegration, mRelativeEquilibriumTolerance
     mMaxIterations = settings.GetLong("Solver.MaxIterations", mMaxIterations, False)
     mLoadSteps = settings.GetLong("Solver.LoadSteps", mLoadSteps, False)
     mToleranceN = settings.GetDouble("Solver.ToleranceN", mToleranceN, False)
@@ -203,7 +211,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
         End If
         mLoadStepsCompleted = stepIndex
     Next stepIndex
-    EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, True, False, True
+    EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, True, True, True
     SetResiduals targetN, targetMx, targetMy ' Подтверждаем все три невязки на полной нагрузке: сходимости промежуточных ступеней для этого недостаточно.
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
@@ -934,7 +942,8 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     mFrame.Initialize section
     If Not centeredInput Then eps0 = mFrame.CenterStrain(eps0, kx, ky)
     physical = buildTangent Or collectPhysical ' Полный сбор напряжений и экстремумов; это не признак соблюдения физических пределов диаграмм.
-    If mEvaluationReuseEnabled Then
+    If mUseThickLayerIntegration And Not collectPhysical Then physical = False ' Пробам MTLI достаточно R/K; окончательное НДС собирает реальные поэлементные данные.
+    If mEvaluationReuseEnabled And Not mUseThickLayerIntegration Then
         reusable = section Is mSnapshotSection And concreteMaterial Is mSnapshotConcrete And steelMaterial Is mSnapshotSteel
         If reusable Then
             revision = section.Revision
@@ -1005,7 +1014,19 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
-    If Not physical And Not concreteDiagram Is Nothing Then
+    If mUseThickLayerIntegration Then
+        mStrainExtremaValid = False
+        mThickLayerIntegrator.Evaluate concreteDiagram, eps0, kx, ky
+        mThickLayerStateValid = True
+        nInt = mThickLayerIntegrator.Force(1): mxInt = mThickLayerIntegrator.Force(2): myInt = mThickLayerIntegrator.Force(3)
+        If buildTangent Then
+            Dim r As Long, c As Long
+            For r = 1 To 3: For c = 1 To 3: mCenterK(r, c) = mThickLayerIntegrator.Tangent(r, c): Next c: Next r
+        End If
+        If Not physical Then GoTo ConcreteForcesReady
+    End If
+
+    If Not mUseThickLayerIntegration And Not physical And Not concreteDiagram Is Nothing Then
         If section.ConcreteCount > 5000 Then
             If section.TryConcreteForces(concreteDiagram, eps0, kx, ky, originX, originY, nInt, mxInt, myInt) Then GoTo ConcreteForcesReady
         End If
@@ -1045,11 +1066,13 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
                 mMaxConcreteCompressionStress = Abs(stress)
             End If
         End If
-        force = stress * area
-        nInt = nInt + force
-        mxInt = mxInt + force * yCoord
-        myInt = myInt + force * xCoord
-        If buildTangent Then AddTangent tangent * area, xCoord, yCoord
+        If Not mUseThickLayerIntegration Then
+            force = stress * area
+            nInt = nInt + force
+            mxInt = mxInt + force * yCoord
+            myInt = myInt + force * xCoord
+            If buildTangent Then AddTangent tangent * area, xCoord, yCoord
+        End If
     Next i
 
 ConcreteForcesReady:
@@ -1072,7 +1095,7 @@ ConcreteForcesReady:
             If steelDiagram Is Nothing Then
                 steelStress = steelMaterial.GetStress(strain)
                 If buildTangent Then steelTangent = steelMaterial.GetTangentModulus(strain)
-            ElseIf physical Then
+            ElseIf physical Or buildTangent Then
                 steelDiagram.EvaluateAtStrain strain, steelStress, steelTangent
             Else
                 steelStress = steelDiagram.StressAtStrain(strain)
@@ -1089,7 +1112,7 @@ ConcreteForcesReady:
             If concreteDiagram Is Nothing Then
                 concreteStress = concreteMaterial.GetStress(strain)
                 If buildTangent Then concreteTangent = concreteMaterial.GetTangentModulus(strain)
-            ElseIf physical Then
+            ElseIf physical Or buildTangent Then
                 concreteDiagram.EvaluateAtStrain strain, concreteStress, concreteTangent
             Else
                 concreteStress = concreteDiagram.StressAtStrain(strain)
@@ -1187,14 +1210,34 @@ Private Sub SetResiduals(ByVal targetN As Double, ByVal targetMx As Double, ByVa
     mRelativeResidualMy = RelativeResidual(mResidualMy, targetMy)
 End Sub
 
-' Проверяет N и оба момента по абсолютным допускам. Моменты должны пройти
+' Проверяет N и оба момента по абсолютным или включённым относительным допускам. Моменты должны пройти
 ' проверку и в исходных, и в центрированных координатах, чтобы перенос больших чисел не скрыл невязку.
 Private Function IsConverged(ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+    If mRelativeEquilibriumTolerance > 0# Then
+        Dim forceTolerance As Double, momentTolerance As Double
+        ExperimentalEquilibriumTolerances targetN, targetMx, targetMy, forceTolerance, momentTolerance
+        IsConverged = Abs(mResidualN) <= MaxDouble(mToleranceN, forceTolerance) And _
+            Abs(mCenterResidualMx) <= MaxDouble(mToleranceMx, momentTolerance) And _
+            Abs(mCenterResidualMy) <= MaxDouble(mToleranceMy, momentTolerance) And _
+            Abs(mResidualMx) <= MaxDouble(mToleranceMx, MaxDouble(momentTolerance, Abs(targetMx) * mRelativeEquilibriumTolerance)) And _
+            Abs(mResidualMy) <= MaxDouble(mToleranceMy, MaxDouble(momentTolerance, Abs(targetMy) * mRelativeEquilibriumTolerance))
+        Exit Function
+    End If
     IsConverged = Abs(mResidualN) <= mToleranceN And _
         Abs(mResidualMx) <= mToleranceMx And _
         Abs(mResidualMy) <= mToleranceMy And _
         Abs(mCenterResidualMx) <= mToleranceMx And Abs(mCenterResidualMy) <= mToleranceMy
 End Function
+
+' В экспериментальном режиме нулевая компонента сравнивается с общим
+' силовым масштабом задачи; момент приведён к силе через размер сечения.
+Private Sub ExperimentalEquilibriumTolerances(ByVal n As Double, ByVal mx As Double, ByVal my As Double, _
+        ByRef forceTolerance As Double, ByRef momentTolerance As Double)
+    Dim forceScale As Double
+    forceScale = MaxDouble(Abs(n), MaxDouble(Abs(mFrame.CenterMx(n, mx)), Abs(mFrame.CenterMy(n, my))) / mFrame.LengthScale)
+    forceTolerance = mRelativeEquilibriumTolerance * forceScale
+    momentTolerance = forceTolerance * mFrame.LengthScale
+End Sub
 
 ' Масштабированная евклидова норма центрированных невязок для поиска шага.
 ' Масштабы не меняют компонентные допуски окончательной приемки равновесия.
@@ -1204,6 +1247,13 @@ Private Function ResidualNorm(ByVal resN As Double, ByVal resMx As Double, ByVal
     n = Abs(resN) / MaxDouble(mToleranceN, Abs(targetN) * 0.000000001)
     mx = Abs(resMx) / MaxDouble(mToleranceMx, Abs(mFrame.CenterMx(targetN, targetMx)) * 0.000000001)
     my = Abs(resMy) / MaxDouble(mToleranceMy, Abs(mFrame.CenterMy(targetN, targetMy)) * 0.000000001)
+    If mRelativeEquilibriumTolerance > 0# Then
+        Dim forceTolerance As Double, momentTolerance As Double
+        ExperimentalEquilibriumTolerances targetN, targetMx, targetMy, forceTolerance, momentTolerance
+        n = Abs(resN) / MaxDouble(mToleranceN, forceTolerance)
+        mx = Abs(resMx) / MaxDouble(mToleranceMx, momentTolerance)
+        my = Abs(resMy) / MaxDouble(mToleranceMy, momentTolerance)
+    End If
     normScale = MaxDouble(n, MaxDouble(mx, my))
     If normScale > 0# Then ResidualNorm = normScale * Sqr((n / normScale) ^ 2 + (mx / normScale) ^ 2 + (my / normScale) ^ 2)
 End Function
@@ -1278,6 +1328,13 @@ Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMa
             ConfigurationMessage("Solver.ToleranceMx", "Проверьте допуск по Mx.") & " " & ConfigurationMessage("Solver.ToleranceMy", "Проверьте допуск по My."), _
             "Solver.ToleranceN;Solver.ToleranceMx;Solver.ToleranceMy"
 
+    ElseIf mRelativeEquilibriumTolerance < 0# Or mRelativeEquilibriumTolerance > 0.02 Then
+        SetValidationFailure sfcInvalidConfiguration, "Относительный допуск экспериментального решателя должен находиться в диапазоне от 0 до 0,02."
+    ElseIf mUseThickLayerIntegration And Not TypeOf concreteMaterial Is CMaterialDiagram Then
+        SetValidationFailure sfcInvalidConfiguration, "MTLI требует единой кусочно-линейной диаграммы бетона."
+    ElseIf mUseThickLayerIntegration And section.Contours.Count = 0 Then
+        SetValidationFailure sfcInvalidInput, "Для MTLI отсутствует достоверный наружный контур бетона. Используйте дискретное интегрирование."
+
     Else
         ValidateInputs = True
     End If
@@ -1323,6 +1380,7 @@ End Property
 ' Очищает результат последней попытки, сохраняя численные настройки
 ' и явно заданное начальное приближение.
 Public Sub ClearResult()
+    mThickLayerStateValid = False
     mEvaluationReuseEnabled = False
     mPhysicalEvaluationValid = False: mForceEvaluationValid = False
     mStrainExtremaValid = False
@@ -1384,7 +1442,7 @@ End Function
 Friend Function TryGetConcreteStrainBounds(ByVal section As CSectionModel, _
         ByRef minimum As Double, ByRef maximum As Double) As Boolean
     If Not StrainExtremaContextMatches(section) Then Exit Function
-    minimum = mMinConcreteStrain: maximum = mMaxConcreteStrain
+    minimum = Me.MinConcreteStrain: maximum = Me.MaxConcreteStrain
     TryGetConcreteStrainBounds = True
 End Function
 
@@ -1399,7 +1457,7 @@ Friend Function TryGetMaterialStrainBounds(ByVal section As CSectionModel, _
     If section.RebarCount > 0 Then
         If mSteelMinStrainIndex = 0 Or mSteelMaxStrainIndex = 0 Then Exit Function
     End If
-    concreteMin = mMinConcreteStrain: concreteMax = mMaxConcreteStrain
+    concreteMin = Me.MinConcreteStrain: concreteMax = Me.MaxConcreteStrain
     steelMin = mMinSteelStrain: steelMax = mMaxSteelStrain
     TryGetMaterialStrainBounds = True
 End Function
@@ -1420,6 +1478,20 @@ Private Sub CaptureMaterialContext(ByVal section As CSectionModel, ByVal concret
     Set mSnapshotSection = section
     If mFrame Is Nothing Then Set mFrame = New CSectionNumericalFrame
     mFrame.Initialize section
+    If mUseThickLayerIntegration Then
+        Dim prepare As Boolean
+        prepare = mThickLayerIntegrator Is Nothing
+        If Not prepare Then prepare = Not (mThickLayerSection Is section)
+        If Not prepare Then prepare = mThickLayerRevision <> section.Revision Or _
+            mThickLayerOriginX <> mFrame.OriginX Or mThickLayerOriginY <> mFrame.OriginY
+        If prepare Then
+            Dim query As CSectionGeometryQuery: Set query = New CSectionGeometryQuery
+            Set mThickLayerIntegrator = New CThickLayerIntegrator
+            mThickLayerIntegrator.Initialize query.RegionFromContours(section.Contours), mFrame.OriginX, mFrame.OriginY
+            Set mThickLayerSection = section: mThickLayerRevision = section.Revision
+            mThickLayerOriginX = mFrame.OriginX: mThickLayerOriginY = mFrame.OriginY
+        End If
+    End If
     If TypeOf concrete Is CMaterialDiagram Then Set mSnapshotConcrete = concrete
     If TypeOf steel Is CMaterialDiagram Then Set mSnapshotSteel = steel
 End Sub
@@ -1580,14 +1652,16 @@ Public Property Get RelativeResidualMy() As Double
     RelativeResidualMy = mRelativeResidualMy
 End Property
 
-' Минимальная деформация бетона в последнем посчитанном состоянии.
+' Минимальная деформация бетона: по центрам сетки в Discrete, по точной границе в MTLI.
 Public Property Get MinConcreteStrain() As Double
     MinConcreteStrain = mMinConcreteStrain
+    If mUseThickLayerIntegration And mThickLayerStateValid Then MinConcreteStrain = mThickLayerIntegrator.MinStrain
 End Property
 
-' Максимальная деформация бетона в последнем посчитанном состоянии.
+' Максимальная деформация бетона: по центрам сетки в Discrete, по точной границе в MTLI.
 Public Property Get MaxConcreteStrain() As Double
     MaxConcreteStrain = mMaxConcreteStrain
+    If mUseThickLayerIntegration And mThickLayerStateValid Then MaxConcreteStrain = mThickLayerIntegrator.MaxStrain
 End Property
 
 ' Максимальное по модулю сжимающее напряжение бетона в последнем состоянии.
@@ -1724,6 +1798,28 @@ End Property
 ' тестах. Отключение журнала не меняет численные шаги и критерии равновесия.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
+End Property
+
+' Выбирает непрерывное MTLI для экспериментального сравнения. Без явного
+' включения применяется исходная дискретная модель бетона.
+Public Property Let UseThickLayerIntegration(ByVal value As Boolean)
+    If value <> mUseThickLayerIntegration Then
+        mPhysicalEvaluationValid = False: mForceEvaluationValid = False: mStrainExtremaValid = False
+        mThickLayerStateValid = False
+    End If
+    mUseThickLayerIntegration = value
+End Property
+
+' Показывает, что усилия найдены по непрерывной области; её крайние точки
+' проверяются отдельно от центров ячеек при поиске физических пределов.
+Public Property Get UseThickLayerIntegration() As Boolean
+    UseThickLayerIntegration = mUseThickLayerIntegration
+End Property
+
+' Задаёт дополнительный относительный допуск равновесия экспериментального
+' расчёта. Ноль оставляет только абсолютные допуски N/Mx/My.
+Public Property Let RelativeEquilibriumTolerance(ByVal value As Double)
+    mRelativeEquilibriumTolerance = value
 End Property
 
 ' ==========================================================================

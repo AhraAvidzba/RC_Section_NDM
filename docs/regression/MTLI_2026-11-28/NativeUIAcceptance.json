@@ -1,0 +1,523 @@
+{
+  "Status": "PASS",
+  "Scope": "Native keyboard selection of individual Discrete/MTLI items, save/reopen and invalid entry with Enter",
+  "SelectedValues": [
+    "Discrete",
+    "MTLI"
+  ],
+  "SavedThenReopened": "MTLI",
+  "FinalValue": "Discrete",
+  "RejectedEnteredValues": [
+    "DiscreteOther",
+    "Discrete;MTLI",
+    "Discrete,MTLI"
+  ],
+  "ExactValidationRulesMatchFinalArtifact": true,
+  "Rules": {
+    "B161": {
+      "type": "list",
+      "operator": "between",
+      "errorStyle": "stop",
+      "showErrorMessage": "1",
+      "allowBlank": "1",
+      "Formula1": "\"Discrete,MTLI\"",
+      "Formula2": null
+    },
+    "B162": {
+      "type": "decimal",
+      "operator": "between",
+      "errorStyle": "stop",
+      "showErrorMessage": "1",
+      "allowBlank": "1",
+      "Formula1": "0",
+      "Formula2": "0.02"
+    }
+  },
+  "ScreenshotCapture": "FrameArrived timed out; functional observations use native accessibility and actual saved values",
+  "PasteRoute": "A full-cell clipboard paste bypassed Excel validation; invalid-entry checks use F2/Ctrl+A/entry/Enter. Reader rejects unknown values before calculation.",
+  "FinalArtifactSHA256": "8D10C884589BED7586FFC26E6C30B3284C44313A0E6877420A9344D018CD86F1",
+  "NativeCopySHA256": "66229D067F766010B04C57692C0F7C30770D42690B99DDAD06700BA4900EFE1D",
+  "Observations": [
+    {
+      "Step": "Opened saved copy",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "GoTo dialog",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "\t\t\t292 кнопка Отмена"
+      ]
+    },
+    {
+      "Step": "Cancel GoTo after capture timeout",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "Activate private workbook after geometry error",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "Address entered in Name Box",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "Accept parameter address",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Open integration method list",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Move to second list item",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Accept second integration item",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t34 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t223 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t246 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Reopened saved MTLI choice",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Open saved list for Discrete",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Select first list item",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Accept Discrete from saved list",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Reopen list before moving up",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Move up in integration list",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "MTLI"
+      ]
+    },
+    {
+      "Step": "Accept first integration item",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Edit current method for rejection test",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Start of edited method text",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Selected edited method text",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Typed invalid method",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "DiscreteOther",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "DiscreteOther"
+      ]
+    },
+    {
+      "Step": "Reject invalid method entry",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "DiscreteOther",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "\t\t\t1352 кнопка Повторить ID: 4",
+        "\t\t\t1353 кнопка Отмена ID: 2",
+        "\t\t\t1356 текстовый Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки. ID: 4001",
+        "DiscreteOther"
+      ]
+    },
+    {
+      "Step": "Cancel rejected entry",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Typed combined list string",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete;MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete;MTLI"
+      ]
+    },
+    {
+      "Step": "Reject combined semicolon string",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "0",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "Return to method after paste-route probe",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "0",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "Method cell selected for entry-mode probe",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete;MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete;MTLI"
+      ]
+    },
+    {
+      "Step": "Enter edit mode before replacing combined string",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete;MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete;MTLI"
+      ]
+    },
+    {
+      "Step": "Select edited contents",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Selected": "Discrete;MTLI",
+      "Document": "Discrete;MTLI",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete;MTLI"
+      ]
+    },
+    {
+      "Step": "Restore valid Discrete in edit mode",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel",
+        "Discrete"
+      ]
+    },
+    {
+      "Step": "Commit restored valid method",
+      "Focus": "203 поле Строка формул ID: FormulaBar",
+      "Document": "0",
+      "Relevant": [
+        "Window: \"MTLI_Dropdown.xlsm - Excel\", App: EXCEL.EXE.",
+        "\t0 окно MTLI_Dropdown.xlsm - Excel Secondary Actions: Raise",
+        "\t\t\t\t\t\t\t\t\t26 Кнопка разделения (settable, string) Отменить Description: Отменить ввод 'Discrete' в B161 (Ctrl+Z)",
+        "\t\t\t\t\t\t\t\t\t\t27 Кнопка Отменить Description: Отменить ввод 'Discrete' в B161 (Ctrl+Z)",
+        "\t\t\t\t\t\t\t\t\t\t28 Пункт меню Дополнительные параметры Description: Отменить ввод 'Discrete' в B161 (Ctrl+Z)",
+        "\t\t\t\t\t\t\t\t33 Строка заголовка ‪MTLI_Dropdown.xlsm‬ - Excel Description: MTLI_Dropdown.xlsm",
+        "\t\t\t222 вкладка MTLI_Dropdown ID: MTLI_Dropdown.xlsm",
+        "\t\t239 название (settable, string) Value: MTLI_Dropdown.xlsm - Excel"
+      ]
+    },
+    {
+      "Step": "Select method cell before typed combined input"
+    },
+    {
+      "Step": "Refresh private UI after code verification"
+    },
+    {
+      "Step": "Start typed semicolon validation",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Select method text for semicolon input",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Selected": "Discrete",
+      "Document": "Discrete",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка (disabled) Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Exact semicolon string entered in edit mode",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete;MTLI",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка (disabled) Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Semicolon combined value rejected on Enter",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete;MTLI",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка (disabled) Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\".",
+        "\t\t371 диалоговое окно Microsoft Excel Secondary Actions: Raise",
+        "\t\t\t372 кнопка Повторить ID: 4",
+        "\t\t\t373 кнопка Отмена ID: 2",
+        "\t\t\t376 текстовый Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки. ID: 4001"
+      ]
+    },
+    {
+      "Step": "Restore Discrete after semicolon rejection",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Start comma combined input",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Select method text for comma input",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Selected": "Discrete",
+      "Document": "Discrete",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка (disabled) Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Exact comma combined value entered",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete,MTLI",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка (disabled) Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    },
+    {
+      "Step": "Comma combined value rejected on Enter",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete,MTLI",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка (disabled) Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\".",
+        "\t\t461 диалоговое окно Microsoft Excel Secondary Actions: Raise",
+        "\t\t\t462 кнопка Повторить ID: 4",
+        "\t\t\t463 кнопка Отмена ID: 2",
+        "\t\t\t466 текстовый Это значение не соответствует ограничениям по проверке данных, установленным для этой ячейки. ID: 4001"
+      ]
+    },
+    {
+      "Step": "Final valid method restored after both rejection tests",
+      "Focus": "204 поле Строка формул ID: FormulaBar",
+      "Document": "Discrete",
+      "Relevant": [
+        "\t\t\t\t\t\t\t\t17 Кнопка Масштаб 100 % Description: Выбор масштаба. Щелкните, чтобы открыть диалоговое окно \"Масштаб\"."
+      ]
+    }
+  ]
+}
